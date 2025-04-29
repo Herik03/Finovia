@@ -1,4 +1,4 @@
-package org.vaadin.example.application;
+package org.vaadin.example.application.views;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.H1;
@@ -10,8 +10,6 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-
-import java.awt.*;
 
 @Route("login")
 @PageTitle( "Login")

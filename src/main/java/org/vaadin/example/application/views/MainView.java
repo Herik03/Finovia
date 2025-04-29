@@ -1,4 +1,4 @@
-package org.vaadin.example.application;
+package org.vaadin.example.application.views;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
@@ -18,7 +18,6 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.PermitAll;
 import org.vaadin.example.application.Security.SecurtyService;
 
