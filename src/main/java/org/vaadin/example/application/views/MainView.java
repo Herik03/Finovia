@@ -84,8 +84,10 @@ public class MainView extends VerticalLayout {
         settingsBtn.addClickListener(e -> UI.getCurrent().navigate("settings"));
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
         logoutBtn.addClickListener(e -> new SecurtyService().logout());
+        var APIBtn = createNavButton("API", VaadinIcon.CODE);
+        APIBtn.addClickListener(e -> UI.getCurrent().navigate("api"));
 
-        sideNav.add(logo, dashboardBtn, depotBtn, userBtn, settingsBtn, logoutBtn);
+        sideNav.add(logo, dashboardBtn, depotBtn, userBtn, settingsBtn, logoutBtn, APIBtn);
     }
 
     private void setupMainContent() {
