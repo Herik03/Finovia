@@ -1,4 +1,4 @@
-package org.vaadin.example.application.config;
+package org.vaadin.example.application.services;
 
 import com.crazzyghost.alphavantage.AlphaVantage;
 import com.crazzyghost.alphavantage.Config;

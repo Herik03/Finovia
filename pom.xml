@@ -96,6 +96,11 @@
             <artifactId>alphavantage-java</artifactId>
             <version>1.7.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>annotationProcessor</scope>
+        </dependency>
     </dependencies>
 
     <build>
