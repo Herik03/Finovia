@@ -168,7 +168,7 @@ public class MainView extends VerticalLayout {
         welcome.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         
         H2 welcomeText = new H2("Willkommen bei Finovia");
-        Paragraph welcomeDesc = new Paragraph("Ihr persönlicher Brocker");
+        Paragraph welcomeDesc = new Paragraph("Ihr persönlicher Broker");
         
         welcome.add(welcomeText, welcomeDesc);
         return welcome;
