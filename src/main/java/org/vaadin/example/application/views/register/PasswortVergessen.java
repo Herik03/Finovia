@@ -1,4 +1,4 @@
-package org.vaadin.example.application.register;
+package org.vaadin.example.application.views.register;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
