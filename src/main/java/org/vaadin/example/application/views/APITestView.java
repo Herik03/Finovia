@@ -20,12 +20,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.application.models.StockQuote;
 import org.vaadin.example.application.services.AlphaVantageService;
 
+/**
+ * Eine Testansicht für die Alpha Vantage API-Integration.
+ * <p>
+ * Diese Klasse stellt eine einfache Benutzeroberfläche zum Testen der Alpha Vantage API bereit.
+ * Benutzer können ein Aktiensymbol eingeben und Informationen zu dieser Aktie abrufen.
+ * Die abgerufenen Daten werden in einem Dialog angezeigt.
+ * <p>
+ * Diese Ansicht ist für alle Benutzer zugänglich, auch ohne Authentifizierung.
+ * 
+ * @author Finovia Team
+ * @version 1.0
+ */
 @Route("api")
 @AnonymousAllowed
 public class APITestView extends VerticalLayout {
 
+    /** Der Service für den Zugriff auf die Alpha Vantage API */
     private final AlphaVantageService alphaVantageService;
 
+    /**
+     * Konstruktor für die APITestView.
+     * <p>
+     * Initialisiert die Benutzeroberfläche mit einem Eingabefeld für das Aktiensymbol
+     * und einem Button zum Abrufen der Daten. Der Button-Klick-Handler ruft die
+     * Aktiendaten ab und zeigt sie in einem Dialog an.
+     *
+     * @param alphaVantageService Der Service für den Zugriff auf die Alpha Vantage API
+     */
     @Autowired
     public APITestView(AlphaVantageService alphaVantageService) {
         this.alphaVantageService = alphaVantageService;
@@ -51,6 +73,16 @@ public class APITestView extends VerticalLayout {
         add(symbolField, fetchButton);
     }
 
+    /**
+     * Erstellt einen Dialog zur Anzeige von Aktieninformationen.
+     * <p>
+     * Der Dialog zeigt Informationen zu einer Aktie an, basierend auf dem übergebenen
+     * StockQuote-Objekt. Der Dialog enthält einen Titel mit dem Aktiensymbol,
+     * eine Überschrift mit den Aktieninformationen und einen "Zurück"-Button.
+     *
+     * @param quote Das StockQuote-Objekt mit den anzuzeigenden Aktieninformationen
+     * @return Ein konfigurierter Dialog mit den Aktieninformationen
+     */
     private static Dialog createDialog(StockQuote quote){
         Dialog dialog = new Dialog();
 

@@ -9,4 +9,12 @@ public class Verkauf extends Transaktion {
         super(null,0,0,0);
         this.steueren=steueren;
     }
+
+    public double getSteueren() {
+        return steueren;
+    }
+
+    public void setSteueren(double steueren) {
+        this.steueren = steueren;
+    }
 }
