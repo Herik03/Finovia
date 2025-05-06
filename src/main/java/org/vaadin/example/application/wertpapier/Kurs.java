@@ -2,13 +2,24 @@ package org.vaadin.example.application.wertpapier;
 
 import java.time.LocalDate;
 
+/**
+ * Repräsentiert einen historischen Kurs eines {@link Wertpapier} an einem bestimmten Datum.
+ *
+ * Die Klasse speichert neben dem Kurswert auch Eröffnungs- und Schlusskurse,
+ * um Kursverläufe analysieren zu können.
+ * Jeder Kurs ist eindeutig einem Wertpapier zugeordnet.
+ *
+ * @author Jan
+ */
 public class Kurs {
     private LocalDate datum;
     private double eröffnungskurs;
     private double kurswert;
     private double schlusskurs;
     private Wertpapier wertpapier;
-
+/**
+ * Konstruktor zum Erzeugen eines Kurs-Objekts mit allen Werten.
+ */
     public Kurs(LocalDate datum, double eröffnungskurs, double kurswert, double schlusskurs, Wertpapier wertpapier) {
         this.datum = datum;
         this.eröffnungskurs = eröffnungskurs;

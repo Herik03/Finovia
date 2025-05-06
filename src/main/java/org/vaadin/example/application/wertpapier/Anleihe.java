@@ -3,14 +3,28 @@ package org.vaadin.example.application.wertpapier;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Repräsentiert ein festverzinsliches Wertpapier vom Typ Anleihe.
+ *
+ * Eine Anleihe wird typischerweise von einem Emittenten herausgegeben,
+ * hat eine festgelegte Laufzeit, einen Nominalwert (Nennwert) und zahlt
+ * regelmäßig Zinsen in Form von {@link Zinszahlung}.
+ *
+ * Diese Klasse erweitert die allgemeine {@link Wertpapier}-Klasse um
+ * anleihenspezifische Eigenschaften.
+ *
+ * @author Jan
+ */
 public class Anleihe extends Wertpapier {
     private String emittent;
     private double kupon;
     private LocalDate laufzeit;
     private double nennwert;
     private List<Zinszahlung> zinszahlungen;
-
-    public Anleihe(String emittent, double kupon, LocalDate laufzeit, double nennwert, List<Zinszahlung> zinszahlungen, String isin, String name, int wertpapierId, List<Transaktion> transaktionen, List<Kurs> kurse) {
+/**
+ * Konstruktor zum Erzeugen einer vollständigen Anleihe-Instanz.
+ */
+ public Anleihe(String emittent, double kupon, LocalDate laufzeit, double nennwert, List<Zinszahlung> zinszahlungen, String isin, String name, int wertpapierId, List<Transaktion> transaktionen, List<Kurs> kurse) {
         super(isin, name, wertpapierId, transaktionen, kurse);
         this.emittent = emittent;
         this.kupon = kupon;
