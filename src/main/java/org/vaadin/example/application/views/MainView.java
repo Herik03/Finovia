@@ -21,17 +21,48 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.vaadin.example.application.Security.SecurtyService;
 
+/**
+ * Die Hauptansicht der Finovia-Anwendung, die als Dashboard dient.
+ * <p>
+ * Diese Klasse stellt die Startseite der Anwendung dar und enthält:
+ * <ul>
+ *   <li>Eine Navigationsleiste auf der linken Seite</li>
+ *   <li>Einen Hauptinhaltsbereich mit Willkommensnachricht</li>
+ *   <li>Ein Formular zum Erstellen eines neuen Depots</li>
+ * </ul>
+ * <p>
+ * Die Ansicht ist für alle authentifizierten Benutzer zugänglich.
+ * 
+ * @author Finovia Team
+ * @version 1.0
+ */
 @Route(value = "")
 @PageTitle("Finovia - Dashboard")
 @PermitAll
 public class MainView extends VerticalLayout {
 
+    /** Die Navigationsleiste auf der linken Seite der Anwendung */
     private final VerticalLayout sideNav;
+
+    /** Der Hauptinhaltsbereich der Anwendung */
     private final VerticalLayout mainContent;
+
+    /** Das Layout, das die Navigationsleiste und den Hauptinhalt umschließt */
     private final HorizontalLayout contentWrapper;
+
+    /** Der Inhaltsbereich des Dashboards */
     private final VerticalLayout dashboardContent;
+
+    /** Das Formular zum Erstellen eines neuen Depots */
     private final FormLayout depotForm;
 
+    /**
+     * Konstruktor für die MainView.
+     * <p>
+     * Initialisiert alle Layout-Komponenten und richtet die Benutzeroberfläche ein.
+     * Die Ansicht besteht aus einer Seitenleiste, einem Hauptinhaltsbereich und
+     * einem Formular zum Erstellen eines neuen Depots.
+     */
     public MainView() {
         setSizeFull();
         setPadding(false);
@@ -57,10 +88,17 @@ public class MainView extends VerticalLayout {
         contentWrapper.add(sideNav, mainContent);
         contentWrapper.setSizeFull();
         contentWrapper.setSpacing(false);
-        
+
         add(contentWrapper);
     }
 
+    /**
+     * Konfiguriert die Navigationsleiste auf der linken Seite der Anwendung.
+     * <p>
+     * Erstellt und konfiguriert die Seitenleiste mit dem Logo und Navigationsbuttons
+     * für verschiedene Bereiche der Anwendung (Dashboard, Depot, Benutzer, Einstellungen,
+     * Logout und API).
+     */
     private void setupSideNav() {
         sideNav.setWidth("250px");
         sideNav.setHeightFull();
@@ -90,6 +128,12 @@ public class MainView extends VerticalLayout {
         sideNav.add(logo, dashboardBtn, depotBtn, userBtn, settingsBtn, logoutBtn, APIBtn);
     }
 
+    /**
+     * Konfiguriert den Hauptinhaltsbereich der Anwendung.
+     * <p>
+     * Erstellt und konfiguriert den Hauptinhaltsbereich mit einer Kopfzeile und
+     * dem Dashboard-Inhalt, der eine Willkommensnachricht enthält.
+     */
     private void setupMainContent() {
         mainContent.setSizeFull();
         mainContent.setPadding(true);
@@ -112,6 +156,17 @@ public class MainView extends VerticalLayout {
         mainContent.add(header, dashboardContent);
     }
 
+    /**
+     * Konfiguriert das Formular zum Erstellen eines neuen Depots.
+     * <p>
+     * Erstellt und konfiguriert ein Formular mit Eingabefeldern für Depot-Name,
+     * Depot-Typ und IBAN sowie einem Button zum Speichern. Das Formular wird
+     * dem Dashboard-Inhalt hinzugefügt.
+     * <p>
+     * Bei erfolgreicher Erstellung eines Depots wird eine Erfolgsmeldung angezeigt
+     * und die Eingabefelder werden geleert. Bei fehlenden Pflichtfeldern wird eine
+     * Fehlermeldung angezeigt.
+     */
     private void setupDepotForm() {
         depotForm.setMaxWidth("600px");
         depotForm.setResponsiveSteps(
@@ -152,6 +207,16 @@ public class MainView extends VerticalLayout {
         dashboardContent.add(depotForm);
     }
 
+    /**
+     * Erstellt einen Navigationsbutton für die Seitenleiste.
+     * <p>
+     * Der Button wird mit dem angegebenen Text und Icon erstellt und mit einem
+     * speziellen Stil für die Seitenleiste versehen.
+     *
+     * @param text Der anzuzeigende Text des Buttons
+     * @param icon Das zu verwendende Vaadin-Icon
+     * @return Ein konfigurierter Button für die Seitenleiste
+     */
     private Button createNavButton(String text, VaadinIcon icon) {
         Button button = new Button(text, icon.create());
         button.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
@@ -162,14 +227,23 @@ public class MainView extends VerticalLayout {
         return button;
     }
 
+    /**
+     * Erstellt eine Willkommensnachricht für das Dashboard.
+     * <p>
+     * Die Nachricht besteht aus einer Überschrift "Willkommen bei Finovia" und
+     * einem Untertitel "Ihr persönlicher Broker". Die Nachricht wird zentriert
+     * in einem VerticalLayout angezeigt.
+     *
+     * @return Ein VerticalLayout mit der Willkommensnachricht
+     */
     private VerticalLayout createWelcomeMessage() {
         VerticalLayout welcome = new VerticalLayout();
         welcome.setAlignItems(FlexComponent.Alignment.CENTER);
         welcome.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        
+
         H2 welcomeText = new H2("Willkommen bei Finovia");
-        Paragraph welcomeDesc = new Paragraph("Ihr persönlicher Brocker");
-        
+        Paragraph welcomeDesc = new Paragraph("Ihr persönlicher Broker");
+
         welcome.add(welcomeText, welcomeDesc);
         return welcome;
     }

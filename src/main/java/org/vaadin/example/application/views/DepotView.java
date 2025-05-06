@@ -12,11 +12,12 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 
 @Route(value = "depot")
 @PageTitle("Depot")
-@RolesAllowed("user")
+@PermitAll
 public class DepotView extends HorizontalLayout {
     HorizontalLayout depotForm;
     public DepotView(){
