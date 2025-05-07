@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <vaadin.version>24.7.0</vaadin.version>
     </properties>
 
@@ -22,6 +22,16 @@
     </parent>
 
     <repositories>
+        <!-- Maven Central hinzufügen -->
+        <repository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
         <repository>
             <id>Vaadin Directory</id>
             <url>https://maven.vaadin.com/vaadin-addons</url>
@@ -35,6 +45,7 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+
 
     <dependencyManagement>
         <dependencies>
@@ -57,8 +68,9 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.28</version>
+            <version>1.18.38</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -102,11 +114,6 @@
             <groupId>com.github.crazzyghost</groupId>
             <artifactId>alphavantage-java</artifactId>
             <version>1.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>annotationProcessor</scope>
         </dependency>
         <!-- PostgreSQL dependencies -->
         <dependency>
@@ -166,6 +173,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
