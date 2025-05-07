@@ -16,21 +16,17 @@ interface Beobachter {
 public class Supportanfrage {
 
     // Getter und Setter mit Benachrichtigungen
-    @Setter
-    @Getter
+    @Setter @Getter
     private int supportRequestId;
-    @Getter
-    @Setter
+    @Getter @Setter
     private String nachricht;
     @Getter
     private String antwort;
     @Getter
     private String status;
-    @Setter
-    @Getter
+    @Setter @Getter
     private LocalDateTime erstellungsdatum;
-    @Setter
-    @Getter
+    @Setter @Getter
     private Nutzer ersteller;
 
     // Liste der Beobachter (normalerweise nur der Ersteller und ggf. Support-Mitarbeiter)
@@ -45,7 +41,7 @@ public class Supportanfrage {
 
         // Wenn der Nutzer das Beobachter-Interface implementiert,
         // automatisch als Beobachter hinzufügen
-        if (ersteller instanceof Beobachter) {
+        if (ersteller != null) {
             beobachterHinzufuegen((Beobachter) ersteller);
         }
     }
@@ -62,7 +58,7 @@ public class Supportanfrage {
 
         // Wenn der Nutzer das Beobachter-Interface implementiert,
         // automatisch als Beobachter hinzufügen
-        if (ersteller instanceof Beobachter) {
+        if (ersteller != null) {
             beobachterHinzufuegen((Beobachter) ersteller);
         }
     }
