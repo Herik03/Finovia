@@ -1,4 +1,4 @@
-package org.vaadin.example.application.wertpapier;
+package org.vaadin.example.application.classes;
 
 import java.time.LocalDate;
 
