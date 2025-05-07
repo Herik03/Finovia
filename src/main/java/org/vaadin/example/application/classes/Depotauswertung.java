@@ -1,4 +1,6 @@
-package org.vaadin.example.application;
+package org.vaadin.example.application.classes;
+
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
@@ -8,7 +10,9 @@ import java.time.LocalDateTime;
  * Performance und den Zeitpunkt der Auswertung.
  */
 //        von Ben
+@Getter
 public class Depotauswertung {
+    // Getter und Setter
     private double gesamtWert;
     private double gewinnVerlust;
     private double performanceProzent;
@@ -48,33 +52,16 @@ public class Depotauswertung {
         );
     }
 
-    // Getter und Setter
-    public double getGesamtWert() {
-        return gesamtWert;
-    }
-
     public void setGesamtWert(double gesamtWert) {
         this.gesamtWert = gesamtWert;
-    }
-
-    public double getGewinnVerlust() {
-        return gewinnVerlust;
     }
 
     public void setGewinnVerlust(double gewinnVerlust) {
         this.gewinnVerlust = gewinnVerlust;
     }
 
-    public double getPerformanceProzent() {
-        return performanceProzent;
-    }
-
     public void setPerformanceProzent(double performanceProzent) {
         this.performanceProzent = performanceProzent;
-    }
-
-    public LocalDateTime getAuswertungszeitpunkt() {
-        return auswertungszeitpunkt;
     }
 
     public void setAuswertungszeitpunkt(LocalDateTime auswertungszeitpunkt) {

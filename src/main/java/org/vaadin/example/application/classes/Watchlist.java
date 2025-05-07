@@ -1,4 +1,7 @@
-package org.vaadin.example.application;
+package org.vaadin.example.application.classes;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,10 +12,14 @@ import java.util.List;
  * Sie enthält eine Liste von Wertpapieren, die der Nutzer verfolgen möchte.
  */
 //        von Ben
+@Getter
 public class Watchlist {
 
+    // Getter und Setter
+    @Setter
     private String name;
     private LocalDate erstellungsdatum;
+    @Setter
     private Nutzer besitzer;
     private List<Wertpapier> wertpapiere;
 
@@ -48,28 +55,4 @@ public class Watchlist {
         return wertpapiere.remove(wertpapier);
     }
 
-    // Getter und Setter
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDate getErstellungsdatum() {
-        return erstellungsdatum;
-    }
-
-    public Nutzer getBesitzer() {
-        return besitzer;
-    }
-
-    public void setBesitzer(Nutzer besitzer) {
-        this.besitzer = besitzer;
-    }
-
-    public List<Wertpapier> getWertpapiere() {
-        return wertpapiere;
-    }
 }

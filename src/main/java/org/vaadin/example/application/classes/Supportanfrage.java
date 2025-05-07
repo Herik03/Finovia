@@ -1,4 +1,7 @@
-package org.vaadin.example.application;
+package org.vaadin.example.application.classes;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,11 +15,22 @@ interface Beobachter {
 // Observable/Subject-Klasse
 public class Supportanfrage {
 
+    // Getter und Setter mit Benachrichtigungen
+    @Setter
+    @Getter
     private int supportRequestId;
+    @Getter
+    @Setter
     private String nachricht;
+    @Getter
     private String antwort;
+    @Getter
     private String status;
+    @Setter
+    @Getter
     private LocalDateTime erstellungsdatum;
+    @Setter
+    @Getter
     private Nutzer ersteller;
 
     // Liste der Beobachter (normalerweise nur der Ersteller und ggf. Support-Mitarbeiter)
@@ -70,27 +84,6 @@ public class Supportanfrage {
         }
     }
 
-    // Getter und Setter mit Benachrichtigungen
-    public int getSupportRequestId() {
-        return supportRequestId;
-    }
-
-    public void setSupportRequestId(int supportRequestId) {
-        this.supportRequestId = supportRequestId;
-    }
-
-    public String getNachricht() {
-        return nachricht;
-    }
-
-    public void setNachricht(String nachricht) {
-        this.nachricht = nachricht;
-    }
-
-    public String getAntwort() {
-        return antwort;
-    }
-
     public void setAntwort(String antwort) {
         String alterStatus = this.status;
         this.antwort = antwort;
@@ -109,10 +102,6 @@ public class Supportanfrage {
         }
     }
 
-    public String getStatus() {
-        return status;
-    }
-
     public void setStatus(String status) {
         if (!this.status.equals(status)) {
             String alterStatus = this.status;
@@ -121,19 +110,4 @@ public class Supportanfrage {
         }
     }
 
-    public LocalDateTime getErstellungsdatum() {
-        return erstellungsdatum;
-    }
-
-    public void setErstellungsdatum(LocalDateTime erstellungsdatum) {
-        this.erstellungsdatum = erstellungsdatum;
-    }
-
-    public Nutzer getErsteller() {
-        return ersteller;
-    }
-
-    public void setErsteller(Nutzer ersteller) {
-        this.ersteller = ersteller;
-    }
 }
