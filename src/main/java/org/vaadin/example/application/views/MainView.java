@@ -1,5 +1,7 @@
 package org.vaadin.example.application.views;
 
+import com.vaadin.flow.theme.lumo.LumoUtility;
+
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -105,12 +107,11 @@ public class MainView extends VerticalLayout {
         sideNav.setPadding(false);
         sideNav.setSpacing(false);
         sideNav.getStyle().set("background-color", "var(--lumo-contrast-5pct)");
+        VerticalLayout verticallayout = new VerticalLayout();
+        VerticalLayout btmLayout = new VerticalLayout();
 
         H1 logo = new H1("Finovia");
-        logo.getStyle()
-            .set("font-size", "var(--lumo-font-size-l)")
-            .set("margin", "0")
-            .set("padding", "var(--lumo-space-m)");
+        logo.getStyle().set("font-size", "var(--lumo-font-size-l)").set("margin", "0").set("padding", "var(--lumo-space-m)");
 
         Button dashboardBtn = createNavButton("Dashboard", VaadinIcon.DASHBOARD);
         dashboardBtn.addClickListener(e -> UI.getCurrent().navigate("dashboard"));
@@ -125,7 +126,13 @@ public class MainView extends VerticalLayout {
         var APIBtn = createNavButton("API", VaadinIcon.CODE);
         APIBtn.addClickListener(e -> UI.getCurrent().navigate("api"));
 
-        sideNav.add(logo, dashboardBtn, depotBtn, userBtn, settingsBtn, logoutBtn, APIBtn);
+        verticallayout.add(logo, dashboardBtn, depotBtn, settingsBtn, APIBtn);
+        verticallayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
+        btmLayout.add(userBtn, logoutBtn);
+        btmLayout.getStyle().setFlexGrow("1");
+        btmLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END);
+        sideNav.add(verticallayout, btmLayout);
+
     }
 
     /**
