@@ -1,20 +1,32 @@
 package org.vaadin.example.application.classes;
 
-import java.sql.Date;
+import java.time.LocalDate;
+/**
+ * Repräsentiert eine Verkaufs-Transaktion eines {@link Wertpapier}.
+ * Erbt von {@link Transaktion} und ergänzt diese um die beim Verkauf
+ * angefallenen Steuern.
+ *
+ * Diese Klasse ist ein konkreter Typ einer Transaktion und wird
+ * typischerweise im Rahmen von Veräußerungsprozessen verwendet.
+ *
+ * @author Jan
+ */
+public class Verkauf extends Transaktion{
+    private double steuern;
 
-public class Verkauf extends Transaktion {
-    private double steueren;
-    public Verkauf(Date datum, double gebuehren, double kurs, int stueckzahl,double steueren)
-    {
-        super(null,0,0,0);
-        this.steueren=steueren;
+/**
+ * Konstruktor zur Initialisierung aller Felder der Verkaufs-Transaktion.
+ */
+    public Verkauf(double steuern, LocalDate datum, double gebühren, double kurs, int stückzahl, Wertpapier wertpapier, Ausschuettung ausschüttung) {
+        super(datum, gebühren, kurs, stückzahl, wertpapier, ausschüttung);
+        this.steuern = steuern;
     }
 
-    public double getSteueren() {
-        return steueren;
+    public double getSteuern() {
+        return steuern;
     }
 
-    public void setSteueren(double steueren) {
-        this.steueren = steueren;
+    public void setSteuern(double steuern) {
+        this.steuern = steuern;
     }
 }
