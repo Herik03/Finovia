@@ -18,7 +18,7 @@ public abstract class Ausschuettung{
     private double betrag;
     private LocalDate datum;
     private double steuern;
-    private Transaktion transaktion;
+
 /**
  * Konstruktor für eine Ausschüttung.
  */
@@ -27,7 +27,6 @@ public abstract class Ausschuettung{
         this.betrag = betrag;
         this.datum = datum;
         this.steuern = steuern;
-        this.transaktion = transaktion;
     }
 
     public int getAusschüttungId() {
@@ -62,11 +61,4 @@ public abstract class Ausschuettung{
         this.steuern = steuern;
     }
 
-    public Transaktion getTransaktion() {
-        return transaktion;
-    }
-
-    public void setTransaktion(Transaktion transaktion) {
-        this.transaktion = transaktion;
-    }
 }
