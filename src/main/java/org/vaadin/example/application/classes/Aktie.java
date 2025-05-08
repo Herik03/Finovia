@@ -1,6 +1,8 @@
 package org.vaadin.example.application.classes;
 
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 /**
  * Repräsentiert ein Wertpapier vom Typ Aktie.
  *
@@ -12,6 +14,9 @@ import java.util.List;
  *
  * @author Jan
  */
+
+@Getter
+@Setter
 public class Aktie extends Wertpapier {
     int anzahl;
     private String unternehmensname;
@@ -27,7 +32,13 @@ public class Aktie extends Wertpapier {
         this.anzahl = anzahl;
     }
 
+    public int getAnzahl() {
+        return anzahl;
+    }
 
+    public void setAnzahl(int anzahl) {
+        this.anzahl = anzahl;
+    }
 
     public String getUnternehmensname() {
         return unternehmensname;
