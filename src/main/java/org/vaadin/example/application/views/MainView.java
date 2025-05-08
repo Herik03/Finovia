@@ -124,7 +124,7 @@ public class MainView extends VerticalLayout {
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
         logoutBtn.addClickListener(e -> new SecurtyService().logout());
         var APIBtn = createNavButton("API", VaadinIcon.CODE);
-        APIBtn.addClickListener(e -> UI.getCurrent().navigate("api"));
+        APIBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
 
         verticallayout.add(logo, dashboardBtn, depotBtn, settingsBtn, APIBtn);
         verticallayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);

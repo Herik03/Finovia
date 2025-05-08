@@ -1,17 +1,10 @@
 package org.vaadin.example.application.views;
 
-import com.crazzyghost.alphavantage.AlphaVantage;
-import com.crazzyghost.alphavantage.fundamentaldata.response.CompanyOverviewResponse;
-import com.crazzyghost.alphavantage.parameters.Interval;
-import com.crazzyghost.alphavantage.parameters.OutputSize;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
@@ -28,7 +21,7 @@ import org.vaadin.example.application.services.AlphaVantageService;
  * Die abgerufenen Daten werden in einem Dialog angezeigt.
  * <p>
  * Diese Ansicht ist für alle Benutzer zugänglich, auch ohne Authentifizierung.
- * 
+ *
  * @author Finovia Team
  * @version 1.0
  */
@@ -59,7 +52,7 @@ public class APITestView extends VerticalLayout {
         fetchButton.addClickListener(e -> {
             String symbol = symbolField.getValue().trim().toUpperCase();
             if (!symbol.isEmpty()) {
-                StockQuote quote = alphaVantageService.getStockQuote(symbol);
+                StockQuote quote = alphaVantageService.getCurrentStockQuote(symbol);
                 if (quote != null) {
                     Dialog dialog = createDialog(quote);
                     add(dialog);
