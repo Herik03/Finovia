@@ -92,3 +92,9 @@ public class DepotAnlegenView extends VerticalLayout {
         add(depotForm);
     }
 }
+//TODO :Anbinden an die Datenbank
+//TODO :Erstellen eines Depot-Objekts und eventuelle erweiterung der Eingabe
+//TODO :Validierung der Eingaben
+//TODO :Fehlerbehandlung
+//TODO :Styling und Layout-Optimierung
+//TODO :Testen der Funktionalität

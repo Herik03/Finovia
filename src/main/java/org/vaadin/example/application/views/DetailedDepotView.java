@@ -124,3 +124,5 @@ public class DetailedDepotView extends VerticalLayout implements HasUrlParameter
         depotInfoLayout.add(ownerLayout, valueLayout);
     }
 }
+//TODO:Einbinden der Funktionalität zum Kaufen und Verkaufen von Wertpapieren
+//TODO:Wertpapiere in die Depot-Übersicht einfügen

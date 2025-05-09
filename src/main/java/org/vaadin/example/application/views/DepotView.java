@@ -109,3 +109,5 @@ public class DepotView extends HorizontalLayout {
         return depotBox;
     }
 }
+//TODO :Anbinden an die Datenbank
+//TODO : Layout-Optimierung
