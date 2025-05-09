@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.vaadin.example.application.classes.Kurs;
+import org.vaadin.example.application.classes.*;
 import org.vaadin.example.application.models.SearchResult;
 import org.vaadin.example.application.models.StockQuote;
 import org.slf4j.Logger;
@@ -20,6 +20,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -54,7 +55,7 @@ public class AlphaVantageService {
     private static final Logger logger = LoggerFactory.getLogger(AlphaVantageService.class);
 
     /**
-     Ruft Kursinformationen für ein bestimmtes Wertpapiersymbol von der AlphaVantage API ab.
+     Ruft Kursinformationen im Vergleich zum Vortag auf.
 
      @param symbol Das Börsensymbol des Wertpapiers (z.B. "AAPL" für Apple Inc.)
      @return Ein StockQuote-Objekt mit den aktuellen Kursdaten, oder null, wenn die Anfrage fehlschlägt
@@ -68,8 +69,10 @@ public class AlphaVantageService {
         return new StockQuote(response.getSymbol(), response.getPrice(), response.getChangePercent());
     }
 
+    //TODO: Intraday -> Liefert Handelsdaten des aktuellen Tages im 5 Minuten Intervall
+
     /**
-     * Ruft die täglichen Kursdaten für ein bestimmtes Wertpapiersymbol von der AlphaVantage API ab.
+     * Ruft die täglichen Kursdaten der letzten 20 Jahre für ein bestimmtes Wertpapiersymbol von der AlphaVantage API ab.
      *
      * @param symbol Das Börsensymbol des Wertpapiers (z.B. "AAPL" für Apple Inc.)
      * @return Eine Liste von Kurs-Objekten mit den historischen Kursdaten, sortiert nach Datum
@@ -100,6 +103,45 @@ public class AlphaVantageService {
                         ))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Ruft die wöchentlichen Kursdaten für ein bestimmtes Wertpapiersymbol von der AlphaVantage API ab.
+     * Eignet sich vor allem für die Analyse von längerfristigen Trends.
+     *
+     * @param symbol Das Börsensymbol des Wertpapiers (z.B. "AAPL" für Apple Inc.)
+     * @return Eine Liste von Kurs-Objekten mit den wöchentlichen Kursdaten
+     * @throws APIException Wenn ein Fehler bei der API-Kommunikation auftritt oder keine Daten verfügbar sind
+     */
+    public List<Kurs> getWeeklySeries(String symbol) {
+        var response = AlphaVantage.api()
+                .timeSeries()
+                .weekly()
+                .forSymbol(symbol)
+                .fetchSync();
+
+        if (response.getErrorMessage() != null) {
+            logger.error("Fehler beim Abrufen der wöchentlichen Kursdaten: {}", response.getErrorMessage());
+            throw new APIException("Fehler beim Abrufen der wöchentlichen Kursdaten: " + response.getErrorMessage());
+        }
+
+        return response.getStockUnits()
+                .stream()
+                .map(data -> new Kurs(
+                        symbol,
+                        LocalDate.parse(data.getDate()),
+                        data.getOpen(),
+                        data.getClose(),
+                        data.getHigh(),
+                        data.getLow()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    //TODO: Monthly -> Liefert monatliche Kursdaten
+
+    //TODO: Dividends -> Liefert Dividendenhistorie eines Wertpapiers
+
+    //TODO: Stammdaten -> Liefert die Stammdaten eines Wertpapiers
 
     /**
      * Durchsucht Aktien und Wertpapiere basierend auf dem übergebenen Keyword über die AlphaVantage API.
