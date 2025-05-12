@@ -120,31 +120,36 @@ public class MainView extends VerticalLayout {
         logo.getStyle().set("font-size", "var(--lumo-font-size-l)").set("margin", "0").set("padding", "var(--lumo-space-m)");
 
         Button dashboardBtn = createNavButton("Dashboard", VaadinIcon.DASHBOARD);
-        dashboardBtn.addClickListener(e -> UI.getCurrent().navigate(""));
-        
+        dashboardBtn.addClickListener(e -> UI.getCurrent().navigate("dashboard"));
         Button depotBtn = createNavButton("Depot", VaadinIcon.PIGGY_BANK);
         depotBtn.addClickListener(e -> UI.getCurrent().navigate("depot"));
-        
+
         // Einstellungen-Button mit Dropdown für Support
         Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
         settingsBtn.addClickListener(e -> {
             UI.getCurrent().navigate(SettingsView.class);
         });
-        
+
         Button APIBtn = createNavButton("API", VaadinIcon.CODE);
         APIBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
-        
+
         Button userBtn = createNavButton("Benutzer", VaadinIcon.USER);
         userBtn.addClickListener(e -> UI.getCurrent().navigate("user"));
-        
+        Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
+        settingsBtn.addClickListener(e -> UI.getCurrent().navigate("settings"));
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
         logoutBtn.addClickListener(e -> new SecurtyService().logout());
+        var APIBtn = createNavButton("API", VaadinIcon.CODE);
+        APIBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
+        //Batuhan Güvercin
+        Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
+        aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
 
         verticallayout.add(logo, dashboardBtn, depotBtn, settingsBtn, APIBtn);
         verticallayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         verticallayout.setPadding(false);
         verticallayout.setSpacing(false);
-        
+
         btmLayout.add(userBtn, logoutBtn);
         btmLayout.getStyle().setFlexGrow("1");
         btmLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END);
