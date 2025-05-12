@@ -17,7 +17,6 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import lombok.Data;
@@ -200,7 +199,7 @@ public class RegisterView extends VerticalLayout {
                 showSuccessMessage();
                 UI.getCurrent().navigate("login");
             } else {
-                showErrorMessage("Registrierung fehlgeschlagen. Benutzername möglicherweise bereits vergeben.");
+                showErrorMessage();
             }
         } catch (ValidationException e) {
             // Die Validierungsfehler werden bereits in der UI angezeigt
@@ -219,8 +218,8 @@ public class RegisterView extends VerticalLayout {
         notification.setPosition(Notification.Position.TOP_CENTER);
     }
     
-    private void showErrorMessage(String message) {
-        Notification notification = Notification.show(message);
+    private void showErrorMessage() {
+        Notification notification = Notification.show("Registrierung fehlgeschlagen. Benutzername möglicherweise bereits vergeben.");
         notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
         notification.setPosition(Notification.Position.TOP_CENTER);
     }

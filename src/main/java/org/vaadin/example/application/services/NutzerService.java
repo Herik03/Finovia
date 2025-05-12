@@ -90,9 +90,8 @@ public class NutzerService {
      * Ansonsten wird der bestehende Nutzer aktualisiert.
      *
      * @param nutzer Der zu speichernde Nutzer
-     * @return Der gespeicherte Nutzer
      */
-    public Nutzer speichereNutzer(Nutzer nutzer) {
+    public void speichereNutzer(Nutzer nutzer) {
         if (nutzer.getId() == 0) {
             // Neuer Nutzer
             nutzer.setId(nextId++);
@@ -101,8 +100,7 @@ public class NutzerService {
         // Nutzer in beide Maps einfügen/aktualisieren
         nutzerMap.put(nutzer.getId(), nutzer);
         nutzerByUsername.put(nutzer.getUsername(), nutzer);
-        
-        return nutzer;
+
     }
 
     /**

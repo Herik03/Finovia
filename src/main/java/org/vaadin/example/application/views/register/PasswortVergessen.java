@@ -60,7 +60,7 @@ public class PasswortVergessen extends VerticalLayout {
                 showErrorMessage("Die Passwörter stimmen nicht überein");
             } else {
                 // Hier würde die eigentliche Logik zum Zurücksetzen des Passworts stehen
-                showSuccessMessage("Ihr Passwort wurde erfolgreich zurückgesetzt");
+                showSuccessMessage();
                 UI.getCurrent().navigate("login");
             }
         });
@@ -112,8 +112,8 @@ public class PasswortVergessen extends VerticalLayout {
         notification.setPosition(Notification.Position.TOP_CENTER);
     }
     
-    private void showSuccessMessage(String message) {
-        Notification notification = Notification.show(message);
+    private void showSuccessMessage() {
+        Notification notification = Notification.show("Ihr Passwort wurde erfolgreich zurückgesetzt");
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         notification.setPosition(Notification.Position.TOP_CENTER);
     }
