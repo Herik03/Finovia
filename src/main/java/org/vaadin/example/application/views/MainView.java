@@ -138,8 +138,11 @@ public class MainView extends VerticalLayout {
         logoutBtn.addClickListener(e -> new SecurtyService().logout());
         var APIBtn = createNavButton("API", VaadinIcon.CODE);
         APIBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
+        //Batuhan Güvercin
+        Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
+        aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
 
-        verticallayout.add(logo, dashboardBtn, depotBtn, settingsBtn, APIBtn);
+        verticallayout.add(logo, dashboardBtn, depotBtn, aktieKaufenBtn, settingsBtn, APIBtn);
         verticallayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         btmLayout.add(userBtn, logoutBtn);
         btmLayout.getStyle().setFlexGrow("1");
