@@ -1,6 +1,7 @@
 package org.vaadin.example.application.services;
 
 import com.crazzyghost.alphavantage.AlphaVantage;
+import com.crazzyghost.alphavantage.parameters.Interval;
 import com.crazzyghost.alphavantage.parameters.OutputSize;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,7 +70,39 @@ public class AlphaVantageService {
         return new StockQuote(response.getSymbol(), response.getPrice(), response.getChangePercent());
     }
 
-    //TODO: Intraday -> Liefert Handelsdaten des aktuellen Tages im 5 Minuten Intervall
+    /**
+     * Ruft die Intraday-Kursdaten im 5-Minuten-Intervall für ein bestimmtes Wertpapiersymbol von der AlphaVantage API ab.
+     * Diese Methode eignet sich besonders für die Analyse, von kurzfristigen Kursbewegungen innerhalb eines Handelstages.
+     *
+     * @param symbol Das Börsensymbol des Wertpapiers (z.B. "AAPL" für Apple Inc.)
+     * @return Eine Liste von Kurs-Objekten mit den Intraday-Kursdaten, die Öffnungs-, Schluss-, Höchst- und Tiefstkurse enthält
+     * @throws APIException Wenn ein Fehler bei der API-Kommunikation auftritt oder keine Daten verfügbar sind
+     */
+    public List<Kurs> getIntradaySeries(String symbol) {
+        var response = AlphaVantage.api()
+                .timeSeries()
+                .intraday()
+                .forSymbol(symbol)
+                .interval(Interval.FIVE_MIN)
+                .fetchSync();
+
+        if (response.getErrorMessage() != null) {
+            logger.error("Fehler beim Abrufen der Intraday-Kursdaten: {}", response.getErrorMessage());
+            throw new APIException("Fehler beim Abrufen der Intraday-Kursdaten: " + response.getErrorMessage());
+        }
+
+        return response.getStockUnits()
+                .stream()
+                .map(data -> new Kurs(
+                        symbol,
+                        LocalDate.parse(data.getDate()),
+                        data.getOpen(),
+                        data.getClose(),
+                        data.getHigh(),
+                        data.getLow()
+                ))
+                .collect(Collectors.toList());
+    }
 
     /**
      * Ruft die täglichen Kursdaten der letzten 20 Jahre für ein bestimmtes Wertpapiersymbol von der AlphaVantage API ab.
@@ -170,7 +203,50 @@ public class AlphaVantageService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Ruft die fundamentalen Unternehmensdaten für ein bestimmtes Wertpapiersymbol von der AlphaVantage API ab.
+     * Die Daten beinhalten wichtige Kennzahlen wie Marktkapitalisierung, Dividendeninformationen, Branche und andere
+     * fundamentale Wirtschaftsdaten des Unternehmens.
+     *
+     * @param symbol Das Börsensymbol des Wertpapiers (z.B. "AAPL" für Apple Inc.)
+     * @return Ein {@link Aktie}-Objekt mit den fundamentalen Unternehmensdaten
+     * @throws APIException Wenn ein Fehler bei der API-Kommunikation auftritt oder keine Daten verfügbar sind
+     */
+    public Aktie getFundamentalData(String symbol)  {
+        var response = AlphaVantage.api()
+                .fundamentalData()
+                .companyOverview()
+                .forSymbol(symbol)
+                .fetchSync();
 
+        if (response.getErrorMessage() != null) {
+            logger.error("Fehler beim Abrufen der Unternehmensdaten: {}", response.getErrorMessage());
+            throw new APIException("Fehler beim Abrufen der Unternehmensdaten: " + response.getErrorMessage());
+        }
+
+        var overview = response.getOverview();
+
+        return new Aktie(overview.getName(),
+                overview.getDescription(),
+                overview.getExchange(),
+                overview.getCurrency(),
+                overview.getCountry(),
+                overview.getSector(),
+                overview.getIndustry(),
+                overview.getMarketCapitalization(),
+                overview.getEBITDA(),
+                overview.getPEGRatio(),
+                overview.getBookValue(),
+                overview.getDividendPerShare(),
+                overview.getDividendYield(),
+                overview.getEPS(),
+                overview.getForwardPE(),
+                overview.getBeta(),
+                overview.getFiftyTwoWeekHigh(),
+                overview.getFiftyTwoWeekLow(),
+                LocalDate.parse(overview.getDividendDate())
+        );
+    }
 
     /**
      * Durchsucht Aktien und Wertpapiere basierend auf dem übergebenen Keyword über die AlphaVantage API.

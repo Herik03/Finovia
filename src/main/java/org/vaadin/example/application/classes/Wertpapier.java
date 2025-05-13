@@ -7,13 +7,10 @@ import java.util.List;
  * Sie enthält grundlegende Attribute und Beziehungen, die für spezifische Finanzprodukte wie
  * Aktien, Anleihen oder ETFs gemeinsam sind.
  *
- * Zu den Attributen gehören die eindeutige ISIN, ein Name, eine interne Wertpapier-ID,
- * eine Liste von zugehörigen Transaktionen sowie eine Historie von Kurswerten.
- *
  * Diese Klasse ist als abstrakt definiert und wird von konkreten Unterklassen wie {@link Aktie},
  * {@link Anleihe} oder {@link ETF} erweitert.
  *
- * @author Jan
+ * @author Sören
  */
 public abstract class Wertpapier {
     private String isin;
@@ -31,6 +28,8 @@ public abstract class Wertpapier {
         this.transaktionen = transaktionen;
         this.kurse = kurse;
     }
+
+    public Wertpapier(){}
 
     public String getIsin() {
         return isin;
