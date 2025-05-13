@@ -56,4 +56,8 @@ public class Kurs {
         this.high = high;
         this.low = low;
     }
+
+    public String getKurswert() {
+        return "";
+    }
 }
