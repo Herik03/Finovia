@@ -2,11 +2,9 @@ package org.vaadin.example.application.views;
 
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
@@ -14,16 +12,11 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.application.Security.SecurtyService;
@@ -130,6 +123,16 @@ public class MainView extends VerticalLayout {
         dashboardBtn.addClickListener(e -> UI.getCurrent().navigate("dashboard"));
         Button depotBtn = createNavButton("Depot", VaadinIcon.PIGGY_BANK);
         depotBtn.addClickListener(e -> UI.getCurrent().navigate("depot"));
+
+        // Einstellungen-Button mit Dropdown für Support
+        Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
+        settingsBtn.addClickListener(e -> {
+            UI.getCurrent().navigate(SettingsView.class);
+        });
+
+        Button APIBtn = createNavButton("API", VaadinIcon.CODE);
+        APIBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
+
         Button userBtn = createNavButton("Benutzer", VaadinIcon.USER);
         userBtn.addClickListener(e -> UI.getCurrent().navigate("user"));
         Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
@@ -138,14 +141,19 @@ public class MainView extends VerticalLayout {
         logoutBtn.addClickListener(e -> new SecurtyService().logout());
         var APIBtn = createNavButton("API", VaadinIcon.CODE);
         APIBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
+        //Batuhan Güvercin
+        Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
+        aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
 
         verticallayout.add(logo, dashboardBtn, depotBtn, settingsBtn, APIBtn);
         verticallayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
+        verticallayout.setPadding(false);
+        verticallayout.setSpacing(false);
+
         btmLayout.add(userBtn, logoutBtn);
         btmLayout.getStyle().setFlexGrow("1");
         btmLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END);
         sideNav.add(verticallayout, btmLayout);
-
     }
 
     /**
