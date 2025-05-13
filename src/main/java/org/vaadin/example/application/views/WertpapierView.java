@@ -48,10 +48,13 @@ public class WertpapierView extends VerticalLayout {
             // Initialisiere die Kursdaten für den Chart
             List<Kurs> kurse = alphaVantageService.getDailySeries(symbol);
 
-            if (kurse.isEmpty()) {
-                Notification.show("Keine Kursdaten verfügbar", 3000, Notification.Position.MIDDLE);
-                return;
-            }
+
+        if (!wertpapier.getKurse().isEmpty()) {
+            layout.add(new Span("Aktueller Preis: " + wertpapier.getKurse().get(0).getSchlusskurs() + " €"));
+        } else {
+            layout.add(new Span("Kein Kurs verfügbar"));
+        }
+
 
             VerticalLayout layout = new VerticalLayout();
             layout.setSizeFull();
