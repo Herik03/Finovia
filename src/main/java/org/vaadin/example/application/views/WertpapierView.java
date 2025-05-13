@@ -4,17 +4,14 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.charts.model.*;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.charts.Chart;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.application.classes.Kurs;
 import org.vaadin.example.application.services.AlphaVantageService;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -28,7 +25,7 @@ public class WertpapierView extends VerticalLayout {
 
     private final AlphaVantageService alphaVantageService;
 
-    @Autowired
+//    @Autowired
     public WertpapierView(AlphaVantageService alphaVantageService) {
         this.alphaVantageService = alphaVantageService;
     }
@@ -49,11 +46,11 @@ public class WertpapierView extends VerticalLayout {
             List<Kurs> kurse = alphaVantageService.getDailySeries(symbol);
 
 
-        if (!wertpapier.getKurse().isEmpty()) {
-            layout.add(new Span("Aktueller Preis: " + wertpapier.getKurse().get(0).getSchlusskurs() + " €"));
-        } else {
-            layout.add(new Span("Kein Kurs verfügbar"));
-        }
+//        if (!wertpapier.getKurse().isEmpty()) {
+//            layout.add(new Span("Aktueller Preis: " + wertpapier.getKurse().get(0).getSchlusskurs() + " €"));
+//        } else {
+//            layout.add(new Span("Kein Kurs verfügbar"));
+//        }
 
 
             VerticalLayout layout = new VerticalLayout();

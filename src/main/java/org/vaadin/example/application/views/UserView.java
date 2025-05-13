@@ -31,7 +31,7 @@ import java.util.List;
 @Route("user")
 @PageTitle("Benutzer - Finovia")
 @PermitAll
-public class UserView extends VerticalLayout {
+public class UserView extends AbstractSideNav {
 
     private final NutzerService nutzerService;
     private Nutzer aktuellerNutzer;
@@ -41,11 +41,8 @@ public class UserView extends VerticalLayout {
     
     @Autowired
     public UserView(NutzerService nutzerService) {
+        super(); // Ruft den Konstruktor der Basisklasse auf
         this.nutzerService = nutzerService;
-        
-        setSizeFull();
-        setPadding(true);
-        setSpacing(true);
         
         // Hauptüberschrift
         H1 title = new H1("Mein Profil");
@@ -60,8 +57,16 @@ public class UserView extends VerticalLayout {
         // Benachrichtigungssection erstellen
         erstelleBenachrichtigungenSection();
         
-        // Seiten-Layout zusammenstellen
-        add(title, profilContainer, benachrichtigungenContainer);
+        // Container für den Hauptinhalt erstellen
+        VerticalLayout userContentLayout = new VerticalLayout();
+        userContentLayout.setPadding(true);
+        userContentLayout.setSpacing(true);
+        
+        // Inhalte zum Container hinzufügen
+        userContentLayout.add(title, profilContainer, benachrichtigungenContainer);
+        
+        // Container zum Hauptinhaltsbereich hinzufügen
+        addToMainContent(userContentLayout);
     }
     
     private void ladeAktuellenNutzer() {
@@ -243,6 +248,7 @@ public class UserView extends VerticalLayout {
     }
     
     private void erstelleBenachrichtigungenSection() {
+        // Bestehende Methode, keine Änderungen erforderlich
         benachrichtigungenContainer.removeAll();
         benachrichtigungenContainer.setPadding(false);
         benachrichtigungenContainer.setSpacing(true);

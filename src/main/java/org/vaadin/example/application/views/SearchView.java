@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 @PageTitle("Wertpapier-API")
 @CssImport("./styles/stock-view.css")
 @AnonymousAllowed
-public class SearchView extends VerticalLayout {
+public class SearchView extends AbstractSideNav {
     private final AlphaVantageService alphaVantageService;
 
     private final TextField searchField = new TextField("Wertpapier suchen");
@@ -37,22 +37,30 @@ public class SearchView extends VerticalLayout {
     private final Grid<SearchResult> resultGrid = new Grid<>(SearchResult.class, false);
 
     public SearchView(AlphaVantageService alphaVantageService) {
+        super(); // Ruft den Konstruktor der Basisklasse AbstractSideNav auf
         this.alphaVantageService = alphaVantageService;
 
-        configureUI();
+        // Wir erstellen ein VerticalLayout für den Inhalt
+        VerticalLayout searchContent = new VerticalLayout();
+        searchContent.setHeightFull();
+        searchContent.setMaxWidth("1200px");
+        searchContent.setMargin(true);
+        searchContent.addClassName("stock-view");
+        
+        // UI konfigurieren
+        configureUI(searchContent);
         configureGrid();
         setupListeners();
 
         // Startansicht konfigurieren
         progressBar.setVisible(false);
-        resultGrid.setVisible(true); // Grid von Anfang an sichtbar machen
-        setHeightFull();
-        setMaxWidth("1200px");
-        setMargin(true);
-        addClassName("stock-view");
+        resultGrid.setVisible(true);
+        
+        // Füge das Content-Layout zum Hauptinhaltsbereich hinzu
+        addToMainContent(searchContent);
     }
 
-    private void configureUI() {
+    private void configureUI(VerticalLayout container) {
         H3 title = new H3("Wertpapier-Suche");
         title.addClassName("view-title");
 
@@ -69,7 +77,7 @@ public class SearchView extends VerticalLayout {
         HorizontalLayout searchLayout = new HorizontalLayout(searchField, searchButton);
         searchLayout.setAlignItems(Alignment.BASELINE);
 
-        add(
+        container.add(
                 title,
                 searchLayout,
                 progressBar,
@@ -159,7 +167,7 @@ public class SearchView extends VerticalLayout {
         wertpapierView.displayWertpapierDetails(result.getSymbol());
     }
 
-
+        
    /* private void showDetails(SearchResult result) {
         // Hier könntest du einen Dialog öffnen oder zu einer Detail-Ansicht navigieren
         Notification notification = Notification.show(
@@ -171,11 +179,11 @@ public class SearchView extends VerticalLayout {
                 Notification.Position.MIDDLE
         );
         notification.open();
-
+        
         // Future: Navigation zu einer DetailView
         // getUI().ifPresent(ui -> ui.navigate(WertpapierView.class, result.getSymbol()));
     }
-
+        
     */
 
     private void showNotification(String message, NotificationVariant variant) {

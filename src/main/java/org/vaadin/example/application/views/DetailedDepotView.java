@@ -27,13 +27,14 @@ import org.vaadin.example.application.services.DepotService;
 @Route(value = "depot-details")
 @PageTitle("Depot Details")
 @PermitAll
-public class DetailedDepotView extends VerticalLayout implements HasUrlParameter<String> {
+public class DetailedDepotView extends AbstractSideNav implements HasUrlParameter<String> {
 
     private final DepotService depotService;
     private Depot currentDepot;
     private final H2 title = new H2("Depot Details");
     private final VerticalLayout depotInfoLayout = new VerticalLayout();
     private final Grid<Wertpapier> wertpapierGrid = new Grid<>(Wertpapier.class);
+    private final VerticalLayout contentLayout = new VerticalLayout();
 
     /**
      * Konstruktor für die `DetailedDepotView`-Klasse.
@@ -43,12 +44,13 @@ public class DetailedDepotView extends VerticalLayout implements HasUrlParameter
      */
     @Autowired
     public DetailedDepotView(DepotService depotService) {
+        super();
         this.depotService = depotService;
 
         // Layout-Einstellungen
-        setWidthFull();
-        setSpacing(true);
-        setPadding(true);
+        contentLayout.setWidthFull();
+        contentLayout.setSpacing(true);
+        contentLayout.setPadding(true);
 
         // Zurück-Button
         Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
@@ -60,7 +62,10 @@ public class DetailedDepotView extends VerticalLayout implements HasUrlParameter
         configureWertpapierGrid();
 
         // Komponenten zum Layout hinzufügen
-        add(routerLink, title, depotInfoLayout, new H3("Enthaltene Wertpapiere"), wertpapierGrid);
+        contentLayout.add(routerLink, title, depotInfoLayout, new H3("Enthaltene Wertpapiere"), wertpapierGrid);
+        
+        // Content-Layout zum Hauptinhalt hinzufügen
+        addToMainContent(contentLayout);
     }
 
     /**
@@ -91,7 +96,8 @@ public class DetailedDepotView extends VerticalLayout implements HasUrlParameter
 
         if (currentDepot == null) {
             // Fehlerbehandlung, wenn das Depot nicht gefunden wurde
-            add(new Span("Depot nicht gefunden"));
+            contentLayout.removeAll();
+            contentLayout.add(new Span("Depot nicht gefunden"));
             return;
         }
 
