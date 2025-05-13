@@ -59,11 +59,10 @@ public class WertpapierView extends VerticalLayout {
         layout.add(new H2("Name: " + wertpapier.getName()));
         layout.add(new Span("ISIN: " + wertpapier.getIsin()));
 
-        if (!wertpapier.getKurse().isEmpty()) {
-            layout.add(new Span("Aktueller Preis: " + wertpapier.getKurse().get(0).getSchlusskurs() + " €"));
-        } else {
-            layout.add(new Span("Kein Kurs verfügbar"));
-        }
+            if (kurse.isEmpty()) {
+                Notification.show("Keine Daten gefunden.", 3000, Notification.Position.MIDDLE);
+                return;
+            }
 
         if (wertpapier instanceof org.vaadin.example.application.classes.Aktie aktie) {
             layout.add(new Span("Unternehmensname: " + aktie.getUnternehmensname()));

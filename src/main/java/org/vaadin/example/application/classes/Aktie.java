@@ -1,5 +1,6 @@
 package org.vaadin.example.application.classes;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,48 +13,55 @@ import lombok.Setter;
  *
  * Diese Klasse erbt von {@link Wertpapier} und erweitert sie um aktienspezifische Eigenschaften.
  *
- * @author Jan
+ * @author Sören
  */
 
 @Getter
 @Setter
 public class Aktie extends Wertpapier {
-    int anzahl;
     private String unternehmensname;
-    private List<Dividende> dividenden;
-/**
- * Konstruktor zum Erzeugen einer Aktie mit vollständigen Informationen.
- *
- */
- public Aktie(int anzahl, String unternehmensname, List<Dividende> dividenden, String isin, String name, int wertpapierId, List<Transaktion> transaktionen, List<Kurs> kurse) {
-        super( isin, name, wertpapierId, transaktionen, kurse);
+    private String description;
+    private String exchange;
+    private String currency;
+    private String country;
+    private String sector;
+    private String industry;
+    private long marketCap;
+    private long ebitda;
+    private double pegRatio;
+    private double bookValue;
+    private double dividendPerShare;
+    private double dividendYield;
+    private double eps;
+    private double forwardPE;
+    private double beta;
+    private double yearHigh;
+    private double yearLow;
+    private LocalDate dividendDate;
+
+    public Aktie(String unternehmensname, String description, String exchange, String currency, String country,
+                 String sector, String industry, long marketCap, long ebitda, double pegRatio, double bookValue,
+                 double dividendPerShare, double dividendYield, double eps, double forwardPE, double beta,
+                 double yearHigh, double yearLow, LocalDate dividendDate) {
+
         this.unternehmensname = unternehmensname;
-        this.dividenden = dividenden;
-        this.anzahl = anzahl;
-    }
-
-    public int getAnzahl() {
-        return anzahl;
-    }
-
-    public void setAnzahl(int anzahl) {
-        this.anzahl = anzahl;
-    }
-
-    public String getUnternehmensname() {
-        return unternehmensname;
-    }
-
-    public void setUnternehmensname(String unternehmensname) {
-        this.unternehmensname = unternehmensname;
-    }
-
-    public List<Dividende> getDividenden() {
-        return dividenden;
-    }
-
-    public void setDividenden(List<Dividende> dividenden) {
-        this.dividenden = dividenden;
-
+        this.description = description;
+        this.exchange = exchange;
+        this.currency = currency;
+        this.country = country;
+        this.sector = sector;
+        this.industry = industry;
+        this.marketCap = marketCap;
+        this.ebitda = ebitda;
+        this.pegRatio = pegRatio;
+        this.bookValue = bookValue;
+        this.dividendPerShare = dividendPerShare;
+        this.dividendYield = dividendYield;
+        this.eps = eps;
+        this.forwardPE = forwardPE;
+        this.beta = beta;
+        this.yearHigh = yearHigh;
+        this.yearLow = yearLow;
+        this.dividendDate = dividendDate;
     }
 }

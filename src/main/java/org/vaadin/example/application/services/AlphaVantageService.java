@@ -1,6 +1,7 @@
 package org.vaadin.example.application.services;
 
 import com.crazzyghost.alphavantage.AlphaVantage;
+import com.crazzyghost.alphavantage.parameters.Interval;
 import com.crazzyghost.alphavantage.parameters.OutputSize;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,7 +70,39 @@ public class AlphaVantageService {
         return new StockQuote(response.getSymbol(), response.getPrice(), response.getChangePercent());
     }
 
-    //TODO: Intraday -> Liefert Handelsdaten des aktuellen Tages im 5 Minuten Intervall
+    /**
+     * Ruft die Intraday-Kursdaten im 5-Minuten-Intervall für ein bestimmtes Wertpapiersymbol von der AlphaVantage API ab.
+     * Diese Methode eignet sich besonders für die Analyse, von kurzfristigen Kursbewegungen innerhalb eines Handelstages.
+     *
+     * @param symbol Das Börsensymbol des Wertpapiers (z.B. "AAPL" für Apple Inc.)
+     * @return Eine Liste von Kurs-Objekten mit den Intraday-Kursdaten, die Öffnungs-, Schluss-, Höchst- und Tiefstkurse enthält
+     * @throws APIException Wenn ein Fehler bei der API-Kommunikation auftritt oder keine Daten verfügbar sind
+     */
+    public List<Kurs> getIntradaySeries(String symbol) {
+        var response = AlphaVantage.api()
+                .timeSeries()
+                .intraday()
+                .forSymbol(symbol)
+                .interval(Interval.FIVE_MIN)
+                .fetchSync();
+
+        if (response.getErrorMessage() != null) {
+            logger.error("Fehler beim Abrufen der Intraday-Kursdaten: {}", response.getErrorMessage());
+            throw new APIException("Fehler beim Abrufen der Intraday-Kursdaten: " + response.getErrorMessage());
+        }
+
+        return response.getStockUnits()
+                .stream()
+                .map(data -> new Kurs(
+                        symbol,
+                        LocalDate.parse(data.getDate()),
+                        data.getOpen(),
+                        data.getClose(),
+                        data.getHigh(),
+                        data.getLow()
+                ))
+                .collect(Collectors.toList());
+    }
 
     /**
      * Ruft die täglichen Kursdaten der letzten 20 Jahre für ein bestimmtes Wertpapiersymbol von der AlphaVantage API ab.
@@ -170,7 +203,50 @@ public class AlphaVantageService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Ruft die fundamentalen Unternehmensdaten für ein bestimmtes Wertpapiersymbol von der AlphaVantage API ab.
+     * Die Daten beinhalten wichtige Kennzahlen wie Marktkapitalisierung, Dividendeninformationen, Branche und andere
+     * fundamentale Wirtschaftsdaten des Unternehmens.
+     *
+     * @param symbol Das Börsensymbol des Wertpapiers (z.B. "AAPL" für Apple Inc.)
+     * @return Ein {@link Aktie}-Objekt mit den fundamentalen Unternehmensdaten
+     * @throws APIException Wenn ein Fehler bei der API-Kommunikation auftritt oder keine Daten verfügbar sind
+     */
+    public Aktie getFundamentalData(String symbol)  {
+        var response = AlphaVantage.api()
+                .fundamentalData()
+                .companyOverview()
+                .forSymbol(symbol)
+                .fetchSync();
 
+        if (response.getErrorMessage() != null) {
+            logger.error("Fehler beim Abrufen der Unternehmensdaten: {}", response.getErrorMessage());
+            throw new APIException("Fehler beim Abrufen der Unternehmensdaten: " + response.getErrorMessage());
+        }
+
+        var overview = response.getOverview();
+
+        return new Aktie(overview.getName(),
+                overview.getDescription(),
+                overview.getExchange(),
+                overview.getCurrency(),
+                overview.getCountry(),
+                overview.getSector(),
+                overview.getIndustry(),
+                overview.getMarketCapitalization(),
+                overview.getEBITDA(),
+                overview.getPEGRatio(),
+                overview.getBookValue(),
+                overview.getDividendPerShare(),
+                overview.getDividendYield(),
+                overview.getEPS(),
+                overview.getForwardPE(),
+                overview.getBeta(),
+                overview.getFiftyTwoWeekHigh(),
+                overview.getFiftyTwoWeekLow(),
+                LocalDate.parse(overview.getDividendDate())
+        );
+    }
 
     /**
      * Durchsucht Aktien und Wertpapiere basierend auf dem übergebenen Keyword über die AlphaVantage API.
@@ -274,71 +350,6 @@ public class AlphaVantageService {
 
         public APIException(String message, Throwable cause) {
             super(message, cause);
-        }
-    }
-
-
-    /**
-     * Ruft Beispiel-Daten für ein Wertpapier basierend auf dem angegebenen Symbol ab.
-     *
-     * Diese Methode simuliert das Abrufen von Wertpapierdaten anhand eines Symbols.
-     * Es werden derzeit statische Beispielwerte für Aktien, Anleihen und ETFs zurückgegeben.
-     * Später kann diese Methode durch eine API-Anbindung ersetzt werden, um dynamische Daten zu laden.
-     *
-     * @param symbol Das Symbol des Wertpapiers. Gültige Werte sind "aktie", "anleihe" und "etf".
-     * @return Ein {@link Wertpapier}-Objekt, das die entsprechenden Wertpapierdaten enthält.
-     *         Gibt {@code null} zurück, wenn ein ungültiges Symbol übergeben wird.
-     *
-     * @author Jan Schwarzer
-     * @see Aktie
-     * @see Anleihe
-     * @see ETF
-     */
-    public Wertpapier fetchWertpapierData(String symbol) {
-        String isin = "US6700661040";
-        String name = "NVIDIA";
-        int wertpapierId = 1;
-
-        List<Transaktion> transaktionen = new ArrayList<>();
-        List<Kurs> kurse = new ArrayList<>();
-
-        Transaktion beispielTransaktion = new Kauf("NYSE", LocalDate.now(), 2.0, 250.0, 10, null, null);
-        transaktionen.add(beispielTransaktion);
-
-        switch (symbol.toLowerCase()) {
-            case "aktie":
-                int anzahl = 10;
-                String unternehmensname = "NVIDIA Corporation";
-                List<Dividende> dividenden = new ArrayList<>();
-
-                Dividende dividende = new Dividende(100, 2.5, 1, 1.5, LocalDate.of(2025, 1, 1), 0.2, beispielTransaktion);
-                dividenden.add(dividende);
-
-                return new Aktie(anzahl, unternehmensname, dividenden, isin, name, wertpapierId, transaktionen, kurse);
-
-            case "anleihe":
-                String emittent = "Deutsche Bank";
-                double kupon = 5.0;
-                LocalDate laufzeit = LocalDate.of(2026, 12, 31);
-                double nennwert = 1000.0;
-                List<Zinszahlung> zinszahlungen = new ArrayList<>();
-
-                Zinszahlung zinszahlung = new Zinszahlung(5.0, 2, 50.0, LocalDate.of(2025, 6, 1), 0.15, beispielTransaktion);
-                zinszahlungen.add(zinszahlung);
-
-                return new Anleihe(emittent, kupon, laufzeit, nennwert, zinszahlungen, isin, name, wertpapierId, transaktionen, kurse);
-
-            case "etf":
-                String ausschüttung = "Jährlich";
-                String etfEmittent = "iShares";
-                String fondsname = "iShares MSCI World";
-                String index = "MSCI World";
-
-                return new ETF(ausschüttung, etfEmittent, fondsname, index, isin, name, wertpapierId, transaktionen, kurse);
-
-            default:
-                System.out.println("Ungültiges Symbol: " + symbol);
-                return null;
         }
     }
 
