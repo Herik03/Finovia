@@ -23,7 +23,7 @@ import org.vaadin.example.application.classes.Supportanfrage;
 @Route("support")
 @PageTitle("Support - Finovia")
 @PermitAll
-public class SupportView extends VerticalLayout {
+public class SupportView extends AbstractSideNav {
 
     private final TextArea nachrichtField = new TextArea("Ihre Anfrage");
     private final TextField betreffField = new TextField("Betreff");
@@ -36,27 +36,25 @@ public class SupportView extends VerticalLayout {
      * Erstellt eine Benutzeroberfläche für die Erstellung von Supportanfragen.
      */
     public SupportView() {
-        configureView();
-        configureForm();
-        setupButtons();
-    }
-
-    /**
-     * Konfiguriert die grundlegenden Eigenschaften der View.
-     */
-    private void configureView() {
-        setSizeFull();
-        setAlignItems(Alignment.CENTER);
-        setJustifyContentMode(JustifyContentMode.START);
-        setPadding(true);
-        setSpacing(true);
-        addClassNames(LumoUtility.MaxWidth.SCREEN_LARGE, LumoUtility.Margin.Horizontal.AUTO);
+        super(); // Konstruktor der Basisklasse aufrufen
+        
+        VerticalLayout contentLayout = new VerticalLayout();
+        contentLayout.setSizeFull();
+        contentLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        contentLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        contentLayout.setPadding(true);
+        contentLayout.setSpacing(true);
+        contentLayout.addClassNames(LumoUtility.MaxWidth.SCREEN_LARGE, LumoUtility.Margin.Horizontal.AUTO);
+        
+        configureForm(contentLayout);
+        setupButtons(contentLayout);
+        addToMainContent(contentLayout);
     }
 
     /**
      * Konfiguriert das Formular für die Supportanfrage.
      */
-    private void configureForm() {
+    private void configureForm(VerticalLayout contentLayout) {
         // Header
         H1 title = new H1("Support-Anfrage erstellen");
         Paragraph description = new Paragraph("Beschreiben Sie Ihr Anliegen, und unser Support-Team wird sich so schnell wie möglich bei Ihnen melden.");
@@ -93,13 +91,13 @@ public class SupportView extends VerticalLayout {
         formLayout.setMaxWidth("800px");
         formLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
 
-        add(formLayout);
+        contentLayout.add(formLayout);
     }
 
     /**
      * Richtet die Buttons zum Senden und Abbrechen ein.
      */
-    private void setupButtons() {
+    private void setupButtons(VerticalLayout contentLayout) {
         // Buttons konfigurieren
         sendenButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         sendenButton.setMinWidth("150px");
@@ -119,7 +117,7 @@ public class SupportView extends VerticalLayout {
         sendenButton.addClickListener(event -> sendeAnfrage());
         abbrechenButton.addClickListener(event -> UI.getCurrent().navigate(""));
 
-        add(buttonLayout);
+        contentLayout.add(buttonLayout);
     }
 
     /**
