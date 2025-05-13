@@ -137,7 +137,14 @@ public class AlphaVantageService {
                 .collect(Collectors.toList());
     }
 
-    //TODO: Monthly -> Liefert monatliche Kursdaten
+
+    /**
+     * Retrieves the monthly time series data for a given stock symbol.
+     *
+     * @param symbol The stock symbol for which the monthly time series data is to be fetched.
+     * @return A list of Kurs objects containing the monthly stock data such as open, close, high, and low prices, along with the corresponding dates.
+     * @throws APIException If an error occurs while fetching the data from the AlphaVantage API.
+     */
     public List<Kurs> getMonthlySeries(String symbol) {
         var response = AlphaVantage.api()
                 .timeSeries()
@@ -163,9 +170,7 @@ public class AlphaVantageService {
                 .collect(Collectors.toList());
     }
 
-    //TODO: Dividends -> Liefert Dividendenhistorie eines Wertpapiers
 
-    //TODO: Stammdaten -> Liefert die Stammdaten eines Wertpapiers
 
     /**
      * Durchsucht Aktien und Wertpapiere basierend auf dem übergebenen Keyword über die AlphaVantage API.
