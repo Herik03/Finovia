@@ -152,10 +152,15 @@ public class SearchView extends VerticalLayout {
 
         // Explizit Layout-Updates anfordern
         resultGrid.recalculateColumnWidths();
-        resultGrid.getElement().executeJs("this.notifyResize()");
+        resultGrid.getDataProvider().refreshAll();
+    }
+    private void showDetails(SearchResult result) {
+        WertpapierView wertpapierView = new WertpapierView(alphaVantageService);
+        wertpapierView.displayWertpapierDetails(result.getSymbol());
     }
 
-    private void showDetails(SearchResult result) {
+
+   /* private void showDetails(SearchResult result) {
         // Hier könntest du einen Dialog öffnen oder zu einer Detail-Ansicht navigieren
         Notification notification = Notification.show(
                 "Symbol: " + result.getSymbol() +
@@ -170,6 +175,8 @@ public class SearchView extends VerticalLayout {
         // Future: Navigation zu einer DetailView
         // getUI().ifPresent(ui -> ui.navigate(WertpapierView.class, result.getSymbol()));
     }
+
+    */
 
     private void showNotification(String message, NotificationVariant variant) {
         Notification notification = new Notification(message, 3000, Notification.Position.TOP_CENTER);
