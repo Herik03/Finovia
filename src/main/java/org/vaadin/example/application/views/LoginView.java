@@ -58,7 +58,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
 
         HorizontalLayout horizontalLayout=new HorizontalLayout(button,forgotPasswordButton);
 
-        add(new H1("Login Finovia"),loginForm,horizontalLayout);
+        add(new H1("Finovia - Deine Sparplattform!"),loginForm,horizontalLayout);
 
 
 

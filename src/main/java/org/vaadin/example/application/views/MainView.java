@@ -2,26 +2,28 @@ package org.vaadin.example.application.views;
 
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.application.Security.SecurtyService;
+import org.vaadin.example.application.classes.Depot;
+import org.vaadin.example.application.services.DepotService;
+
+import java.util.List;
 
 /**
  * Die Hauptansicht der Finovia-Anwendung, die als Dashboard dient.
@@ -55,17 +57,22 @@ public class MainView extends VerticalLayout {
     /** Der Inhaltsbereich des Dashboards */
     private final VerticalLayout dashboardContent;
 
-    /** Das Formular zum Erstellen eines neuen Depots */
-    private final FormLayout depotForm;
+    /** Der Service für Depot-Operationen */
+    private final DepotService depotService;
 
     /**
      * Konstruktor für die MainView.
      * <p>
      * Initialisiert alle Layout-Komponenten und richtet die Benutzeroberfläche ein.
      * Die Ansicht besteht aus einer Seitenleiste, einem Hauptinhaltsbereich und
-     * einem Formular zum Erstellen eines neuen Depots.
+     * einer Übersicht der Depots.
+     * 
+     * @param depotService Der Service für Depot-Operationen
      */
-    public MainView() {
+    @Autowired
+    public MainView(DepotService depotService) {
+        this.depotService = depotService;
+
         setSizeFull();
         setPadding(false);
         setSpacing(false);
@@ -75,7 +82,6 @@ public class MainView extends VerticalLayout {
         mainContent = new VerticalLayout();
         contentWrapper = new HorizontalLayout();
         dashboardContent = new VerticalLayout();
-        depotForm = new FormLayout();
 
         // Seitenleiste konfigurieren
         setupSideNav();
@@ -83,8 +89,8 @@ public class MainView extends VerticalLayout {
         // Hauptinhalt konfigurieren
         setupMainContent();
 
-        // Depot-Formular konfigurieren
-        setupDepotForm();
+        // Depot-Übersicht konfigurieren
+        setupDepotOverview();
 
         // Layouts zusammenfügen
         contentWrapper.add(sideNav, mainContent);
@@ -117,22 +123,37 @@ public class MainView extends VerticalLayout {
         dashboardBtn.addClickListener(e -> UI.getCurrent().navigate("dashboard"));
         Button depotBtn = createNavButton("Depot", VaadinIcon.PIGGY_BANK);
         depotBtn.addClickListener(e -> UI.getCurrent().navigate("depot"));
+
+        // Einstellungen-Button mit Dropdown für Support
+        Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
+        settingsBtn.addClickListener(e -> {
+            UI.getCurrent().navigate(SettingsView.class);
+        });
+
+        Button APIBtn = createNavButton("API", VaadinIcon.CODE);
+        APIBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
+
         Button userBtn = createNavButton("Benutzer", VaadinIcon.USER);
         userBtn.addClickListener(e -> UI.getCurrent().navigate("user"));
 //        Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
 //        settingsBtn.addClickListener(e -> UI.getCurrent().navigate("settings"));
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
         logoutBtn.addClickListener(e -> new SecurtyService().logout());
-//        var APIBtn = createNavButton("API", VaadinIcon.CODE);
-//        APIBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
+
+        //Batuhan Güvercin
+        Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
+        aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
+
 
         verticallayout.add(logo, dashboardBtn, depotBtn, settingsBtn, APIBtn, aktieKaufenBtn);
         verticallayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
+        verticallayout.setPadding(false);
+        verticallayout.setSpacing(false);
+
         btmLayout.add(userBtn, logoutBtn);
         btmLayout.getStyle().setFlexGrow("1");
         btmLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END);
         sideNav.add(verticallayout, btmLayout);
-
     }
 
     /**
@@ -164,54 +185,76 @@ public class MainView extends VerticalLayout {
     }
 
     /**
-     * Konfiguriert das Formular zum Erstellen eines neuen Depots.
+     * Konfiguriert die Übersicht der Depots.
      * <p>
-     * Erstellt und konfiguriert ein Formular mit Eingabefeldern für Depot-Name,
-     * Depot-Typ und IBAN sowie einem Button zum Speichern. Das Formular wird
-     * dem Dashboard-Inhalt hinzugefügt.
-     * <p>
-     * Bei erfolgreicher Erstellung eines Depots wird eine Erfolgsmeldung angezeigt
-     * und die Eingabefelder werden geleert. Bei fehlenden Pflichtfeldern wird eine
-     * Fehlermeldung angezeigt.
+     * Zeigt eine Liste der Depots des Nutzers an und bietet einen Button zum Erstellen
+     * eines neuen Depots. Die Übersicht wird dem Dashboard-Inhalt hinzugefügt.
      */
-    private void setupDepotForm() {
-        depotForm.setMaxWidth("600px");
-        depotForm.setResponsiveSteps(
-                new FormLayout.ResponsiveStep("0", 1),
-                new FormLayout.ResponsiveStep("500px", 2)
-        );
+    private void setupDepotOverview() {
+        // Überschrift
+        H2 title = new H2("Meine Depots");
 
-        TextField depotName = new TextField("Depot-Name");
-        depotName.setRequiredIndicatorVisible(true);
-        depotName.setPrefixComponent(VaadinIcon.PIGGY_BANK.create());
+        // Layout für Überschrift
+        VerticalLayout depotHeader = new VerticalLayout(title);
+        depotHeader.setSpacing(true);
+        depotHeader.setPadding(false);
+        depotHeader.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        Select<String> depotTyp = new Select<>();
-        depotTyp.setLabel("Depot-Typ");
-        depotTyp.setItems("Aktiendepot", "ETF-Depot", "Gemischtes Depot");
-        depotTyp.setRequiredIndicatorVisible(true);
+        // Depots aus der Datenbank laden und anzeigen
+        List<Depot> depots = depotService.getAllDepots();
 
-        TextField iban = new TextField("IBAN");
-        iban.setRequiredIndicatorVisible(true);
+        // Layout für die Depot-Liste
+        VerticalLayout depotList = new VerticalLayout();
+        depotList.setSpacing(true);
+        depotList.setPadding(false);
+        depotList.setAlignItems(FlexComponent.Alignment.CENTER);
 
-
-        Button speichernButton = new Button("Depot erstellen", VaadinIcon.CHECK.create());
-        speichernButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        speichernButton.addClickListener(e -> {
-            if (!depotName.isEmpty() && !depotTyp.isEmpty() && !iban.isEmpty()) {
-                Notification.show("Depot erfolgreich erstellt!", 3000, Notification.Position.TOP_CENTER)
-                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                depotName.clear();
-                depotTyp.clear();
-                iban.clear();
-            } else {
-                Notification.show("Bitte alle Pflichtfelder ausfüllen!", 3000, Notification.Position.TOP_CENTER)
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        if (depots.isEmpty()) {
+            depotList.add(new Span("Keine Depots vorhanden. Erstellen Sie ein neues Depot."));
+        } else {
+            // Depots anzeigen
+            for (Depot depot : depots) {
+                Div depotBox = createDepotBox(depot);
+                depotList.add(depotBox);
             }
-        });
-        speichernButton.addClickShortcut(Key.ENTER);
+        }
 
-        depotForm.add(new H2("Neues Depot anlegen"), depotName, depotTyp, iban, speichernButton);
-        dashboardContent.add(depotForm);
+        // Alles zum Dashboard-Content hinzufügen
+        dashboardContent.add(depotHeader, depotList);
+    }
+
+    /**
+     * Erstellt eine Box für die Anzeige eines Depots.
+     * 
+     * @param depot Das anzuzeigende Depot
+     * @return Eine Div-Komponente, die das Depot darstellt
+     */
+    private Div createDepotBox(Depot depot) {
+        Div depotBox = new Div();
+        depotBox.addClassName("depot-box");
+
+        // Depot-Name als Überschrift
+        depotBox.add(new H3(depot.getName()));
+
+        // Depot-Informationen
+        depotBox.add(new Div(new Span("Besitzer: " + depot.getBesitzer().getVollerName())));
+        depotBox.add(new Div(new Span("Anzahl Wertpapiere: " + depot.getWertpapiere().size())));
+
+        // Styling
+        depotBox.getStyle().set("border", "1px solid #ccc");
+        depotBox.getStyle().set("padding", "10px");
+        depotBox.getStyle().set("border-radius", "5px");
+        depotBox.getStyle().set("cursor", "pointer");
+        depotBox.getStyle().set("margin-bottom", "10px");
+        depotBox.getStyle().set("background-color", "#f8f8f8");
+        depotBox.setWidth("400px");
+
+        // Klick-Handler für Navigation zur Detailansicht
+        depotBox.addClickListener(event -> {
+            getUI().ifPresent(ui -> ui.navigate(DetailedDepotView.class, depot.getDepotId()));
+        });
+
+        return depotBox;
     }
 
     /**
