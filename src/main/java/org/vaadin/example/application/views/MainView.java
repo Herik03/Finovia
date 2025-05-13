@@ -1,17 +1,10 @@
 package org.vaadin.example.application.views;
 
-import com.vaadin.flow.theme.lumo.LumoUtility;
-
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,7 +12,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.example.application.Security.SecurtyService;
 import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.services.DepotService;
 
@@ -43,22 +35,41 @@ import java.util.List;
 @Route(value = "")
 @PageTitle("Finovia - Dashboard")
 @PermitAll
-public class MainView extends VerticalLayout {
-
-    /** Die Navigationsleiste auf der linken Seite der Anwendung */
-    private final VerticalLayout sideNav;
-
-    /** Der Hauptinhaltsbereich der Anwendung */
-    private final VerticalLayout mainContent;
-
-    /** Das Layout, das die Navigationsleiste und den Hauptinhalt umschließt */
-    private final HorizontalLayout contentWrapper;
-
+public class MainView extends AbstractSideNav {
+    
     /** Der Inhaltsbereich des Dashboards */
     private final VerticalLayout dashboardContent;
-
+    
     /** Der Service für Depot-Operationen */
     private final DepotService depotService;
+    
+    @Autowired
+    public MainView(DepotService depotService) {
+        super(); // Ruft den Konstruktor der AbstractView auf, der setupSideNav und configureMainContent aufruft
+        this.depotService = depotService;
+        
+        // Dashboard-Content erstellen
+        dashboardContent = new VerticalLayout();
+        dashboardContent.setWidthFull();
+        dashboardContent.setAlignItems(FlexComponent.Alignment.CENTER);
+        
+        // Kopfzeile
+        HorizontalLayout header = new HorizontalLayout();
+        header.setWidthFull();
+        header.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        header.setAlignItems(FlexComponent.Alignment.CENTER);
+        H2 title = new H2("Dashboard");
+        header.add(title);
+        
+        // Content hinzufügen
+        dashboardContent.add(createWelcomeMessage());
+        
+        // Zum Hauptinhalt hinzufügen
+        addToMainContent(header, dashboardContent);
+        
+        // Depot-Übersicht konfigurieren
+        setupDepotOverview();
+    }
 
     /**
      * Konstruktor für die MainView.
@@ -69,7 +80,7 @@ public class MainView extends VerticalLayout {
      * 
      * @param depotService Der Service für Depot-Operationen
      */
-    @Autowired
+    /*@Autowired
     public MainView(DepotService depotService) {
         this.depotService = depotService;
 
@@ -98,63 +109,9 @@ public class MainView extends VerticalLayout {
         contentWrapper.setSpacing(false);
 
         add(contentWrapper);
-    }
-
-    /**
-     * Konfiguriert die Navigationsleiste auf der linken Seite der Anwendung.
-     * <p>
-     * Erstellt und konfiguriert die Seitenleiste mit dem Logo und Navigationsbuttons
-     * für verschiedene Bereiche der Anwendung (Dashboard, Depot, Benutzer, Einstellungen,
-     * Logout und API).
-     */
-    private void setupSideNav() {
-        sideNav.setWidth("250px");
-        sideNav.setHeightFull();
-        sideNav.setPadding(false);
-        sideNav.setSpacing(false);
-        sideNav.getStyle().set("background-color", "var(--lumo-contrast-5pct)");
-        VerticalLayout verticallayout = new VerticalLayout();
-        VerticalLayout btmLayout = new VerticalLayout();
-
-        H1 logo = new H1("Finovia");
-        logo.getStyle().set("font-size", "var(--lumo-font-size-l)").set("margin", "0").set("padding", "var(--lumo-space-m)");
-
-        Button dashboardBtn = createNavButton("Dashboard", VaadinIcon.DASHBOARD);
-        dashboardBtn.addClickListener(e -> UI.getCurrent().navigate("dashboard"));
-        Button depotBtn = createNavButton("Depot", VaadinIcon.PIGGY_BANK);
-        depotBtn.addClickListener(e -> UI.getCurrent().navigate("depot"));
-
-        // Einstellungen-Button mit Dropdown für Support
-        Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
-        settingsBtn.addClickListener(e -> {
-            UI.getCurrent().navigate(SettingsView.class);
-        });
-
-        Button APIBtn = createNavButton("API", VaadinIcon.CODE);
-        APIBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
-
-        Button userBtn = createNavButton("Benutzer", VaadinIcon.USER);
-        userBtn.addClickListener(e -> UI.getCurrent().navigate("user"));
-//        Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
-//        settingsBtn.addClickListener(e -> UI.getCurrent().navigate("settings"));
-        Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
-        logoutBtn.addClickListener(e -> new SecurtyService().logout());
-
-        //Batuhan Güvercin
-        Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
-        aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
+    }*/
 
 
-        verticallayout.add(logo, dashboardBtn, depotBtn, settingsBtn, APIBtn, aktieKaufenBtn);
-        verticallayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
-        verticallayout.setPadding(false);
-        verticallayout.setSpacing(false);
-
-        btmLayout.add(userBtn, logoutBtn);
-        btmLayout.getStyle().setFlexGrow("1");
-        btmLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END);
-        sideNav.add(verticallayout, btmLayout);
-    }
 
     /**
      * Konfiguriert den Hauptinhaltsbereich der Anwendung.
@@ -162,7 +119,7 @@ public class MainView extends VerticalLayout {
      * Erstellt und konfiguriert den Hauptinhaltsbereich mit einer Kopfzeile und
      * dem Dashboard-Inhalt, der eine Willkommensnachricht enthält.
      */
-    private void setupMainContent() {
+    /*private void setupMainContent() {
         mainContent.setSizeFull();
         mainContent.setPadding(true);
         mainContent.setSpacing(true);
@@ -182,7 +139,7 @@ public class MainView extends VerticalLayout {
         dashboardContent.add(createWelcomeMessage());
 
         mainContent.add(header, dashboardContent);
-    }
+    }*/
 
     /**
      * Konfiguriert die Übersicht der Depots.
@@ -257,25 +214,7 @@ public class MainView extends VerticalLayout {
         return depotBox;
     }
 
-    /**
-     * Erstellt einen Navigationsbutton für die Seitenleiste.
-     * <p>
-     * Der Button wird mit dem angegebenen Text und Icon erstellt und mit einem
-     * speziellen Stil für die Seitenleiste versehen.
-     *
-     * @param text Der anzuzeigende Text des Buttons
-     * @param icon Das zu verwendende Vaadin-Icon
-     * @return Ein konfigurierter Button für die Seitenleiste
-     */
-    private Button createNavButton(String text, VaadinIcon icon) {
-        Button button = new Button(text, icon.create());
-        button.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-        button.setWidthFull();
-        button.getStyle()
-                .set("padding", "var(--lumo-space-m)")
-                .set("text-align", "left");
-        return button;
-    }
+
 
     /**
      * Erstellt eine Willkommensnachricht für das Dashboard.

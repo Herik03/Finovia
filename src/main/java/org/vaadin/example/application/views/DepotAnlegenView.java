@@ -24,21 +24,26 @@ import java.util.UUID;
 @Route(value = "depotanlegen")
 @PageTitle("Depot Anlegen")
 @PermitAll
-public class DepotAnlegenView extends VerticalLayout {
+public class DepotAnlegenView extends AbstractSideNav {
 
     private final DepotService depotService;
 
     @Autowired
     public DepotAnlegenView(DepotService depotService) {
+        super();
         this.depotService = depotService;
 
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        setWidthFull();
+        VerticalLayout contentLayout = new VerticalLayout();
+        contentLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        contentLayout.setWidthFull();
 
-        setupDepotForm();
+        setupDepotForm(contentLayout);
+        
+        // Content-Layout zum Hauptinhalt hinzufügen
+        addToMainContent(contentLayout);
     }
 
-    private void setupDepotForm() {
+    private void setupDepotForm(VerticalLayout contentLayout) {
         VerticalLayout depotForm = new VerticalLayout();
         depotForm.setMaxWidth("600px");
         depotForm.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
@@ -89,7 +94,7 @@ public class DepotAnlegenView extends VerticalLayout {
         speichernButton.addClickShortcut(Key.ENTER);
 
         depotForm.add(new H2("Neues Depot anlegen"), depotName, depotTyp, iban, speichernButton);
-        add(depotForm);
+        contentLayout.add(depotForm);
     }
 }
 //TODO :Anbinden an die Datenbank

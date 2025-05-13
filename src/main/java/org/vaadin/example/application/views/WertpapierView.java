@@ -28,7 +28,7 @@ public class WertpapierView extends VerticalLayout {
 
     private final AlphaVantageService alphaVantageService;
 
-    @Autowired
+//    @Autowired
     public WertpapierView(AlphaVantageService alphaVantageService) {
         this.alphaVantageService = alphaVantageService;
     }
@@ -49,11 +49,11 @@ public class WertpapierView extends VerticalLayout {
             List<Kurs> kurse = alphaVantageService.getDailySeries(symbol);
 
 
-        if (!wertpapier.getKurse().isEmpty()) {
-            layout.add(new Span("Aktueller Preis: " + wertpapier.getKurse().get(0).getSchlusskurs() + " €"));
-        } else {
-            layout.add(new Span("Kein Kurs verfügbar"));
-        }
+//        if (!wertpapier.getKurse().isEmpty()) {
+//            layout.add(new Span("Aktueller Preis: " + wertpapier.getKurse().get(0).getSchlusskurs() + " €"));
+//        } else {
+//            layout.add(new Span("Kein Kurs verfügbar"));
+//        }
 
 
             VerticalLayout layout = new VerticalLayout();

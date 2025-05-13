@@ -2,16 +2,16 @@ package org.vaadin.example.application.views;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.component.html.Div;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.application.classes.Depot;
@@ -27,7 +27,7 @@ import java.util.List;
 @Route(value = "depot")
 @PageTitle("Depot")
 @PermitAll
-public class DepotView extends HorizontalLayout {
+public class DepotView extends AbstractSideNav {
 
     private final DepotService depotService;
 
@@ -39,8 +39,9 @@ public class DepotView extends HorizontalLayout {
      */
     @Autowired
     public DepotView(DepotService depotService) {
+        super(); // Ruft den Konstruktor der AbstractSideNav auf
         this.depotService = depotService;
-
+        
         // Überschrift
         H2 title = new H2("Meine Depots");
 
@@ -51,29 +52,35 @@ public class DepotView extends HorizontalLayout {
         RouterLink routerLink = new RouterLink("", DepotAnlegenView.class);
         routerLink.add(depotAnlegenButton);
 
-        // Linker Bereich (Überschrift und Button)
-        VerticalLayout leftLayout = new VerticalLayout(title, routerLink);
-        leftLayout.setSpacing(true);
-        leftLayout.setPadding(true);
+        // Depot-Header-Layout erstellen
+        VerticalLayout depotHeader = new VerticalLayout(title, routerLink);
+        depotHeader.setSpacing(true);
+        depotHeader.setPadding(false);
+        depotHeader.setWidthFull();
 
         // Depots aus der Datenbank laden und anzeigen
         List<Depot> depots = depotService.getAllDepots();
 
+        // Depot-Liste-Layout erstellen
+        VerticalLayout depotList = new VerticalLayout();
+        depotList.setSpacing(true);
+        depotList.setPadding(false);
+        depotList.setWidthFull();
+
         if (depots.isEmpty()) {
-            leftLayout.add(new Span("Keine Depots vorhanden. Erstellen Sie ein neues Depot."));
+            depotList.add(new Span("Keine Depots vorhanden. Erstellen Sie ein neues Depot."));
         } else {
             // Depots anzeigen
             for (Depot depot : depots) {
                 Div depotBox = createDepotBox(depot);
-                leftLayout.add(depotBox);
+                depotList.add(depotBox);
             }
         }
 
-        // Layout-Einstellungen
-        add(leftLayout);
-        setWidthFull();
-        setJustifyContentMode(JustifyContentMode.START);
-        setAlignItems(Alignment.START);
+        // Den Hauptinhaltsbereich konfigurieren
+        // Diese überschreibt die Methode configureMainContent aus AbstractSideNav
+        // Wir fügen stattdessen unsere eigenen Komponenten hinzu
+        addToMainContent(depotHeader, depotList);
     }
 
     /**
@@ -100,6 +107,7 @@ public class DepotView extends HorizontalLayout {
         depotBox.getStyle().set("cursor", "pointer");
         depotBox.getStyle().set("margin-bottom", "10px");
         depotBox.getStyle().set("background-color", "#f8f8f8");
+        depotBox.setWidth("400px");
 
         // Klick-Handler für Navigation zur Detailansicht
         depotBox.addClickListener(event -> {
@@ -109,5 +117,3 @@ public class DepotView extends HorizontalLayout {
         return depotBox;
     }
 }
-//TODO :Anbinden an die Datenbank
-//TODO : Layout-Optimierung
