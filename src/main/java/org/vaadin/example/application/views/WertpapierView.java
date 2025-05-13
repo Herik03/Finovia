@@ -60,7 +60,7 @@ public class WertpapierView extends VerticalLayout {
         layout.add(new Span("ISIN: " + wertpapier.getIsin()));
 
         if (!wertpapier.getKurse().isEmpty()) {
-            layout.add(new Span("Aktueller Preis: " + wertpapier.getKurse().get(0).getKurswert() + " €"));
+            layout.add(new Span("Aktueller Preis: " + wertpapier.getKurse().get(0).getHigh() + " €"));
         } else {
             layout.add(new Span("Kein Kurs verfügbar"));
         }

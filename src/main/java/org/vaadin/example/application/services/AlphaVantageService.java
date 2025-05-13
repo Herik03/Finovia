@@ -138,6 +138,30 @@ public class AlphaVantageService {
     }
 
     //TODO: Monthly -> Liefert monatliche Kursdaten
+    public List<Kurs> getMonthlySeries(String symbol) {
+        var response = AlphaVantage.api()
+                .timeSeries()
+                .monthly()
+                .forSymbol(symbol)
+                .fetchSync();
+
+        if (response.getErrorMessage() != null) {
+            logger.error("Fehler beim Abrufen der monatlichen Kursdaten: {}", response.getErrorMessage());
+            throw new APIException("Fehler beim Abrufen der wöchentlichen Kursdaten: " + response.getErrorMessage());
+        }
+
+        return response.getStockUnits()
+                .stream()
+                .map(data -> new Kurs(
+                        symbol,
+                        LocalDate.parse(data.getDate()),
+                        data.getOpen(),
+                        data.getClose(),
+                        data.getHigh(),
+                        data.getLow()
+                ))
+                .collect(Collectors.toList());
+    }
 
     //TODO: Dividends -> Liefert Dividendenhistorie eines Wertpapiers
 
