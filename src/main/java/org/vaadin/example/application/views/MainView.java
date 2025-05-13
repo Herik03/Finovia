@@ -135,17 +135,17 @@ public class MainView extends VerticalLayout {
 
         Button userBtn = createNavButton("Benutzer", VaadinIcon.USER);
         userBtn.addClickListener(e -> UI.getCurrent().navigate("user"));
-        Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
-        settingsBtn.addClickListener(e -> UI.getCurrent().navigate("settings"));
+//        Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
+//        settingsBtn.addClickListener(e -> UI.getCurrent().navigate("settings"));
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
         logoutBtn.addClickListener(e -> new SecurtyService().logout());
-        var APIBtn = createNavButton("API", VaadinIcon.CODE);
-        APIBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
+
         //Batuhan Güvercin
         Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
         aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
 
-        verticallayout.add(logo, dashboardBtn, depotBtn, settingsBtn, APIBtn);
+
+        verticallayout.add(logo, dashboardBtn, depotBtn, settingsBtn, APIBtn, aktieKaufenBtn);
         verticallayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         verticallayout.setPadding(false);
         verticallayout.setSpacing(false);
