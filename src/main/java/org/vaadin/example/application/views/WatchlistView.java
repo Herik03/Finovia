@@ -30,19 +30,56 @@ import org.vaadin.example.application.services.WatchlistService;
 
 import java.util.List;
 
+/**
+ * Die WatchlistView stellt die Benutzeroberfläche für die Watchlist-Funktionalität der Anwendung dar.
+ * Hier können Benutzer ihre beobachteten Wertpapiere einsehen, deren aktuelle Kurse und Trends verfolgen
+ * und Aktionen wie das Entfernen von Wertpapieren aus der Watchlist durchführen.
+ * Die Ansicht ist nur für authentifizierte Benutzer zugänglich.
+ */
 @Route("watchlist")
 @PageTitle("Watchlist - Finovia")
 @PermitAll
 public class WatchlistView extends AbstractSideNav {
 
+    /**
+     * Service zur Verwaltung von Watchlists und deren Wertpapieren.
+     */
     private final WatchlistService watchlistService;
+
+    /**
+     * Service zur Verwaltung von Nutzerdaten.
+     */
     private final NutzerService nutzerService;
+
+    /**
+     * Service für den Zugriff auf die AlphaVantage API zur Abfrage von Finanzdaten.
+     */
     private final AlphaVantageService alphaVantageService;
+
+    /**
+     * Der aktuell angemeldete Nutzer.
+     */
     private Nutzer aktuellerNutzer;
 
+    /**
+     * Container für die Watchlist-Komponenten.
+     */
     private final VerticalLayout watchlistContainer = new VerticalLayout();
+
+    /**
+     * Grid zur Anzeige der Wertpapiere in der Watchlist.
+     */
     private Grid<Wertpapier> watchlistGrid;
 
+    /**
+     * Konstruktor für die WatchlistView.
+     * Initialisiert die View und setzt die benötigten Services.
+     * Lädt den aktuellen Nutzer und erstellt die Watchlist-Ansicht.
+     *
+     * @param watchlistService Service zur Verwaltung von Watchlists
+     * @param nutzerService Service zur Verwaltung von Nutzerdaten
+     * @param alphaVantageService Service für den Zugriff auf Finanzdaten
+     */
     public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService) {
         super(); // Ruft den Konstruktor der Basisklasse auf
         this.watchlistService = watchlistService;
@@ -71,6 +108,11 @@ public class WatchlistView extends AbstractSideNav {
         addToMainContent(watchlistContentLayout);
     }
 
+    /**
+     * Lädt den aktuell angemeldeten Nutzer aus dem Security Context.
+     * Falls der Nutzer nicht gefunden wird, wird ein Fallback auf einen Standardnutzer versucht.
+     * Bei Fehlern wird eine Benachrichtigung angezeigt.
+     */
     private void ladeAktuellenNutzer() {
         try {
             // Aktuelle Nutzer-ID aus dem Security Context holen
@@ -103,6 +145,12 @@ public class WatchlistView extends AbstractSideNav {
         }
     }
 
+    /**
+     * Erstellt den Watchlist-Bereich der Benutzeroberfläche.
+     * Diese Methode konfiguriert das Grid zur Anzeige der Wertpapiere in der Watchlist
+     * mit Spalten für Name, aktuellen Preis, Trend und Aktionen.
+     * Falls die Watchlist leer ist, wird eine entsprechende Meldung angezeigt.
+     */
     private void erstelleWatchlistSection() {
         watchlistContainer.removeAll();
         watchlistContainer.setPadding(false);
@@ -222,6 +270,11 @@ public class WatchlistView extends AbstractSideNav {
         }
     }
 
+    /**
+     * Aktualisiert das Watchlist-Grid mit den aktuellen Daten.
+     * Lädt die Wertpapiere des aktuellen Nutzers aus der Datenbank
+     * und aktualisiert die Anzeige im Grid.
+     */
     private void refreshWatchlistGrid() {
         List<Wertpapier> wertpapiere = watchlistService.getWertpapiereInWatchlist(aktuellerNutzer.getId());
         watchlistGrid.setItems(wertpapiere);
