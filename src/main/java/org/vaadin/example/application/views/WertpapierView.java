@@ -1,99 +1,116 @@
 package org.vaadin.example.application.views;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.charts.Chart;
 import com.vaadin.flow.component.charts.model.*;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.charts.Chart;
+import com.vaadin.flow.component.select.Select;
+import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Kurs;
+import org.vaadin.example.application.models.SearchResult;
 import org.vaadin.example.application.services.AlphaVantageService;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 
+
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-/**
- * Erweiterte View zur Darstellung von Wertpapierdetails mit Chart.
- * Diese Klasse wird von der SearchView aufgerufen und öffnet ein Dialogfenster mit Wertpapierdetails.
- *
- * @author Jan Schwarzer
- */
 
 public class WertpapierView extends VerticalLayout {
 
     private final AlphaVantageService alphaVantageService;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-//    @Autowired
     public WertpapierView(AlphaVantageService alphaVantageService) {
         this.alphaVantageService = alphaVantageService;
     }
 
-    /**
-     * Zeigt die Wertpapierdetails in einem Dialog an, basierend auf dem Symbol.
-     *
-     * @param symbol Das Symbol des Wertpapiers
-     */
     public void displayWertpapierDetails(String symbol) {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Details für: " + symbol);
-        dialog.setWidthFull(); // Dialog nimmt die volle Breite des Bildschirms ein
-        dialog.setHeightFull(); // Dialog nimmt die volle Höhe des Bildschirms ein
+        dialog.setWidth("80vw");
+        dialog.setHeight("80vh");
+        dialog.setModal(true);
+        dialog.setDraggable(true);
+        dialog.setResizable(true);
 
         try {
-            // Initialisiere die Kursdaten für den Chart
             List<Kurs> kurse = alphaVantageService.getDailySeries(symbol);
+            SearchResult result = alphaVantageService.search(symbol).stream()
+                    .filter(r -> r.getSymbol().equalsIgnoreCase(symbol))
+                    .findFirst()
+                    .orElse(null);
+            String anzeigeName = result != null ? result.getName() : symbol;
 
             if (kurse.isEmpty()) {
                 Notification.show("Keine Daten gefunden.", 3000, Notification.Position.MIDDLE);
                 return;
             }
 
-
-//        if (!wertpapier.getKurse().isEmpty()) {
-//            layout.add(new Span("Aktueller Preis: " + wertpapier.getKurse().get(0).getSchlusskurs() + " €"));
-//        } else {
-//            layout.add(new Span("Kein Kurs verfügbar"));
-//        }
-
-
             VerticalLayout layout = new VerticalLayout();
             layout.setSizeFull();
             layout.setPadding(false);
             layout.setSpacing(false);
             layout.setMargin(false);
-            layout.add(new H2("Wertpapier: " + symbol));
-
-            // Chart-Initialisierung
-            Chart chart = new Chart(ChartType.LINE);
-            Configuration configuration = chart.getConfiguration();
-            configuration.setTitle("Kursverlauf für " + symbol);
-
-            DataSeries series = new DataSeries();
-            for (Kurs kurs : kurse) {
-                series.add(new DataSeriesItem(kurs.getDatum().toString(), kurs.getSchlusskurs()));
-            }
-            configuration.addSeries(series);
-
-            // X- und Y-Achse konfigurieren
-            XAxis xAxis = new XAxis();
-            xAxis.setTitle("Datum");
-            configuration.addxAxis(xAxis);
-
-            YAxis yAxis = new YAxis();
-            yAxis.setTitle("Schlusskurs (€)");
-            configuration.addyAxis(yAxis);
+            layout.add(new H2("Wertpapier: " + anzeigeName));
 
             Select<String> timeFrameSelect = new Select<>();
-            timeFrameSelect.setItems("1 Woche", "1 Monat", "3 Monate", "1 Jahr", "Max");
-            timeFrameSelect.setPlaceholder("Zeitraum auswählen");
-            timeFrameSelect.setValue("1 Jahr");
-            timeFrameSelect.addValueChangeListener(event -> updateChart(chart, symbol, event.getValue()));
+            timeFrameSelect.setLabel("Zeitraum");
+            timeFrameSelect.setItems("Intraday", "1 Woche", "1 Monat");
+            timeFrameSelect.setValue("1 Monat");
+            layout.add(timeFrameSelect);
 
-            Button closeButton = new Button("Schließen", event -> dialog.close());
+            Chart chart = buildChart(kurse, anzeigeName);
+            layout.add(chart);
 
-            layout.add(timeFrameSelect, chart, new HorizontalLayout(closeButton));
+            Aktie aktie = alphaVantageService.getFundamentalData(symbol);
+            if (aktie != null) {
+                VerticalLayout infoLayout = new VerticalLayout();
+                infoLayout.setPadding(false);
+                infoLayout.setSpacing(false);
+                infoLayout.setWidthFull();
+
+                infoLayout.add(createInfoRow("Unternehmensname", aktie.getUnternehmensname()));
+                infoLayout.add(createInfoRow("Industrie", aktie.getIndustry()));
+                infoLayout.add(createInfoRow("Sektor", aktie.getSector()));
+                infoLayout.add(createInfoRow("Marktkapitalisierung", aktie.getMarketCap()));
+                infoLayout.add(createInfoRow("EBITDA", aktie.getEbitda()));
+                infoLayout.add(createInfoRow("PEG Ratio", aktie.getPegRatio()));
+                infoLayout.add(createInfoRow("Buchwert", aktie.getBookValue()));
+                infoLayout.add(createInfoRow("EPS", aktie.getEps()));
+                infoLayout.add(createInfoRow("Beta", aktie.getBeta()));
+                infoLayout.add(createInfoRow("52W Hoch", aktie.getYearHigh()));
+                infoLayout.add(createInfoRow("52W Tief", aktie.getYearLow()));
+                infoLayout.add(createInfoRow("Dividende/Aktie", aktie.getDividendPerShare()));
+                infoLayout.add(createInfoRow("Dividendenrendite", aktie.getDividendYield()));
+                infoLayout.add(createInfoRow("Dividenden-Datum", aktie.getDividendDate()));
+
+                Scroller scroller = new Scroller(infoLayout);
+                scroller.setHeight("250px");
+                scroller.setScrollDirection(Scroller.ScrollDirection.VERTICAL);
+
+                layout.add(scroller);
+            }
+
+            timeFrameSelect.addValueChangeListener(event -> {
+                layout.remove(chart);
+                updateChart(layout, symbol, event.getValue());
+            });
+
+            Button closeButton = new Button("✕", event -> dialog.close());
+            closeButton.getStyle()
+                    .set("position", "absolute")
+                    .set("top", "10px")
+                    .set("right", "10px")
+                    .set("background", "red")
+                    .set("color", "white")
+                    .set("border", "none")
+                    .set("z-index", "1000");
+            dialog.add(closeButton);
             dialog.add(layout);
             dialog.open();
 
@@ -102,52 +119,73 @@ public class WertpapierView extends VerticalLayout {
         }
     }
 
-    /**
-     * Aktualisiert den Chart basierend auf dem ausgewählten Zeitraum.
-     *
-     * @param chart    Das Chart-Objekt
-     * @param symbol   Das Symbol des Wertpapiers
-     * @param timeFrame Der ausgewählte Zeitraum
-     */
-
-    private void updateChart(Chart chart, String symbol, String timeFrame) {
+    private void updateChart(VerticalLayout layout, String symbol, String timeFrame) {
         List<Kurs> kurse;
         try {
             switch (timeFrame) {
+                case "Intraday":
+                    kurse = alphaVantageService.getIntradaySeries(symbol);
+                    break;
                 case "1 Woche":
-                    kurse = alphaVantageService.getDailySeries(symbol).subList(0, 7);
+                    kurse = alphaVantageService.getWeeklySeries(symbol);
                     break;
                 case "1 Monat":
-                    kurse = alphaVantageService.getDailySeries(symbol).subList(0, 30);
-                    break;
-                case "3 Monate":
-                    kurse = alphaVantageService.getDailySeries(symbol).subList(0, 90);
-                    break;
-                case "1 Jahr":
-                    kurse = alphaVantageService.getDailySeries(symbol).subList(0, 365);
-                    break;
                 default:
-                    kurse = alphaVantageService.getDailySeries(symbol);
+                    kurse = alphaVantageService.getMonthlySeries(symbol);
             }
 
-            DataSeries series = new DataSeries();
-            int dayCount = 1;
-            for (Kurs kurs : kurse) {
-                series.add(new DataSeriesItem(String.valueOf(dayCount++), kurs.getSchlusskurs()));
-            }
+            Chart newChart = buildChart(kurse, symbol);
 
-            PlotOptionsLine plotOptions = new PlotOptionsLine();
-            plotOptions.setMarker(new Marker(false)); // Keine Punkte anzeigen
-            series.setPlotOptions(plotOptions);
+            layout.getChildren()
+                    .filter(component -> component instanceof Chart)
+                    .forEach(layout::remove);
 
-            chart.getConfiguration().getxAxis().setTitle("Datum (in Tagen)");
-            chart.getConfiguration().getyAxis().setTitle("Schlusskurs (€)");
-            chart.getConfiguration().setSeries(series);
-            chart.drawChart();
+            layout.addComponentAtIndex(2, newChart); // nach dem Select wieder einfügen
 
         } catch (Exception e) {
             Notification.show("Fehler beim Aktualisieren des Charts: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
         }
+    }
+
+    private Chart buildChart(List<Kurs> kurse, String title) {
+        Chart chart = new Chart(ChartType.LINE);
+        Configuration config = chart.getConfiguration();
+        config.setTitle("Kursverlauf für " + title);
+
+        XAxis xAxis = new XAxis();
+        xAxis.setTitle("Datum");
+        config.addxAxis(xAxis);
+
+        YAxis yAxis = new YAxis();
+        yAxis.setTitle("Schlusskurs (€)");
+        config.addyAxis(yAxis);
+
+        DataSeries series = new DataSeries();
+        for (Kurs kurs : kurse) {
+            String label = kurs.getDatum().format(formatter);
+            series.add(new DataSeriesItem(label, kurs.getSchlusskurs()));
+        }
+
+        PlotOptionsLine plotOptions = new PlotOptionsLine();
+        plotOptions.setMarker(new Marker(false));
+        series.setPlotOptions(plotOptions);
+
+        config.setSeries(series);
+        return chart;
+    }
+    private HorizontalLayout createInfoRow(String label, Object value) {
+        String displayValue = (value == null || value.toString().equals("0") || value.toString().isBlank())
+                ? "n.v." : value.toString();
+
+        Span labelSpan = new Span(label + ":");
+        labelSpan.getStyle().set("font-weight", "bold").set("width", "200px").set("display", "inline-block");
+
+        Span valueSpan = new Span(displayValue);
+
+        HorizontalLayout row = new HorizontalLayout(labelSpan, valueSpan);
+        row.setWidthFull();
+        row.setSpacing(true);
+        return row;
     }
 
 }

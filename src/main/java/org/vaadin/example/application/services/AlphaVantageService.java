@@ -21,6 +21,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +56,16 @@ public class AlphaVantageService {
     private final ObjectMapper obejctMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private static final Logger logger = LoggerFactory.getLogger(AlphaVantageService.class);
+
+    private LocalDateTime parseDateSmart(String dateStr) {
+        if (dateStr.length() == 10) {
+            // Nur Datum → Uhrzeit 00:00:00 ergänzen
+            return LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+        } else {
+            return LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+    }
+
 
     /**
      Ruft Kursinformationen im Vergleich zum Vortag auf.
@@ -95,7 +107,7 @@ public class AlphaVantageService {
                 .stream()
                 .map(data -> new Kurs(
                         symbol,
-                        LocalDate.parse(data.getDate()),
+                        parseDateSmart(data.getDate()),
                         data.getOpen(),
                         data.getClose(),
                         data.getHigh(),
@@ -128,7 +140,7 @@ public class AlphaVantageService {
                 .stream()
                 .map( data -> new Kurs(
                         symbol,
-                        LocalDate.parse(data.getDate()),
+                        parseDateSmart(data.getDate()),
                         data.getOpen(),
                         data.getClose(),
                         data.getHigh(),
@@ -161,7 +173,7 @@ public class AlphaVantageService {
                 .stream()
                 .map(data -> new Kurs(
                         symbol,
-                        LocalDate.parse(data.getDate()),
+                        parseDateSmart(data.getDate()),
                         data.getOpen(),
                         data.getClose(),
                         data.getHigh(),
@@ -194,7 +206,7 @@ public class AlphaVantageService {
                 .stream()
                 .map(data -> new Kurs(
                         symbol,
-                        LocalDate.parse(data.getDate()),
+                        parseDateSmart(data.getDate()),
                         data.getOpen(),
                         data.getClose(),
                         data.getHigh(),
