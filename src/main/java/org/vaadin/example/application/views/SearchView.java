@@ -46,7 +46,7 @@ public class SearchView extends AbstractSideNav {
         searchContent.setMaxWidth("1200px");
         searchContent.setMargin(true);
         searchContent.addClassName("stock-view");
-        
+
         // UI konfigurieren
         configureUI(searchContent);
         configureGrid();
@@ -55,7 +55,7 @@ public class SearchView extends AbstractSideNav {
         // Startansicht konfigurieren
         progressBar.setVisible(false);
         resultGrid.setVisible(true);
-        
+
         // Füge das Content-Layout zum Hauptinhaltsbereich hinzu
         addToMainContent(searchContent);
     }
@@ -173,11 +173,12 @@ public class SearchView extends AbstractSideNav {
         resultGrid.getDataProvider().refreshAll();
     }
     private void showDetails(SearchResult result) {
-        WertpapierView wertpapierView = new WertpapierView(alphaVantageService);
+        WertpapierView wertpapierView = new WertpapierView(alphaVantageService, this);
         wertpapierView.displayWertpapierDetails(result.getSymbol());
+        closeSideNav();
     }
 
-        
+
    /* private void showDetails(SearchResult result) {
         // Hier könntest du einen Dialog öffnen oder zu einer Detail-Ansicht navigieren
         Notification notification = Notification.show(
@@ -189,17 +190,18 @@ public class SearchView extends AbstractSideNav {
                 Notification.Position.MIDDLE
         );
         notification.open();
-        
+
         // Future: Navigation zu einer DetailView
         // getUI().ifPresent(ui -> ui.navigate(WertpapierView.class, result.getSymbol()));
     }
-        
+
     */
 
     private void showNotification(String message, NotificationVariant variant) {
         Notification notification = new Notification(message, 3000, Notification.Position.TOP_CENTER);
         notification.addThemeVariants(variant);
         notification.open();
+
     }
 
     private void navigateToKaufView(String symbol) {
