@@ -25,6 +25,8 @@ import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.classes.Watchlist;
 import org.vaadin.example.application.classes.Wertpapier;
 import org.vaadin.example.application.services.AlphaVantageService;
+import org.vaadin.example.application.services.DepotService;
+import org.vaadin.example.application.services.KaufService;
 import org.vaadin.example.application.services.NutzerService;
 import org.vaadin.example.application.services.WatchlistService;
 
@@ -57,6 +59,16 @@ public class WatchlistView extends AbstractSideNav {
     private final AlphaVantageService alphaVantageService;
 
     /**
+     * Service zur Verwaltung von Depots.
+     */
+    private final DepotService depotService;
+
+    /**
+     * Service zur Verwaltung von Käufen.
+     */
+    private final KaufService kaufService;
+
+    /**
      * Der aktuell angemeldete Nutzer.
      */
     private Nutzer aktuellerNutzer;
@@ -80,11 +92,14 @@ public class WatchlistView extends AbstractSideNav {
      * @param nutzerService Service zur Verwaltung von Nutzerdaten
      * @param alphaVantageService Service für den Zugriff auf Finanzdaten
      */
-    public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService) {
+    public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, 
+                   AlphaVantageService alphaVantageService, DepotService depotService, KaufService kaufService) {
         super(); // Ruft den Konstruktor der Basisklasse auf
         this.watchlistService = watchlistService;
         this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
+        this.depotService = depotService;
+        this.kaufService = kaufService;
 
         // Hauptüberschrift
         H1 title = new H1("Meine Watchlist");
@@ -232,7 +247,9 @@ public class WatchlistView extends AbstractSideNav {
                 WertpapierView wertpapierView = new WertpapierView(
                     alphaVantageService,
                     nutzerService,
-                    watchlistService
+                    watchlistService,
+                    depotService,
+                    kaufService
                 );
                 wertpapierView.displayWertpapierDetails(wertpapier.getIsin());
             });
