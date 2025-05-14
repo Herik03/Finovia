@@ -1,7 +1,10 @@
 package org.vaadin.example.application.classes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
 
 /**
  * Repräsentiert ein festverzinsliches Wertpapier vom Typ Anleihe.
@@ -15,12 +18,18 @@ import java.util.List;
  *
  * @author Jan
  */
+@Entity
+@Table(name = "anleihe")
+@NoArgsConstructor
 public class Anleihe extends Wertpapier {
     private String emittent;
     private double kupon;
     private LocalDate laufzeit;
     private double nennwert;
-    private List<Zinszahlung> zinszahlungen;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "anleihe_id")
+    private List<Zinszahlung> zinszahlungen = new ArrayList<>();
 /**
  * Konstruktor zum Erzeugen einer vollständigen Anleihe-Instanz.
  */

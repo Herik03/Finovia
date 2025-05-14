@@ -2,7 +2,9 @@ package org.vaadin.example.application.classes;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,8 +17,13 @@ import java.util.stream.Collectors;
  * Diese Klasse implementiert das Beobachter-Interface, um Benachrichtigungen
  * über Änderungen an Supportanfragen zu erhalten.
  */
+@Entity
+@Table(name = "nutzer")
+@NoArgsConstructor
 public class Nutzer implements Beobachter {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private int id;
 
@@ -27,26 +34,34 @@ public class Nutzer implements Beobachter {
     private String nachname;
 
     @Getter @Setter
+    @Column(unique = true)
     private String email;
 
     @Setter
     private String passwort; // Kein Getter für Sicherheit
 
     @Getter @Setter
+    @Column(unique = true)
     private String username;
 
     @Getter
-    private final List<Depot> depots = new ArrayList<>();
+    @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Depot> depots = new ArrayList<>();
 
     @Getter @Setter
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "watchlist_id")
     private Watchlist watchlist;
 
     // Registrierungsdatum hinzugefügt
     @Getter
-    private final LocalDateTime registrierungsDatum;
+    private LocalDateTime registrierungsDatum;
 
     // Liste der Benachrichtigungen für den Nutzer
-    private final List<String> benachrichtigungen = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "benachrichtigungen", joinColumns = @JoinColumn(name = "nutzer_id"))
+    @Column(name = "nachricht")
+    private List<String> benachrichtigungen = new ArrayList<>();
 
     /**
      * Konstruktor für einen neuen Nutzer mit Watchlist

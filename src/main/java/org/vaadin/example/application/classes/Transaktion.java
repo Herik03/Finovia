@@ -1,5 +1,7 @@
 package org.vaadin.example.application.classes;
 
+import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 /**
@@ -12,12 +14,26 @@ import java.time.LocalDate;
  *
  * @author Jan
  */
+@Entity
+@Table(name = "transaktion")
+@Inheritance(strategy = InheritanceType.JOINED)
+@NoArgsConstructor
 public abstract class Transaktion {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private LocalDate datum;
     private double gebühren;
     private double kurs;
     private int stückzahl;
+
+    @ManyToOne
+    @JoinColumn(name = "wertpapier_id")
     private Wertpapier wertpapier;
+
+    @OneToOne
+    @JoinColumn(name = "ausschuettung_id")
     private Ausschuettung ausschüttung;
 
 /**

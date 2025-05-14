@@ -1,6 +1,9 @@
 package org.vaadin.example.application.classes;
 
 import java.util.List;
+import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+
 /**
  * Repräsentiert ein Exchange Traded Fund (ETF), das eine Sonderform des Wertpapiers darstellt.
  *
@@ -12,7 +15,10 @@ import java.util.List;
  *
  * @author Jan
  */
-public class ETF extends Wertpapier{
+@Entity
+@Table(name = "etf")
+@NoArgsConstructor
+public class ETF extends Wertpapier {
     private String ausschüttung;
     private String emittent;
     private String fondsname;

@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+
 /**
  * Repräsentiert ein Wertpapier vom Typ Aktie.
  *
@@ -16,8 +19,11 @@ import lombok.Setter;
  * @author Sören
  */
 
+@Entity
+@Table(name = "aktie")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Aktie extends Wertpapier {
     private String unternehmensname;
     private String description;

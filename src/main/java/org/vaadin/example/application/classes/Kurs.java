@@ -2,7 +2,9 @@ package org.vaadin.example.application.classes;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 /**
@@ -15,15 +17,26 @@ import java.time.LocalDate;
  * @author Jan, Sören
  */
 
+@Entity
+@Table(name = "kurs")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Kurs {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private LocalDate datum;
     private double eröffnungskurs;
     private double schlusskurs;
     private double high;
     private double low;
+
+    @ManyToOne
+    @JoinColumn(name = "wertpapier_id")
     private Wertpapier wertpapier;
+
     private String symbol;
 
     /**

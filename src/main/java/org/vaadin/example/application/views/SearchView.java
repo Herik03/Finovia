@@ -3,6 +3,8 @@ package org.vaadin.example.application.views;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.vaadin.example.application.models.SearchResult;
 import org.vaadin.example.application.services.AlphaVantageService;
+import org.vaadin.example.application.services.NutzerService;
+import org.vaadin.example.application.services.WatchlistService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -30,15 +32,19 @@ import java.util.concurrent.CompletableFuture;
 @AnonymousAllowed
 public class SearchView extends AbstractSideNav {
     private final AlphaVantageService alphaVantageService;
+    private final NutzerService nutzerService;
+    private final WatchlistService watchlistService;
 
     private final TextField searchField = new TextField("Wertpapier suchen");
     private final Button searchButton = new Button("Suchen", new Icon(VaadinIcon.SEARCH));
     private final ProgressBar progressBar = new ProgressBar();
     private final Grid<SearchResult> resultGrid = new Grid<>(SearchResult.class, false);
 
-    public SearchView(AlphaVantageService alphaVantageService) {
+    public SearchView(AlphaVantageService alphaVantageService, NutzerService nutzerService, WatchlistService watchlistService) {
         super(); // Ruft den Konstruktor der Basisklasse AbstractSideNav auf
         this.alphaVantageService = alphaVantageService;
+        this.nutzerService = nutzerService;
+        this.watchlistService = watchlistService;
 
         // Wir erstellen ein VerticalLayout für den Inhalt
         VerticalLayout searchContent = new VerticalLayout();
@@ -46,7 +52,7 @@ public class SearchView extends AbstractSideNav {
         searchContent.setMaxWidth("1200px");
         searchContent.setMargin(true);
         searchContent.addClassName("stock-view");
-        
+
         // UI konfigurieren
         configureUI(searchContent);
         configureGrid();
@@ -55,7 +61,7 @@ public class SearchView extends AbstractSideNav {
         // Startansicht konfigurieren
         progressBar.setVisible(false);
         resultGrid.setVisible(true);
-        
+
         // Füge das Content-Layout zum Hauptinhaltsbereich hinzu
         addToMainContent(searchContent);
     }
@@ -71,10 +77,15 @@ public class SearchView extends AbstractSideNav {
 
         searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
+        // Button zur Navigation zur Watchlist
+        Button watchlistButton = new Button("Meine Watchlist", new Icon(VaadinIcon.STAR));
+        watchlistButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+        watchlistButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("watchlist")));
+
         progressBar.setIndeterminate(true);
         progressBar.setWidth("300px");
 
-        HorizontalLayout searchLayout = new HorizontalLayout(searchField, searchButton);
+        HorizontalLayout searchLayout = new HorizontalLayout(searchField, searchButton, watchlistButton);
         searchLayout.setAlignItems(Alignment.BASELINE);
 
         container.add(
@@ -173,11 +184,11 @@ public class SearchView extends AbstractSideNav {
         resultGrid.getDataProvider().refreshAll();
     }
     private void showDetails(SearchResult result) {
-        WertpapierView wertpapierView = new WertpapierView(alphaVantageService);
+        WertpapierView wertpapierView = new WertpapierView(alphaVantageService, nutzerService, watchlistService);
         wertpapierView.displayWertpapierDetails(result.getSymbol());
     }
 
-        
+
    /* private void showDetails(SearchResult result) {
         // Hier könntest du einen Dialog öffnen oder zu einer Detail-Ansicht navigieren
         Notification notification = Notification.show(
@@ -189,11 +200,11 @@ public class SearchView extends AbstractSideNav {
                 Notification.Position.MIDDLE
         );
         notification.open();
-        
+
         // Future: Navigation zu einer DetailView
         // getUI().ifPresent(ui -> ui.navigate(WertpapierView.class, result.getSymbol()));
     }
-        
+
     */
 
     private void showNotification(String message, NotificationVariant variant) {

@@ -1,7 +1,8 @@
 package org.vaadin.example.application.classes;
 
 import java.time.LocalDate;
-
+import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
 
 /**
  * Repräsentiert eine Dividendenzahlung, die aus einer Aktie resultiert.
@@ -14,7 +15,10 @@ import java.time.LocalDate;
  *
  * @author Jan
  */
-public class Dividende extends Ausschuettung{
+@Entity
+@Table(name = "dividende")
+@NoArgsConstructor
+public class Dividende extends Ausschuettung {
     private int aktienAnzahl;
     private double dividendenRendite;
 /**

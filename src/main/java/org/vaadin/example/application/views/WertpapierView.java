@@ -1,17 +1,29 @@
 package org.vaadin.example.application.views;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.charts.model.*;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.charts.Chart;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Kurs;
+import org.vaadin.example.application.classes.Nutzer;
+import org.vaadin.example.application.classes.Wertpapier;
 import org.vaadin.example.application.services.AlphaVantageService;
+import org.vaadin.example.application.services.NutzerService;
+import org.vaadin.example.application.services.WatchlistService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -24,10 +36,14 @@ import java.util.List;
 public class WertpapierView extends VerticalLayout {
 
     private final AlphaVantageService alphaVantageService;
+    private final NutzerService nutzerService;
+    private final WatchlistService watchlistService;
 
 //    @Autowired
-    public WertpapierView(AlphaVantageService alphaVantageService) {
+    public WertpapierView(AlphaVantageService alphaVantageService, NutzerService nutzerService, WatchlistService watchlistService) {
         this.alphaVantageService = alphaVantageService;
+        this.nutzerService = nutzerService;
+        this.watchlistService = watchlistService;
     }
 
     /**
@@ -91,9 +107,90 @@ public class WertpapierView extends VerticalLayout {
             timeFrameSelect.setValue("1 Jahr");
             timeFrameSelect.addValueChangeListener(event -> updateChart(chart, symbol, event.getValue()));
 
-            Button closeButton = new Button("Schließen", event -> dialog.close());
+            // Button zum Hinzufügen zur Watchlist
+            Button addToWatchlistButton = new Button("Zur Watchlist hinzufügen", event -> {
+                try {
+                    // Aktuellen Nutzer ermitteln
+                    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                    String username;
 
-            layout.add(timeFrameSelect, chart, new HorizontalLayout(closeButton));
+                    if (principal instanceof UserDetails) {
+                        username = ((UserDetails) principal).getUsername();
+                    } else {
+                        username = principal.toString();
+                    }
+
+                    // Nutzer aus dem Service laden
+                    Nutzer nutzer = nutzerService.getNutzerByUsername(username);
+
+                    if (nutzer == null) {
+                        // Fallback für Entwicklungszwecke - Nutzer mit einer ID laden
+                        nutzer = nutzerService.getNutzerById(1);
+                    }
+
+                    if (nutzer != null) {
+                        // Einfaches Wertpapier-Objekt erstellen (in einer echten Anwendung würde man das Wertpapier aus der Datenbank laden)
+                        // Da Aktie viele Parameter benötigt, erstellen wir ein einfaches Dummy-Objekt mit Minimaldaten
+                        Aktie wertpapier = new Aktie(
+                            symbol, // unternehmensname
+                            "Beschreibung für " + symbol, // description
+                            "NYSE", // exchange
+                            "USD", // currency
+                            "USA", // country
+                            "Technologie", // sector
+                            "Software", // industry
+                            1000000000L, // marketCap
+                            500000000L, // ebitda
+                            2.5, // pegRatio
+                            50.0, // bookValue
+                            1.5, // dividendPerShare
+                            2.0, // dividendYield
+                            3.5, // eps
+                            15.0, // forwardPE
+                            1.2, // beta
+                            200.0, // yearHigh
+                            150.0, // yearLow
+                            LocalDate.now() // dividendDate
+                        );
+                        wertpapier.setIsin(symbol);
+                        wertpapier.setName(symbol);
+
+                        // Zur Watchlist hinzufügen
+                        boolean added = watchlistService.addWertpapierToWatchlist(nutzer.getId(), wertpapier);
+
+                        if (added) {
+                            Notification.show(symbol + " wurde zur Watchlist hinzugefügt", 
+                                    3000, Notification.Position.BOTTOM_START)
+                                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+                            // Button deaktivieren, um mehrfaches Hinzufügen zu verhindern
+                            event.getSource().setEnabled(false);
+                        } else {
+                            Notification.show("Fehler beim Hinzufügen zur Watchlist", 
+                                    3000, Notification.Position.MIDDLE)
+                                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                        }
+                    } else {
+                        Notification.show("Nutzer konnte nicht ermittelt werden", 
+                                3000, Notification.Position.MIDDLE)
+                                .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                    }
+                } catch (Exception e) {
+                    Notification.show("Fehler: " + e.getMessage(), 
+                            3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }
+            });
+            addToWatchlistButton.setIcon(new Icon(VaadinIcon.PLUS));
+            addToWatchlistButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+            Button closeButton = new Button("Schließen", event -> dialog.close());
+            closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
+            HorizontalLayout buttonLayout = new HorizontalLayout(addToWatchlistButton, closeButton);
+            buttonLayout.setSpacing(true);
+
+            layout.add(timeFrameSelect, chart, buttonLayout);
             dialog.add(layout);
             dialog.open();
 

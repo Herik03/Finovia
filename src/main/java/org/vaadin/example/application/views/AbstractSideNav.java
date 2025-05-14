@@ -26,7 +26,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
 
     /** Der Hauptinhaltsbereich der Anwendung */
     protected final VerticalLayout mainContent;
-    
+
     /** Ein Container für den Hauptinhaltsbereich, der für das Scrollen verantwortlich ist */
     protected final Div mainContentContainer;
 
@@ -35,7 +35,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
 
     /** Die Breite der Seitenleiste in Pixeln */
     private static final String SIDENAV_WIDTH = "250px";
-    
+
     /**
      * Konstruktor für AbstractView.
      * <p>
@@ -77,10 +77,10 @@ public abstract class AbstractSideNav extends VerticalLayout {
 
         // ContentWrapper hinzufügen
         add(contentWrapper);
-        
+
         // SideNav nach dem ContentWrapper hinzufügen, damit es über dem Content liegt
         add(sideNav);
-        
+
         // Die SideNav mit CSS absolut positionieren
         sideNav.getStyle()
                 .set("position", "fixed")
@@ -102,7 +102,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
         sideNav.getStyle()
                 .set("background-color", "var(--lumo-contrast-5pct)")
                 .set("box-shadow", "0 0 10px rgba(0, 0, 0, 0.1)"); // Schatten hinzufügen
-        
+
         VerticalLayout topLayout = new VerticalLayout();
         VerticalLayout bottomLayout = new VerticalLayout();
 
@@ -113,29 +113,32 @@ public abstract class AbstractSideNav extends VerticalLayout {
 
         Button dashboardBtn = createNavButton("Dashboard", VaadinIcon.DASHBOARD);
         dashboardBtn.addClickListener(e -> UI.getCurrent().navigate(""));
-        
+
         Button depotBtn = createNavButton("Depot", VaadinIcon.PIGGY_BANK);
         depotBtn.addClickListener(e -> UI.getCurrent().navigate("depot"));
-        
+
         Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
         settingsBtn.addClickListener(e -> UI.getCurrent().navigate(SettingsView.class));
-        
+
         Button apiBtn = createNavButton("Wertpapiere", VaadinIcon.CODE);
         apiBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
-        
+
+        Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR);
+        watchlistBtn.addClickListener(e -> UI.getCurrent().navigate("watchlist"));
+
         Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
         aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
 
         Button userBtn = createNavButton("Benutzer", VaadinIcon.USER);
         userBtn.addClickListener(e -> UI.getCurrent().navigate("user"));
-        
+
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
         logoutBtn.addClickListener(e -> new SecurtyService().logout());
 
         Button meineKauefeBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
         meineKauefeBtn.addClickListener(e -> UI.getCurrent().navigate("meine-kauefe"));
 
-        topLayout.add(logo, dashboardBtn, depotBtn, meineKauefeBtn, settingsBtn, apiBtn);
+        topLayout.add(logo, dashboardBtn, depotBtn, meineKauefeBtn, settingsBtn, apiBtn, watchlistBtn);
         topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         topLayout.setPadding(false);
         topLayout.setSpacing(false);
@@ -143,7 +146,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
         bottomLayout.add(userBtn, logoutBtn);
         bottomLayout.getStyle().setFlexGrow("1");
         bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END);
-        
+
         sideNav.add(topLayout, bottomLayout);
     }
 

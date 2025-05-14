@@ -1,51 +1,55 @@
 package org.vaadin.example.application.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.classes.Nutzer;
-import org.vaadin.example.application.classes.Wertpapier;
-import org.vaadin.example.application.classes.Aktie;
-import org.vaadin.example.application.classes.Kurs;
-import org.vaadin.example.application.classes.Transaktion;
+import org.vaadin.example.application.repositories.DepotRepository;
+import org.vaadin.example.application.repositories.NutzerRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Service-Klasse für die Verwaltung von Depots.
- * Diese Klasse simuliert eine Datenbankanbindung für Depots.
+ * Diese Klasse verwendet eine PostgreSQL-Datenbank für die Speicherung von Depots.
  */
 @Service
 public class DepotService {
-    // Simuliert eine Datenbank mit Depots
-    private final Map<String, Depot> depotDatabase = new HashMap<>();
+    private final DepotRepository depotRepository;
+    private final NutzerRepository nutzerRepository;
 
-    public DepotService() {
-        // Initialisiere einige Beispiel-Depots für Demonstrationszwecke
-        initializeExampleDepots();
+    @Autowired
+    public DepotService(DepotRepository depotRepository, NutzerRepository nutzerRepository) {
+        this.depotRepository = depotRepository;
+        this.nutzerRepository = nutzerRepository;
     }
 
     /**
-     * Initialisiert einige Beispiel-Depots für Demonstrationszwecke
+     * Initialisiert den Service mit Demo-Daten, falls die Datenbank leer ist.
      */
-    private void initializeExampleDepots() {
-        // Erstelle einen Beispiel-Nutzer
-        Nutzer exampleUser = new Nutzer("Max", "Mustermann", "max@example.com", "password", "maxmuster");
-        exampleUser.setId(1);
+    @PostConstruct
+    public void init() {
+        if (depotRepository.count() == 0) {
+            // Suche nach dem Demo-Nutzer
+            Optional<Nutzer> demoNutzerOpt = nutzerRepository.findByUsername("maxmuster");
 
-        // Erstelle ein Aktiendepot
-        Depot aktiendepot = new Depot("1", "Aktiendepot von Max", exampleUser);
+            if (demoNutzerOpt.isPresent()) {
+                Nutzer demoNutzer = demoNutzerOpt.get();
 
-        // Erstelle ein ETF-Depot
-        Depot etfDepot = new Depot("2", "ETF-Depot von Max", exampleUser);
+                // Erstelle ein Aktiendepot
+                Depot aktiendepot = new Depot("1", "Aktiendepot von Max", demoNutzer);
 
-        // Füge die Depots zur "Datenbank" hinzu
-        depotDatabase.put(aktiendepot.getDepotId(), aktiendepot);
-        depotDatabase.put(etfDepot.getDepotId(), etfDepot);
+                // Erstelle ein ETF-Depot
+                Depot etfDepot = new Depot("2", "ETF-Depot von Max", demoNutzer);
+
+                // Speichere die Depots in der Datenbank
+                depotRepository.save(aktiendepot);
+                depotRepository.save(etfDepot);
+            }
+        }
     }
 
     /**
@@ -54,7 +58,7 @@ public class DepotService {
      * @return Liste aller Depots
      */
     public List<Depot> getAllDepots() {
-        return new ArrayList<>(depotDatabase.values());
+        return depotRepository.findAll();
     }
 
     /**
@@ -64,9 +68,7 @@ public class DepotService {
      * @return Liste der Depots des Nutzers
      */
     public List<Depot> getDepotsByNutzerId(int nutzerId) {
-        return depotDatabase.values().stream()
-                .filter(depot -> depot.getBesitzer().getId() == nutzerId)
-                .collect(Collectors.toList());
+        return depotRepository.findByBesitzerId(nutzerId);
     }
 
     /**
@@ -76,7 +78,7 @@ public class DepotService {
      * @return Das gefundene Depot oder null, wenn kein Depot mit dieser ID existiert
      */
     public Depot getDepotById(String depotId) {
-        return depotDatabase.get(depotId);
+        return depotRepository.findById(depotId).orElse(null);
     }
 
     /**
@@ -90,8 +92,7 @@ public class DepotService {
             // Generiere eine neue ID für das Depot
             depot.setDepotId(UUID.randomUUID().toString());
         }
-        depotDatabase.put(depot.getDepotId(), depot);
-        return depot;
+        return depotRepository.save(depot);
     }
 
     /**
@@ -100,8 +101,6 @@ public class DepotService {
      * @param depotId ID des zu löschenden Depots
      */
     public void deleteDepot(String depotId) {
-        depotDatabase.remove(depotId);
+        depotRepository.deleteById(depotId);
     }
 }
-//TODO Ersetzen der Beispieldaten durch eine echte Datenbankanbindung
-//TODO: Implementierung der Methoden für das Speichern, Löschen  von Depots aus der Datenbank

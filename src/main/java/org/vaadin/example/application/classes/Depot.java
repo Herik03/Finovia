@@ -2,27 +2,42 @@ package org.vaadin.example.application.classes;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Nutzer-Klasse, die die Eigenschaften und Methoden eines Nutzers repräsentiert.
- * Diese Klasse implementiert das Beobachter-Interface, um Benachrichtigungen
- * über Änderungen an Supportanfragen zu erhalten.
+ * Depot-Klasse, die die Eigenschaften und Methoden eines Depots repräsentiert.
  */
 //        von Ben
+@Entity
+@Table(name = "depot")
+@NoArgsConstructor
 public class Depot {
+    @Id
     @Setter
     @Getter
     private String depotId;
+
     @Setter
     @Getter
     private String name;
+
     @Setter
     @Getter
+    @ManyToOne
+    @JoinColumn(name = "nutzer_id")
     private Nutzer besitzer;
-    private List<Wertpapier> wertpapiere;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "depot_wertpapier",
+        joinColumns = @JoinColumn(name = "depot_id"),
+        inverseJoinColumns = @JoinColumn(name = "wertpapier_id")
+    )
+    private List<Wertpapier> wertpapiere = new ArrayList<>();
 
     /**
      * Konstruktor für ein neues Depot

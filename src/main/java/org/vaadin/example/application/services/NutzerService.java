@@ -1,57 +1,61 @@
 package org.vaadin.example.application.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.classes.Supportanfrage;
 import org.vaadin.example.application.classes.Watchlist;
+import org.vaadin.example.application.repositories.NutzerRepository;
+import org.vaadin.example.application.repositories.WatchlistRepository;
 
 import jakarta.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 /**
  * Service-Klasse für die Verwaltung von Nutzern.
  * <p>
  * Diese Klasse stellt Methoden zum Erstellen, Lesen, Aktualisieren und Löschen von Nutzern
- * zur Verfügung. In einer produktiven Umgebung würde dieser Service mit einer Datenbank
- * kommunizieren.
+ * zur Verfügung und verwendet dafür eine PostgreSQL-Datenbank.
  */
 @Service
 public class NutzerService {
 
-    // In-Memory-Speicher für Nutzer (für Demo-Zwecke)
-    private final Map<Integer, Nutzer> nutzerMap = new HashMap<>();
-    private final Map<String, Nutzer> nutzerByUsername = new HashMap<>();
-    private int nextId = 1;
+    private final NutzerRepository nutzerRepository;
+    private final WatchlistRepository watchlistRepository;
+
+    @Autowired
+    public NutzerService(NutzerRepository nutzerRepository, WatchlistRepository watchlistRepository) {
+        this.nutzerRepository = nutzerRepository;
+        this.watchlistRepository = watchlistRepository;
+    }
 
     /**
-     * Initialisiert den Service mit Demo-Daten.
+     * Initialisiert den Service mit Demo-Daten, falls die Datenbank leer ist.
      */
     @PostConstruct
     public void init() {
-        // Demo-Nutzer erstellen
-        Nutzer demo = new Nutzer("Max", "Mustermann", "max@example.com", "password123", "maxmuster");
-        demo.setId(nextId++);
-        
-        // Watchlist für den Demo-Nutzer
-        Watchlist watchlist = new Watchlist( "Demo-Watchlist", demo);
-        watchlist.setName("Meine Watchlist");
-        demo.setWatchlist(watchlist);
-        
-        // Demo-Depot erstellen
-        demo.erstelleNeuesDepot("D001", "Hauptdepot");
-        
-        // Demo-Benachrichtigungen hinzufügen
-        demo.aktualisieren("ANTWORT_AKTUALISIERT", 
-                new Supportanfrage("Wie kaufe ich Aktien?", demo));
-        demo.aktualisieren("STATUS_GEÄNDERT",
-                new Supportanfrage("Wie kaufe ich Aktien?", demo));
-        
-        // Nutzer in die Maps einfügen
-        nutzerMap.put(demo.getId(), demo);
-        nutzerByUsername.put(demo.getUsername(), demo);
+        if (nutzerRepository.count() == 0) {
+            // Demo-Nutzer erstellen
+            Nutzer demo = new Nutzer("Max", "Mustermann", "max@example.com", "password123", "maxmuster");
+
+            // Watchlist für den Demo-Nutzer
+            Watchlist watchlist = new Watchlist("Demo-Watchlist", demo);
+            watchlist.setName("Meine Watchlist");
+            demo.setWatchlist(watchlist);
+
+            // Demo-Depot erstellen
+            demo.erstelleNeuesDepot("D001", "Hauptdepot");
+
+            // Demo-Benachrichtigungen hinzufügen
+            demo.aktualisieren("ANTWORT_AKTUALISIERT", 
+                    new Supportanfrage("Wie kaufe ich Aktien?", demo));
+            demo.aktualisieren("STATUS_GEÄNDERT",
+                    new Supportanfrage("Wie kaufe ich Aktien?", demo));
+
+            // Nutzer in die Datenbank einfügen
+            nutzerRepository.save(demo);
+        }
     }
 
     /**
@@ -61,7 +65,7 @@ public class NutzerService {
      * @return Der gefundene Nutzer oder null, wenn keiner gefunden wurde
      */
     public Nutzer getNutzerById(int id) {
-        return nutzerMap.get(id);
+        return nutzerRepository.findById(id).orElse(null);
     }
 
     /**
@@ -71,7 +75,7 @@ public class NutzerService {
      * @return Der gefundene Nutzer oder null, wenn keiner gefunden wurde
      */
     public Nutzer getNutzerByUsername(String username) {
-        return nutzerByUsername.get(username);
+        return nutzerRepository.findByUsername(username).orElse(null);
     }
 
     /**
@@ -80,7 +84,7 @@ public class NutzerService {
      * @return Eine Liste aller Nutzer
      */
     public List<Nutzer> getAlleNutzer() {
-        return new ArrayList<>(nutzerMap.values());
+        return nutzerRepository.findAll();
     }
 
     /**
@@ -92,15 +96,7 @@ public class NutzerService {
      * @param nutzer Der zu speichernde Nutzer
      */
     public void speichereNutzer(Nutzer nutzer) {
-        if (nutzer.getId() == 0) {
-            // Neuer Nutzer
-            nutzer.setId(nextId++);
-        }
-        
-        // Nutzer in beide Maps einfügen/aktualisieren
-        nutzerMap.put(nutzer.getId(), nutzer);
-        nutzerByUsername.put(nutzer.getUsername(), nutzer);
-
+        nutzerRepository.save(nutzer);
     }
 
     /**
@@ -114,6 +110,7 @@ public class NutzerService {
     public void setzePasswort(Nutzer nutzer, String neuesPasswort) {
         // In einer echten Anwendung würde hier das Passwort gehasht werden
         nutzer.setPasswort(neuesPasswort);
+        nutzerRepository.save(nutzer);
     }
 
     /**
@@ -123,10 +120,9 @@ public class NutzerService {
      * @return true wenn der Nutzer gelöscht wurde, false wenn kein Nutzer gefunden wurde
      */
     public boolean loescheNutzer(int id) {
-        Nutzer nutzer = nutzerMap.get(id);
-        if (nutzer != null) {
-            nutzerByUsername.remove(nutzer.getUsername());
-            nutzerMap.remove(id);
+        Optional<Nutzer> nutzerOpt = nutzerRepository.findById(id);
+        if (nutzerOpt.isPresent()) {
+            nutzerRepository.deleteById(id);
             return true;
         }
         return false;

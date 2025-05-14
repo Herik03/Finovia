@@ -1,5 +1,7 @@
 package org.vaadin.example.application.classes;
 
+import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,12 +14,24 @@ import java.util.List;
  *
  * @author Sören
  */
+@Entity
+@Table(name = "wertpapier")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Wertpapier {
+    @Column(unique = true)
     private String isin;
+
     private String name;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int wertpapierId;
-    private List<Transaktion> transaktionen;
-    private List<Kurs> kurse;
+
+    @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Transaktion> transaktionen = new ArrayList<>();
+
+    @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Kurs> kurse = new ArrayList<>();
 /**
  * Konstruktor zur Initialisierung aller Attribute eines Wertpapiers.
  */

@@ -1,6 +1,9 @@
 package org.vaadin.example.application.classes;
 
 import java.time.LocalDate;
+import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+
 /**
  * Die Klasse {@code Zinszahlung} repräsentiert eine konkrete Form der {@link Ausschuettung},
  * die typischerweise mit festverzinslichen Wertpapieren wie Anleihen verknüpft ist.
@@ -12,7 +15,10 @@ import java.time.LocalDate;
  *
  * @author Jan
  */
-public class Zinszahlung extends Ausschuettung{
+@Entity
+@Table(name = "zinszahlung")
+@NoArgsConstructor
+public class Zinszahlung extends Ausschuettung {
     private double zinssatz;
 /**
  * Konstruktor zur Initialisierung aller Attribute der Zinszahlung.

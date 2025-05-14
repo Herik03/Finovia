@@ -2,7 +2,9 @@ package org.vaadin.example.application.classes;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,15 +14,32 @@ import java.util.List;
  * Sie enthält eine Liste von Wertpapieren, die der Nutzer verfolgen möchte.
  */
 //        von Ben
+@Entity
+@Table(name = "watchlist")
 @Getter
+@NoArgsConstructor
 public class Watchlist {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     // Getter und Setter
     @Setter
     private String name;
+
     private LocalDate erstellungsdatum;
+
     @Setter
+    @OneToOne(mappedBy = "watchlist", fetch = FetchType.EAGER)
     private Nutzer besitzer;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "watchlist_wertpapier",
+        joinColumns = @JoinColumn(name = "watchlist_id"),
+        inverseJoinColumns = @JoinColumn(name = "wertpapier_id")
+    )
     private List<Wertpapier> wertpapiere;
 
     /**

@@ -1,6 +1,9 @@
 package org.vaadin.example.application.classes;
 
 import java.time.LocalDate;
+import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+
 /**
  * Repräsentiert eine Verkaufs-Transaktion eines {@link Wertpapier}.
  * Erbt von {@link Transaktion} und ergänzt diese um die beim Verkauf
@@ -11,7 +14,10 @@ import java.time.LocalDate;
  *
  * @author Jan
  */
-public class Verkauf extends Transaktion{
+@Entity
+@Table(name = "verkauf")
+@NoArgsConstructor
+public class Verkauf extends Transaktion {
     private double steuern;
 
 /**
