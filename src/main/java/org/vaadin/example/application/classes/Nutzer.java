@@ -1,6 +1,8 @@
 package org.vaadin.example.application.classes;
 
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -10,15 +12,30 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+
 /**
  * Nutzer-Klasse, die die Eigenschaften und Methoden eines Nutzers repräsentiert.
  * Diese Klasse implementiert das Beobachter-Interface, um Benachrichtigungen
  * über Änderungen an Supportanfragen zu erhalten.
+ *
+ * @author Sören, Ben
+ * @version 2.0
  */
+@Entity
+@Table(name = "nutzer")
 public class Nutzer implements Beobachter {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true, nullable = false)
     @Getter @Setter
-    private int id;
+    private String username;
+
+    @Column(nullable = false)
+    @Setter
+    private String passwort; // Kein Getter für Sicherheit
 
     @Getter @Setter
     private String vorname;
@@ -28,12 +45,6 @@ public class Nutzer implements Beobachter {
 
     @Getter @Setter
     private String email;
-
-    @Setter
-    private String passwort; // Kein Getter für Sicherheit
-
-    @Getter @Setter
-    private String username;
 
     @Getter
     private final List<Depot> depots = new ArrayList<>();
@@ -47,6 +58,11 @@ public class Nutzer implements Beobachter {
 
     // Liste der Benachrichtigungen für den Nutzer
     private final List<String> benachrichtigungen = new ArrayList<>();
+
+    // Konstruktor für JPA
+    public Nutzer() {
+        this.registrierungsDatum = LocalDateTime.now();
+    }
 
     /**
      * Konstruktor für einen neuen Nutzer mit Watchlist
