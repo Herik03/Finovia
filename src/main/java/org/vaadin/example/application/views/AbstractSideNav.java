@@ -132,7 +132,10 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
         logoutBtn.addClickListener(e -> new SecurtyService().logout());
 
-        topLayout.add(logo, dashboardBtn, depotBtn, settingsBtn, apiBtn, aktieKaufenBtn);
+        Button meineKauefeBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
+        meineKauefeBtn.addClickListener(e -> UI.getCurrent().navigate("meine-kauefe"));
+
+        topLayout.add(logo, dashboardBtn, depotBtn, meineKauefeBtn, settingsBtn, apiBtn);
         topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         topLayout.setPadding(false);
         topLayout.setSpacing(false);

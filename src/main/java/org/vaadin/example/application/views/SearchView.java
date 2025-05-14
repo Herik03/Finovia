@@ -91,18 +91,28 @@ public class SearchView extends AbstractSideNav {
         resultGrid.addColumn(SearchResult::getRegion).setHeader("Region").setAutoWidth(true);
         resultGrid.addColumn(SearchResult::getCurrency).setHeader("Währung").setAutoWidth(true);
 
-        // Aktions-Spalte mit Details-Button
+        // Aktionsspalte mit Details- und Kaufen-Button
         resultGrid.addColumn(new ComponentRenderer<>(result -> {
+            HorizontalLayout actions = new HorizontalLayout();
+
             Button detailsButton = new Button("Details", new Icon(VaadinIcon.INFO_CIRCLE));
             detailsButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY);
             detailsButton.addClickListener(e -> showDetails(result));
-            return detailsButton;
+
+            Button kaufenButton = new Button("Kaufen", new Icon(VaadinIcon.CART));
+            kaufenButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_PRIMARY);
+            kaufenButton.addClickListener(e ->
+                    getUI().ifPresent(ui -> ui.navigate("kaufen/" + result.getSymbol()))
+            );
+
+            actions.add(detailsButton, kaufenButton);
+            return actions;
         })).setHeader("Aktion").setAutoWidth(true);
 
-        // Anstatt setHeightByRows verwenden wir eine feste Höhe oder Anzahl von Zeilen
         resultGrid.setHeight("400px");
         resultGrid.addClassName("results-grid");
     }
+
 
     private void setupListeners() {
         // Suche bei Enter-Taste oder Button-Klick ausführen
@@ -190,5 +200,9 @@ public class SearchView extends AbstractSideNav {
         Notification notification = new Notification(message, 3000, Notification.Position.TOP_CENTER);
         notification.addThemeVariants(variant);
         notification.open();
+    }
+
+    private void navigateToKaufView(String symbol) {
+        getUI().ifPresent(ui -> ui.navigate("kaufen" + symbol));
     }
 }
