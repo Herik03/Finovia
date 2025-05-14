@@ -60,6 +60,14 @@ public class AktienKaufView extends AbstractSideNav {
         TextField handelsplatzField = new TextField("Handelsplatz");
         handelsplatzField.setPlaceholder("z. B. NASDAQ");
 
+        TextField kursField = new TextField("Gesamtpreis (€)");
+        kursField.setReadOnly(true);
+        kursField.setValue("0.00");
+
+        // Kurs automatisch aktualisieren
+        symbolField.addValueChangeListener(e -> aktualisiereKurs(symbolField, stueckzahlField, kursField));
+        stueckzahlField.addValueChangeListener(e -> aktualisiereKurs(symbolField, stueckzahlField, kursField));
+
         Button kaufButton = new Button("Jetzt Kaufen");
         kaufButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         kaufButton.addClickListener(event -> {
@@ -71,7 +79,7 @@ public class AktienKaufView extends AbstractSideNav {
 
             if (gekaufteAktie != null) {
                 Kauf kauf = (Kauf) gekaufteAktie.getTransaktionen().get(0);
-                kaufService.addKauf(kauf); // ✅ Kauf speichern
+                kaufService.addKauf(kauf);
 
                 Notification.show("Erfolgreich gekauft: " + gekaufteAktie.getName()
                                 + " (" + stueckzahl + " Stück)")
@@ -85,7 +93,7 @@ public class AktienKaufView extends AbstractSideNav {
         });
 
         VerticalLayout formLayout = new VerticalLayout(
-                symbolField, stueckzahlField, handelsplatzField, kaufButton
+                symbolField, stueckzahlField, handelsplatzField, kursField, kaufButton
         );
         formLayout.setSpacing(true);
         formLayout.setPadding(false);
@@ -93,5 +101,22 @@ public class AktienKaufView extends AbstractSideNav {
         formLayout.setMaxWidth("600px");
 
         container.add(backButton, title, formLayout);
+    }
+
+    private void aktualisiereKurs(TextField symbolField, NumberField stueckzahlField, TextField kursField) {
+        String symbol = symbolField.getValue();
+        Double stueckzahl = stueckzahlField.getValue();
+
+        if (symbol != null && !symbol.isBlank() && stueckzahl != null && stueckzahl > 0) {
+            try {
+                double einzelkurs = aktienKaufService.getKursFürSymbol(symbol);
+                double gesamtkurs = einzelkurs * stueckzahl;
+                kursField.setValue(String.format("%.2f", gesamtkurs));
+            } catch (Exception ex) {
+                kursField.setValue("Fehler");
+            }
+        } else {
+            kursField.setValue("0.00");
+        }
     }
 }

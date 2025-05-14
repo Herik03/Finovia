@@ -9,6 +9,7 @@ import com.vaadin.flow.router.BeforeEnterListener;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
@@ -52,8 +53,15 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
       loginForm=new LoginForm();
         loginForm.setAction("login");
         loginForm.setForgotPasswordButtonVisible(false);
+
+        loginForm.addLoginListener(e -> {
+            VaadinSession.getCurrent().setAttribute("loggedIn", true);
+            UI.getCurrent().navigate("uebersicht");
+        });
+
         button=new Button("Registrieren",e->UI.getCurrent().navigate("register"));
         forgotPasswordButton=new Button("Passwort vergessen?",e->UI.getCurrent().navigate("passwortvergessen"));
+
         loginForm.addForgotPasswordListener(e->UI.getCurrent().navigate("passwortvergessen"));
 
         HorizontalLayout horizontalLayout=new HorizontalLayout(button,forgotPasswordButton);
@@ -73,11 +81,9 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
      */
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        if (beforeEnterEvent.getLocation()
-                .getQueryParameters()
-                .getParameters()
-                .containsKey("error")) {
-            loginForm.setError(true);
+        Boolean loggedIn = VaadinSession.getCurrent().getAttribute(Boolean.class);
+        if (loggedIn == null || !loggedIn) {
+            beforeEnterEvent.rerouteTo(LoginView.class);
         }
     }
 }
