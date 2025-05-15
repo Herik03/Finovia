@@ -28,12 +28,4 @@ public class SecurityConfig extends VaadinWebSecurity {
         setLoginView(http, LoginView.class);
     }
 
-    @Bean
-    public UserDetailsManager userDetailsManager() {
-        LoggerFactory.getLogger(SecurityConfig.class)
-                .warn("Noch nicht final");
-        var user= User.withUsername("user").password("{noop}user").roles("USER").build();
-        var admin= User.withUsername("admin").password("{noop}admin").roles("USER","ADMIN").build();
-        return new InMemoryUserDetailsManager(user,admin);
-    }
 }
