@@ -46,7 +46,7 @@ public class SearchView extends AbstractSideNav {
         searchContent.setMaxWidth("1200px");
         searchContent.setMargin(true);
         searchContent.addClassName("stock-view");
-        
+
         // UI konfigurieren
         configureUI(searchContent);
         configureGrid();
@@ -55,7 +55,7 @@ public class SearchView extends AbstractSideNav {
         // Startansicht konfigurieren
         progressBar.setVisible(false);
         resultGrid.setVisible(true);
-        
+
         // Füge das Content-Layout zum Hauptinhaltsbereich hinzu
         addToMainContent(searchContent);
     }
@@ -91,18 +91,28 @@ public class SearchView extends AbstractSideNav {
         resultGrid.addColumn(SearchResult::getRegion).setHeader("Region").setAutoWidth(true);
         resultGrid.addColumn(SearchResult::getCurrency).setHeader("Währung").setAutoWidth(true);
 
-        // Aktions-Spalte mit Details-Button
+        // Aktionsspalte mit Details- und Kaufen-Button
         resultGrid.addColumn(new ComponentRenderer<>(result -> {
+            HorizontalLayout actions = new HorizontalLayout();
+
             Button detailsButton = new Button("Details", new Icon(VaadinIcon.INFO_CIRCLE));
             detailsButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY);
             detailsButton.addClickListener(e -> showDetails(result));
-            return detailsButton;
+
+            Button kaufenButton = new Button("Kaufen", new Icon(VaadinIcon.CART));
+            kaufenButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_PRIMARY);
+            kaufenButton.addClickListener(e ->
+                    getUI().ifPresent(ui -> ui.navigate("kaufen/" + result.getSymbol()))
+            );
+
+            actions.add(detailsButton, kaufenButton);
+            return actions;
         })).setHeader("Aktion").setAutoWidth(true);
 
-        // Anstatt setHeightByRows verwenden wir eine feste Höhe oder Anzahl von Zeilen
         resultGrid.setHeight("400px");
         resultGrid.addClassName("results-grid");
     }
+
 
     private void setupListeners() {
         // Suche bei Enter-Taste oder Button-Klick ausführen
@@ -163,11 +173,12 @@ public class SearchView extends AbstractSideNav {
         resultGrid.getDataProvider().refreshAll();
     }
     private void showDetails(SearchResult result) {
-        WertpapierView wertpapierView = new WertpapierView(alphaVantageService);
+        WertpapierView wertpapierView = new WertpapierView(alphaVantageService, this);
         wertpapierView.displayWertpapierDetails(result.getSymbol());
+        closeSideNav();
     }
 
-        
+
    /* private void showDetails(SearchResult result) {
         // Hier könntest du einen Dialog öffnen oder zu einer Detail-Ansicht navigieren
         Notification notification = Notification.show(
@@ -179,16 +190,21 @@ public class SearchView extends AbstractSideNav {
                 Notification.Position.MIDDLE
         );
         notification.open();
-        
+
         // Future: Navigation zu einer DetailView
         // getUI().ifPresent(ui -> ui.navigate(WertpapierView.class, result.getSymbol()));
     }
-        
+
     */
 
     private void showNotification(String message, NotificationVariant variant) {
         Notification notification = new Notification(message, 3000, Notification.Position.TOP_CENTER);
         notification.addThemeVariants(variant);
         notification.open();
+
+    }
+
+    private void navigateToKaufView(String symbol) {
+        getUI().ifPresent(ui -> ui.navigate("kaufen" + symbol));
     }
 }

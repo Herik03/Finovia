@@ -24,10 +24,16 @@ import java.util.List;
 public class WertpapierView extends VerticalLayout {
 
     private final AlphaVantageService alphaVantageService;
+    private AbstractSideNav parentView;
 
 //    @Autowired
     public WertpapierView(AlphaVantageService alphaVantageService) {
         this.alphaVantageService = alphaVantageService;
+    }
+
+    public WertpapierView(AlphaVantageService alphaVantageService, AbstractSideNav parentView) {
+        this.alphaVantageService = alphaVantageService;
+        this.parentView = parentView;
     }
 
     /**
@@ -44,6 +50,11 @@ public class WertpapierView extends VerticalLayout {
         try {
             // Initialisiere die Kursdaten für den Chart
             List<Kurs> kurse = alphaVantageService.getDailySeries(symbol);
+
+            if (kurse.isEmpty()) {
+                Notification.show("Keine Daten gefunden.", 3000, Notification.Position.MIDDLE);
+                return;
+            }
 
 
 //        if (!wertpapier.getKurse().isEmpty()) {
@@ -86,10 +97,24 @@ public class WertpapierView extends VerticalLayout {
             timeFrameSelect.setValue("1 Jahr");
             timeFrameSelect.addValueChangeListener(event -> updateChart(chart, symbol, event.getValue()));
 
-            Button closeButton = new Button("Schließen", event -> dialog.close());
+            Button closeButton = new Button("Schließen", event -> {
+                dialog.close();
+                // Öffne die SideNav wieder, wenn der Dialog geschlossen wird
+                if (parentView != null) {
+                    parentView.openSideNav();
+                }
+            });
 
             layout.add(timeFrameSelect, chart, new HorizontalLayout(closeButton));
             dialog.add(layout);
+
+            // Füge auch einen Listener zum Dialog hinzu, falls er auf andere Weise geschlossen wird
+            dialog.addDialogCloseActionListener(event -> {
+                if (parentView != null) {
+                    parentView.openSideNav();
+                }
+            });
+
             dialog.open();
 
         } catch (Exception e) {

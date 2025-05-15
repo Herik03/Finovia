@@ -3,13 +3,11 @@ package org.vaadin.example.application.views;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -18,30 +16,28 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import jakarta.annotation.security.PermitAll;
 import org.vaadin.example.application.classes.Aktie;
+import org.vaadin.example.application.classes.Kauf;
 import org.vaadin.example.application.services.AktienKaufService;
+import org.vaadin.example.application.services.KaufService;
 
-/**
- * @author Batuhan Güvercin
- */
-@Route(value = "kaufen")
+@Route("kaufen/:symbol")
 @PageTitle("Aktie kaufen")
 @PermitAll
 public class AktienKaufView extends AbstractSideNav {
-    private final AktienKaufService aktienKaufService;
 
-    public AktienKaufView(AktienKaufService aktienKaufService) {
-        super(); // Ruft den Konstruktor der Basisklasse AbstractSideNav auf
+    private final AktienKaufService aktienKaufService;
+    private final KaufService kaufService;
+
+    public AktienKaufView(AktienKaufService aktienKaufService, KaufService kaufService) {
+        super();
         this.aktienKaufService = aktienKaufService;
-        
-        // Container für den Inhalt erstellen
+        this.kaufService = kaufService;
+
         VerticalLayout contentLayout = new VerticalLayout();
         contentLayout.setPadding(true);
         contentLayout.setSpacing(true);
-        
-        // UI-Elemente aufbauen
+
         setupUI(contentLayout);
-        
-        // Content-Layout zum Hauptinhaltsbereich hinzufügen
         addToMainContent(contentLayout);
     }
 
@@ -74,23 +70,28 @@ public class AktienKaufView extends AbstractSideNav {
             Aktie gekaufteAktie = aktienKaufService.kaufeAktie(symbol, stueckzahl, handelsplatz);
 
             if (gekaufteAktie != null) {
+                Kauf kauf = (Kauf) gekaufteAktie.getTransaktionen().get(0);
+                kaufService.addKauf(kauf); // ✅ Kauf speichern
+
                 Notification.show("Erfolgreich gekauft: " + gekaufteAktie.getName()
-                        + " (" + stueckzahl + " Stück")
+                                + " (" + stueckzahl + " Stück)")
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+                UI.getCurrent().navigate("meine-kauefe");
             } else {
                 Notification.show("Kauf fehlgeschlagen. Bitte prüfen Sie das Symbol.")
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
 
-        // Layout für Eingabefelder – vertikal
-        VerticalLayout formLayout = new VerticalLayout(symbolField, stueckzahlField, handelsplatzField, kaufButton);
+        VerticalLayout formLayout = new VerticalLayout(
+                symbolField, stueckzahlField, handelsplatzField, kaufButton
+        );
         formLayout.setSpacing(true);
         formLayout.setPadding(false);
         formLayout.setAlignItems(FlexComponent.Alignment.START);
         formLayout.setMaxWidth("600px");
 
-        // Komponenten zum Container hinzufügen
         container.add(backButton, title, formLayout);
     }
 }
