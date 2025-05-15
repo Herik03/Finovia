@@ -50,6 +50,11 @@ public class NutzerService {
         //Passwort verschlüsseln
         nutzer.setPasswort(passwordEncoder.encode(nutzer.getPasswort()));
 
+        // Standardrolle setzen, falls keine angegeben
+        if (nutzer.getRoles() == null || nutzer.getRoles().isEmpty()) {
+            nutzer.setRoles(List.of("USER"));
+        }
+
         return nutzerRepository.save(nutzer);
     }
 

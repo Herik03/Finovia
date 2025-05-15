@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -45,6 +42,10 @@ public class Nutzer implements Beobachter {
 
     @Getter @Setter
     private String email;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Getter @Setter
+    private Collection<String> roles;
 
     @Getter
     private final List<Depot> depots = new ArrayList<>();
