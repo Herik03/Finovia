@@ -7,6 +7,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.select.Select;
@@ -14,8 +15,6 @@ import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Kurs;
 import org.vaadin.example.application.models.SearchResult;
 import org.vaadin.example.application.services.AlphaVantageService;
-import com.vaadin.flow.component.orderedlayout.Scroller;
-
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -64,42 +63,29 @@ public class WertpapierView extends VerticalLayout {
             timeFrameSelect.setValue("1 Monat");
             layout.add(timeFrameSelect);
 
-            Chart chart = buildChart(kurse, anzeigeName);
-            layout.add(chart);
+// Erstelle Chart-Container (Platzhalter für Chart)
+            VerticalLayout chartContainer = new VerticalLayout();
+            chartContainer.setWidthFull();
+            chartContainer.setPadding(false);
+            chartContainer.setSpacing(false);
+            layout.add(chartContainer);
+
+// Lade initialen Chart in Container
+            updateChart(chartContainer, symbol, "1 Monat");
+
 
             Aktie aktie = alphaVantageService.getFundamentalData(symbol);
             if (aktie != null) {
-                VerticalLayout infoLayout = new VerticalLayout();
-                infoLayout.setPadding(false);
-                infoLayout.setSpacing(false);
-                infoLayout.setWidthFull();
-
-                infoLayout.add(createInfoRow("Unternehmensname", aktie.getUnternehmensname()));
-                infoLayout.add(createInfoRow("Industrie", aktie.getIndustry()));
-                infoLayout.add(createInfoRow("Sektor", aktie.getSector()));
-                infoLayout.add(createInfoRow("Marktkapitalisierung", aktie.getMarketCap()));
-                infoLayout.add(createInfoRow("EBITDA", aktie.getEbitda()));
-                infoLayout.add(createInfoRow("PEG Ratio", aktie.getPegRatio()));
-                infoLayout.add(createInfoRow("Buchwert", aktie.getBookValue()));
-                infoLayout.add(createInfoRow("EPS", aktie.getEps()));
-                infoLayout.add(createInfoRow("Beta", aktie.getBeta()));
-                infoLayout.add(createInfoRow("52W Hoch", aktie.getYearHigh()));
-                infoLayout.add(createInfoRow("52W Tief", aktie.getYearLow()));
-                infoLayout.add(createInfoRow("Dividende/Aktie", aktie.getDividendPerShare()));
-                infoLayout.add(createInfoRow("Dividendenrendite", aktie.getDividendYield()));
-                infoLayout.add(createInfoRow("Dividenden-Datum", aktie.getDividendDate()));
-
-                Scroller scroller = new Scroller(infoLayout);
+                Scroller scroller = new Scroller(createInfoGrid(aktie));
                 scroller.setHeight("250px");
                 scroller.setScrollDirection(Scroller.ScrollDirection.VERTICAL);
-
                 layout.add(scroller);
             }
 
             timeFrameSelect.addValueChangeListener(event -> {
-                layout.remove(chart);
-                updateChart(layout, symbol, event.getValue());
+                updateChart(chartContainer, symbol, event.getValue());
             });
+
 
             Button closeButton = new Button("✕", event -> dialog.close());
             closeButton.getStyle()
@@ -119,7 +105,7 @@ public class WertpapierView extends VerticalLayout {
         }
     }
 
-    private void updateChart(VerticalLayout layout, String symbol, String timeFrame) {
+    private void updateChart(VerticalLayout chartContainer, String symbol, String timeFrame) {
         List<Kurs> kurse;
         try {
             switch (timeFrame) {
@@ -136,16 +122,14 @@ public class WertpapierView extends VerticalLayout {
 
             Chart newChart = buildChart(kurse, symbol);
 
-            layout.getChildren()
-                    .filter(component -> component instanceof Chart)
-                    .forEach(layout::remove);
-
-            layout.addComponentAtIndex(2, newChart); // nach dem Select wieder einfügen
+            chartContainer.removeAll();
+            chartContainer.add(newChart);
 
         } catch (Exception e) {
             Notification.show("Fehler beim Aktualisieren des Charts: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
         }
     }
+
 
     private Chart buildChart(List<Kurs> kurse, String title) {
         Chart chart = new Chart(ChartType.LINE);
@@ -161,6 +145,7 @@ public class WertpapierView extends VerticalLayout {
         config.addyAxis(yAxis);
 
         DataSeries series = new DataSeries();
+        series.setName(" "); // entfernt "Series 1"
         for (Kurs kurs : kurse) {
             String label = kurs.getDatum().format(formatter);
             series.add(new DataSeriesItem(label, kurs.getSchlusskurs()));
@@ -173,19 +158,57 @@ public class WertpapierView extends VerticalLayout {
         config.setSeries(series);
         return chart;
     }
-    private HorizontalLayout createInfoRow(String label, Object value) {
-        String displayValue = (value == null || value.toString().equals("0") || value.toString().isBlank())
-                ? "n.v." : value.toString();
 
-        Span labelSpan = new Span(label + ":");
-        labelSpan.getStyle().set("font-weight", "bold").set("width", "200px").set("display", "inline-block");
+    private HorizontalLayout createInfoRow(String label1, Object value1, String label2, Object value2) {
+        return createInfoRow(label1, value1, label2, value2, null, null);
+    }
 
-        Span valueSpan = new Span(displayValue);
-
-        HorizontalLayout row = new HorizontalLayout(labelSpan, valueSpan);
+    private HorizontalLayout createInfoRow(String label1, Object value1, String label2, Object value2, String label3, Object value3) {
+        HorizontalLayout row = new HorizontalLayout();
         row.setWidthFull();
         row.setSpacing(true);
+
+        row.add(createSingleInfoBlock(label1, value1));
+        row.add(createSingleInfoBlock(label2, value2));
+        if (label3 != null) {
+            row.add(createSingleInfoBlock(label3, value3));
+        }
+
         return row;
     }
 
+    private VerticalLayout createSingleInfoBlock(String label, Object value) {
+        String displayValue = (value == null || value.toString().equals("0") || value.toString().isBlank())
+                ? "n.v." : value.toString();
+
+        Span labelSpan = new Span(label);
+        labelSpan.getStyle().set("font-weight", "bold").set("font-size", "0.85rem");
+
+        Span valueSpan = new Span(displayValue);
+        valueSpan.getStyle().set("font-size", "1rem");
+
+        VerticalLayout block = new VerticalLayout(labelSpan, valueSpan);
+        block.setPadding(false);
+        block.setSpacing(false);
+        block.setWidth("100%");
+        block.getStyle().set("min-width", "150px");
+
+        return block;
+    }
+
+    private VerticalLayout createInfoGrid(Aktie aktie) {
+        VerticalLayout gridLayout = new VerticalLayout();
+        gridLayout.setSpacing(true);
+        gridLayout.setPadding(true);
+        gridLayout.setWidthFull();
+        gridLayout.getStyle().set("background", "#f9f9f9").set("border-radius", "8px");
+
+        gridLayout.add(createInfoRow("Unternehmensname", aktie.getUnternehmensname(), "Industrie", aktie.getIndustry(), "Sektor", aktie.getSector()));
+        gridLayout.add(createInfoRow("Marktkapitalisierung", aktie.getMarketCap(), "EBITDA", aktie.getEbitda(), "PEG Ratio", aktie.getPegRatio()));
+        gridLayout.add(createInfoRow("Buchwert", aktie.getBookValue(), "EPS", aktie.getEps(), "Beta", aktie.getBeta()));
+        gridLayout.add(createInfoRow("52W Hoch", aktie.getYearHigh(), "52W Tief", aktie.getYearLow(), "Dividende/Aktie", aktie.getDividendPerShare()));
+        gridLayout.add(createInfoRow("Dividendenrendite", aktie.getDividendYield(), "Dividenden-Datum", aktie.getDividendDate()));
+
+        return gridLayout;
+    }
 }
