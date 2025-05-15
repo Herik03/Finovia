@@ -104,4 +104,17 @@ public class AktienKaufService {
 
         return aktie;
     }
+
+    public double getKursFürSymbol(String symbol) {
+        if (symbol == null || symbol.isBlank()) {
+            throw new IllegalArgumentException("Symbol darf nicht leer sein.");
+        }
+
+        StockQuote quote = alphaVantageService.getCurrentStockQuote(symbol);
+        if (quote == null) {
+            throw new RuntimeException("Kein Kurs für Symbol gefunden: " + symbol);
+        }
+
+        return quote.getPrice();
+    }
 }
