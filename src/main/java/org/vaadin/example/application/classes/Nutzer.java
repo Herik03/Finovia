@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * @version 2.0
  */
 @Entity
-@Table(name = "nutzer")
+@Table(name = "USER")
 public class Nutzer implements Beobachter {
 
     @Id
@@ -34,8 +34,8 @@ public class Nutzer implements Beobachter {
     private String username;
 
     @Column(nullable = false)
-    @Setter
-    private String passwort; // Kein Getter für Sicherheit
+    @Getter @Setter
+    private String passwort;
 
     @Getter @Setter
     private String vorname;

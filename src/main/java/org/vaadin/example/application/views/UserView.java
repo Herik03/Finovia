@@ -86,7 +86,7 @@ public class UserView extends AbstractSideNav {
             
             if (aktuellerNutzer == null) {
                 // Fallback für Entwicklungszwecke - Nutzer mit einer ID laden
-                aktuellerNutzer = nutzerService.getNutzerById(1);
+                aktuellerNutzer = nutzerService.getNutzerById(new Long(1));
                 
                 if (aktuellerNutzer == null) {
                     Notification.show("Nutzerdaten konnten nicht geladen werden", 

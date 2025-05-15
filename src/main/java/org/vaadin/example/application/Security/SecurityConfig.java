@@ -17,7 +17,10 @@ import org.vaadin.example.application.views.LoginView;
 @Configuration
 public class SecurityConfig extends VaadinWebSecurity {
 
-
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
