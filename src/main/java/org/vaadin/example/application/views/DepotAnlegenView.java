@@ -52,10 +52,7 @@ public class DepotAnlegenView extends AbstractSideNav {
         depotName.setRequiredIndicatorVisible(true);
         depotName.setPrefixComponent(VaadinIcon.PIGGY_BANK.create());
 
-        Select<String> depotTyp = new Select<>();
-        depotTyp.setLabel("Depot-Typ");
-        depotTyp.setItems("Aktiendepot", "ETF-Depot", "Gemischtes Depot");
-        depotTyp.setRequiredIndicatorVisible(true);
+
 
         TextField iban = new TextField("IBAN");
         iban.setRequiredIndicatorVisible(true);
@@ -63,14 +60,14 @@ public class DepotAnlegenView extends AbstractSideNav {
         Button speichernButton = new Button("Depot erstellen", VaadinIcon.CHECK.create());
         speichernButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         speichernButton.addClickListener(e -> {
-            if (!depotName.isEmpty() && !depotTyp.isEmpty() && !iban.isEmpty()) {
+            if (!depotName.isEmpty() &&  !iban.isEmpty()) {
                 // Erstelle einen Beispiel-Nutzer (in einer echten Anwendung würde hier der eingeloggte Nutzer verwendet)
                 Nutzer currentUser = new Nutzer("Max", "Mustermann", "max@example.com", "password", "maxmuster");
                 currentUser.setId(1);
 
                 // Erstelle ein neues Depot
                 String depotId = UUID.randomUUID().toString();
-                String name = depotName.getValue() + " (" + depotTyp.getValue() + ")";
+                String name = depotName.getValue() ;
                 Depot neuesDepot = new Depot(depotId, name, currentUser);
 
                 // Speichere das Depot in der Datenbank
@@ -81,7 +78,7 @@ public class DepotAnlegenView extends AbstractSideNav {
 
                 // Felder zurücksetzen
                 depotName.clear();
-                depotTyp.clear();
+
                 iban.clear();
 
                 // Zur Depot-Übersicht navigieren
@@ -93,7 +90,7 @@ public class DepotAnlegenView extends AbstractSideNav {
         });
         speichernButton.addClickShortcut(Key.ENTER);
 
-        depotForm.add(new H2("Neues Depot anlegen"), depotName, depotTyp, iban, speichernButton);
+        depotForm.add(new H2("Neues Depot anlegen"), depotName, iban, speichernButton);
         contentLayout.add(depotForm);
     }
 }

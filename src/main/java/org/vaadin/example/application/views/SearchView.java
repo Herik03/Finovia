@@ -3,6 +3,8 @@ package org.vaadin.example.application.views;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.vaadin.example.application.models.SearchResult;
 import org.vaadin.example.application.services.AlphaVantageService;
+import org.vaadin.example.application.services.DepotService;
+import org.vaadin.example.application.services.KaufService;
 import org.vaadin.example.application.services.NutzerService;
 import org.vaadin.example.application.services.WatchlistService;
 import com.vaadin.flow.component.Key;
@@ -34,17 +36,22 @@ public class SearchView extends AbstractSideNav {
     private final AlphaVantageService alphaVantageService;
     private final NutzerService nutzerService;
     private final WatchlistService watchlistService;
+    private final DepotService depotService;
+    private final KaufService kaufService;
 
     private final TextField searchField = new TextField("Wertpapier suchen");
     private final Button searchButton = new Button("Suchen", new Icon(VaadinIcon.SEARCH));
     private final ProgressBar progressBar = new ProgressBar();
     private final Grid<SearchResult> resultGrid = new Grid<>(SearchResult.class, false);
 
-    public SearchView(AlphaVantageService alphaVantageService, NutzerService nutzerService, WatchlistService watchlistService) {
+    public SearchView(AlphaVantageService alphaVantageService, NutzerService nutzerService, 
+              WatchlistService watchlistService, DepotService depotService, KaufService kaufService) {
         super(); // Ruft den Konstruktor der Basisklasse AbstractSideNav auf
         this.alphaVantageService = alphaVantageService;
         this.nutzerService = nutzerService;
         this.watchlistService = watchlistService;
+        this.depotService = depotService;
+        this.kaufService = kaufService;
 
         // Wir erstellen ein VerticalLayout für den Inhalt
         VerticalLayout searchContent = new VerticalLayout();
@@ -184,7 +191,8 @@ public class SearchView extends AbstractSideNav {
         resultGrid.getDataProvider().refreshAll();
     }
     private void showDetails(SearchResult result) {
-        WertpapierView wertpapierView = new WertpapierView(alphaVantageService, nutzerService, watchlistService);
+        WertpapierView wertpapierView = new WertpapierView(alphaVantageService, nutzerService, 
+                                                          watchlistService, depotService);
         wertpapierView.displayWertpapierDetails(result.getSymbol());
     }
 

@@ -84,4 +84,19 @@ public abstract class Wertpapier {
     public void setKurse(List<Kurs> kurse) {
         this.kurse = kurse;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Wertpapier other = (Wertpapier) obj;
+        // Compare using ISIN which is unique for each security
+        return isin != null && isin.equals(other.isin);
+    }
+
+    @Override
+    public int hashCode() {
+        return isin != null ? isin.hashCode() : 0;
+    }
 }

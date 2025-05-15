@@ -248,8 +248,8 @@ public class WatchlistView extends AbstractSideNav {
                     alphaVantageService,
                     nutzerService,
                     watchlistService,
-                    depotService,
-                    kaufService
+                    depotService
+
                 );
                 wertpapierView.displayWertpapierDetails(wertpapier.getIsin());
             });
