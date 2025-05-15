@@ -29,7 +29,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
  */
 @Route("login")
 @PageTitle( "Login")
-public class LoginView extends VerticalLayout implements BeforeEnterListener {
+public class LoginView extends VerticalLayout {
 
     /** Das Login-Formular für die Benutzerauthentifizierung */
     private final LoginForm loginForm;
@@ -70,20 +70,5 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
 
 
 
-    }
-    /**
-     * Wird aufgerufen, bevor die Ansicht angezeigt wird.
-     * <p>
-     * Überprüft, ob ein Fehler bei der Anmeldung aufgetreten ist, und zeigt
-     * gegebenenfalls eine Fehlermeldung im Login-Formular an.
-     *
-     * @param beforeEnterEvent Das Event, das vor dem Betreten der Ansicht ausgelöst wird
-     */
-    @Override
-    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        Boolean loggedIn = VaadinSession.getCurrent().getAttribute(Boolean.class);
-        if (loggedIn == null || !loggedIn) {
-            beforeEnterEvent.rerouteTo(LoginView.class);
-        }
     }
 }
