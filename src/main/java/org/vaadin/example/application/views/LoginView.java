@@ -9,7 +9,6 @@ import com.vaadin.flow.router.BeforeEnterListener;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
@@ -23,13 +22,13 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
  * </ul>
  * <p>
  * Die Klasse implementiert das BeforeEnterListener-Interface, um Fehler bei der Anmeldung zu verarbeiten.
- * 
+ *
  * @author Finovia Team
  * @version 1.0
  */
 @Route("login")
 @PageTitle( "Login")
-public class LoginView extends VerticalLayout {
+public class LoginView extends VerticalLayout implements BeforeEnterListener {
 
     /** Das Login-Formular für die Benutzerauthentifizierung */
     private final LoginForm loginForm;
@@ -50,18 +49,11 @@ public class LoginView extends VerticalLayout {
     public LoginView() {
         addClassNames(LumoUtility.Display.FLEX,LumoUtility.JustifyContent.CENTER,LumoUtility.AlignItems.CENTER);
         setSizeFull();
-      loginForm=new LoginForm();
+        loginForm=new LoginForm();
         loginForm.setAction("login");
         loginForm.setForgotPasswordButtonVisible(false);
-
-        loginForm.addLoginListener(e -> {
-            VaadinSession.getCurrent().setAttribute("loggedIn", true);
-            UI.getCurrent().navigate("uebersicht");
-        });
-
         button=new Button("Registrieren",e->UI.getCurrent().navigate("register"));
         forgotPasswordButton=new Button("Passwort vergessen?",e->UI.getCurrent().navigate("passwortvergessen"));
-
         loginForm.addForgotPasswordListener(e->UI.getCurrent().navigate("passwortvergessen"));
 
         HorizontalLayout horizontalLayout=new HorizontalLayout(button,forgotPasswordButton);
@@ -70,5 +62,22 @@ public class LoginView extends VerticalLayout {
 
 
 
+    }
+    /**
+     * Wird aufgerufen, bevor die Ansicht angezeigt wird.
+     * <p>
+     * Überprüft, ob ein Fehler bei der Anmeldung aufgetreten ist, und zeigt
+     * gegebenenfalls eine Fehlermeldung im Login-Formular an.
+     *
+     * @param beforeEnterEvent Das Event, das vor dem Betreten der Ansicht ausgelöst wird
+     */
+    @Override
+    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+        if (beforeEnterEvent.getLocation()
+                .getQueryParameters()
+                .getParameters()
+                .containsKey("error")) {
+            loginForm.setError(true);
+        }
     }
 }

@@ -35,7 +35,7 @@ public class StartingPageView extends VerticalLayout {
         info.getStyle().set("margin-bottom", "20px");
 
         // Bild einfügen (Korrekt im 'frontend/images' Ordner ablegen)
-        Image backgroundImage = new Image("styles/finoviaTest.jpg", "finovia");
+        Image backgroundImage = new Image("images/finoviaTest.jpg", "finovia");
         backgroundImage.setWidth("100%");  // Bildbreite auf 100% setzen
         backgroundImage.setHeight("40vh"); // Bildhöhe auf 40% der Viewporthöhe setzen
         backgroundImage.getStyle().set("object-fit", "cover");  // Bild wird zugeschnitten, falls nötig
