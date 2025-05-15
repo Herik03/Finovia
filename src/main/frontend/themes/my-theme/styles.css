@@ -16,4 +16,7 @@ vaadin-text-field.bordered::part(input-field) {
   background-color: var(--lumo-base-color);
 }
 
-
+/* Hide the side navigation when the 'hidden' class is applied */
+.side-nav.hidden {
+  display: none;
+}

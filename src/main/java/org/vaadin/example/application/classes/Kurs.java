@@ -1,5 +1,8 @@
 package org.vaadin.example.application.classes;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 
 /**
@@ -9,62 +12,52 @@ import java.time.LocalDate;
  * um Kursverläufe analysieren zu können.
  * Jeder Kurs ist eindeutig einem Wertpapier zugeordnet.
  *
- * @author Jan
+ * @author Jan, Sören
  */
+
+@Getter
+@Setter
 public class Kurs {
     private LocalDate datum;
     private double eröffnungskurs;
-    private double kurswert;
     private double schlusskurs;
+    private double high;
+    private double low;
     private Wertpapier wertpapier;
-/**
- * Konstruktor zum Erzeugen eines Kurs-Objekts mit allen Werten.
- */
-    public Kurs(LocalDate datum, double eröffnungskurs, double kurswert, double schlusskurs, Wertpapier wertpapier) {
+    private String symbol;
+
+    /**
+     * Konstruktor zum Erzeugen eines Kurs-Objekts mit allen Werten.
+    */
+    public Kurs(LocalDate datum, double eröffnungskurs, double schlusskurs, double high, double low, Wertpapier wertpapier) {
         this.datum = datum;
         this.eröffnungskurs = eröffnungskurs;
-        this.kurswert = kurswert;
+        this.high = high;
+        this.low = low;
         this.schlusskurs = schlusskurs;
         this.wertpapier = wertpapier;
     }
 
-    public LocalDate getDatum() {
-        return datum;
-    }
-
-    public void setDatum(LocalDate datum) {
+    /**
+     * Konstruktor zum Erzeugen eines Kurs-Objekts ohne Wertpapier-Referenz.
+     *
+     * @param symbol         Das Börsensymbol des Wertpapiers
+     * @param datum           Das Datum des Kurses
+     * @param eröffnungskurs Der Eröffnungskurs des Wertpapiers an diesem Tag
+     * @param schlusskurs    Der Schlusskurs des Wertpapiers an diesem Tag
+     * @param high           Der höchste Kurs des Wertpapiers an diesem Tag
+     * @param low            Der niedrigste Kurs des Wertpapiers an diesem Tag
+     */
+    public Kurs(String symbol, LocalDate datum, double eröffnungskurs, double schlusskurs, double high, double low) {
+        this.symbol = symbol;
         this.datum = datum;
-    }
-
-    public double getEröffnungskurs() {
-        return eröffnungskurs;
-    }
-
-    public void setEröffnungskurs(double eröffnungskurs) {
         this.eröffnungskurs = eröffnungskurs;
-    }
-
-    public double getKurswert() {
-        return kurswert;
-    }
-
-    public void setKurswert(double kurswert) {
-        this.kurswert = kurswert;
-    }
-
-    public double getSchlusskurs() {
-        return schlusskurs;
-    }
-
-    public void setSchlusskurs(double schlusskurs) {
         this.schlusskurs = schlusskurs;
+        this.high = high;
+        this.low = low;
     }
 
-    public Wertpapier getWertpapier() {
-        return wertpapier;
-    }
-
-    public void setWertpapier(Wertpapier wertpapier) {
-        this.wertpapier = wertpapier;
+    public String getKurswert() {
+        return "";
     }
 }
