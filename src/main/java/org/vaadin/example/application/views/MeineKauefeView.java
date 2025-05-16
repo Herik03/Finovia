@@ -26,7 +26,7 @@ public class MeineKauefeView extends VerticalLayout {
 
         // Erstelle den "Zurück"-Button mit einem Pfeil
         Button backButton = new Button(new Icon(VaadinIcon.ARROW_LEFT));
-        backButton.addClickListener(event -> getUI().ifPresent(ui -> ui.navigate("")));  // Navigiere zur Startseite (MainView)
+        backButton.addClickListener(event -> getUI().ifPresent(ui -> ui.navigate("uebersicht")));  // Navigiere zur Startseite (MainView)
 
         // HorizontalLayout für Button und Grid
         HorizontalLayout headerLayout = new HorizontalLayout(backButton);
