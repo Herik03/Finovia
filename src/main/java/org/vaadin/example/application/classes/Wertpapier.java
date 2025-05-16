@@ -27,7 +27,7 @@ public abstract class Wertpapier {
     private Long wertpapierId;
 
     private String name;
-//    private List<Transaktion> transaktionen;
+    private List<Transaktion> transaktionen;
 
     @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Kurs> kurse;
@@ -38,7 +38,7 @@ public abstract class Wertpapier {
         this.name = name;
 //        this.transaktionen = transaktionen;
         this.kurse = kurse;
-    }y
+    }
 
     public Wertpapier(){}
 }
