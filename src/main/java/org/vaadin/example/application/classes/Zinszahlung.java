@@ -1,5 +1,8 @@
 package org.vaadin.example.application.classes;
 
+import jakarta.persistence.Entity;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 /**
  * Die Klasse {@code Zinszahlung} repräsentiert eine konkrete Form der {@link Ausschuettung},
@@ -12,13 +15,15 @@ import java.time.LocalDate;
  *
  * @author Jan
  */
+@Entity
+@NoArgsConstructor
 public class Zinszahlung extends Ausschuettung{
     private double zinssatz;
 /**
  * Konstruktor zur Initialisierung aller Attribute der Zinszahlung.
  */
-    public Zinszahlung(double zinssatz, int ausschüttungId, double betrag, LocalDate datum, double steuern, Transaktion transaktion) {
-        super(ausschüttungId, betrag, datum, steuern, transaktion);
+    public Zinszahlung(double zinssatz, double betrag, LocalDate datum, double steuern) {
+        super(betrag, datum, steuern);
         this.zinssatz = zinssatz;
     }
 

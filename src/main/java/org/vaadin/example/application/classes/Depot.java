@@ -1,6 +1,8 @@
 package org.vaadin.example.application.classes;
 
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -13,81 +15,78 @@ import java.util.Map;
  * Diese Klasse implementiert das Beobachter-Interface, um Benachrichtigungen
  * über Änderungen an Supportanfragen zu erhalten.
  */
-//        von Ben
+//        von Ben, Sören
+
+@Entity
+@Table(name = "Depot")
+@NoArgsConstructor
 public class Depot {
-    @Setter
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
-    private String depotId;
+    private Long depotId;
 
     @Setter
     @Getter
     private String name;
 
-    @Setter
     @Getter
+    @ManyToOne
+    @JoinColumn(name = "nutzer_id")
     private Nutzer besitzer;
 
-    private List<Wertpapier> wertpapiere;
-
-    private final Map<Wertpapier, Double> papierBestand;
+    @OneToMany(mappedBy = "depot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<DepotWertpapier> depotWertpapiere = new ArrayList<>();
 
     /**
      * Konstruktor für ein neues Depot
      *
-     * @param depotId Die eindeutige ID des Depots
      * @param name Der Name des Depots
      * @param besitzer Der Besitzer des Depots
      */
-    public Depot(String depotId, String name, Nutzer besitzer) {
-        this.depotId = depotId;
+    public Depot(String name, Nutzer besitzer) {
         this.name = name;
         this.besitzer = besitzer;
-        this.wertpapiere = new ArrayList<>();
-        this.papierBestand  = new HashMap<>();
     }
 
-    /**
-     * Fügt eine Wertpapierposition zum Depot hinzu
-     *
-     * @param wertpapier Die hinzuzufügende Wertpapierposition
-     */
-    public void wertpapierHinzufuegen(Wertpapier wertpapier) {
-        if(!wertpapiere.contains(wertpapier)) {
-            wertpapiere.add(wertpapier);
+    public void setBesitzer(Nutzer nutzer) {
+        this.besitzer = nutzer;
+        if (nutzer != null && !nutzer.getDepots().contains(this)) {
+            nutzer.getDepots().add(this);
         }
     }
 
-    /**
-     * Entfernt eine Wertpapierposition aus dem Depot
-     *
-     * @param wertpapier Die zu entfernende Wertpapierposition
-     * @return true wenn die Position entfernt wurde, false wenn sie nicht gefunden wurde
-     */
-    public boolean wertpapierEntfernen(Wertpapier wertpapier) {
-        papierBestand.remove(wertpapier);
-        return wertpapiere.remove(wertpapier);
+    public void wertpapierHinzufuegen(Wertpapier wertpapier, int anzahl) {
+        for (DepotWertpapier dw : depotWertpapiere) {
+            if (dw.getWertpapier().equals(wertpapier)) {
+                dw.setAnzahl(dw.getAnzahl() + anzahl);
+                dw.setDepot(this);
+                return;
+            }
+        }
+        depotWertpapiere.add(new DepotWertpapier(this, wertpapier, anzahl));
+    }
+
+    public boolean wertpapierEntfernen(Wertpapier wertpapier, int anzahl) {
+        for (DepotWertpapier dw : depotWertpapiere) {
+            if (dw.getWertpapier().equals(wertpapier)) {
+                if (dw.getAnzahl() > anzahl) {
+                    dw.setAnzahl(dw.getAnzahl() - anzahl);
+                } else {
+                    dw.setDepot(null);
+                    depotWertpapiere.remove(dw);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<DepotWertpapier> getDepotWertpapiere() {
+        return new ArrayList<>(depotWertpapiere);
     }
 
     public List<Wertpapier> getWertpapiere() {
-        return new ArrayList<>(wertpapiere); // Kopie zurückgeben für Kapselung
-    }
-
-    // Batuhan Guevercin
-    public void fuegeWertpapierHinzu(Wertpapier papier, double menge) {
-        if (papierBestand.containsKey(papier)) {
-            double aktuell = papierBestand.get(papier);
-            papierBestand.put(papier, aktuell + menge);
-        } else {
-            papierBestand.put(papier, menge);
-            wertpapierHinzufuegen(papier);
-        }
-    }
-
-    public double getBestandVon(Wertpapier papier) {
-        return papierBestand.getOrDefault(papier, 0.0);
-    }
-
-    public Map<Wertpapier, Double> getPapierBestand() {
-        return new HashMap<>(papierBestand);
+        return depotWertpapiere.stream().map(DepotWertpapier::getWertpapier).toList();
     }
 }

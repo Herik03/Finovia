@@ -1,6 +1,8 @@
 package org.vaadin.example.application.classes;
 
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -19,12 +21,22 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
+@Entity
+@Table(name = "Kurs")
+@NoArgsConstructor
 public class Kurs {
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    private Long id;
+
     private LocalDateTime datum;
     private double eröffnungskurs;
     private double schlusskurs;
     private double high;
     private double low;
+
+    @ManyToOne
+    @JoinColumn(name = "wertpapier_id")
     private Wertpapier wertpapier;
     private String symbol;
 

@@ -19,11 +19,12 @@ import java.util.stream.Collectors;
  * @version 2.0
  */
 @Entity
-@Table(name = "USER")
+@Table(name = "Nutzer")
 public class Nutzer implements Beobachter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -48,9 +49,12 @@ public class Nutzer implements Beobachter {
     private Collection<String> roles;
 
     @Getter
+    @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private final List<Depot> depots = new ArrayList<>();
 
     @Getter @Setter
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "watchlist_id")
     private Watchlist watchlist;
 
     // Registrierungsdatum hinzugefügt
@@ -106,7 +110,10 @@ public class Nutzer implements Beobachter {
      */
     public void depotHinzufuegen(Depot depot) {
         Objects.requireNonNull(depot, "Depot darf nicht null sein");
-        depots.add(depot);
+        if (!depots.contains(depot)) {
+            depots.add(depot);
+            depot.setBesitzer(this);
+        }
     }
 
     /**
@@ -116,33 +123,11 @@ public class Nutzer implements Beobachter {
      * @return true wenn das Depot entfernt wurde, false wenn es nicht gefunden wurde
      */
     public boolean depotEntfernen(Depot depot) {
-        return depots.remove(depot);
-    }
-
-    /**
-     * Sucht ein Depot anhand seiner ID
-     *
-     * @param depotId Die ID des gesuchten Depots
-     * @return Das gefundene Depot oder null, wenn keines gefunden wurde
-     */
-    public Depot findeDepotNachId(String depotId) {
-        return depots.stream()
-                .filter(depot -> depot.getDepotId().equals(depotId))
-                .findFirst()
-                .orElse(null);
-    }
-
-    /**
-     * Erstellt ein neues Depot für den Nutzer und fügt es zur Liste hinzu
-     *
-     * @param depotId Die ID des neuen Depots
-     * @param name Der Name des neuen Depots
-     * @return Das neu erstellte Depot
-     */
-    public Depot erstelleNeuesDepot(String depotId, String name) {
-        Depot neuesDepot = new Depot(depotId, name, this);
-        depotHinzufuegen(neuesDepot);
-        return neuesDepot;
+        if (depots.remove(depot)) {
+            depot.setBesitzer(null);
+            return true;
+        }
+        return false;
     }
 
     // Implementierung der Beobachter-Methode

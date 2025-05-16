@@ -1,5 +1,8 @@
 package org.vaadin.example.application.classes;
 
+import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 /**
  * Abstrakte Oberklasse für Ausschüttungen wie {@link Dividende} oder {@link Zinszahlung}.
@@ -13,8 +16,15 @@ import java.time.LocalDate;
  * @author Jan
  */
 
+@Entity
+@Table(name = "Ausschuettung")
+@Inheritance(strategy = jakarta.persistence.InheritanceType.JOINED)
+@NoArgsConstructor
 public abstract class Ausschuettung{
-    private int ausschüttungId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long ausschüttungId;
+
     private double betrag;
     private LocalDate datum;
     private double steuern;
@@ -22,19 +32,14 @@ public abstract class Ausschuettung{
 /**
  * Konstruktor für eine Ausschüttung.
  */
- public Ausschuettung(int ausschüttungId, double betrag, LocalDate datum, double steuern, Transaktion transaktion) {
-        this.ausschüttungId = ausschüttungId;
+ public Ausschuettung(double betrag, LocalDate datum, double steuern) {
         this.betrag = betrag;
         this.datum = datum;
         this.steuern = steuern;
     }
 
-    public int getAusschüttungId() {
+    public Long getAusschüttungId() {
         return ausschüttungId;
-    }
-
-    public void setAusschüttungId(int ausschüttungId) {
-        this.ausschüttungId = ausschüttungId;
     }
 
     public double getBetrag() {

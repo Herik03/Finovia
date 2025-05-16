@@ -16,9 +16,12 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.classes.Kauf;
+import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.AktienKaufService;
 import org.vaadin.example.application.services.DepotService;
 import org.vaadin.example.application.services.KaufService;
@@ -73,7 +76,7 @@ public class AktienKaufView extends AbstractSideNav {
 
         // Depot-Auswahl hinzufügen
         ComboBox<Depot> depotComboBox = new ComboBox<>("Depot auswählen");
-        List<Depot> depots = depotService.getDepotsByNutzerId(1); // Hardcoded Nutzer-ID
+        List<Depot> depots = depotService.getDepotsByNutzerId(getAktuelleNutzerId()); // Hardcoded Nutzer-ID
         depotComboBox.setItems(depots);
         depotComboBox.setItemLabelGenerator(Depot::getName);
 
@@ -102,7 +105,7 @@ public class AktienKaufView extends AbstractSideNav {
                 kaufService.addKauf(kauf);
 
                 // Dem Depot hinzufügen
-                depot.wertpapierHinzufuegen(gekaufteAktie);
+                depot.wertpapierHinzufuegen(gekaufteAktie, stueckzahl);
 
                 Notification.show("Erfolgreich gekauft: " + gekaufteAktie.getName()
                                 + " (" + stueckzahl + " Stück)")
@@ -141,5 +144,13 @@ public class AktienKaufView extends AbstractSideNav {
         } else {
             kursField.setValue("0.00");
         }
+    }
+
+    private Long getAktuelleNutzerId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof Nutzer userDetails) {
+            return userDetails.getId();
+        }
+        return null;
     }
 }

@@ -173,7 +173,7 @@ public class SearchView extends AbstractSideNav {
         resultGrid.getDataProvider().refreshAll();
     }
     private void showDetails(SearchResult result) {
-        WertpapierView wertpapierView = new WertpapierView(alphaVantageService, this);
+        WertpapierView wertpapierView = new WertpapierView(alphaVantageService);
         wertpapierView.displayWertpapierDetails(result.getSymbol());
         closeSideNav();
     }

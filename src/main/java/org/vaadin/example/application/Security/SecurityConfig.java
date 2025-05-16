@@ -11,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.vaadin.example.application.views.LoginView;
 
 @EnableWebSecurity
@@ -22,12 +24,20 @@ public class SecurityConfig extends VaadinWebSecurity {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception{
-        super.configure(http);
-        setLoginView(http, LoginView.class);
-
-        http.formLogin().defaultSuccessUrl("/uebersicht", true);
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return (request, response, authentication) -> {
+            response.sendRedirect("/uebersicht");
+        };
     }
 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http
+                .formLogin(form -> form
+                        .successHandler(successHandler())  // hier successHandler setzen
+                );
+        setLoginView(http, LoginView.class);
+    }
 }
