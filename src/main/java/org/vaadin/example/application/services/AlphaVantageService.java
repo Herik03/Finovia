@@ -103,7 +103,7 @@ public class AlphaVantageService {
             throw new APIException("Fehler beim Abrufen der Intraday-Kursdaten: " + response.getErrorMessage());
         }
 
-        return response.getStockUnits()
+        List<Kurs> result = response.getStockUnits()
                 .stream()
                 .map(data -> new Kurs(
                         symbol,
@@ -114,6 +114,10 @@ public class AlphaVantageService {
                         data.getLow()
                 ))
                 .collect(Collectors.toList());
+
+        Collections.reverse(result);
+        return result;
+
     }
 
     /**
@@ -136,17 +140,20 @@ public class AlphaVantageService {
             throw new APIException("Fehler beim Abrufen der täglichen Kursdaten: " + response.getErrorMessage());
         }
 
-        return response.getStockUnits()
+        List<Kurs> result = response.getStockUnits()
                 .stream()
-                .map( data -> new Kurs(
+                .map(data -> new Kurs(
                         symbol,
                         parseDateSmart(data.getDate()),
                         data.getOpen(),
                         data.getClose(),
                         data.getHigh(),
                         data.getLow()
-                        ))
+                ))
                 .collect(Collectors.toList());
+
+        Collections.reverse(result);
+        return result;
     }
 
     /**
@@ -169,7 +176,7 @@ public class AlphaVantageService {
             throw new APIException("Fehler beim Abrufen der wöchentlichen Kursdaten: " + response.getErrorMessage());
         }
 
-        return response.getStockUnits()
+        List<Kurs> result = response.getStockUnits()
                 .stream()
                 .map(data -> new Kurs(
                         symbol,
@@ -180,6 +187,9 @@ public class AlphaVantageService {
                         data.getLow()
                 ))
                 .collect(Collectors.toList());
+
+        Collections.reverse(result);
+        return result;
     }
 
 
@@ -202,7 +212,7 @@ public class AlphaVantageService {
             throw new APIException("Fehler beim Abrufen der wöchentlichen Kursdaten: " + response.getErrorMessage());
         }
 
-        return response.getStockUnits()
+        List<Kurs> result = response.getStockUnits()
                 .stream()
                 .map(data -> new Kurs(
                         symbol,
@@ -213,6 +223,9 @@ public class AlphaVantageService {
                         data.getLow()
                 ))
                 .collect(Collectors.toList());
+
+        Collections.reverse(result);
+        return result;
     }
 
     /**
