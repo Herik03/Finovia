@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Repräsentiert einen historischen Kurs eines {@link Wertpapier} an einem bestimmten Datum.
@@ -18,7 +20,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class Kurs {
-    private LocalDate datum;
+    private LocalDateTime datum;
     private double eröffnungskurs;
     private double schlusskurs;
     private double high;
@@ -29,7 +31,7 @@ public class Kurs {
     /**
      * Konstruktor zum Erzeugen eines Kurs-Objekts mit allen Werten.
     */
-    public Kurs(LocalDate datum, double eröffnungskurs, double schlusskurs, double high, double low, Wertpapier wertpapier) {
+    public Kurs(LocalDateTime datum, double eröffnungskurs, double schlusskurs, double high, double low, Wertpapier wertpapier) {
         this.datum = datum;
         this.eröffnungskurs = eröffnungskurs;
         this.high = high;
@@ -48,7 +50,7 @@ public class Kurs {
      * @param high           Der höchste Kurs des Wertpapiers an diesem Tag
      * @param low            Der niedrigste Kurs des Wertpapiers an diesem Tag
      */
-    public Kurs(String symbol, LocalDate datum, double eröffnungskurs, double schlusskurs, double high, double low) {
+    public Kurs(String symbol, LocalDateTime datum, double eröffnungskurs, double schlusskurs, double high, double low) {
         this.symbol = symbol;
         this.datum = datum;
         this.eröffnungskurs = eröffnungskurs;
@@ -57,7 +59,17 @@ public class Kurs {
         this.low = low;
     }
 
-    public String getKurswert() {
-        return "";
+    //public String getKurswert() {
+    //    return "";
+    //}
+
+    public double getKurswert() {
+        return schlusskurs;
     }
+
+    public String getDatumAlsString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return datum.format(formatter);
+    }
+
 }
