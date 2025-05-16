@@ -33,6 +33,8 @@ public class WertpapierView extends VerticalLayout {
     public WertpapierView(AlphaVantageService alphaVantageService) {
         this.alphaVantageService = alphaVantageService;
     }
+
+
     /**
      * Öffnet einen Dialog mit Kursverlauf, Fundamentaldaten und Beschreibung für das gegebene Symbol.
      * @param symbol Das Börsensymbol des Wertpapiers
@@ -103,6 +105,7 @@ public class WertpapierView extends VerticalLayout {
                         .set("box-shadow", "0 2px 4px rgba(0,0,0,0.05)")
                         .set("font-size", "0.95rem");
 
+
                 HorizontalLayout infoAndDescriptionLayout = new HorizontalLayout(scroller, descriptionBox);
                 infoAndDescriptionLayout.setSizeFull();
                 infoAndDescriptionLayout.setSpacing(true);
@@ -127,6 +130,14 @@ public class WertpapierView extends VerticalLayout {
                     .set("z-index", "1000");
             dialog.add(closeButton);
             dialog.add(layout);
+
+            // Füge auch einen Listener zum Dialog hinzu, falls er auf andere Weise geschlossen wird
+            dialog.addDialogCloseActionListener(event -> {
+                if (parentView != null) {
+                    parentView.openSideNav();
+                }
+            });
+
             dialog.open();
 
         } catch (Exception e) {

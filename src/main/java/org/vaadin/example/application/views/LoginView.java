@@ -22,7 +22,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
  * </ul>
  * <p>
  * Die Klasse implementiert das BeforeEnterListener-Interface, um Fehler bei der Anmeldung zu verarbeiten.
- * 
+ *
  * @author Finovia Team
  * @version 1.0
  */
@@ -49,7 +49,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
     public LoginView() {
         addClassNames(LumoUtility.Display.FLEX,LumoUtility.JustifyContent.CENTER,LumoUtility.AlignItems.CENTER);
         setSizeFull();
-      loginForm=new LoginForm();
+        loginForm=new LoginForm();
         loginForm.setAction("login");
         loginForm.setForgotPasswordButtonVisible(false);
         button=new Button("Registrieren",e->UI.getCurrent().navigate("register"));

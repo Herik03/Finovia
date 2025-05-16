@@ -59,8 +59,12 @@ public class Kurs {
         this.low = low;
     }
 
-    public String getKurswert() {
-        return "";
+    //public String getKurswert() {
+    //    return "";
+    //}
+
+    public double getKurswert() {
+        return schlusskurs;
     }
 
     public String getDatumAlsString() {

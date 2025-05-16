@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Nutzer-Klasse, die die Eigenschaften und Methoden eines Nutzers repräsentiert.
@@ -16,13 +18,18 @@ public class Depot {
     @Setter
     @Getter
     private String depotId;
+
     @Setter
     @Getter
     private String name;
+
     @Setter
     @Getter
     private Nutzer besitzer;
+
     private List<Wertpapier> wertpapiere;
+
+    private final Map<Wertpapier, Double> papierBestand;
 
     /**
      * Konstruktor für ein neues Depot
@@ -36,6 +43,7 @@ public class Depot {
         this.name = name;
         this.besitzer = besitzer;
         this.wertpapiere = new ArrayList<>();
+        this.papierBestand  = new HashMap<>();
     }
 
     /**
@@ -44,7 +52,9 @@ public class Depot {
      * @param wertpapier Die hinzuzufügende Wertpapierposition
      */
     public void wertpapierHinzufuegen(Wertpapier wertpapier) {
-        wertpapiere.add(wertpapier);
+        if(!wertpapiere.contains(wertpapier)) {
+            wertpapiere.add(wertpapier);
+        }
     }
 
     /**
@@ -54,10 +64,30 @@ public class Depot {
      * @return true wenn die Position entfernt wurde, false wenn sie nicht gefunden wurde
      */
     public boolean wertpapierEntfernen(Wertpapier wertpapier) {
+        papierBestand.remove(wertpapier);
         return wertpapiere.remove(wertpapier);
     }
 
     public List<Wertpapier> getWertpapiere() {
         return new ArrayList<>(wertpapiere); // Kopie zurückgeben für Kapselung
+    }
+
+    // Batuhan Guevercin
+    public void fuegeWertpapierHinzu(Wertpapier papier, double menge) {
+        if (papierBestand.containsKey(papier)) {
+            double aktuell = papierBestand.get(papier);
+            papierBestand.put(papier, aktuell + menge);
+        } else {
+            papierBestand.put(papier, menge);
+            wertpapierHinzufuegen(papier);
+        }
+    }
+
+    public double getBestandVon(Wertpapier papier) {
+        return papierBestand.getOrDefault(papier, 0.0);
+    }
+
+    public Map<Wertpapier, Double> getPapierBestand() {
+        return new HashMap<>(papierBestand);
     }
 }

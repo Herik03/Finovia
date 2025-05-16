@@ -1,6 +1,5 @@
 package org.vaadin.example.application.services;
 
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Kauf;
@@ -17,7 +16,7 @@ import java.util.List;
  * um aktuelle Kursinformationen abzurufen und darauf basierend
  * ein Kaufobjekt sowie eine neue Aktie zu erstellen.
  *
- * @author Batuhan Güvercin
+ * @author Batuhan
  */
 @Service
 public class AktienKaufService {
@@ -27,59 +26,95 @@ public class AktienKaufService {
         this.alphaVantageService = alphaVantageService;
     }
 
-/**
- * Führt den Kauf einer Aktie durch.
- *
- * Diese Methode:
- * - prüft die Eingaben
- * - ruft den aktuellen Kurs der gewünschten Aktie ab
- * - erstellt eine Kauf-Transaktion
- * - erstellt ein neues Aktie-Objekt mit der Kaufhistorie
- * - verknüpft die Transaktion mit der Aktie
- */
-    public Aktie kaufeAktie(String symbol, int stueckzahl, String handelsplatz){
+    /**
+     * Führt den Kauf einer Aktie durch.
+     *
+     * Diese Methode:
+     * - prüft die Eingaben
+     * - ruft den aktuellen Kurs der gewünschten Aktie ab
+     * - erstellt eine Kauf-Transaktion
+     * - erstellt ein neues Aktie-Objekt mit der Kaufhistorie
+     * - verknüpft die Transaktion mit der Aktie
+     *
+     * @param symbol       Das Tickersymbol der Aktie (z. B. AAPL)
+     * @param stueckzahl   Anzahl der zu kaufenden Aktien
+     * @param handelsplatz Börsenplatz des Kaufs
+     * @return Ein neues Aktie-Objekt oder null bei Fehler
+     */
+    public Aktie kaufeAktie(String symbol, int stueckzahl, String handelsplatz) {
         if (symbol == null || symbol.isBlank() || stueckzahl <= 0) {
             return null;
         }
 
         // Abrufen des aktuellen Aktienkurses vom API-Service
         StockQuote quote = alphaVantageService.getCurrentStockQuote(symbol);
-        if(quote == null){
+        if (quote == null) {
             return null;
         }
 
-        double kurs = quote.getPrice();
-        double gebühren = 2.50;
+        double kurs = quote.getPrice();  // Kurs von der API
+        double gebuehren = 2.50;         // Standardgebühren (optional anpassen)
 
-        // Erstellen eines neuen Kaufobjekts mit den Transaktionsdaten
+        // Erstellen der Kauf-Transaktion
         Kauf kauf = new Kauf(
                 handelsplatz,
                 LocalDate.now(),
-                gebühren,
+                gebuehren,
                 kurs,
                 stueckzahl,
                 null,
                 null
         );
 
-        // Anlegen der Transaktionsliste und Hinzufügen des Kaufs
         List<Transaktion> transaktionen = new ArrayList<>();
         transaktionen.add(kauf);
 
-        // Erstellen des Aktie-Objekts inklusive Transaktion
+        // Erstellen des Aktie-Objekts mit vorhandenem Konstruktor
         Aktie aktie = new Aktie(
-                stueckzahl,
-                "Unternehmen: " + quote.getSymbol(),
-                new ArrayList<>(),
-                "ISIN: " + quote.getSymbol(),
-                quote.getSymbol(),
-                quote.getSymbol().hashCode(),
-                transaktionen,
-                new ArrayList<>()
+                "Unternehmen: " + quote.getSymbol(), // unternehmensname
+                "",     // description
+                "",     // exchange
+                "",     // currency
+                "",     // country
+                "",     // sector
+                "",     // industry
+                0L,     // marketCap
+                0L,     // ebitda
+                0.0,    // pegRatio
+                0.0,    // bookValue
+                0.0,    // dividendPerShare
+                0.0,    // dividendYield
+                0.0,    // eps
+                0.0,    // forwardPE
+                0.0,    // beta
+                0.0,    // yearHigh
+                0.0,    // yearLow
+                null    // dividendDate
         );
 
+        // Setzen der geerbten Attribute aus Wertpapier
+        aktie.setIsin("ISIN: " + quote.getSymbol());
+        aktie.setName(quote.getSymbol());
+        aktie.setWertpapierId(quote.getSymbol().hashCode());
+        aktie.setTransaktionen(transaktionen);
+        aktie.setKurse(new ArrayList<>()); // Hier kannst du später auch historische Kurse setzen, falls gewünscht
+
+        // Verknüpfe die Transaktion mit der Aktie
         kauf.setWertpapier(aktie);
 
         return aktie;
+    }
+
+    public double getKursFürSymbol(String symbol) {
+        if (symbol == null || symbol.isBlank()) {
+            throw new IllegalArgumentException("Symbol darf nicht leer sein.");
+        }
+
+        StockQuote quote = alphaVantageService.getCurrentStockQuote(symbol);
+        if (quote == null) {
+            throw new RuntimeException("Kein Kurs für Symbol gefunden: " + symbol);
+        }
+
+        return quote.getPrice();
     }
 }
