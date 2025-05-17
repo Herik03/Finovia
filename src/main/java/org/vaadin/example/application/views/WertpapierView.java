@@ -132,11 +132,13 @@ public class WertpapierView extends VerticalLayout {
             dialog.add(layout);
 
             // Füge auch einen Listener zum Dialog hinzu, falls er auf andere Weise geschlossen wird
-            dialog.addDialogCloseActionListener(event -> {
+           /* dialog.addDialogCloseActionListener(event -> {
                 if (parentView != null) {
                     parentView.openSideNav();
                 }
             });
+
+            */
 
             dialog.open();
 

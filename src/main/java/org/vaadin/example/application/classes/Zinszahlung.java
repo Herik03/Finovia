@@ -18,7 +18,7 @@ public class Zinszahlung extends Ausschuettung{
  * Konstruktor zur Initialisierung aller Attribute der Zinszahlung.
  */
     public Zinszahlung(double zinssatz, int ausschüttungId, double betrag, LocalDate datum, double steuern, Transaktion transaktion) {
-        super(ausschüttungId, betrag, datum, steuern, transaktion);
+        super(ausschüttungId, betrag, datum, steuern);
         this.zinssatz = zinssatz;
     }
 

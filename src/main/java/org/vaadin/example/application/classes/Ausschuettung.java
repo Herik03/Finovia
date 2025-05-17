@@ -22,7 +22,7 @@ public abstract class Ausschuettung{
 /**
  * Konstruktor für eine Ausschüttung.
  */
- public Ausschuettung(int ausschüttungId, double betrag, LocalDate datum, double steuern, Transaktion transaktion) {
+ public Ausschuettung(int ausschüttungId, double betrag, LocalDate datum, double steuern) {
         this.ausschüttungId = ausschüttungId;
         this.betrag = betrag;
         this.datum = datum;

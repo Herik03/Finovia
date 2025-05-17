@@ -91,6 +91,7 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
      */
     @Override
     public void setParameter(BeforeEvent event, String depotId) {
+
         // Depot aus dem Service laden
         currentDepot = depotService.getDepotById(depotId);
 
@@ -109,6 +110,20 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
 
         // Wertpapiere anzeigen
         wertpapierGrid.setItems(currentDepot.getWertpapiere());
+
+        DividendenPanel dividendenPanel = new DividendenPanel(currentDepot);
+
+        // Layout zusammensetzen: Hauptinhalte links, Dividenden rechts
+        HorizontalLayout mainArea = new HorizontalLayout();
+        mainArea.setWidthFull();
+        mainArea.add(contentLayout, dividendenPanel);
+        mainArea.setFlexGrow(2, contentLayout);
+        mainArea.setFlexGrow(1, dividendenPanel);
+
+        mainArea.removeAll();
+        mainArea.add(contentLayout, dividendenPanel);
+        addToMainContent(mainArea);
+
     }
 
     /**

@@ -3,6 +3,7 @@ package org.vaadin.example.application.classes;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,9 @@ public class Depot {
     private List<Wertpapier> wertpapiere;
 
     private final Map<Wertpapier, Double> papierBestand;
+
+    private final List<Dividende> dividendenHistorie = new ArrayList<>();
+    private double saldo = 0.0;
 
     /**
      * Konstruktor für ein neues Depot
@@ -90,4 +94,45 @@ public class Depot {
     public Map<Wertpapier, Double> getPapierBestand() {
         return new HashMap<>(papierBestand);
     }
+
+    public List<Dividende> getDividendenHistorie() {
+        return new ArrayList<>(dividendenHistorie);
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+    /**
+     * Prüft, ob für gehaltene Aktien Dividenden fällig sind und bucht sie abzüglich Steuer gut.
+     *
+     * @param aktuellesDatum Das aktuelle Datum zur Prüfung
+     */
+    public void pruefeUndBucheDividenden(LocalDate aktuellesDatum) {
+        for (Wertpapier wp : wertpapiere) {
+            if (wp instanceof Aktie aktie && aktie.getDividendDate() != null) {
+                if (aktuellesDatum.equals(aktie.getDividendDate())) {
+                    int anzahl = (int) getBestandVon(aktie);
+                    if (anzahl > 0 && aktie.getDividendPerShare() > 0.0) {
+                        double brutto = aktie.getDividendPerShare() * anzahl;
+                        double steuer = brutto * 0.25;
+                        double netto = brutto - steuer;
+
+                        Dividende dividende = new Dividende(
+                                anzahl,
+                                aktie.getDividendYield(),
+                                dividendenHistorie.size() + 1,
+                                netto,
+                                aktuellesDatum,
+                                steuer
+                        );
+
+                        dividendenHistorie.add(dividende);
+                        saldo += netto;
+                    }
+                }
+            }
+        }
+    }
+
+
 }

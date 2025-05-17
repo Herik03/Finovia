@@ -20,8 +20,8 @@ public class Dividende extends Ausschuettung{
 /**
  * Konstruktor für eine Dividendenzahlung.
  */
-    public Dividende(int aktienAnzahl, double dividendenRendite, int ausschüttungId, double betrag, LocalDate datum, double steuern, Transaktion transaktion) {
-        super(ausschüttungId, betrag, datum, steuern, transaktion);
+    public Dividende(int aktienAnzahl, double dividendenRendite, int ausschüttungId, double betrag, LocalDate datum, double steuern) {
+        super(ausschüttungId, betrag, datum, steuern);
         this.aktienAnzahl = aktienAnzahl;
         this.dividendenRendite = dividendenRendite;
     }

@@ -102,6 +102,8 @@ public class DepotService {
     public void deleteDepot(String depotId) {
         depotDatabase.remove(depotId);
     }
+
+
 }
 //TODO Ersetzen der Beispieldaten durch eine echte Datenbankanbindung
 //TODO: Implementierung der Methoden für das Speichern, Löschen  von Depots aus der Datenbank
