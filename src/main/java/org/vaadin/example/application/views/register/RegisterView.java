@@ -190,50 +190,59 @@ public class RegisterView extends VerticalLayout {
      * and creates a new user if all validations pass.
      */
     private void registerUser() {
-        binder.bindInstanceFields(this);
+    try {
+        Nutzer nutzer = new Nutzer();
+        
+        // Nur die anderen Felder an den Binder binden (ohne Passwort)
+        binder.forField(username).bind(Nutzer::getUsername, Nutzer::setUsername);
+        binder.forField(vorname).bind(Nutzer::getVorname, Nutzer::setVorname);
+        binder.forField(nachname).bind(Nutzer::getNachname, Nutzer::setNachname);
+        binder.forField(email).bind(Nutzer::getEmail, Nutzer::setEmail);
+        
+        // Alle gebundenen Felder in den Nutzer schreiben
+        binder.writeBean(nutzer);
+        
+        // Passwort manuell setzen (da es nicht über den Binder gebunden ist)
+        nutzer.setPasswort(password.getValue());
 
-        try {
-            Nutzer nutzer = new Nutzer();
-            binder.writeBean(nutzer);
-
-            // Prüfen, ob Benutzername bereits existiert
-            if (nutzerService.usernameExists(nutzer.getUsername())) {
-                Notification.show("Benutzername bereits vergeben")
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
-                return;
-            }
-
-            // Prüfen, ob E-Mail bereits existiert
-            if (nutzerService.emailExists(nutzer.getEmail())) {
-                Notification.show("E-Mail bereits registriert")
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
-                return;
-            }
-
-            // Prüfen, ob Passwort gültig ist
-            if (!containsNumbersAndLetters(password.getValue())) {
-                Notification.show("Passwort muss mindestens 8 Zeichen lang sein und Zahlen und Buchstaben enthalten")
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
-                return;
-            }
-
-            // Prüfen, ob Passwörter übereinstimmen
-            if (!password.getValue().equals(confirmPassword.getValue())) {
-                Notification.show("Passwörter stimmen nicht überein")
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
-                return;
-            }
-
-            nutzerService.speichereNutzer(nutzer);
-
-            Notification.show("Registrierung erfolgreich. Sie können sich jetzt anmelden.")
-                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-
-            getUI().ifPresent(ui -> ui.navigate("login"));
-
-        } catch (ValidationException e) {
-            Notification.show("Ungültige Eingaben. Bitte überprüfen Sie Ihre Daten.")
+        // Prüfen, ob Benutzername bereits existiert
+        if (nutzerService.usernameExists(nutzer.getUsername())) {
+            Notification.show("Benutzername bereits vergeben")
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            return;
         }
+
+        // Prüfen, ob E-Mail bereits existiert
+        if (nutzerService.emailExists(nutzer.getEmail())) {
+            Notification.show("E-Mail bereits registriert")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            return;
+        }
+
+        // Prüfen, ob Passwort gültig ist
+        if (!containsNumbersAndLetters(password.getValue())) {
+            Notification.show("Passwort muss mindestens 8 Zeichen lang sein und Zahlen und Buchstaben enthalten")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            return;
+        }
+
+        // Prüfen, ob Passwörter übereinstimmen
+        if (!password.getValue().equals(confirmPassword.getValue())) {
+            Notification.show("Passwörter stimmen nicht überein")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            return;
+        }
+
+        nutzerService.speichereNutzer(nutzer);
+
+        Notification.show("Registrierung erfolgreich. Sie können sich jetzt anmelden.")
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+        getUI().ifPresent(ui -> ui.navigate("login"));
+
+    } catch (ValidationException e) {
+        Notification.show("Ungültige Eingaben. Bitte überprüfen Sie Ihre Daten.")
+                .addThemeVariants(NotificationVariant.LUMO_ERROR);
     }
+}
 }

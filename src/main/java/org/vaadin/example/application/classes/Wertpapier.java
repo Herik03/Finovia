@@ -27,6 +27,8 @@ public abstract class Wertpapier {
     private Long wertpapierId;
 
     private String name;
+
+    @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Transaktion> transaktionen;
 
     @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

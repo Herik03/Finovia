@@ -1,5 +1,8 @@
 package org.vaadin.example.application.classes;
 
+import jakarta.persistence.Entity;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 /**
  * Repräsentiert einen Kaufvorgang eines {@link Wertpapier} auf einem bestimmten Handelsplatz.
@@ -11,6 +14,8 @@ import java.time.LocalDate;
  *
  * @author Jan
  */
+@Entity
+@NoArgsConstructor
 public class Kauf extends Transaktion{
     private String handelsplatz;
 /**

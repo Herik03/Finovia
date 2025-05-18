@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.repositories.NutzerRepository;
 
@@ -21,6 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) {
         Nutzer nutzer = nutzerRepository.findByUsername(username);
         if (nutzer == null) {
@@ -30,6 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 nutzer.getUsername(),
                 nutzer.getPasswort(),
+                true, true, true, true,
                 nutzer.getRoles().stream()
                         .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                         .collect(Collectors.toList())

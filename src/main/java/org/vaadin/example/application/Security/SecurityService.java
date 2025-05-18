@@ -9,17 +9,18 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Component;
 
 @Component
-
 public class SecurityService {
     private static final String LOGOUT_SUCCESS_URL = "/";
 
     public UserDetails getAuthenticatedUser() {
         SecurityContext context = SecurityContextHolder.getContext();
         Object principal = context.getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            return (UserDetails) principal;
+
+        if (principal instanceof UserDetails userDetails) {
+            System.out.println("Aktuell angemeldeter Benutzer: " + userDetails.getUsername());
+            return userDetails;
         }
-        // Nicht angemeldet
+        System.out.println("Kein Benutzer angemeldet oder Principal ist nicht vom Typ UserDetails");
         return null;
     }
 
