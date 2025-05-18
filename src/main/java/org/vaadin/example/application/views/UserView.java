@@ -51,13 +51,22 @@ import java.util.List;
 @PermitAll
 public class UserView extends AbstractSideNav {
 
+    private PasswordField currentPassword = new PasswordField("Aktuelles Passwort");
+    private PasswordField newPassword = new PasswordField("Neues Passwort");
+    private PasswordField confirmPassword = new PasswordField("Neues Passwort bestätigen");
+    private TextField vornameField = new TextField("Vorname");
+    private TextField nachnameField = new TextField("Nachname");
+    private EmailField emailField = new EmailField("E-Mail");
+    private TextField benutzernameField = new TextField("Benutzername");
+    private TextField registriertField = new TextField("Registriert seit");
+
     private final NutzerService nutzerService;
     private final SecurityService securityService;
     private Nutzer aktuellerNutzer;
     
     private final VerticalLayout profilContainer = new VerticalLayout();
     private final VerticalLayout benachrichtigungenContainer = new VerticalLayout();
-    private Binder<Nutzer> binder = new BeanValidationBinder<>(Nutzer.class);
+    private final Binder<Nutzer> binder = new BeanValidationBinder<>(Nutzer.class);
     
     @Autowired
     public UserView(NutzerService nutzerService, SecurityService securityService) {
@@ -101,9 +110,6 @@ public class UserView extends AbstractSideNav {
     }
     
     private void erstelleProfilSection() {
-        binder.bindInstanceFields(this);
-        binder.readBean(aktuellerNutzer);
-
         profilContainer.removeAll();
         profilContainer.setPadding(false);
         profilContainer.setSpacing(true);
@@ -122,30 +128,35 @@ public class UserView extends AbstractSideNav {
         
         if (aktuellerNutzer != null) {
             // Formularfelder zum Anzeigen der Nutzerdaten
-            TextField vornameField = new TextField("Vorname");
+
             vornameField.setValue(aktuellerNutzer.getVorname());
             vornameField.setReadOnly(true);
-            
-            TextField nachnameField = new TextField("Nachname");
+
             nachnameField.setValue(aktuellerNutzer.getNachname());
             nachnameField.setReadOnly(true);
-            
-            EmailField emailField = new EmailField("E-Mail");
+
             emailField.setValue(aktuellerNutzer.getEmail());
             emailField.setReadOnly(true);
-            
-            TextField benutzernameField = new TextField("Benutzername");
+
             benutzernameField.setValue(aktuellerNutzer.getUsername());
             benutzernameField.setReadOnly(true);
+
+            registriertField.setValue(aktuellerNutzer.getRegistrierungsDatum()
+                    .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+            registriertField.setReadOnly(true);
+
+            binder.forField(vornameField).bind(Nutzer::getVorname, Nutzer::setVorname);
+            binder.forField(nachnameField).bind(Nutzer::getNachname, Nutzer::setNachname);
+            binder.forField(emailField).bind(Nutzer::getEmail, Nutzer::setEmail);
+            binder.forField(benutzernameField).bind(Nutzer::getUsername, Nutzer::setUsername);
+
+            binder.readBean(aktuellerNutzer);
+
             
             // Passwort-Anzeige mit Passwort-Ändern-Button
             HorizontalLayout passwortLayout = new HorizontalLayout();
             passwortLayout.setSpacing(true);
             passwortLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
-
-            PasswordField currentPassword = new PasswordField("Aktuelles Passwort");
-            PasswordField newPassword = new PasswordField("Neues Passwort");
-            PasswordField confirmPassword = new PasswordField("Neues Passwort bestätigen");
 
             currentPassword.setRequired(true);
             newPassword.setRequired(false);
@@ -166,11 +177,6 @@ public class UserView extends AbstractSideNav {
             passwortVergessenButton.addClickListener(e -> UI.getCurrent().navigate("passwortvergessen"));
 
             passwortLayout.add(currentPassword, newPassword, confirmPassword, passwortVergessenButton);
-            
-            TextField registriertField = new TextField("Registriert seit");
-            registriertField.setValue(aktuellerNutzer.getRegistrierungsDatum()
-                    .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
-            registriertField.setReadOnly(true);
             
             TextField depotsField = new TextField("Anzahl Depots");
             depotsField.setValue(String.valueOf(aktuellerNutzer.getDepots().size()));
