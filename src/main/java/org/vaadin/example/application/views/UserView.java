@@ -225,6 +225,11 @@ public class UserView extends AbstractSideNav {
                     aktuellerNutzer.setPasswort(newPassword.getValue());
                 }
 
+                // Nutzer aktualisieren
+                aktuellerNutzer.setVorname(vornameField.getValue());
+                aktuellerNutzer.setNachname(nachnameField.getValue());
+                aktuellerNutzer.setEmail(emailField.getValue());
+
                 try {
                     binder.writeBean(aktuellerNutzer);
                     nutzerService.speichereNutzer(aktuellerNutzer);
@@ -239,11 +244,6 @@ public class UserView extends AbstractSideNav {
                     Notification.show("Fehler beim Speichern des Profils: " + ex.getMessage())
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
-
-                // Nutzer aktualisieren
-                aktuellerNutzer.setVorname(vornameField.getValue());
-                aktuellerNutzer.setNachname(nachnameField.getValue());
-                aktuellerNutzer.setEmail(emailField.getValue());
                 
                 // Nutzer im Service speichern
                 nutzerService.speichereNutzer(aktuellerNutzer);
