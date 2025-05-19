@@ -48,7 +48,12 @@ public class NutzerService {
      */
     public Nutzer speichereNutzer(Nutzer nutzer) {
         //Passwort verschlüsseln
-        nutzer.setPasswort(passwordEncoder.encode(nutzer.getPasswort()));
+        String pw = nutzer.getPasswort();
+        if (pw != null && !pw.startsWith("$2a$")) {
+            // Nur wenn es noch kein Hash ist
+            pw = passwordEncoder.encode(pw);
+            nutzer.setPasswort(pw);
+        }
 
         // Standardrolle setzen, falls keine angegeben
         if (nutzer.getRoles() == null || nutzer.getRoles().isEmpty()) {

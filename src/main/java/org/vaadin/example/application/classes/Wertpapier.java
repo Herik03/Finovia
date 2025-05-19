@@ -2,8 +2,10 @@ package org.vaadin.example.application.classes;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +23,7 @@ import java.util.List;
 @Table(name = "Wertpapier")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter
+@NoArgsConstructor
 public abstract class Wertpapier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,15 +35,27 @@ public abstract class Wertpapier {
     private List<Transaktion> transaktionen;
 
     @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Ausschuettung> ausschuettungen = new ArrayList<>();
+
+    @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Kurs> kurse;
-/**
- * Konstruktor zur Initialisierung aller Attribute eines Wertpapiers.
- */
+
     public Wertpapier(String name, List<Transaktion> transaktionen, List<Kurs> kurse) {
         this.name = name;
-//        this.transaktionen = transaktionen;
+        this.transaktionen = transaktionen;
         this.kurse = kurse;
     }
 
-    public Wertpapier(){}
+    public void addTransaktion(Transaktion transaktion) {
+        transaktionen.add(transaktion);
+    }
+
+    public void addKurs(Kurs kurs) {
+        kurse.add(kurs);
+    }
+
+    public void addAusschuettung(Ausschuettung ausschuettung) {
+        ausschuettungen.add(ausschuettung);
+    }
+
 }

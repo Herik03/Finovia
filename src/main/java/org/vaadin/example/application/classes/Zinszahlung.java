@@ -1,7 +1,9 @@
 package org.vaadin.example.application.classes;
 
 import jakarta.persistence.Entity;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 /**
@@ -17,22 +19,15 @@ import java.time.LocalDate;
  */
 @Entity
 @NoArgsConstructor
+@Getter @Setter
 public class Zinszahlung extends Ausschuettung{
     private double zinssatz;
 /**
  * Konstruktor zur Initialisierung aller Attribute der Zinszahlung.
  */
-    public Zinszahlung(double zinssatz, double betrag, LocalDate datum, double steuern) {
-        super(betrag, datum, steuern);
-
+    public Zinszahlung(double zinssatz, double betrag, LocalDate datum, double steuern, Wertpapier wertpapier) {
+        super(betrag, datum, steuern, wertpapier);
         this.zinssatz = zinssatz;
     }
 
-    public double getZinssatz() {
-        return zinssatz;
-    }
-
-    public void setZinssatz(double zinssatz) {
-        this.zinssatz = zinssatz;
-    }
 }

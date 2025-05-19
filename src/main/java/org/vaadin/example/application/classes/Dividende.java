@@ -1,7 +1,9 @@
 package org.vaadin.example.application.classes;
 
 import jakarta.persistence.Entity;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
@@ -17,6 +19,8 @@ import java.time.LocalDate;
  *
  * @author Jan
  */
+@Setter
+@Getter
 @Entity
 @NoArgsConstructor
 public class Dividende extends Ausschuettung{
@@ -25,26 +29,11 @@ public class Dividende extends Ausschuettung{
 /**
  * Konstruktor für eine Dividendenzahlung.
  */
-    public Dividende(int aktienAnzahl, double dividendenRendite, double betrag, LocalDate datum, double steuern) {
-        super(betrag, datum, steuern);
+    public Dividende(int aktienAnzahl, double dividendenRendite, double betrag, LocalDate datum, double steuern, Wertpapier wertpapier) {
+        super(betrag, datum, steuern, wertpapier);
 
         this.aktienAnzahl = aktienAnzahl;
         this.dividendenRendite = dividendenRendite;
     }
 
-    public int getAktienAnzahl() {
-        return aktienAnzahl;
-    }
-
-    public void setAktienAnzahl(int aktienAnzahl) {
-        this.aktienAnzahl = aktienAnzahl;
-    }
-
-    public double getDividendenRendite() {
-        return dividendenRendite;
-    }
-
-    public void setDividendenRendite(double dividendenRendite) {
-        this.dividendenRendite = dividendenRendite;
-    }
 }

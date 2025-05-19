@@ -112,7 +112,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
              .set("padding", "var(--lumo-space-m)");
 
         Button dashboardBtn = createNavButton("Dashboard", VaadinIcon.DASHBOARD);
-        dashboardBtn.addClickListener(e -> UI.getCurrent().navigate(""));
+        dashboardBtn.addClickListener(e -> UI.getCurrent().navigate("uebersicht"));
 
         Button depotBtn = createNavButton("Depot", VaadinIcon.PIGGY_BANK);
         depotBtn.addClickListener(e -> UI.getCurrent().navigate("depot"));
