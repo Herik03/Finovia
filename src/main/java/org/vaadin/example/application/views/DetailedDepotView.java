@@ -27,7 +27,7 @@ import org.vaadin.example.application.services.DepotService;
 @Route(value = "depot-details")
 @PageTitle("Depot Details")
 @PermitAll
-public class DetailedDepotView extends AbstractSideNav implements HasUrlParameter<String> {
+public class DetailedDepotView extends AbstractSideNav implements HasUrlParameter<Long> {
 
     private final DepotService depotService;
     private Depot currentDepot;
@@ -90,8 +90,7 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
      * @param depotId Die ID des anzuzeigenden Depots
      */
     @Override
-    public void setParameter(BeforeEvent event, String depotId) {
-
+    public void setParameter(BeforeEvent event, Long depotId) {
         // Depot aus dem Service laden
         currentDepot = depotService.getDepotById(depotId);
 

@@ -2,8 +2,12 @@ package org.vaadin.example.application.classes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 /**
  * Repräsentiert ein Wertpapier vom Typ Aktie.
@@ -17,8 +21,11 @@ import lombok.Setter;
  * @author Sören
  */
 
+@Entity
+@Table(name = "Aktie")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Aktie extends Wertpapier {
     private String unternehmensname;
     private String description;
@@ -40,11 +47,12 @@ public class Aktie extends Wertpapier {
     private double yearLow;
     private LocalDate dividendDate;
 
-    public Aktie(String unternehmensname, String description, String exchange, String currency, String country,
+    public Aktie(String symbol, String unternehmensname, String description, String exchange, String currency, String country,
                  String sector, String industry, long marketCap, long ebitda, double pegRatio, double bookValue,
                  double dividendPerShare, double dividendYield, double eps, double forwardPE, double beta,
                  double yearHigh, double yearLow, LocalDate dividendDate) {
 
+        super(symbol, new ArrayList<Transaktion>(), new ArrayList<Kurs>());
 
         this.unternehmensname = unternehmensname;
         this.description = description;
@@ -66,37 +74,5 @@ public class Aktie extends Wertpapier {
         this.yearLow = yearLow;
         this.dividendDate = dividendDate;
     }
-    public Aktie(int stueckzahl,
-                 String unternehmensname,
-                 List<Kurs> kurse,
-                 String isin,
-                 String symbol,
-                 int wertpapierId,
-                 List<Transaktion> transaktionen,
-                 List<Kurs> placeholderList2) {
 
-        // korrektes Mapping auf den vorhandenen Konstruktor in Wertpapier
-        super(isin, symbol, wertpapierId, transaktionen, placeholderList2);
-        this.unternehmensname = unternehmensname;
-
-        // Initialisierung der optionalen Felder
-        this.description = null;
-        this.exchange = null;
-        this.currency = null;
-        this.country = null;
-        this.sector = null;
-        this.industry = null;
-        this.marketCap = 0L;
-        this.ebitda = 0L;
-        this.pegRatio = 0.0;
-        this.bookValue = 0.0;
-        this.dividendPerShare = 0.0;
-        this.dividendYield = 0.0;
-        this.eps = 0.0;
-        this.forwardPE = 0.0;
-        this.beta = 0.0;
-        this.yearHigh = 0.0;
-        this.yearLow = 0.0;
-        this.dividendDate = null;
-    }
 }

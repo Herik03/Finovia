@@ -251,7 +251,8 @@ public class AlphaVantageService {
 
         var overview = response.getOverview();
 
-        return new Aktie(overview.getName(),
+        return new Aktie(overview.getSymbol(),
+                overview.getName(),
                 overview.getDescription(),
                 overview.getExchange(),
                 overview.getCurrency(),

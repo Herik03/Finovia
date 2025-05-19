@@ -32,7 +32,7 @@ import java.util.List;
  * @author Finovia Team
  * @version 1.0
  */
-@Route(value = "uebersicht")
+@Route("uebersicht")
 @PageTitle("Finovia - Dashboard")
 @PermitAll
 public class MainView extends AbstractSideNav {

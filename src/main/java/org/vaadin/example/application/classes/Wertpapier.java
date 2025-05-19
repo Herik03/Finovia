@@ -1,5 +1,9 @@
 package org.vaadin.example.application.classes;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 /**
@@ -12,62 +16,31 @@ import java.util.List;
  *
  * @author Sören
  */
+
+@Entity
+@Table(name = "Wertpapier")
+@Inheritance(strategy = InheritanceType.JOINED)
+@Getter @Setter
 public abstract class Wertpapier {
-    private String isin;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long wertpapierId;
+
     private String name;
-    private int wertpapierId;
+
+    @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Transaktion> transaktionen;
+
+    @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Kurs> kurse;
 /**
  * Konstruktor zur Initialisierung aller Attribute eines Wertpapiers.
  */
-    public Wertpapier(String isin, String name, int wertpapierId, List<Transaktion> transaktionen, List<Kurs> kurse) {
-        this.isin = isin;
+    public Wertpapier(String name, List<Transaktion> transaktionen, List<Kurs> kurse) {
         this.name = name;
-        this.wertpapierId = wertpapierId;
-        this.transaktionen = transaktionen;
+//        this.transaktionen = transaktionen;
         this.kurse = kurse;
     }
 
     public Wertpapier(){}
-
-    public String getIsin() {
-        return isin;
-    }
-
-    public void setIsin(String isin) {
-        this.isin = isin;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getWertpapierId() {
-        return wertpapierId;
-    }
-
-    public void setWertpapierId(int wertpapierId) {
-        this.wertpapierId = wertpapierId;
-    }
-
-    public List<Transaktion> getTransaktionen() {
-        return transaktionen;
-    }
-
-    public void setTransaktionen(List<Transaktion> transaktionen) {
-        this.transaktionen = transaktionen;
-    }
-
-    public List<Kurs> getKurse() {
-        return kurse;
-    }
-
-    public void setKurse(List<Kurs> kurse) {
-        this.kurse = kurse;
-    }
 }
