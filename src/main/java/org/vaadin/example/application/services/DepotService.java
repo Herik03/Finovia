@@ -8,6 +8,7 @@ import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Kurs;
 import org.vaadin.example.application.classes.Transaktion;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,37 @@ public class DepotService {
 
         // Erstelle ein ETF-Depot
         Depot etfDepot = new Depot("2", "ETF-Depot von Max", exampleUser);
+
+        /* // Beispiel-Aktie mit Dividende, die heute ausgeschüttet wird, muss für die Vorstellung drin bleiben
+        Aktie testAktie = new Aktie(
+                "Test AG",                       // unternehmensname
+                "Beispielunternehmen",          // description
+                "XETRA",                        // exchange
+                "EUR",                          // currency
+                "DE",                           // country
+                "Tech",                         // sector
+                "Software",                     // industry
+                1_000_000_000L,                 // marketCap
+                50_000_000L,                    // ebitda
+                1.5,                            // pegRatio
+                10.0,                           // bookValue
+                1.50,                           // dividendPerShare
+                3.5,                            // dividendYield
+                2.5,                            // eps
+                20.0,                           // forwardPE
+                1.1,                            // beta
+                110.0,                          // yearHigh
+                80.0,                           // yearLow
+                LocalDate.now()                // dividendDate → heute!
+        );
+
+        testAktie.setIsin("DE000TEST1234");
+        testAktie.setName("TESTAG");
+        testAktie.setWertpapierId(9999);
+
+        aktiendepot.fuegeWertpapierHinzu(testAktie, 10); // 10 Stück im Depot
+
+         */
 
         // Füge die Depots zur "Datenbank" hinzu
         depotDatabase.put(aktiendepot.getDepotId(), aktiendepot);
