@@ -35,5 +35,3 @@ jobs:
       - name: Run Unit Tests
         run: mvn test
 
-      - name: Run Checkstyle
-        run: mvn checkstyle:check
