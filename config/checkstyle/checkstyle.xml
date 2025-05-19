@@ -4,15 +4,17 @@
         "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
-    <module name="TreeWalker">
-        <module name="FileTabCharacter"/>
-        <module name="TrailingWhitespace"/>
-        <module name="FinalNewline"/>
 
+    <!-- Diese drei Module gehören direkt unter Checker -->
+    <module name="FileTabCharacter"/>
+    <module name="TrailingWhitespace"/>
+    <module name="FinalNewline"/>
+
+    <!-- Alle AST‑basierten Checks in TreeWalker -->
+    <module name="TreeWalker">
         <module name="JavadocType"/>
         <module name="JavadocMethod"/>
         <module name="JavadocVariable"/>
-
         <module name="MethodName"/>
         <module name="ParameterName"/>
         <module name="LocalVariableName"/>
@@ -28,4 +30,5 @@
             <property name="max" value="120"/>
         </module>
     </module>
+
 </module>
