@@ -14,7 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
-@PWA(name = "Finovia - Ihre Trading Plattform", shortName = "Finovia")
+@PWA(name = "Finovia - Ihre Trading Plattform", shortName = "Finovia", iconPath = "icons/logo.png")
 @Theme("my-theme")
 public class Application implements AppShellConfigurator {
 
