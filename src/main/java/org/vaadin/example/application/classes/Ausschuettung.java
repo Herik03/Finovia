@@ -28,6 +28,10 @@ public abstract class Ausschuettung{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ausschüttungId;
 
+    @ManyToOne
+    @JoinColumn(name = "wertpapier_id")
+    private Wertpapier wertpapier;
+
     private double betrag;
     private LocalDate datum;
     private double steuern;
@@ -36,8 +40,8 @@ public abstract class Ausschuettung{
  * Konstruktor für eine Ausschüttung.
  */
 
- public Ausschuettung(double betrag, LocalDate datum, double steuern) {
-
+ public Ausschuettung(double betrag, LocalDate datum, double steuern, Wertpapier wertpapier) {
+        this.wertpapier = wertpapier;
         this.betrag = betrag;
         this.datum = datum;
         this.steuern = steuern;

@@ -17,9 +17,12 @@ import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.DepotService;
+import org.vaadin.example.application.services.NutzerService;
 
 import java.util.UUID;
 
@@ -29,11 +32,17 @@ import java.util.UUID;
 public class DepotAnlegenView extends AbstractSideNav {
 
     private final DepotService depotService;
+    private final SecurityService securityService;
+    private final NutzerService nutzerService;
+
+    private Nutzer currentUser;
 
     @Autowired
-    public DepotAnlegenView(DepotService depotService) {
+    public DepotAnlegenView(DepotService depotService, SecurityService securityService, NutzerService nutzerService) {
         super();
         this.depotService = depotService;
+        this.securityService = securityService;
+        this.nutzerService = nutzerService;
 
         VerticalLayout contentLayout = new VerticalLayout();
         contentLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
@@ -66,7 +75,7 @@ public class DepotAnlegenView extends AbstractSideNav {
         speichernButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         speichernButton.addClickListener(e -> {
             if (!depotName.isEmpty() && !depotTyp.isEmpty() && !iban.isEmpty()) {
-                Nutzer currentUser = getAktuellenNutzer();
+                getAktuellenNutzer();
 
                 // Erstelle ein neues Depot
                 String name = depotName.getValue() + " (" + depotTyp.getValue() + ")";
@@ -98,12 +107,14 @@ public class DepotAnlegenView extends AbstractSideNav {
         contentLayout.add(depotForm);
     }
 
-    private Nutzer getAktuellenNutzer() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.getPrincipal() instanceof Nutzer userDetails) {
-            return userDetails;
+    private void getAktuellenNutzer() {
+        UserDetails userDetails = securityService.getAuthenticatedUser();
+        if (userDetails != null) {
+            String username = userDetails.getUsername();
+            currentUser = nutzerService.getNutzerByUsername(username);
+        } else {
+            currentUser = null;
         }
-        return null;
     }
 }
 //TODO :Anbinden an die Datenbank

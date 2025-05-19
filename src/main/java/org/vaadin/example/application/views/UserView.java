@@ -51,14 +51,14 @@ import java.util.List;
 @PermitAll
 public class UserView extends AbstractSideNav {
 
-    private PasswordField currentPassword = new PasswordField("Aktuelles Passwort");
-    private PasswordField newPassword = new PasswordField("Neues Passwort");
-    private PasswordField confirmPassword = new PasswordField("Neues Passwort bestätigen");
-    private TextField vornameField = new TextField("Vorname");
-    private TextField nachnameField = new TextField("Nachname");
-    private EmailField emailField = new EmailField("E-Mail");
-    private TextField benutzernameField = new TextField("Benutzername");
-    private TextField registriertField = new TextField("Registriert seit");
+    private final PasswordField currentPassword = new PasswordField("Aktuelles Passwort");
+    private final PasswordField newPassword = new PasswordField("Neues Passwort");
+    private final PasswordField confirmPassword = new PasswordField("Neues Passwort bestätigen");
+    private final TextField vornameField = new TextField("Vorname");
+    private final TextField nachnameField = new TextField("Nachname");
+    private final EmailField emailField = new EmailField("E-Mail");
+    private final TextField benutzernameField = new TextField("Benutzername");
+    private final TextField registriertField = new TextField("Registriert seit");
 
     private final NutzerService nutzerService;
     private final SecurityService securityService;
@@ -162,6 +162,10 @@ public class UserView extends AbstractSideNav {
             newPassword.setRequired(false);
             confirmPassword.setRequired(false);
 
+            currentPassword.setReadOnly(true);
+            newPassword.setReadOnly(true);
+            confirmPassword.setReadOnly(true);
+
             // Validierung für die Passwortfelder
             confirmPassword.addValueChangeListener(event -> {
                 if (!event.getValue().equals(newPassword.getValue())) {
@@ -192,6 +196,9 @@ public class UserView extends AbstractSideNav {
                 vornameField.setReadOnly(false);
                 nachnameField.setReadOnly(false);
                 emailField.setReadOnly(false);
+                currentPassword.setReadOnly(false);
+                newPassword.setReadOnly(false);
+                confirmPassword.setReadOnly(false);
 
 
                 e.getSource().setVisible(false);
@@ -245,6 +252,9 @@ public class UserView extends AbstractSideNav {
                 vornameField.setReadOnly(true);
                 nachnameField.setReadOnly(true);
                 emailField.setReadOnly(true);
+                currentPassword.setReadOnly(true);
+                newPassword.setReadOnly(true);
+                confirmPassword.setReadOnly(true);
                 
                 // Buttons umschalten
                 e.getSource().setVisible(false);
