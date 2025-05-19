@@ -6,33 +6,36 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.vaadin.example.application.views.LoginView;
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends VaadinWebSecurity {
 
-
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception{
-        super.configure(http);
-        setLoginView(http, LoginView.class);
-
-        http.formLogin().defaultSuccessUrl("/uebersicht", true);
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public UserDetailsManager userDetailsManager() {
-        LoggerFactory.getLogger(SecurityConfig.class)
-                .warn("Noch nicht final");
-        var user= User.withUsername("user").password("{noop}user").roles("USER").build();
-        var admin= User.withUsername("admin").password("{noop}admin").roles("USER","ADMIN").build();
-        return new InMemoryUserDetailsManager(user,admin);
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/images/**", "/public/**").permitAll()
+        );
+
+        super.configure(http);
+
+        setLoginView(http, LoginView.class);
+        http.formLogin(form -> form.defaultSuccessUrl("/uebersicht", true));
+
     }
 }

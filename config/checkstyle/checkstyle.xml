@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+
+    <!-- Diese drei Module gehören direkt unter Checker -->
+    <module name="FileTabCharacter"/>
+    <module name="TrailingWhitespace"/>
+    <module name="FinalNewline"/>
+
+    <!-- Alle AST‑basierten Checks in TreeWalker -->
+    <module name="TreeWalker">
+        <module name="JavadocType"/>
+        <module name="JavadocMethod"/>
+        <module name="JavadocVariable"/>
+        <module name="MethodName"/>
+        <module name="ParameterName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="TypeName"/>
+        <module name="AvoidStarImport"/>
+        <module name="UnusedImports"/>
+        <module name="EmptyBlock"/>
+        <module name="NeedBraces"/>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround"/>
+        <module name="LineLength">
+            <property name="max" value="120"/>
+        </module>
+    </module>
+
+</module>
