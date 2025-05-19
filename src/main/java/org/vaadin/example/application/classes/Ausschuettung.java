@@ -1,5 +1,10 @@
 package org.vaadin.example.application.classes;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDate;
 /**
  * Abstrakte Oberklasse für Ausschüttungen wie {@link Dividende} oder {@link Zinszahlung}.
@@ -10,11 +15,19 @@ import java.time.LocalDate;
  *
  * Diese Klasse enthält allgemeine Eigenschaften und Methoden, die allen Ausschüttungsarten gemeinsam sind.
  *
- * @author Jan
+ * @author Jan, Sören
  */
 
+@Entity
+@Table(name = "Ausschuettung")
+@Inheritance(strategy = jakarta.persistence.InheritanceType.JOINED)
+@NoArgsConstructor
+@Getter @Setter
 public abstract class Ausschuettung{
-    private int ausschüttungId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long ausschüttungId;
+
     private double betrag;
     private LocalDate datum;
     private double steuern;
@@ -22,42 +35,9 @@ public abstract class Ausschuettung{
 /**
  * Konstruktor für eine Ausschüttung.
  */
- public Ausschuettung(int ausschüttungId, double betrag, LocalDate datum, double steuern, Transaktion transaktion) {
-        this.ausschüttungId = ausschüttungId;
+ public Ausschuettung(double betrag, LocalDate datum, double steuern) {
         this.betrag = betrag;
         this.datum = datum;
-        this.steuern = steuern;
-    }
-
-    public int getAusschüttungId() {
-        return ausschüttungId;
-    }
-
-    public void setAusschüttungId(int ausschüttungId) {
-        this.ausschüttungId = ausschüttungId;
-    }
-
-    public double getBetrag() {
-        return betrag;
-    }
-
-    public void setBetrag(double betrag) {
-        this.betrag = betrag;
-    }
-
-    public LocalDate getDatum() {
-        return datum;
-    }
-
-    public void setDatum(LocalDate datum) {
-        this.datum = datum;
-    }
-
-    public double getSteuern() {
-        return steuern;
-    }
-
-    public void setSteuern(double steuern) {
         this.steuern = steuern;
     }
 

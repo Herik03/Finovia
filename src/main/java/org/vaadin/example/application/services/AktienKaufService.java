@@ -71,6 +71,7 @@ public class AktienKaufService {
 
         // Erstellen des Aktie-Objekts mit vorhandenem Konstruktor
         Aktie aktie = new Aktie(
+                quote.getSymbol(),
                 "Unternehmen: " + quote.getSymbol(), // unternehmensname
                 "",     // description
                 "",     // exchange
@@ -93,9 +94,7 @@ public class AktienKaufService {
         );
 
         // Setzen der geerbten Attribute aus Wertpapier
-        aktie.setIsin("ISIN: " + quote.getSymbol());
         aktie.setName(quote.getSymbol());
-        aktie.setWertpapierId(quote.getSymbol().hashCode());
         aktie.setTransaktionen(transaktionen);
         aktie.setKurse(new ArrayList<>()); // Hier kannst du später auch historische Kurse setzen, falls gewünscht
 

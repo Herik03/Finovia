@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.validator.EmailValidator;
@@ -20,21 +21,18 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.example.application.classes.Nutzer;
+import org.vaadin.example.application.services.NutzerService;
+
+
 
 @Route("register")
 @PageTitle("Registrieren")
 @AnonymousAllowed // Diese Annotation erlaubt anonymen Zugriff
 public class RegisterView extends VerticalLayout {
 
-    // Datenmodell für die Registrierungsdaten
-    @Data
-    public static class RegistrationFormData {
-        private String username;
-        private String vorname;
-        private String nachname;
-        private String email;
-        private String password;
-    }
+    private final NutzerService nutzerService;
 
     private final TextField username = new TextField("Benutzername");
     private final TextField vorname = new TextField("Vorname");
@@ -44,17 +42,29 @@ public class RegisterView extends VerticalLayout {
     private final PasswordField confirmPassword = new PasswordField("Passwort bestätigen");
     private final Button registerButton = new Button("Registrieren");
     private final Button cancelButton = new Button("Abbrechen");
-    
-    private final Binder<RegistrationFormData> binder = new Binder<>(RegistrationFormData.class);
-    private final RegistrationFormData formData = new RegistrationFormData();
 
-    public RegisterView() {
+    /**
+     * Binder for form validation.
+     */
+    private Binder<Nutzer> binder = new BeanValidationBinder<>(Nutzer.class);
+
+    /**
+     * Constructor for the RegisterView.
+     * 
+     * @param nutzerService The service for user management operations
+     */
+    @Autowired
+    public RegisterView(NutzerService nutzerService) {
+        this.nutzerService = nutzerService;
+
         configurePage();
         configureFields();
         buildForm();
-        configureBinder();
     }
     
+    /**
+     * Configures the page layout and styling.
+     */
     private void configurePage() {
         setSpacing(false);
         addClassNames(LumoUtility.Display.FLEX, LumoUtility.JustifyContent.CENTER, 
@@ -66,6 +76,9 @@ public class RegisterView extends VerticalLayout {
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
     }
     
+    /**
+     * Configures the form fields with validation rules and helper texts.
+     */
     private void configureFields() {
         // Einheitliche Feldkonfiguration
         username.setRequired(true);
@@ -83,6 +96,14 @@ public class RegisterView extends VerticalLayout {
         password.setMinLength(8);
         
         confirmPassword.setRequired(true);
+        confirmPassword.addValueChangeListener(event -> {
+            if (!event.getValue().equals(password.getValue())) {
+                confirmPassword.setErrorMessage("Passwörter stimmen nicht überein");
+                confirmPassword.setInvalid(true);
+            } else {
+                confirmPassword.setInvalid(false);
+            }
+        });
         
         // Button-Konfiguration
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -92,6 +113,9 @@ public class RegisterView extends VerticalLayout {
         cancelButton.addClickListener(e -> UI.getCurrent().navigate("login"));
     }
     
+    /**
+     * Builds the form layout and adds all components to the view.
+     */
     private void buildForm() {
         // Container für Formular und alle anderen Elemente mit begrenzter Breite
         VerticalLayout contentContainer = new VerticalLayout();
@@ -131,8 +155,6 @@ public class RegisterView extends VerticalLayout {
         buttonLayout.setMargin(true);
         buttonLayout.setSpacing(true);
         
-
-        
         // Komponenten zum Container hinzufügen
         contentContainer.add(title, formLayout, buttonLayout);
         
@@ -142,85 +164,85 @@ public class RegisterView extends VerticalLayout {
         registerButton.addClickListener(event -> registerUser());
     }
     
-    // Diese Methode kann angepasst werden, um die tatsächliche Login-View-Klasse zurückzugeben
+    /**
+     * Returns the login view class.
+     * 
+     * @return The login view class
+     */
     private Class<?> getLoginViewClass() {
         // Sollte die tatsächliche Login-View-Klasse sein
         return this.getClass(); // Temporärer Platzhalter
     }
     
-    private void configureBinder() {
-        // Binden der Felder an das Datenmodell
-        binder.forField(username)
-                .asRequired("Benutzername ist erforderlich")
-                .withValidator(name -> name.length() >= 3, "Mindestens 3 Zeichen")
-                .bind(RegistrationFormData::getUsername, RegistrationFormData::setUsername);
-        
-        binder.forField(vorname)
-                .asRequired("Vorname ist erforderlich")
-                .bind(RegistrationFormData::getVorname, RegistrationFormData::setVorname);
-        
-        binder.forField(nachname)
-                .asRequired("Nachname ist erforderlich")
-                .bind(RegistrationFormData::getNachname, RegistrationFormData::setNachname);
-
-
-        binder.forField(email)
-                .asRequired("E-Mail ist erforderlich")
-                .withValidator(new EmailValidator("Ungültige E-Mail-Adresse"))
-                .bind(RegistrationFormData::getEmail, RegistrationFormData::setEmail);
-        
-        binder.forField(password)
-                .asRequired("Passwort ist erforderlich")
-                .withValidator(pass -> pass.length() >= 8, "Mindestens 8 Zeichen")
-                .withValidator(this::containsNumbersAndLetters, "Muss Zahlen und Buchstaben enthalten")
-                .bind(RegistrationFormData::getPassword, RegistrationFormData::setPassword);
-        
-        // Bestätigungspasswort-Validierung (vergleicht mit dem Passwortfeld)
-        binder.forField(confirmPassword)
-                .asRequired("Passwortbestätigung ist erforderlich")
-                .withValidator(confPass -> confPass.equals(password.getValue()), 
-                        "Passwörter stimmen nicht überein")
-                .bind(user -> "", (user, value) -> {});
-    }
-    
+    /**
+     * Checks if a password contains both numbers and letters.
+     * 
+     * @param password The password to check
+     * @return True if the password contains both numbers and letters, false otherwise
+     */
     private boolean containsNumbersAndLetters(String password) {
         return password.matches(".*\\d.*") && password.matches(".*[a-zA-Z].*");
     }
     
+    /**
+     * Handles the user registration process.
+     * Validates the form data, checks for existing usernames and emails,
+     * and creates a new user if all validations pass.
+     */
     private void registerUser() {
-        try {
-            // Validieren und in das Modellobjekt schreiben
-            binder.writeBean(formData);
-            
-            // Eigentliche Registrierungslogik hier
-            boolean registrationSuccessful = doRegistration(formData);
-            
-            if (registrationSuccessful) {
-                showSuccessMessage();
-                UI.getCurrent().navigate("login");
-            } else {
-                showErrorMessage();
-            }
-        } catch (ValidationException e) {
-            // Die Validierungsfehler werden bereits in der UI angezeigt
+    try {
+        Nutzer nutzer = new Nutzer();
+        
+        // Nur die anderen Felder an den Binder binden (ohne Passwort)
+        binder.forField(username).bind(Nutzer::getUsername, Nutzer::setUsername);
+        binder.forField(vorname).bind(Nutzer::getVorname, Nutzer::setVorname);
+        binder.forField(nachname).bind(Nutzer::getNachname, Nutzer::setNachname);
+        binder.forField(email).bind(Nutzer::getEmail, Nutzer::setEmail);
+        
+        // Alle gebundenen Felder in den Nutzer schreiben
+        binder.writeBean(nutzer);
+        
+        // Passwort manuell setzen (da es nicht über den Binder gebunden ist)
+        nutzer.setPasswort(password.getValue());
+
+        // Prüfen, ob Benutzername bereits existiert
+        if (nutzerService.usernameExists(nutzer.getUsername())) {
+            Notification.show("Benutzername bereits vergeben")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            return;
         }
+
+        // Prüfen, ob E-Mail bereits existiert
+        if (nutzerService.emailExists(nutzer.getEmail())) {
+            Notification.show("E-Mail bereits registriert")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            return;
+        }
+
+        // Prüfen, ob Passwort gültig ist
+        if (!containsNumbersAndLetters(password.getValue())) {
+            Notification.show("Passwort muss mindestens 8 Zeichen lang sein und Zahlen und Buchstaben enthalten")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            return;
+        }
+
+        // Prüfen, ob Passwörter übereinstimmen
+        if (!password.getValue().equals(confirmPassword.getValue())) {
+            Notification.show("Passwörter stimmen nicht überein")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            return;
+        }
+
+        nutzerService.speichereNutzer(nutzer);
+
+        Notification.show("Registrierung erfolgreich. Sie können sich jetzt anmelden.")
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+        getUI().ifPresent(ui -> ui.navigate("login"));
+
+    } catch (ValidationException e) {
+        Notification.show("Ungültige Eingaben. Bitte überprüfen Sie Ihre Daten.")
+                .addThemeVariants(NotificationVariant.LUMO_ERROR);
     }
-    
-    private boolean doRegistration(RegistrationFormData data) {
-        // Hier würde der tatsächliche Registrierungscode stehen
-        // (Datenbankoperationen, Service-Aufrufe usw.)
-        return true; // Simulierte erfolgreiche Registrierung
-    }
-    
-    private void showSuccessMessage() {
-        Notification notification = Notification.show("Registrierung erfolgreich!");
-        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        notification.setPosition(Notification.Position.TOP_CENTER);
-    }
-    
-    private void showErrorMessage() {
-        Notification notification = Notification.show("Registrierung fehlgeschlagen. Benutzername möglicherweise bereits vergeben.");
-        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        notification.setPosition(Notification.Position.TOP_CENTER);
-    }
+}
 }

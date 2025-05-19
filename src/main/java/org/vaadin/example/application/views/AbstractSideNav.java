@@ -7,11 +7,10 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import org.vaadin.example.application.Security.SecurtyService;
+import org.vaadin.example.application.Security.SecurityService;
 
 /**
  * Abstrakte Basisklasse für alle Views mit gemeinsamer Seitennavigation.
@@ -131,7 +130,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
         userBtn.addClickListener(e -> UI.getCurrent().navigate("user"));
 
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
-        logoutBtn.addClickListener(e -> new SecurtyService().logout());
+        logoutBtn.addClickListener(e -> new SecurityService().logout());
 
         Button meineKauefeBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
         meineKauefeBtn.addClickListener(e -> UI.getCurrent().navigate("meine-kauefe"));

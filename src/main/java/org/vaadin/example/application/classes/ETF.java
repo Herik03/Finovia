@@ -1,5 +1,13 @@
 package org.vaadin.example.application.classes;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.List;
 /**
  * Repräsentiert ein Exchange Traded Fund (ETF), das eine Sonderform des Wertpapiers darstellt.
@@ -10,52 +18,35 @@ import java.util.List;
  * Diese Klasse erweitert {@link Wertpapier} und ergänzt spezifische Eigenschaften
  * wie Emittent, Fondsname, Index und Ausschüttungsform.
  *
- * @author Jan
+ * @author Jan, Sören
  */
+@Entity
+@NoArgsConstructor
+@Getter @Setter
 public class ETF extends Wertpapier{
-    private String ausschüttung;
     private String emittent;
-    private String fondsname;
     private String index;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Dividende> dividende = new ArrayList<>();
 /**
  * Konstruktor zur Initialisierung eines ETF-Objekts mit allen Attributen.
  */
-    public ETF(String ausschüttung, String emittent, String fondsname, String index, String isin, String name, int wertpapierId, List<Transaktion> transaktionen, List<Kurs> kurse) {
-        super(isin, name, wertpapierId, transaktionen, kurse);
-        this.ausschüttung = ausschüttung;
+    public ETF(String emittent, String index, String name, List<Transaktion> transaktionen, List<Kurs> kurse) {
+        super(name, transaktionen, kurse);
         this.emittent = emittent;
-        this.fondsname = fondsname;
         this.index = index;
     }
 
-    public String getAusschüttung() {
-        return ausschüttung;
+    public void addDividende(Dividende dividende) {
+        this.dividende.add(dividende);
     }
 
-    public void setAusschüttung(String ausschüttung) {
-        this.ausschüttung = ausschüttung;
+    public void removeDividende(Dividende dividende) {
+        this.dividende.remove(dividende);
     }
 
-    public String getEmittent() {
-        return emittent;
-    }
-
-    public void setEmittent(String emittent) {
-        this.emittent = emittent;
-    }
-    public String getFondsname() {
-        return fondsname;
-    }
-
-    public void setFondsname(String fondsname) {
-        this.fondsname = fondsname;
-    }
-
-    public String getIndex() {
-        return index;
-    }
-
-    public void setIndex(String index) {
-        this.index = index;
+    public List<Dividende> getDividenden() {
+        return new ArrayList<>(dividende);
     }
 }

@@ -1,5 +1,11 @@
 package org.vaadin.example.application.classes;
 
+import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDate;
 
 /**
@@ -12,12 +18,29 @@ import java.time.LocalDate;
  *
  * @author Jan
  */
+
+@Getter
+@Setter
+@Entity
+@Inheritance(strategy = jakarta.persistence.InheritanceType.JOINED)
+@NoArgsConstructor
 public abstract class Transaktion {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private LocalDate datum;
     private double gebühren;
     private double kurs;
     private int stückzahl;
+
+    @ManyToOne
+    @JoinColumn(name = "wertpapier_id")
     private Wertpapier wertpapier;
+
+    @OneToOne
+    @JoinColumn(name = "ausschuettung_id")
     private Ausschuettung ausschüttung;
 
 /**
@@ -32,51 +55,4 @@ public abstract class Transaktion {
         this.ausschüttung = ausschüttung;
     }
 
-    public LocalDate getDatum() {
-        return datum;
-    }
-
-    public void setDatum(LocalDate datum) {
-        this.datum = datum;
-    }
-
-    public double getGebühren() {
-        return gebühren;
-    }
-
-    public void setGebühren(double gebühren) {
-        this.gebühren = gebühren;
-    }
-
-    public double getKurs() {
-        return kurs;
-    }
-
-    public void setKurs(double kurs) {
-        this.kurs = kurs;
-    }
-
-    public int getStückzahl() {
-        return stückzahl;
-    }
-
-    public void setStückzahl(int stückzahl) {
-        this.stückzahl = stückzahl;
-    }
-
-    public Wertpapier getWertpapier() {
-        return wertpapier;
-    }
-
-    public void setWertpapier(Wertpapier wertpapier) {
-        this.wertpapier = wertpapier;
-    }
-
-    public Ausschuettung getAusschüttung() {
-        return ausschüttung;
-    }
-
-    public void setAusschüttung(Ausschuettung ausschüttung) {
-        this.ausschüttung = ausschüttung;
-    }
 }

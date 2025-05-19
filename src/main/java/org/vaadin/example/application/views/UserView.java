@@ -14,35 +14,65 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.NutzerService;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * View zur Darstellung und Bearbeitung des Benutzerprofils.
+*
+ * Diese View ermöglicht es angemeldeten Benutzern:
+ * - ihre persönlichen Daten einzusehen und zu bearbeiten
+ * - ihr Passwort zu ändern
+ * - ihre Benachrichtigungen zu verwalten
+*
+ * Die Ansicht ist in zwei Hauptbereiche unterteilt:
+ * 1. Persönliche Informationen mit editierbaren Profilfeldern
+ * 2. Benachrichtigungsbereich für Systemmeldungen
+ *
+ * @author Ben, Sören
+ * @version 2.0
+ */
 @Route("user")
 @PageTitle("Benutzer - Finovia")
 @PermitAll
 public class UserView extends AbstractSideNav {
 
+    private PasswordField currentPassword = new PasswordField("Aktuelles Passwort");
+    private PasswordField newPassword = new PasswordField("Neues Passwort");
+    private PasswordField confirmPassword = new PasswordField("Neues Passwort bestätigen");
+    private TextField vornameField = new TextField("Vorname");
+    private TextField nachnameField = new TextField("Nachname");
+    private EmailField emailField = new EmailField("E-Mail");
+    private TextField benutzernameField = new TextField("Benutzername");
+    private TextField registriertField = new TextField("Registriert seit");
+
     private final NutzerService nutzerService;
+    private final SecurityService securityService;
     private Nutzer aktuellerNutzer;
     
     private final VerticalLayout profilContainer = new VerticalLayout();
     private final VerticalLayout benachrichtigungenContainer = new VerticalLayout();
+    private final Binder<Nutzer> binder = new BeanValidationBinder<>(Nutzer.class);
     
     @Autowired
-    public UserView(NutzerService nutzerService) {
+    public UserView(NutzerService nutzerService, SecurityService securityService) {
         super(); // Ruft den Konstruktor der Basisklasse auf
         this.nutzerService = nutzerService;
+        this.securityService = securityService;
         
         // Hauptüberschrift
         H1 title = new H1("Mein Profil");
@@ -70,34 +100,12 @@ public class UserView extends AbstractSideNav {
     }
     
     private void ladeAktuellenNutzer() {
-        try {
-            // Aktuelle Nutzer-ID aus dem Security Context holen
-            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String username;
-            
-            if (principal instanceof UserDetails) {
-                username = ((UserDetails) principal).getUsername();
-            } else {
-                username = principal.toString();
-            }
-            
-            // Nutzer aus dem Service laden
+        UserDetails userDetails = securityService.getAuthenticatedUser();
+        if (userDetails != null) {
+            String username = userDetails.getUsername();
             aktuellerNutzer = nutzerService.getNutzerByUsername(username);
-            
-            if (aktuellerNutzer == null) {
-                // Fallback für Entwicklungszwecke - Nutzer mit einer ID laden
-                aktuellerNutzer = nutzerService.getNutzerById(1);
-                
-                if (aktuellerNutzer == null) {
-                    Notification.show("Nutzerdaten konnten nicht geladen werden", 
-                            3000, Notification.Position.MIDDLE)
-                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
-                }
-            }
-        } catch (Exception e) {
-            Notification.show("Fehler beim Laden der Nutzerdaten: " + e.getMessage(), 
-                    3000, Notification.Position.MIDDLE)
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        } else {
+            aktuellerNutzer = null;
         }
     }
     
@@ -120,41 +128,55 @@ public class UserView extends AbstractSideNav {
         
         if (aktuellerNutzer != null) {
             // Formularfelder zum Anzeigen der Nutzerdaten
-            TextField vornameField = new TextField("Vorname");
+
             vornameField.setValue(aktuellerNutzer.getVorname());
             vornameField.setReadOnly(true);
-            
-            TextField nachnameField = new TextField("Nachname");
+
             nachnameField.setValue(aktuellerNutzer.getNachname());
             nachnameField.setReadOnly(true);
-            
-            EmailField emailField = new EmailField("E-Mail");
+
             emailField.setValue(aktuellerNutzer.getEmail());
             emailField.setReadOnly(true);
-            
-            TextField benutzernameField = new TextField("Benutzername");
+
             benutzernameField.setValue(aktuellerNutzer.getUsername());
             benutzernameField.setReadOnly(true);
+
+            registriertField.setValue(aktuellerNutzer.getRegistrierungsDatum()
+                    .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+            registriertField.setReadOnly(true);
+
+            binder.forField(vornameField).bind(Nutzer::getVorname, Nutzer::setVorname);
+            binder.forField(nachnameField).bind(Nutzer::getNachname, Nutzer::setNachname);
+            binder.forField(emailField).bind(Nutzer::getEmail, Nutzer::setEmail);
+            binder.forField(benutzernameField).bind(Nutzer::getUsername, Nutzer::setUsername);
+
+            binder.readBean(aktuellerNutzer);
+
             
             // Passwort-Anzeige mit Passwort-Ändern-Button
             HorizontalLayout passwortLayout = new HorizontalLayout();
             passwortLayout.setSpacing(true);
             passwortLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
 
-            TextField passwortField = new TextField("Passwort");
-            passwortField.setValue("••••••••");
-            passwortField.setReadOnly(true);
+            currentPassword.setRequired(true);
+            newPassword.setRequired(false);
+            confirmPassword.setRequired(false);
 
-            Button passwortAendernButton = new Button("Passwort ändern");
-            passwortAendernButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-            passwortAendernButton.addClickListener(e -> UI.getCurrent().navigate("passwortvergessen"));
+            // Validierung für die Passwortfelder
+            confirmPassword.addValueChangeListener(event -> {
+                if (!event.getValue().equals(newPassword.getValue())) {
+                    confirmPassword.setErrorMessage("Passwörter stimmen nicht überein");
+                    confirmPassword.setInvalid(true);
+                } else {
+                    confirmPassword.setInvalid(false);
+                }
+            });
 
-            passwortLayout.add(passwortField, passwortAendernButton);
-            
-            TextField registriertField = new TextField("Registriert seit");
-            registriertField.setValue(aktuellerNutzer.getRegistrierungsDatum()
-                    .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
-            registriertField.setReadOnly(true);
+            Button passwortVergessenButton = new Button("Passwort vergessen");
+            passwortVergessenButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+            passwortVergessenButton.addClickListener(e -> UI.getCurrent().navigate("passwortvergessen"));
+
+            passwortLayout.add(currentPassword, newPassword, confirmPassword, passwortVergessenButton);
             
             TextField depotsField = new TextField("Anzahl Depots");
             depotsField.setValue(String.valueOf(aktuellerNutzer.getDepots().size()));
@@ -180,6 +202,37 @@ public class UserView extends AbstractSideNav {
             speichernButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
             speichernButton.setVisible(false);
             speichernButton.addClickListener(e -> {
+                if (!nutzerService.authenticate(aktuellerNutzer.getUsername(), currentPassword.getValue())) {
+                    Notification.show("Aktuelles Passwort ist falsch")
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                    return;
+                }
+
+                // Prüfen, ob ein neues Passwort gesetzt werden soll
+                if (!newPassword.isEmpty()) {
+                    if (!newPassword.getValue().equals(confirmPassword.getValue())) {
+                        Notification.show("Neue Passwörter stimmen nicht überein")
+                                .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                        return;
+                    }
+                    aktuellerNutzer.setPasswort(newPassword.getValue());
+                }
+
+                try {
+                    binder.writeBean(aktuellerNutzer);
+                    nutzerService.speichereNutzer(aktuellerNutzer);
+                    Notification.show("Profil erfolgreich aktualisiert")
+                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+                    // Formular zurücksetzen
+                    currentPassword.clear();
+                    newPassword.clear();
+                    confirmPassword.clear();
+                } catch (Exception ex) {
+                    Notification.show("Fehler beim Speichern des Profils: " + ex.getMessage())
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }
+
                 // Nutzer aktualisieren
                 aktuellerNutzer.setVorname(vornameField.getValue());
                 aktuellerNutzer.setNachname(nachnameField.getValue());

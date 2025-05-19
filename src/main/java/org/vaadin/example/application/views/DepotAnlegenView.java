@@ -15,6 +15,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.DepotService;
@@ -64,14 +66,13 @@ public class DepotAnlegenView extends AbstractSideNav {
         speichernButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         speichernButton.addClickListener(e -> {
             if (!depotName.isEmpty() && !depotTyp.isEmpty() && !iban.isEmpty()) {
-                // Erstelle einen Beispiel-Nutzer (in einer echten Anwendung würde hier der eingeloggte Nutzer verwendet)
-                Nutzer currentUser = new Nutzer("Max", "Mustermann", "max@example.com", "password", "maxmuster");
-                currentUser.setId(1);
+                Nutzer currentUser = getAktuellenNutzer();
 
                 // Erstelle ein neues Depot
-                String depotId = UUID.randomUUID().toString();
                 String name = depotName.getValue() + " (" + depotTyp.getValue() + ")";
-                Depot neuesDepot = new Depot(depotId, name, currentUser);
+                Depot neuesDepot = new Depot(name, currentUser);
+                assert currentUser != null;
+                currentUser.depotHinzufuegen(neuesDepot);
 
                 // Speichere das Depot in der Datenbank
                 depotService.saveDepot(neuesDepot);
@@ -95,6 +96,14 @@ public class DepotAnlegenView extends AbstractSideNav {
 
         depotForm.add(new H2("Neues Depot anlegen"), depotName, depotTyp, iban, speichernButton);
         contentLayout.add(depotForm);
+    }
+
+    private Nutzer getAktuellenNutzer() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof Nutzer userDetails) {
+            return userDetails;
+        }
+        return null;
     }
 }
 //TODO :Anbinden an die Datenbank

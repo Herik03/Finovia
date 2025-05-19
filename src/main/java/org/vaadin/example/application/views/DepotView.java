@@ -97,7 +97,7 @@ public class DepotView extends AbstractSideNav {
 
         // Depot-Informationen
         depotBox.add(new Div(new Span("Besitzer: " + depot.getBesitzer().getVollerName())));
-        depotBox.add(new Div(new Span("Anzahl Wertpapiere: " + depot.getWertpapiere().size())));
+        depotBox.add(new Div(new Span("Anzahl Wertpapiere: " + depot.getDepotWertpapiere().size())));
 
         // Styling
         depotBox.getStyle().set("border", "1px solid #ccc");
