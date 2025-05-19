@@ -24,6 +24,7 @@ public class Zinszahlung extends Ausschuettung{
  */
     public Zinszahlung(double zinssatz, double betrag, LocalDate datum, double steuern) {
         super(betrag, datum, steuern);
+
         this.zinssatz = zinssatz;
     }
 

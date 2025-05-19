@@ -35,7 +35,9 @@ public abstract class Ausschuettung{
 /**
  * Konstruktor für eine Ausschüttung.
  */
+
  public Ausschuettung(double betrag, LocalDate datum, double steuern) {
+
         this.betrag = betrag;
         this.datum = datum;
         this.steuern = steuern;

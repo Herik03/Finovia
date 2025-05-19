@@ -27,6 +27,7 @@ public class Dividende extends Ausschuettung{
  */
     public Dividende(int aktienAnzahl, double dividendenRendite, double betrag, LocalDate datum, double steuern) {
         super(betrag, datum, steuern);
+
         this.aktienAnzahl = aktienAnzahl;
         this.dividendenRendite = dividendenRendite;
     }

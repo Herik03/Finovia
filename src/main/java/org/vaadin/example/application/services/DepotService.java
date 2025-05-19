@@ -6,6 +6,11 @@ import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.NutzerRepository;
 
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import java.util.List;
 
 /**
@@ -24,6 +29,41 @@ public class DepotService {
         this.nutzerRepository = nutzerRepository;
     }
 
+
+
+        /* // Beispiel-Aktie mit Dividende, die heute ausgeschüttet wird, muss für die Vorstellung drin bleiben
+        Aktie testAktie = new Aktie(
+                "Test AG",                       // unternehmensname
+                "Beispielunternehmen",          // description
+                "XETRA",                        // exchange
+                "EUR",                          // currency
+                "DE",                           // country
+                "Tech",                         // sector
+                "Software",                     // industry
+                1_000_000_000L,                 // marketCap
+                50_000_000L,                    // ebitda
+                1.5,                            // pegRatio
+                10.0,                           // bookValue
+                1.50,                           // dividendPerShare
+                3.5,                            // dividendYield
+                2.5,                            // eps
+                20.0,                           // forwardPE
+                1.1,                            // beta
+                110.0,                          // yearHigh
+                80.0,                           // yearLow
+                LocalDate.now()                // dividendDate → heute!
+        );
+
+        testAktie.setIsin("DE000TEST1234");
+        testAktie.setName("TESTAG");
+        testAktie.setWertpapierId(9999);
+
+        aktiendepot.fuegeWertpapierHinzu(testAktie, 10); // 10 Stück im Depot
+
+         */
+
+
+    }
 
 
     /**
@@ -72,4 +112,8 @@ public class DepotService {
     public void deleteDepot(Long depotId) {
         depotRepository.deleteById(depotId);
     }
+
 }
+//TODO Ersetzen der Beispieldaten durch eine echte Datenbankanbindung
+
+
