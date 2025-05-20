@@ -96,7 +96,6 @@ public abstract class AbstractSideNav extends VerticalLayout {
     protected void setupSideNav() {
         sideNav.setWidth(SIDENAV_WIDTH);
         sideNav.setHeightFull();
-        sideNav.setPadding(false);
         sideNav.setSpacing(false);
         sideNav.addClassName("side-nav");
         sideNav.getStyle()
@@ -136,15 +135,14 @@ public abstract class AbstractSideNav extends VerticalLayout {
         meineKauefeBtn.addClickListener(e -> UI.getCurrent().navigate("meine-kauefe"));
 
         topLayout.add(logo, dashboardBtn, depotBtn, meineKauefeBtn, settingsBtn, apiBtn);
-        topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
-        topLayout.setPadding(false);
-        topLayout.setSpacing(false);
+topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START, LumoUtility.Padding.MEDIUM, LumoUtility.Gap.MEDIUM);
 
         bottomLayout.add(userBtn, logoutBtn);
         bottomLayout.getStyle().setFlexGrow("1");
-        bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END);
+bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END, LumoUtility.Gap.MEDIUM);
 
         sideNav.add(topLayout, bottomLayout);
+sideNav.addClassNames(LumoUtility.Padding.MEDIUM);
     }
 
     /**
