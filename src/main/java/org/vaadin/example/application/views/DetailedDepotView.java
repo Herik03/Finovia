@@ -72,7 +72,7 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
      * Konfiguriert das Grid für die Anzeige von Wertpapieren.
      */
     private void configureWertpapierGrid() {
-        wertpapierGrid.setColumns("name", "isin", "wertpapierId");
+        wertpapierGrid.setColumns("name", "wertpapierId");
         wertpapierGrid.addColumn(wertpapier -> {
             // Hier könnte der aktuelle Kurs angezeigt werden
             return "N/A";

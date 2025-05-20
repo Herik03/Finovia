@@ -16,8 +16,11 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.classes.Kauf;
@@ -25,6 +28,7 @@ import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.AktienKaufService;
 import org.vaadin.example.application.services.DepotService;
 import org.vaadin.example.application.services.KaufService;
+import org.vaadin.example.application.services.NutzerService;
 
 import java.util.List;
 
@@ -36,12 +40,17 @@ public class AktienKaufView extends AbstractSideNav {
     private final AktienKaufService aktienKaufService;
     private final KaufService kaufService;
     private final DepotService depotService;
+    private final SecurityService securityService;
+    private final NutzerService nutzerService;
 
-    public AktienKaufView(AktienKaufService aktienKaufService, KaufService kaufService, DepotService depotService) {
+    @Autowired
+    public AktienKaufView(AktienKaufService aktienKaufService, KaufService kaufService, DepotService depotService, SecurityService securityService, NutzerService nutzerService) {
         super();
         this.aktienKaufService = aktienKaufService;
         this.kaufService = kaufService;
         this.depotService = depotService;
+        this.securityService = securityService;
+        this.nutzerService = nutzerService;
 
         VerticalLayout contentLayout = new VerticalLayout();
         contentLayout.setPadding(true);
@@ -76,7 +85,7 @@ public class AktienKaufView extends AbstractSideNav {
 
         // Depot-Auswahl hinzufügen
         ComboBox<Depot> depotComboBox = new ComboBox<>("Depot auswählen");
-        List<Depot> depots = depotService.getDepotsByNutzerId(getAktuelleNutzerId()); // Hardcoded Nutzer-ID
+        List<Depot> depots = depotService.getDepotsByNutzerId(getAktuelleNutzerId());
         depotComboBox.setItems(depots);
         depotComboBox.setItemLabelGenerator(Depot::getName);
 
@@ -147,9 +156,11 @@ public class AktienKaufView extends AbstractSideNav {
     }
 
     private Long getAktuelleNutzerId() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.getPrincipal() instanceof Nutzer userDetails) {
-            return userDetails.getId();
+        UserDetails userDetails = securityService.getAuthenticatedUser();
+        if (userDetails != null) {
+            String username = userDetails.getUsername();
+            Nutzer aktuellerNutzer = nutzerService.getNutzerByUsername(username);
+            return aktuellerNutzer.getId();
         }
         return null;
     }
