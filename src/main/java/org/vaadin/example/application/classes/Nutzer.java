@@ -35,6 +35,10 @@ public class Nutzer implements Beobachter {
     @Getter @Setter
     private String passwort;
 
+    @Column(unique = true)
+    @Getter @Setter
+    private String steuerId;
+
     @Getter @Setter
     private String vorname;
 
@@ -79,12 +83,13 @@ public class Nutzer implements Beobachter {
      * @param benutzername Der Benutzername des Nutzers
      * @param watchlist Die Watchlist des Nutzers
      */
-    public Nutzer(String vorname, String nachname, String email, String passwort, String benutzername, Watchlist watchlist) {
+    public Nutzer(String vorname, String nachname, String email, String passwort, String benutzername,String steuerId,Watchlist watchlist) {
         this.vorname = vorname;
         this.nachname = nachname;
         this.email = email;
         this.passwort = passwort;
         this.username = benutzername;
+        this.steuerId = steuerId;
         this.watchlist = watchlist;
         this.registrierungsDatum = LocalDateTime.now();
     }
@@ -98,8 +103,8 @@ public class Nutzer implements Beobachter {
      * @param passwort Das Passwort des Nutzers
      * @param benutzername Der Benutzername des Nutzers
      */
-    public Nutzer(String vorname, String nachname, String email, String passwort, String benutzername) {
-        this(vorname, nachname, email, passwort, benutzername, null);
+    public Nutzer(String vorname, String nachname, String email, String passwort, String benutzername,String steuerId) {
+        this(vorname, nachname, email, passwort, benutzername, steuerId, null);
     }
 
     /**
@@ -227,6 +232,15 @@ public class Nutzer implements Beobachter {
                 .filter(nachricht -> nachricht.toLowerCase().contains(suchbegriff.toLowerCase()))
                 .collect(Collectors.toList());
     }
+    /**
+     * Überprüft, ob die Steuer-ID das korrekte Format hat.
+     *
+     * @return true wenn das Format korrekt ist, false sonst
+     */
+    public boolean istSteuerIdGueltig() {
+        return steuerId != null && steuerId.matches("\\d{11}");
+    }
+
 
     @Override
     public boolean equals(Object o) {

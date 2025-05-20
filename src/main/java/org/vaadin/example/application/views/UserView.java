@@ -57,6 +57,7 @@ public class UserView extends AbstractSideNav {
     private final TextField vornameField = new TextField("Vorname");
     private final TextField nachnameField = new TextField("Nachname");
     private final EmailField emailField = new EmailField("E-Mail");
+    private final TextField steuerIdField = new TextField("Steuer-ID");
     private final TextField benutzernameField = new TextField("Benutzername");
     private final TextField registriertField = new TextField("Registriert seit");
 
@@ -141,6 +142,9 @@ public class UserView extends AbstractSideNav {
             benutzernameField.setValue(aktuellerNutzer.getUsername());
             benutzernameField.setReadOnly(true);
 
+            steuerIdField.setValue(aktuellerNutzer.getSteuerId());
+            steuerIdField.setReadOnly(true);
+
             registriertField.setValue(aktuellerNutzer.getRegistrierungsDatum()
                     .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
             registriertField.setReadOnly(true);
@@ -149,6 +153,7 @@ public class UserView extends AbstractSideNav {
             binder.forField(nachnameField).bind(Nutzer::getNachname, Nutzer::setNachname);
             binder.forField(emailField).bind(Nutzer::getEmail, Nutzer::setEmail);
             binder.forField(benutzernameField).bind(Nutzer::getUsername, Nutzer::setUsername);
+            binder.forField(steuerIdField).bind(Nutzer::getSteuerId, Nutzer::setSteuerId);
 
             binder.readBean(aktuellerNutzer);
 
@@ -196,6 +201,7 @@ public class UserView extends AbstractSideNav {
                 vornameField.setReadOnly(false);
                 nachnameField.setReadOnly(false);
                 emailField.setReadOnly(false);
+                steuerIdField.setReadOnly(false);
                 currentPassword.setReadOnly(false);
                 newPassword.setReadOnly(false);
                 confirmPassword.setReadOnly(false);
@@ -294,7 +300,8 @@ public class UserView extends AbstractSideNav {
                     vornameField, 
                     nachnameField, 
                     emailField, 
-                    benutzernameField, 
+                    benutzernameField,
+                    steuerIdField,
                     passwortLayout,
                     registriertField,
                     depotsField,
