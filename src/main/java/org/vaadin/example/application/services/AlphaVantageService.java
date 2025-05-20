@@ -366,6 +366,30 @@ public class AlphaVantageService {
         return (field != null && !field.isNull()) ? field.asText() : "";
     }
 
+    public double getAktuellerKurs(String name) {
+        var response = AlphaVantage.api()
+                .timeSeries()
+                .quote()
+                .forSymbol(name)
+                .fetchSync();
+
+        if (response == null || response.getErrorMessage() != null) return 0;
+
+        return response.getPrice();
+    }
+
+    public double getProzentualeAenderung24h(String name) {
+        var response = AlphaVantage.api()
+                .timeSeries()
+                .quote()
+                .forSymbol(name)
+                .fetchSync();
+
+        if (response == null || response.getErrorMessage() != null) return 0;
+
+        return response.getChangePercent();
+    }
+
     /**
      * Benutzerdefinierte Exception für API-bezogene Fehler.
      */

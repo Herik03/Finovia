@@ -11,12 +11,21 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode; // Add this import for JustifyContentMode
 import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Kurs;
-import org.vaadin.example.application.models.SearchResult;
+import org.vaadin.example.application.classes.Wertpapier; // Import Wertpapier
+import org.vaadin.example.application.models.SearchResult; // This import might not be directly used in WertpapierView but is okay.
 import org.vaadin.example.application.services.AlphaVantageService;
+import org.vaadin.example.application.services.WatchlistService; // Import WatchlistService
+import org.vaadin.example.application.services.NutzerService; // Import NutzerService
+import org.vaadin.example.application.repositories.WertpapierRepository; // Import WertpapierRepository
+import org.springframework.security.core.context.SecurityContextHolder; // For getting current user
+import org.springframework.stereotype.Component; // <--- This is the crucial import
+
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Diese Klasse stellt eine Benutzeroberfläche zur Anzeige von Wertpapierdetails dar.
@@ -25,13 +34,22 @@ import java.util.List;
  *
  * Die Oberfläche wird in einem Dialog dargestellt, welcher responsive gestaltet ist.
  */
+@Component // <--- This annotation tells Spring to manage this class as a bean.
 public class WertpapierView extends VerticalLayout {
 
     private final AlphaVantageService alphaVantageService;
+    private final WatchlistService watchlistService; // Inject WatchlistService
+    private final NutzerService nutzerService;       // Inject NutzerService
+    private final WertpapierRepository wertpapierRepository; // Inject WertpapierRepository to save if new
+
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public WertpapierView(AlphaVantageService alphaVantageService) {
+    // Add constructor parameters for new services
+    public WertpapierView(AlphaVantageService alphaVantageService, WatchlistService watchlistService, NutzerService nutzerService, WertpapierRepository wertpapierRepository) {
         this.alphaVantageService = alphaVantageService;
+        this.watchlistService = watchlistService;
+        this.nutzerService = nutzerService;
+        this.wertpapierRepository = wertpapierRepository;
     }
 
 
@@ -49,12 +67,16 @@ public class WertpapierView extends VerticalLayout {
         dialog.setResizable(true);
 
         try {
-            List<Kurs> kurse = alphaVantageService.getDailySeries(symbol);
-            SearchResult result = alphaVantageService.search(symbol).stream()
+            // Note: alphaVantageService.search(symbol) returns a List<SearchResult>,
+            // you might want to adjust this to fetch a single exact match more efficiently
+            List<SearchResult> searchResults = alphaVantageService.search(symbol);
+            SearchResult result = searchResults.stream()
                     .filter(r -> r.getSymbol().equalsIgnoreCase(symbol))
                     .findFirst()
                     .orElse(null);
             String anzeigeName = result != null ? result.getName() : symbol;
+
+            List<Kurs> kurse = alphaVantageService.getMonthlySeries(symbol); // Default to Monthly for initial chart
 
             if (kurse.isEmpty()) {
                 Notification.show("Keine Daten gefunden.", 3000, Notification.Position.MIDDLE);
@@ -119,6 +141,19 @@ public class WertpapierView extends VerticalLayout {
                 updateChart(chartContainer, symbol, event.getValue());
             });
 
+            // --- Add "Save to Watchlist" button ---
+            Button saveToWatchlistButton = new Button("Zur Watchlist hinzufügen");
+            saveToWatchlistButton.addClickListener(event -> {
+                saveWertpapierToWatchlist(symbol);
+            });
+            // Place the button
+            HorizontalLayout buttonLayout = new HorizontalLayout(saveToWatchlistButton);
+            buttonLayout.setWidthFull();
+            buttonLayout.setJustifyContentMode(JustifyContentMode.END); // Align to the right
+            layout.add(buttonLayout);
+            // --- End of button addition ---
+
+
             Button closeButton = new Button("✕", event -> dialog.close());
             closeButton.getStyle()
                     .set("position", "absolute")
@@ -131,29 +166,61 @@ public class WertpapierView extends VerticalLayout {
             dialog.add(closeButton);
             dialog.add(layout);
 
-            // Füge auch einen Listener zum Dialog hinzu, falls er auf andere Weise geschlossen wird
-
-           /* dialog.addDialogCloseActionListener(event -> {
-                if (parentView != null) {
-                    parentView.openSideNav();
-                }
-            });
-
-//            dialog.addDialogCloseActionListener(event -> {
-//                if (parentView != null) {
-//                    parentView.openSideNav();
-//                }
-//            });
-
-
-            */
-
             dialog.open();
 
         } catch (Exception e) {
             Notification.show("Fehler beim Abrufen der Daten: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
         }
     }
+
+    /**
+     * Saves the currently viewed Wertpapier to the logged-in user's watchlist.
+     * @param symbol The symbol of the Wertpapier to save.
+     */
+    private void saveWertpapierToWatchlist(String symbol) {
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        org.vaadin.example.application.classes.Nutzer currentUser = nutzerService.getNutzerByUsername(currentUsername);
+
+        if (currentUser == null) {
+            Notification.show("Fehler: Aktueller Nutzer nicht gefunden.", 3000, Notification.Position.MIDDLE);
+            return;
+        }
+
+        // Check if Wertpapier already exists in the database by its name/symbol
+        // In a real application, you might want a more robust way to find/create Wertpapier,
+        // perhaps by fetching it from AlphaVantage and saving it if it doesn't exist.
+        // For simplicity, we'll try to find by name or create a new one.
+        // This is a simplification; a better approach would be to have a 'WertpapierService'
+        // that manages the persistence of Wertpapiere fetched from AlphaVantage.
+
+        // For this example, we'll create a dummy Wertpapier if it doesn't exist
+        // You'll need to adapt this based on how your Wertpapier objects are managed and identified.
+        Optional<Wertpapier> existingWertpapier = wertpapierRepository.findByNameIgnoreCase(symbol); // Assuming you have a findByNameIgnoreCase method in your repository
+
+        Wertpapier wertpapierToAdd;
+        if (existingWertpapier.isPresent()) {
+            wertpapierToAdd = existingWertpapier.get();
+        } else {
+            // Create a new Wertpapier entry. This is a placeholder;
+            // ideally, you'd populate more details (like actual type, etc.)
+            // and have a dedicated service for this.
+            Aktie newAktie = new Aktie(); // Or whatever specific Wertpapier type
+            newAktie.setName(symbol); // Using symbol as name for simplicity here
+            wertpapierToAdd = wertpapierRepository.save(newAktie); // Save the new Wertpapier
+            Notification.show("Wertpapier '" + symbol + "' wurde in der Datenbank erstellt.", 3000, Notification.Position.MIDDLE);
+        }
+
+        try {
+            watchlistService.addWertpapierToUserWatchlist(currentUser.getId(), wertpapierToAdd.getWertpapierId());
+            Notification.show(symbol + " wurde zur Watchlist hinzugefügt!", 3000, Notification.Position.MIDDLE);
+        } catch (IllegalArgumentException e) {
+            Notification.show("Fehler beim Hinzufügen zur Watchlist: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
+        } catch (Exception e) {
+            Notification.show("Ein unerwarteter Fehler ist aufgetreten: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
+        }
+    }
+
+
     /**
      * Erstellt das Chart-Objekt basierend auf einer Liste von Kursen.
      * @param kurse Liste der Kursdaten
@@ -190,6 +257,9 @@ public class WertpapierView extends VerticalLayout {
 
         DataSeries series = new DataSeries();
         series.setName(" ");
+        // Ensure that the number of items for the X-axis matches the number of courses,
+        // or use actual dates for better X-axis representation.
+        // For simplicity, using index here, but dates are preferred.
         int index = 1;
         for (Kurs kurs : kurse) {
             series.add(new DataSeriesItem(String.valueOf(index), kurs.getSchlusskurs()));
@@ -202,7 +272,7 @@ public class WertpapierView extends VerticalLayout {
         config.setSeries(series);
         return chart;
     }
-   /**
+    /**
      * Aktualisiert den Kurs-Chart je nach ausgewähltem Zeitraum.
      * @param chartContainer Layout, das den Chart enthält
      * @param symbol Börsensymbol

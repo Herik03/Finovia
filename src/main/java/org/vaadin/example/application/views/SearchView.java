@@ -20,6 +20,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.stereotype.Component; // Not needed for SearchView itself
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -30,33 +32,32 @@ import java.util.concurrent.CompletableFuture;
 @AnonymousAllowed
 public class SearchView extends AbstractSideNav {
     private final AlphaVantageService alphaVantageService;
+    private final WertpapierView wertpapierView; // Inject WertpapierView
 
     private final TextField searchField = new TextField("Wertpapier suchen");
     private final Button searchButton = new Button("Suchen", new Icon(VaadinIcon.SEARCH));
     private final ProgressBar progressBar = new ProgressBar();
     private final Grid<SearchResult> resultGrid = new Grid<>(SearchResult.class, false);
 
-    public SearchView(AlphaVantageService alphaVantageService) {
-        super(); // Ruft den Konstruktor der Basisklasse AbstractSideNav auf
+    @Autowired
+    public SearchView(AlphaVantageService alphaVantageService, WertpapierView wertpapierView) {
+        super();
         this.alphaVantageService = alphaVantageService;
+        this.wertpapierView = wertpapierView;
 
-        // Wir erstellen ein VerticalLayout für den Inhalt
         VerticalLayout searchContent = new VerticalLayout();
         searchContent.setHeightFull();
         searchContent.setMaxWidth("1200px");
         searchContent.setMargin(true);
         searchContent.addClassName("stock-view");
 
-        // UI konfigurieren
         configureUI(searchContent);
         configureGrid();
         setupListeners();
 
-        // Startansicht konfigurieren
         progressBar.setVisible(false);
         resultGrid.setVisible(true);
 
-        // Füge das Content-Layout zum Hauptinhaltsbereich hinzu
         addToMainContent(searchContent);
     }
 
@@ -91,7 +92,6 @@ public class SearchView extends AbstractSideNav {
         resultGrid.addColumn(SearchResult::getRegion).setHeader("Region").setAutoWidth(true);
         resultGrid.addColumn(SearchResult::getCurrency).setHeader("Währung").setAutoWidth(true);
 
-        // Aktionsspalte mit Details- und Kaufen-Button
         resultGrid.addColumn(new ComponentRenderer<>(result -> {
             HorizontalLayout actions = new HorizontalLayout();
 
@@ -115,11 +115,9 @@ public class SearchView extends AbstractSideNav {
 
 
     private void setupListeners() {
-        // Suche bei Enter-Taste oder Button-Klick ausführen
         searchField.addKeyPressListener(Key.ENTER, event -> performSearch());
         searchButton.addClickListener(event -> performSearch());
 
-        // Doppelklick auf Zeile
         resultGrid.addItemDoubleClickListener(event -> showDetails(event.getItem()));
     }
 
@@ -130,19 +128,14 @@ public class SearchView extends AbstractSideNav {
             return;
         }
 
-        // UI-Status aktualisieren
         progressBar.setVisible(true);
-        // Wichtig: Grid nicht unsichtbar machen!
         searchButton.setEnabled(false);
 
         CompletableFuture
                 .supplyAsync(() -> alphaVantageService.search(keyword))
                 .thenAccept(results -> {
-                    // Verzögerte UI-Aktualisierung mit einer expliziten Verzögerung
-                    // Dies kann bei UI-Update-Problemen helfen
-                    try {
-                        Thread.sleep(100); // Kurze Verzögerung
-                    } catch (InterruptedException ignored) {}
+                    // Kurze Verzögerung kann bei UI-Update-Problemen helfen, ist aber oft nicht nötig.
+                    // try { Thread.sleep(100); } catch (InterruptedException ignored) {}
 
                     getUI().ifPresent(ui -> ui.access(() -> {
                         handleSearchResults(results);
@@ -154,57 +147,34 @@ public class SearchView extends AbstractSideNav {
         progressBar.setVisible(false);
         searchButton.setEnabled(true);
 
-        // Grid explizit leeren
-        resultGrid.setItems(List.of());
+        // --- Diese Zeile wurde entfernt, da setItems die Liste ohnehin überschreibt ---
+        // resultGrid.setItems(List.of());
 
-        // Explizites DataProvider Update erzwingen
         if (results.isEmpty()) {
+            resultGrid.setItems(List.of()); // Stellen Sie sicher, dass das Grid leer ist, wenn keine Ergebnisse vorliegen.
             showNotification("Keine Ergebnisse gefunden.", NotificationVariant.LUMO_CONTRAST);
         } else {
-            // DataProvider erstellen und explizit setzen
             resultGrid.setItems(results);
-            // Erzwinge ein vollständiges Grid-Update
-            resultGrid.getDataProvider().refreshAll();
             showNotification(results.size() + " Treffer gefunden.", NotificationVariant.LUMO_SUCCESS);
         }
 
-        // Explizit Layout-Updates anfordern
-        resultGrid.recalculateColumnWidths();
+        // Explizites Refresh ist oft nicht nötig, da setItems dies implizit macht, aber schadet nicht.
         resultGrid.getDataProvider().refreshAll();
+        resultGrid.recalculateColumnWidths(); // Immer gut, um die Spaltenbreiten anzupassen
     }
+
     private void showDetails(SearchResult result) {
-        WertpapierView wertpapierView = new WertpapierView(alphaVantageService);
         wertpapierView.displayWertpapierDetails(result.getSymbol());
-        closeSideNav();
+        closeSideNav(); // Assuming this method exists in AbstractSideNav
     }
-
-
-   /* private void showDetails(SearchResult result) {
-        // Hier könntest du einen Dialog öffnen oder zu einer Detail-Ansicht navigieren
-        Notification notification = Notification.show(
-                "Symbol: " + result.getSymbol() +
-                        "\nName: " + result.getName() +
-                        "\nRegion: " + result.getRegion() +
-                        "\nWährung: " + result.getCurrency(),
-                3000,
-                Notification.Position.MIDDLE
-        );
-        notification.open();
-
-        // Future: Navigation zu einer DetailView
-        // getUI().ifPresent(ui -> ui.navigate(WertpapierView.class, result.getSymbol()));
-    }
-
-    */
 
     private void showNotification(String message, NotificationVariant variant) {
         Notification notification = new Notification(message, 3000, Notification.Position.TOP_CENTER);
         notification.addThemeVariants(variant);
         notification.open();
-
     }
 
     private void navigateToKaufView(String symbol) {
-        getUI().ifPresent(ui -> ui.navigate("kaufen" + symbol));
+        getUI().ifPresent(ui -> ui.navigate("kaufen/" + symbol)); // Korrigiert: "/kaufen" statt "kaufen" wenn es eine Route ist
     }
 }

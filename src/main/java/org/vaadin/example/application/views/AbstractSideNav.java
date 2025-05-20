@@ -108,8 +108,8 @@ public abstract class AbstractSideNav extends VerticalLayout {
 
         H1 logo = new H1("Finovia");
         logo.getStyle().set("font-size", "var(--lumo-font-size-l)")
-             .set("margin", "0")
-             .set("padding", "var(--lumo-space-m)");
+                .set("margin", "0")
+                .set("padding", "var(--lumo-space-m)");
 
         Button dashboardBtn = createNavButton("Dashboard", VaadinIcon.DASHBOARD);
         dashboardBtn.addClickListener(e -> UI.getCurrent().navigate("uebersicht"));
@@ -123,6 +123,11 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button apiBtn = createNavButton("Wertpapiere", VaadinIcon.CODE);
         apiBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
 
+        // --- NEW BUTTON FOR WATCHLIST ---
+        Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR); // Using STAR icon, feel free to choose another
+        watchlistBtn.addClickListener(e -> UI.getCurrent().navigate(WatchlistView.class)); // Navigate to WatchlistView
+        // --- END NEW BUTTON ---
+
         Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
         aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
 
@@ -135,7 +140,8 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button meineKauefeBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
         meineKauefeBtn.addClickListener(e -> UI.getCurrent().navigate("meine-kauefe"));
 
-        topLayout.add(logo, dashboardBtn, depotBtn, meineKauefeBtn, settingsBtn, apiBtn);
+        // Add the new button to the topLayout
+        topLayout.add(logo, dashboardBtn, depotBtn, meineKauefeBtn, watchlistBtn, settingsBtn, apiBtn); // Add watchlistBtn here
         topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         topLayout.setPadding(false);
         topLayout.setSpacing(false);
@@ -176,7 +182,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
      * Fügt Komponenten zum Hauptinhaltsbereich hinzu.
      * <p>
      * Hilfsmethode, um Komponenten zum Hauptinhaltsbereich hinzuzufügen.
-     * 
+     *
      * @param components Die hinzuzufügenden Komponenten
      */
     protected void addToMainContent(Component... components) {
