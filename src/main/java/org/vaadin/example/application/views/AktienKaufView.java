@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -17,19 +18,16 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Depot;
-import org.vaadin.example.application.classes.Kauf;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.AktienKaufService;
 import org.vaadin.example.application.services.DepotService;
-import org.vaadin.example.application.services.KaufService;
 import org.vaadin.example.application.services.NutzerService;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Route("kaufen/:symbol")
@@ -38,16 +36,18 @@ import java.util.List;
 public class AktienKaufView extends AbstractSideNav {
 
     private final AktienKaufService aktienKaufService;
-    private final KaufService kaufService;
     private final DepotService depotService;
     private final SecurityService securityService;
     private final NutzerService nutzerService;
+    private final List<String> handelsplaetze = Arrays.asList("Xetra", "Frankfurt", "Tradegate");
 
     @Autowired
-    public AktienKaufView(AktienKaufService aktienKaufService, KaufService kaufService, DepotService depotService, SecurityService securityService, NutzerService nutzerService) {
+    public AktienKaufView(AktienKaufService aktienKaufService,
+                          DepotService depotService,
+                          SecurityService securityService,
+                          NutzerService nutzerService) {
         super();
         this.aktienKaufService = aktienKaufService;
-        this.kaufService = kaufService;
         this.depotService = depotService;
         this.securityService = securityService;
         this.nutzerService = nutzerService;
@@ -66,76 +66,119 @@ public class AktienKaufView extends AbstractSideNav {
         RouterLink routerLink = new RouterLink("", MainView.class);
         routerLink.add(backButton);
 
+        VerticalLayout topLeftLayout = new VerticalLayout(routerLink);
+        topLeftLayout.setPadding(false);
+        topLeftLayout.setSpacing(false);
+        topLeftLayout.setWidthFull();
+        topLeftLayout.setAlignItems(FlexComponent.Alignment.START);
+
         H3 title = new H3("Aktien Kaufen");
         title.addClassName("view-title");
 
         TextField symbolField = new TextField("Aktiensymbol");
         symbolField.setPlaceholder("z. B. AAPL");
+        symbolField.setWidthFull();
+
+        TextField einzelkursField = new TextField("Aktueller Kurs (€/Aktie)");
+        einzelkursField.setReadOnly(true);
+        einzelkursField.setValue("0.00");
+        einzelkursField.setWidthFull();
 
         NumberField stueckzahlField = new NumberField("Stückzahl");
         stueckzahlField.setMin(1);
         stueckzahlField.setValue(1.0);
+        stueckzahlField.setWidthFull();
 
-        TextField handelsplatzField = new TextField("Handelsplatz");
-        handelsplatzField.setPlaceholder("z. B. NASDAQ");
+        ComboBox<String> handelsplatzAuswahl = new ComboBox<>("Handelsplatz auswählen");
+        handelsplatzAuswahl.setItems(handelsplaetze);
+        handelsplatzAuswahl.setPlaceholder("Handelsplatz wählen");
+        handelsplatzAuswahl.setRequired(true);
+        handelsplatzAuswahl.setWidthFull();
+
+        NumberField gebuehrenField = new NumberField("Gebühren (EUR)");
+        gebuehrenField.setValue(2.50);
+        gebuehrenField.setReadOnly(true);
+        gebuehrenField.setWidthFull();
 
         TextField kursField = new TextField("Gesamtpreis (€)");
         kursField.setReadOnly(true);
         kursField.setValue("0.00");
+        kursField.setWidthFull();
 
-        // Depot-Auswahl hinzufügen
         ComboBox<Depot> depotComboBox = new ComboBox<>("Depot auswählen");
         List<Depot> depots = depotService.getDepotsByNutzerId(getAktuelleNutzerId());
         depotComboBox.setItems(depots);
         depotComboBox.setItemLabelGenerator(Depot::getName);
+        depotComboBox.setWidthFull();
 
-        // Kurs automatisch aktualisieren
-        symbolField.addValueChangeListener(e -> aktualisiereKurs(symbolField, stueckzahlField, kursField));
-        stueckzahlField.addValueChangeListener(e -> aktualisiereKurs(symbolField, stueckzahlField, kursField));
+        FormLayout formLayout = new FormLayout();
+        formLayout.setWidth("400px");
+        formLayout.add(symbolField, einzelkursField, stueckzahlField, handelsplatzAuswahl, gebuehrenField, kursField, depotComboBox);
 
         Button kaufButton = new Button("Jetzt Kaufen");
         kaufButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        kaufButton.getStyle().set("margin-top", "20px");
+        kaufButton.setWidthFull();
+
+        symbolField.addValueChangeListener(e -> {
+            aktualisiereEinzelkurs(symbolField, einzelkursField);
+            aktualisiereKurs(symbolField, stueckzahlField, kursField);
+        });
+        stueckzahlField.addValueChangeListener(e -> aktualisiereKurs(symbolField, stueckzahlField, kursField));
+
         kaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
-            int stueckzahl = stueckzahlField.getValue().intValue();
-            String handelsplatz = handelsplatzField.getValue();
+            Double stueckzahlDouble = stueckzahlField.getValue();
+            if (stueckzahlDouble == null || stueckzahlDouble < 1) {
+                Notification.show("Bitte eine gültige Stückzahl angeben.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return;
+            }
+            int stueckzahl = stueckzahlDouble.intValue();
+
+            String handelsplatz = handelsplatzAuswahl.getValue();
             Depot depot = depotComboBox.getValue();
 
-            if (symbol == null || symbol.isBlank() || depot == null) {
-                Notification.show("Bitte Symbol und Depot angeben.")
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            if (symbol == null || symbol.isBlank() || depot == null || handelsplatz == null || handelsplatz.isBlank()) {
+                Notification.show("Bitte Symbol, Depot und Handelsplatz angeben.").addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return;
             }
 
-            Aktie gekaufteAktie = aktienKaufService.kaufeAktie(symbol, stueckzahl, handelsplatz);
+            Aktie gekaufteAktie = aktienKaufService.kaufeAktie(symbol, stueckzahl, handelsplatz, depot);
 
             if (gekaufteAktie != null) {
-                Kauf kauf = (Kauf) gekaufteAktie.getTransaktionen().get(0);
-                kaufService.addKauf(kauf);
-
-                // Dem Depot hinzufügen
-                depot.wertpapierHinzufuegen(gekaufteAktie, stueckzahl);
-
-                Notification.show("Erfolgreich gekauft: " + gekaufteAktie.getName()
-                                + " (" + stueckzahl + " Stück)")
+                Notification.show("Erfolgreich gekauft: " + gekaufteAktie.getName() + " (" + stueckzahl + " Stück)")
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
-                UI.getCurrent().navigate("meine-kauefe");
+                UI.getCurrent().navigate("transaktionen");
             } else {
                 Notification.show("Kauf fehlgeschlagen. Bitte prüfen Sie das Symbol.")
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
 
-        VerticalLayout formLayout = new VerticalLayout(
-                symbolField, stueckzahlField, handelsplatzField, kursField, depotComboBox, kaufButton
-        );
-        formLayout.setSpacing(true);
-        formLayout.setPadding(false);
-        formLayout.setAlignItems(FlexComponent.Alignment.START);
-        formLayout.setMaxWidth("600px");
+        VerticalLayout centerLayout = new VerticalLayout(title, formLayout, kaufButton);
+        centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+        centerLayout.setSpacing(true);
+        centerLayout.setPadding(true);
+        centerLayout.setWidthFull();
+        centerLayout.getStyle().set("max-width", "600px");
+        centerLayout.getStyle().set("margin", "0 auto");
 
-        container.add(backButton, title, formLayout);
+        container.add(topLeftLayout, centerLayout);
+    }
+
+    private void aktualisiereEinzelkurs(TextField symbolField, TextField einzelkursField) {
+        String symbol = symbolField.getValue();
+        if (symbol != null && !symbol.isBlank()) {
+            try {
+                double einzelkurs = aktienKaufService.getKursFürSymbol(symbol);
+                einzelkursField.setValue(String.format("%.2f", einzelkurs));
+            } catch (Exception e) {
+                einzelkursField.setValue("Fehler");
+            }
+        } else {
+            einzelkursField.setValue("0.00");
+        }
     }
 
     private void aktualisiereKurs(TextField symbolField, NumberField stueckzahlField, TextField kursField) {
@@ -145,7 +188,7 @@ public class AktienKaufView extends AbstractSideNav {
         if (symbol != null && !symbol.isBlank() && stueckzahl != null && stueckzahl > 0) {
             try {
                 double einzelkurs = aktienKaufService.getKursFürSymbol(symbol);
-                double gesamtkurs = einzelkurs * stueckzahl;
+                double gesamtkurs = einzelkurs * stueckzahl + 2.50; // Gebühren addiert
                 kursField.setValue(String.format("%.2f", gesamtkurs));
             } catch (Exception ex) {
                 kursField.setValue("Fehler");
@@ -157,11 +200,10 @@ public class AktienKaufView extends AbstractSideNav {
 
     private Long getAktuelleNutzerId() {
         UserDetails userDetails = securityService.getAuthenticatedUser();
-        if (userDetails != null) {
-            String username = userDetails.getUsername();
-            Nutzer aktuellerNutzer = nutzerService.getNutzerByUsername(username);
-            return aktuellerNutzer.getId();
+        if (userDetails == null) {
+            return null;
         }
-        return null;
+        Nutzer nutzer = nutzerService.findByUsername(userDetails.getUsername()); // korrekt: Nutzer zurückgeben
+        return (nutzer != null) ? nutzer.getId() : null;
     }
 }

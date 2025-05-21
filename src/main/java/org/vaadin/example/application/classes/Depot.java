@@ -7,9 +7,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Nutzer-Klasse, die die Eigenschaften und Methoden eines Nutzers repräsentiert.
@@ -31,6 +29,7 @@ public class Depot {
     @Getter
     private String name;
 
+    @Setter
     @Getter
     @ManyToOne
     @JoinColumn(name = "nutzer_id")
@@ -38,7 +37,6 @@ public class Depot {
 
     @OneToMany(mappedBy = "depot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private final List<DepotWertpapier> depotWertpapiere = new ArrayList<>();
-
 
     @Getter
     private double saldo = 0.0;
@@ -52,13 +50,6 @@ public class Depot {
     public Depot(String name, Nutzer besitzer) {
         this.name = name;
         this.besitzer = besitzer;
-    }
-
-    public void setBesitzer(Nutzer nutzer) {
-        this.besitzer = nutzer;
-        if (nutzer != null && !nutzer.getDepots().contains(this)) {
-            nutzer.getDepots().add(this);
-        }
     }
 
     public void wertpapierHinzufuegen(Wertpapier wertpapier, int anzahl) {
@@ -142,6 +133,4 @@ public class Depot {
             }
         }
     }
-
-
 }
