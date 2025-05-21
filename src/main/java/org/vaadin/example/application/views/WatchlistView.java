@@ -3,6 +3,7 @@ package org.vaadin.example.application.views;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
@@ -23,6 +24,7 @@ import org.vaadin.example.application.classes.Wertpapier;
 import org.vaadin.example.application.services.AlphaVantageService;
 import org.vaadin.example.application.services.NutzerService;
 import org.vaadin.example.application.services.WatchlistService;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,13 +36,13 @@ import java.util.Map;
  * View-Klasse für die Anzeige und Verwaltung der Watchlist eines Nutzers.
  * Diese Klasse bietet eine Benutzeroberfläche zur Anzeige aller gespeicherten
  * Wertpapiere in der Watchlist und ermöglicht es dem Nutzer, Wertpapiere zu
- * entfernen oder Details anzuzeigen.  Sie wurde erweitert, um aktuelle Preis-
- * und Trendinformationen anzuzeigen.
+ * entfernen oder Details anzuzeigen. Sie wurde erweitert, um aktuelle Preis-
+ * und Trendinformationen anzuzeigen und in das Side-Navigation-Layout zu integrieren.
  */
 @Route("watchlist")
 @PageTitle("Meine Watchlist")
 @PermitAll
-public class WatchlistView extends VerticalLayout {
+public class WatchlistView extends AbstractSideNav {
 
     private final WatchlistService watchlistService;
     private final NutzerService nutzerService;
@@ -56,36 +58,64 @@ public class WatchlistView extends VerticalLayout {
     /**
      * Konstruktor für die WatchlistView.
      *
-     * @param watchlistService  Service für den Zugriff auf Watchlist-Funktionen
-     * @param nutzerService     Service für den Zugriff auf Nutzer-Funktionen
+     * @param watchlistService    Service für den Zugriff auf Watchlist-Funktionen
+     * @param nutzerService       Service für den Zugriff auf Nutzer-Funktionen
      * @param alphaVantageService Service für den Zugriff auf Wertpapier-Daten
-     * @param wertpapierView    Service für die Anzeige von Wertpapierdetails
+     * @param wertpapierView      Service für die Anzeige von Wertpapierdetails
      */
     @Autowired
     public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierView wertpapierView) {
+        super(); // Ruft den Konstruktor von AbstractSideNav auf
         this.watchlistService = watchlistService;
         this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
         this.wertpapierView = wertpapierView;
 
-        setSizeFull();
-        setPadding(true);
-        setSpacing(true);
+        // Erstelle ein VerticalLayout für den Hauptinhalt der Watchlist
+        VerticalLayout watchlistContent = new VerticalLayout();
+        watchlistContent.setSizeFull(); // Stellt sicher, dass das Layout den gesamten verfügbaren Platz einnimmt
+        watchlistContent.setPadding(true);
+        watchlistContent.setSpacing(true);
+        watchlistContent.addClassNames(LumoUtility.Padding.LARGE, LumoUtility.Gap.MEDIUM); // Zusätzliche Polsterung und Lücken
 
         H2 header = new H2("Meine Watchlist");
-        header.getStyle().set("margin-top", "0");
-        add(header);
+        header.addClassNames(LumoUtility.Margin.Top.NONE, LumoUtility.Margin.Bottom.MEDIUM); // Oberen Rand entfernen, unteren Rand hinzufügen
+        watchlistContent.add(header);
+
+        // Refresh Button hinzufügen
+        Button refreshButton = new Button("Aktualisieren", new Icon(VaadinIcon.REFRESH));
+        refreshButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_SMALL);
+        refreshButton.addClickListener(e -> loadData());
+        refreshButton.addClassNames(LumoUtility.Margin.Bottom.MEDIUM);
+
+        HorizontalLayout topControls = new HorizontalLayout(refreshButton);
+        topControls.setWidthFull();
+        topControls.setJustifyContentMode(JustifyContentMode.END); // Button rechts ausrichten
+        watchlistContent.add(topControls);
+
 
         configureGrid();
+        // Setzt flex-grow auf 1, damit das Grid den übrigen Platz im VerticalLayout einnimmt
+        // Dies ist der entscheidende Schritt, um das Grid "größer" zu machen,
+        // da es sich nun vertikal ausdehnt.
+        watchlistContent.setFlexGrow(1, grid);
+        watchlistContent.add(grid); // Grid zum Watchlist-Inhalt hinzufügen
+
+
+        // Füge das Watchlist-Inhaltslayout zum Hauptinhaltsbereich der SideNav hinzu
+        addToMainContent(watchlistContent);
+
         loadData();
     }
 
     /**
-     * Konfiguriert das Grid für die Anzeige der Wertpapiere.  Es wurde erweitert,
+     * Konfiguriert das Grid für die Anzeige der Wertpapiere. Es wurde erweitert,
      * um aktuelle Preis- und Trendinformationen anzuzeigen.
      */
     private void configureGrid() {
-        grid.setSizeFull();
+        grid.setSizeFull(); // Grid nimmt die gesamte Größe des verfügbaren Raums ein
+        grid.addClassNames(LumoUtility.BorderRadius.MEDIUM, LumoUtility.BoxShadow.SMALL, LumoUtility.Background.CONTRAST_5); // Abgerundete Ecken, Schatten, leichter Hintergrund
+
         grid.addColumn(Wertpapier::getName).setHeader("Name").setFlexGrow(2);
 
         // Spalte für den aktuellen Preis
@@ -123,8 +153,6 @@ public class WatchlistView extends VerticalLayout {
             actions.add(detailsButton, removeButton);
             return actions;
         }).setHeader("Aktionen").setFlexGrow(1);
-
-        add(grid);
     }
 
     /**
@@ -162,10 +190,9 @@ public class WatchlistView extends VerticalLayout {
                             // Aktualisieren Sie die UI mit den abgerufenen Daten
                             UI.getCurrent().access(() -> {
                                 Span priceSpan = priceSpanMap.get(wertpapier.getWertpapierId());
-                                HorizontalLayout trendLayout = trendLayoutMap.get(wertpapier.getWertpapierId());
                                 Span trendTextSpan = trendTextSpanMap.get(wertpapier.getWertpapierId());
                                 Icon trendIcon = trendIconMap.get(wertpapier.getWertpapierId());
-                                if (priceSpan != null && trendLayout != null && trendTextSpan != null && trendIcon != null) {
+                                if (priceSpan != null && trendTextSpan != null && trendIcon != null) {
                                     if (result[0] != null && result[1] != null) {
                                         double aktuellerPreis = (double) result[0];
                                         double prozentualeAenderung24h = (double) result[1];
@@ -175,13 +202,13 @@ public class WatchlistView extends VerticalLayout {
                                         trendTextSpan.setText(trendText);
 
                                         if (prozentualeAenderung24h > 0) {
-                                            //trendIcon.setIcon(VaadinIcon.TREND_UP);
+                                            //  trendIcon.setIcon(VaadinIcon.TREND_UP); // Icon wird nicht gesetzt, siehe Anmerkung unten
                                             trendIcon.setColor("green");
                                         } else if (prozentualeAenderung24h < 0) {
-                                           // trendIcon.setIcon(VaadinIcon.TREND_DOWN);
+                                            // trendIcon.setIcon(VaadinIcon.TREND_DOWN); // Icon wird nicht gesetzt, siehe Anmerkung unten
                                             trendIcon.setColor("red");
                                         } else {
-                                           // trendIcon.setIcon(VaadinIcon.TRENDING_FLAT);
+                                            //trendIcon.setIcon(VaadinIcon.TRENDING_FLAT); // Icon wird nicht gesetzt, siehe Anmerkung unten
                                             trendIcon.setColor("gray");
                                         }
                                     } else {
@@ -212,13 +239,22 @@ public class WatchlistView extends VerticalLayout {
 
     /**
      * Zeigt detaillierte Informationen zu einem Wertpapier an.
+     * Schließt die Seitenleiste vor dem Öffnen des Detaildialogs und öffnet sie wieder,
+     * sobald der Dialog geschlossen wird.
      *
      * @param wertpapier Das ausgewählte Wertpapier
      */
     private void showDetails(Wertpapier wertpapier) {
         try {
+            // Schließe die Seitenleiste, bevor der Dialog geöffnet wird
+            closeSideNav();
+
             String symbol = wertpapier.getName();
-            wertpapierView.displayWertpapierDetails(symbol);
+            // Rufe den Dialog von WertpapierView ab
+            Dialog detailsDialog = wertpapierView.displayWertpapierDetails(symbol);
+
+            // Füge einen Listener hinzu, der openSideNav() aufruft, wenn der Dialog geschlossen wird
+            detailsDialog.addDetachListener(event -> openSideNav());
         } catch (Exception e) {
             showNotification("Fehler beim Anzeigen der Details: " + e.getMessage(), NotificationVariant.LUMO_ERROR);
         }
@@ -226,13 +262,14 @@ public class WatchlistView extends VerticalLayout {
 
     /**
      * Entfernt ein Wertpapier aus der Watchlist.
+     * Nach dem Entfernen werden die Daten neu geladen, um das Grid zu aktualisieren.
      *
      * @param wertpapier Das zu entfernende Wertpapier
      */
     private void removeFromWatchlist(Wertpapier wertpapier) {
         try {
             watchlistService.removeWertpapierFromUserWatchlist(currentUser.getId(), wertpapier.getWertpapierId());
-            loadData();
+            loadData(); // Daten neu laden
             showNotification(wertpapier.getName() + " wurde aus der Watchlist entfernt", NotificationVariant.LUMO_SUCCESS);
         } catch (Exception e) {
             showNotification("Fehler beim Entfernen aus der Watchlist: " + e.getMessage(), NotificationVariant.LUMO_ERROR);
