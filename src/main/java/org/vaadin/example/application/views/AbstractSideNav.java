@@ -96,7 +96,6 @@ public abstract class AbstractSideNav extends VerticalLayout {
     protected void setupSideNav() {
         sideNav.setWidth(SIDENAV_WIDTH);
         sideNav.setHeightFull();
-        sideNav.setPadding(false);
         sideNav.setSpacing(false);
         sideNav.addClassName("side-nav");
         sideNav.getStyle()
@@ -123,10 +122,9 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button apiBtn = createNavButton("Wertpapiere", VaadinIcon.CODE);
         apiBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
 
-        // --- NEW BUTTON FOR WATCHLIST ---
-        Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR); // Using STAR icon, feel free to choose another
-        watchlistBtn.addClickListener(e -> UI.getCurrent().navigate(WatchlistView.class)); // Navigate to WatchlistView
-        // --- END NEW BUTTON ---
+        
+        Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR); 
+        watchlistBtn.addClickListener(e -> UI.getCurrent().navigate(WatchlistView.class)); 
 
         Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
         aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
@@ -140,17 +138,18 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button meineKauefeBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
         meineKauefeBtn.addClickListener(e -> UI.getCurrent().navigate("meine-kauefe"));
 
-        // Add the new button to the topLayout
-        topLayout.add(logo, dashboardBtn, depotBtn, meineKauefeBtn, watchlistBtn, settingsBtn, apiBtn); // Add watchlistBtn here
+
+        topLayout.add(logo, dashboardBtn, depotBtn, meineKauefeBtn, watchlistBtn, settingsBtn, apiBtn); 
         topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         topLayout.setPadding(false);
         topLayout.setSpacing(false);
 
         bottomLayout.add(userBtn, logoutBtn);
         bottomLayout.getStyle().setFlexGrow("1");
-        bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END);
+bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END, LumoUtility.Gap.MEDIUM);
 
         sideNav.add(topLayout, bottomLayout);
+sideNav.addClassNames(LumoUtility.Padding.MEDIUM);
     }
 
     /**
