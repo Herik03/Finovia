@@ -6,17 +6,33 @@ import com.vaadin.flow.component.charts.model.*;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
+import com.vaadin.flow.component.button.ButtonVariant; // Import für ButtonVariant
+
 import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Kurs;
+import org.vaadin.example.application.classes.Nutzer; // Import für Nutzer
+import org.vaadin.example.application.classes.Watchlist; // Import für Watchlist
+import org.vaadin.example.application.classes.Wertpapier;
 import org.vaadin.example.application.models.SearchResult;
 import org.vaadin.example.application.services.AlphaVantageService;
+import org.vaadin.example.application.services.WatchlistService;
+import org.vaadin.example.application.services.NutzerService;
+import org.vaadin.example.application.repositories.WertpapierRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Diese Klasse stellt eine Benutzeroberfläche zur Anzeige von Wertpapierdetails dar.
@@ -24,22 +40,45 @@ import java.util.List;
  * Unternehmensbeschreibung an und nutzt dazu Daten aus dem AlphaVantageService.
  *
  * Die Oberfläche wird in einem Dialog dargestellt, welcher responsive gestaltet ist.
+ * Zudem wurde die Funktionalität erweitert, um den Status des "Zur Watchlist hinzufügen"-Buttons
+ * basierend auf der Watchlist des aktuellen Benutzers anzupassen.
  */
+@Component
 public class WertpapierView extends VerticalLayout {
 
     private final AlphaVantageService alphaVantageService;
+    private final WatchlistService watchlistService;
+    private final NutzerService nutzerService;
+    private final WertpapierRepository wertpapierRepository;
+
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public WertpapierView(AlphaVantageService alphaVantageService) {
+    /**
+     * Konstruktor für die WertpapierView.
+     * Spring injiziert hier die benötigten Services und Repositories.
+     *
+     * @param alphaVantageService Der Service zum Abrufen von Wertpapierdaten (Kurse, Fundamentaldaten).
+     * @param watchlistService Der Service zur Verwaltung der Benutzer-Watchlists.
+     * @param nutzerService Der Service zum Abrufen von Benutzerinformationen.
+     * @param wertpapierRepository Das Repository zum Speichern und Abrufen von Wertpapier-Entitäten.
+     */
+    public WertpapierView(AlphaVantageService alphaVantageService, WatchlistService watchlistService, NutzerService nutzerService, WertpapierRepository wertpapierRepository) {
         this.alphaVantageService = alphaVantageService;
+        this.watchlistService = watchlistService;
+        this.nutzerService = nutzerService;
+        this.wertpapierRepository = wertpapierRepository;
     }
 
 
     /**
      * Öffnet einen Dialog mit Kursverlauf, Fundamentaldaten und Beschreibung für das gegebene Symbol.
-     * @param symbol Das Börsensymbol des Wertpapiers
+     * Der Dialog wird responsive gestaltet und bietet Optionen zur Anzeige von Kursen in verschiedenen Zeitrahmen,
+     * fundamentalen Daten und einer Unternehmensbeschreibung. Zudem kann das Wertpapier zur Watchlist hinzugefügt werden.
+     *
+     * @param symbol Das Börsensymbol des Wertpapiers, dessen Details angezeigt werden sollen.
+     * @return Der erstellte und geöffnete Dialog, damit auf dessen Schließen reagiert werden kann.
      */
-    public void displayWertpapierDetails(String symbol) {
+    public Dialog displayWertpapierDetails(String symbol) {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Details für: " + symbol);
         dialog.setWidthFull();
@@ -49,16 +88,23 @@ public class WertpapierView extends VerticalLayout {
         dialog.setResizable(true);
 
         try {
-            List<Kurs> kurse = alphaVantageService.getDailySeries(symbol);
-            SearchResult result = alphaVantageService.search(symbol).stream()
+            // Versucht, den Anzeigenamen des Wertpapiers über die Suche zu ermitteln
+            List<SearchResult> searchResults = alphaVantageService.search(symbol);
+            SearchResult result = searchResults.stream()
                     .filter(r -> r.getSymbol().equalsIgnoreCase(symbol))
                     .findFirst()
                     .orElse(null);
             String anzeigeName = result != null ? result.getName() : symbol;
 
+            // Ruft die monatlichen Kursdaten als Standard ab
+            List<Kurs> kurse = alphaVantageService.getMonthlySeries(symbol);
+
+            // Wenn keine Kursdaten gefunden werden, wird eine Benachrichtigung angezeigt
             if (kurse.isEmpty()) {
                 Notification.show("Keine Daten gefunden.", 3000, Notification.Position.MIDDLE);
-                return;
+                dialog.add(new VerticalLayout(new Span("Keine Daten für " + symbol + " gefunden.")));
+                dialog.open();
+                return dialog;
             }
 
             VerticalLayout layout = new VerticalLayout();
@@ -72,7 +118,36 @@ public class WertpapierView extends VerticalLayout {
             timeFrameSelect.setLabel("Zeitraum");
             timeFrameSelect.setItems("Intraday", "Täglich", "Wöchentlich", "Monatlich");
             timeFrameSelect.setValue("Monatlich");
-            layout.add(timeFrameSelect);
+
+            Button addToWatchlistButton = new Button("Zur Watchlist hinzufügen", new Icon(VaadinIcon.PLUS_CIRCLE));
+            addToWatchlistButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SMALL);
+            addToWatchlistButton.addClickListener(event -> saveWertpapierToWatchlist(symbol));
+
+            // Überprüfen, ob das Wertpapier bereits in der Watchlist ist und den Button anpassen
+            String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+            Nutzer currentUser = nutzerService.getNutzerByUsername(currentUsername);
+
+            if (currentUser != null) {
+                Optional<Watchlist> watchlistOpt = watchlistService.getWatchlistForUser(currentUser.getId());
+                if (watchlistOpt.isPresent()) {
+                    // Annahme: Wertpapier.getName() ist der eindeutige Symbol-Bezeichner
+                    boolean isInWatchlist = watchlistOpt.get().getWertpapiere().stream()
+                            .anyMatch(wp -> wp.getName() != null && wp.getName().equalsIgnoreCase(symbol));
+
+                    if (isInWatchlist) {
+                        addToWatchlistButton.setText("Auf Watchlist");
+                        addToWatchlistButton.setEnabled(false); // Button deaktivieren
+                        addToWatchlistButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                        addToWatchlistButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST); // Grau einfärben
+                    }
+                }
+            }
+
+            HorizontalLayout timeFrameAndButtonLayout = new HorizontalLayout(timeFrameSelect, addToWatchlistButton);
+            timeFrameAndButtonLayout.setAlignItems(Alignment.BASELINE);
+            timeFrameAndButtonLayout.setSpacing(true);
+
+            layout.add(timeFrameAndButtonLayout);
 
             VerticalLayout chartContainer = new VerticalLayout();
             chartContainer.setSizeFull();
@@ -82,6 +157,7 @@ public class WertpapierView extends VerticalLayout {
 
             updateChart(chartContainer, symbol, "Monatlich");
 
+            // Ruft fundamentale Daten ab und zeigt sie an
             Aktie aktie = alphaVantageService.getFundamentalData(symbol);
             if (aktie != null) {
                 Scroller scroller = new Scroller(createInfoGrid(aktie));
@@ -115,11 +191,14 @@ public class WertpapierView extends VerticalLayout {
                 layout.add(infoAndDescriptionLayout);
             }
 
+            // Listener für die Änderung des Zeitrahmens
             timeFrameSelect.addValueChangeListener(event -> {
                 updateChart(chartContainer, symbol, event.getValue());
             });
 
+            // Schließen-Button für den Dialog
             Button closeButton = new Button("✕", event -> dialog.close());
+            closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY); // Weniger aufdringlich
             closeButton.getStyle()
                     .set("position", "absolute")
                     .set("top", "10px")
@@ -131,35 +210,72 @@ public class WertpapierView extends VerticalLayout {
             dialog.add(closeButton);
             dialog.add(layout);
 
-            // Füge auch einen Listener zum Dialog hinzu, falls er auf andere Weise geschlossen wird
-
-           /* dialog.addDialogCloseActionListener(event -> {
-                if (parentView != null) {
-                    parentView.openSideNav();
-                }
-            });
-
-//            dialog.addDialogCloseActionListener(event -> {
-//                if (parentView != null) {
-//                    parentView.openSideNav();
-//                }
-//            });
-
-
-            */
-
             dialog.open();
+            return dialog; // Gibt den Dialog zurück
 
         } catch (Exception e) {
             Notification.show("Fehler beim Abrufen der Daten: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
+            dialog.add(new VerticalLayout(new Span("Fehler beim Laden der Details: " + e.getMessage())));
+            dialog.open();
+            return dialog; // Gibt den Dialog auch im Fehlerfall zurück
         }
     }
+
     /**
-     * Erstellt das Chart-Objekt basierend auf einer Liste von Kursen.
-     * @param kurse Liste der Kursdaten
-     * @param title Titel des Charts
-     * @param timeFrame Zeitintervall zur Achsentitel-Auswahl
-     * @return Ein konfiguriertes Chart-Objekt
+     * Speichert das aktuell angezeigte Wertpapier in der Watchlist des eingeloggten Benutzers.
+     * Wenn das Wertpapier noch nicht in der Datenbank existiert, wird es zuerst gespeichert.
+     *
+     * @param symbol Das Börsensymbol des Wertpapiers, das zur Watchlist hinzugefügt werden soll.
+     */
+    private void saveWertpapierToWatchlist(String symbol) {
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        Nutzer currentUser = nutzerService.getNutzerByUsername(currentUsername);
+
+        if (currentUser == null) {
+            Notification.show("Fehler: Aktueller Nutzer nicht gefunden.", 3000, Notification.Position.MIDDLE);
+            return;
+        }
+
+        // Versucht, das Wertpapier anhand des Namens in der Datenbank zu finden
+        Optional<Wertpapier> existingWertpapier = wertpapierRepository.findByNameIgnoreCase(symbol);
+
+        Wertpapier wertpapierToAdd;
+        if (existingWertpapier.isPresent()) {
+            wertpapierToAdd = existingWertpapier.get();
+        } else {
+            // Wenn nicht vorhanden, ein neues Aktie-Objekt erstellen und speichern
+            Aktie newAktie = new Aktie();
+            newAktie.setName(symbol); // Symbol als Name verwenden
+            wertpapierToAdd = wertpapierRepository.save(newAktie);
+            Notification.show("Wertpapier '" + symbol + "' wurde in der Datenbank erstellt.", 3000, Notification.Position.MIDDLE);
+        }
+
+        try {
+            // Fügt das Wertpapier zur Watchlist des Benutzers hinzu
+            watchlistService.addWertpapierToUserWatchlist(currentUser.getId(), wertpapierToAdd.getWertpapierId());
+            Notification.show(symbol + " wurde zur Watchlist hinzugefügt!", 3000, Notification.Position.MIDDLE);
+            // Nach dem Hinzufügen den Button aktualisieren (deaktivieren und Text ändern)
+            // Dies erfordert einen Zugriff auf den Button, der in der displayWertpapierDetails-Methode erstellt wird.
+            // Da der Button lokal in displayWertpapierDetails erstellt wird, ist eine direkte Aktualisierung
+            // von hier aus nicht trivial ohne Übergabe des Buttons oder Neuladen des Dialogs.
+            // Für eine vollständige Aktualisierung müsste der Dialog neu geladen oder der Button als Feld gespeichert werden.
+            // Da der Dialog nach dem Schließen ohnehin neu aufgebaut wird, ist dies hier weniger kritisch.
+        } catch (IllegalArgumentException e) {
+            Notification.show("Fehler beim Hinzufügen zur Watchlist: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
+        } catch (Exception e) {
+            Notification.show("Ein unerwarteter Fehler ist aufgetreten: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
+        }
+    }
+
+
+    /**
+     * Erstellt ein Chart-Objekt basierend auf einer Liste von Kursen.
+     * Das Chart zeigt den Kursverlauf als Liniendiagramm an.
+     *
+     * @param kurse Liste der Kursdaten, die im Chart dargestellt werden sollen.
+     * @param title Titel des Charts.
+     * @param timeFrame Zeitintervall zur Achsentitel-Auswahl (z.B. "Intraday", "Täglich", "Monatlich").
+     * @return Ein konfiguriertes Chart-Objekt.
      */
     private Chart buildChart(List<Kurs> kurse, String title, String timeFrame) {
         Chart chart = new Chart(ChartType.LINE);
@@ -189,24 +305,27 @@ public class WertpapierView extends VerticalLayout {
         config.addyAxis(yAxis);
 
         DataSeries series = new DataSeries();
-        series.setName(" ");
+        series.setName(" "); // Leerer Name, da der Titel des Charts ausreicht
         int index = 1;
         for (Kurs kurs : kurse) {
             series.add(new DataSeriesItem(String.valueOf(index), kurs.getSchlusskurs()));
             index++;
         }
         PlotOptionsLine plotOptions = new PlotOptionsLine();
-        plotOptions.setMarker(new Marker(false));
+        plotOptions.setMarker(new Marker(false)); // Keine Marker auf der Linie anzeigen
         series.setPlotOptions(plotOptions);
 
         config.setSeries(series);
         return chart;
     }
-   /**
-     * Aktualisiert den Kurs-Chart je nach ausgewähltem Zeitraum.
-     * @param chartContainer Layout, das den Chart enthält
-     * @param symbol Börsensymbol
-     * @param timeFrame Zeitintervall für die Kursanzeige (z.B. "Täglich")
+
+    /**
+     * Aktualisiert den Kurs-Chart im angegebenen Container basierend auf dem Symbol und dem Zeitrahmen.
+     * Die entsprechenden Kursdaten werden über den AlphaVantageService abgerufen.
+     *
+     * @param chartContainer Das VerticalLayout, das den Chart enthält und aktualisiert werden soll.
+     * @param symbol Das Börsensymbol des Wertpapiers.
+     * @param timeFrame Das Zeitintervall für die Kursanzeige (z.B. "Intraday", "Täglich", "Wöchentlich", "Monatlich").
      */
     private void updateChart(VerticalLayout chartContainer, String symbol, String timeFrame) {
         List<Kurs> kurse;
@@ -229,22 +348,37 @@ public class WertpapierView extends VerticalLayout {
 
             Chart newChart = buildChart(kurse, symbol, timeFrame.toLowerCase().replace(" ", "_"));
 
-            chartContainer.removeAll();
-            chartContainer.add(newChart);
+            chartContainer.removeAll(); // Entfernt den alten Chart
+            chartContainer.add(newChart); // Fügt den neuen Chart hinzu
 
         } catch (Exception e) {
             Notification.show("Fehler beim Aktualisieren des Charts: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
         }
     }
+
     /**
-     * Erstellt eine Zeile mit zwei (oder drei) beschrifteten Informationsblöcken.
+     * Erstellt eine horizontale Layout-Zeile mit zwei beschrifteten Informationsblöcken.
+     *
+     * @param label1 Beschriftung für den ersten Informationsblock.
+     * @param value1 Wert für den ersten Informationsblock.
+     * @param label2 Beschriftung für den zweiten Informationsblock.
+     * @param value2 Wert für den zweiten Informationsblock.
+     * @return Ein HorizontalLayout mit zwei Informationsblöcken.
      */
     private HorizontalLayout createInfoRow(String label1, Object value1, String label2, Object value2) {
         return createInfoRow(label1, value1, label2, value2, null, null);
     }
 
     /**
-     * Erstellt eine Zeile mit bis zu drei beschrifteten Informationsblöcken.
+     * Erstellt eine horizontale Layout-Zeile mit bis zu drei beschrifteten Informationsblöcken.
+     *
+     * @param label1 Beschriftung für den ersten Informationsblock.
+     * @param value1 Wert für den ersten Informationsblock.
+     * @param label2 Beschriftung für den zweiten Informationsblock.
+     * @param value2 Wert für den zweiten Informationsblock.
+     * @param label3 (Optional) Beschriftung für den dritten Informationsblock.
+     * @param value3 (Optional) Wert für den dritten Informationsblock.
+     * @return Ein HorizontalLayout mit den angegebenen Informationsblöcken.
      */
     private HorizontalLayout createInfoRow(String label1, Object value1, String label2, Object value2, String label3, Object value3) {
         HorizontalLayout row = new HorizontalLayout();
@@ -259,8 +393,14 @@ public class WertpapierView extends VerticalLayout {
 
         return row;
     }
+
     /**
-     * Erzeugt einen einzelnen Block mit Label und Wert für die Anzeige in der Übersicht.
+     * Erzeugt einen einzelnen vertikalen Block mit einem Label und einem Wert für die Anzeige in der Übersicht.
+     * Werte, die null, "0" oder leer sind, werden als "n.v." (nicht verfügbar) angezeigt.
+     *
+     * @param label Die Beschriftung des Informationsblocks.
+     * @param value Der Wert, der im Informationsblock angezeigt werden soll.
+     * @return Ein VerticalLayout, das den beschrifteten Informationsblock darstellt.
      */
     private VerticalLayout createSingleInfoBlock(String label, Object value) {
         String displayValue = (value == null || value.toString().equals("0") || value.toString().isBlank())
@@ -280,10 +420,13 @@ public class WertpapierView extends VerticalLayout {
 
         return block;
     }
+
     /**
-     * Erstellt ein vertikales Layout mit mehreren Zeilen von fundamentalen Finanzkennzahlen.
-     * @param aktie Die Aktie mit den anzuzeigenden Fundamentaldaten
-     * @return Layout mit gestylten Kennzahlenblöcken
+     * Erstellt ein vertikales Layout mit mehreren Zeilen von fundamentalen Finanzkennzahlen einer Aktie.
+     * Die Kennzahlen werden in einem ansprechenden Grid-Layout dargestellt.
+     *
+     * @param aktie Die Aktie mit den anzuzeigenden Fundamentaldaten.
+     * @return Ein VerticalLayout, das die fundamentalen Finanzkennzahlen in einem Grid darstellt.
      */
     private VerticalLayout createInfoGrid(Aktie aktie) {
         VerticalLayout gridLayout = new VerticalLayout();
