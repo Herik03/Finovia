@@ -9,6 +9,7 @@ import lombok.*;
 public class DepotWertpapier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private Long id;
 
     @ManyToOne
