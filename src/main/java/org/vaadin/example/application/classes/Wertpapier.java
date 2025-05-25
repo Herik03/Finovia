@@ -22,14 +22,15 @@ import java.util.List;
 @Entity
 @Table(name = "Wertpapier")
 @Inheritance(strategy = InheritanceType.JOINED)
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 public abstract class Wertpapier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long wertpapierId;
 
-    private String name;
+    private String name; // Dieser Parameter ist wichtig für die Suche
 
     @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Transaktion> transaktionen;
@@ -54,8 +55,10 @@ public abstract class Wertpapier {
         kurse.add(kurs);
     }
 
+
     public void addAusschuettung(Ausschuettung ausschuettung) {
         ausschuettungen.add(ausschuettung);
     }
+
 
 }

@@ -10,18 +10,18 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.application.classes.Depot;
+import org.vaadin.example.application.factory.DepotAnlegenViewFactory;
 import org.vaadin.example.application.services.DepotService;
 
 import java.util.List;
 
 /**
  * Die `DepotView`-Klasse stellt die Hauptansicht für die Verwaltung von Depots dar.
- * Sie enthält eine Überschrift, einen Button zum Erstellen eines neuen Depots
- * und eine Liste der Depots des Nutzers aus der Datenbank.
+ * Sie zeigt eine Liste der vorhandenen Depots an und bietet die Möglichkeit,
+ * neue Depots zu erstellen.
  */
 @Route(value = "depot")
 @PageTitle("Depot")
@@ -29,86 +29,109 @@ import java.util.List;
 public class DepotView extends AbstractSideNav {
 
     private final DepotService depotService;
+    private final DepotAnlegenViewFactory depotAnlegenViewFactory;
 
     /**
      * Konstruktor für die `DepotView`-Klasse.
-     * Initialisiert die Ansicht mit einer Überschrift, einem Button und den Depots aus der Datenbank.
-     * 
-     * @param depotService Der Service für Depot-Operationen
+     * Initialisiert die Ansicht mit den notwendigen Services und baut die Benutzeroberfläche auf.
+     *
+     * @param depotService Der Service für Depot-Operationen, um Depots zu laden.
+     * @param depotAnlegenViewFactory Die Factory zum Erstellen der DepotAnlegenView als Dialog.
      */
     @Autowired
-    public DepotView(DepotService depotService) {
-        super(); // Ruft den Konstruktor der AbstractSideNav auf
+    public DepotView(DepotService depotService, DepotAnlegenViewFactory depotAnlegenViewFactory) {
+        super();
         this.depotService = depotService;
-        
-        // Überschrift
+        this.depotAnlegenViewFactory = depotAnlegenViewFactory;
+
+        // Überschrift der Ansicht
         H2 title = new H2("Meine Depots");
 
-        // Button für neues Depot
+        // Button zum Öffnen des Dialogs zum Anlegen eines neuen Depots
         Button depotAnlegenButton = new Button("Neues Depot anlegen", VaadinIcon.PLUS.create());
         depotAnlegenButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        // Öffnet den Dialog, wenn der Button geklickt wird
+        depotAnlegenButton.addClickListener(event -> openDepotAnlegenDialog());
 
-        RouterLink routerLink = new RouterLink("", DepotAnlegenView.class);
-        routerLink.add(depotAnlegenButton);
-
-        // Depot-Header-Layout erstellen
-        VerticalLayout depotHeader = new VerticalLayout(title, routerLink);
+        // Layout für die Überschrift und den Button
+        VerticalLayout depotHeader = new VerticalLayout(title, depotAnlegenButton);
         depotHeader.setSpacing(true);
         depotHeader.setPadding(false);
         depotHeader.setWidthFull();
 
-        // Depots aus der Datenbank laden und anzeigen
+        // Depots aus der Datenbank laden
         List<Depot> depots = depotService.getAllDepots();
 
-        // Depot-Liste-Layout erstellen
+        // Layout für die Liste der Depots
         VerticalLayout depotList = new VerticalLayout();
         depotList.setSpacing(true);
         depotList.setPadding(false);
         depotList.setWidthFull();
 
+        // Prüfen, ob Depots vorhanden sind und diese anzeigen
         if (depots.isEmpty()) {
             depotList.add(new Span("Keine Depots vorhanden. Erstellen Sie ein neues Depot."));
         } else {
-            // Depots anzeigen
+            // Depots in einzelnen Boxen anzeigen
             for (Depot depot : depots) {
                 Div depotBox = createDepotBox(depot);
                 depotList.add(depotBox);
             }
         }
 
-        // Den Hauptinhaltsbereich konfigurieren
-        // Diese überschreibt die Methode configureMainContent aus AbstractSideNav
-        // Wir fügen stattdessen unsere eigenen Komponenten hinzu
+        // Hauptinhaltsbereich der Seite konfigurieren (aus AbstractSideNav)
         addToMainContent(depotHeader, depotList);
     }
 
     /**
-     * Erstellt eine Box für die Anzeige eines Depots.
-     * 
-     * @param depot Das anzuzeigende Depot
-     * @return Eine Div-Komponente, die das Depot darstellt
+     * Öffnet den Dialog zum Anlegen eines neuen Depots.
+     * Registriert einen Listener, um die Depotliste nach dem Schließen des Dialogs zu aktualisieren.
+     */
+    private void openDepotAnlegenDialog() {
+        // Erstellt eine Instanz von DepotAnlegenView über die Factory
+        DepotAnlegenView depotAnlegenDialog = depotAnlegenViewFactory.createDepotAnlegenView();
+
+        // Fügt einen Listener hinzu, um die Ansicht zu aktualisieren, wenn der Dialog geschlossen wird
+        // (z.B. nach dem Speichern eines neuen Depots)
+        depotAnlegenDialog.addOpenedChangeListener(event -> {
+            if (!event.isOpened()) {
+                // Dialog wurde geschlossen, Depotliste aktualisieren
+                // Dies bewirkt, dass die Daten neu geladen und die Ansicht neu aufgebaut wird.
+                getUI().ifPresent(ui -> ui.navigate(DepotView.class));
+            }
+        });
+        depotAnlegenDialog.open(); // Öffnet den Dialog
+    }
+
+    /**
+     * Erstellt eine visuelle Box zur Darstellung eines einzelnen Depots.
+     * Diese Box zeigt grundlegende Informationen an und ist klickbar,
+     * um zur Detailansicht des Depots zu navigieren.
+     *
+     * @param depot Das anzuzeigende {@link Depot}-Objekt.
+     * @return Eine {@link Div}-Komponente, die das Depot darstellt.
      */
     private Div createDepotBox(Depot depot) {
         Div depotBox = new Div();
         depotBox.addClassName("depot-box");
 
-        // Depot-Name als Überschrift
+        // Depot-Name als Überschrift in der Box
         depotBox.add(new H3(depot.getName()));
 
-        // Depot-Informationen
+        // Weitere Depot-Informationen
         depotBox.add(new Div(new Span("Besitzer: " + depot.getBesitzer().getVollerName())));
         depotBox.add(new Div(new Span("Anzahl Wertpapiere: " + depot.getDepotWertpapiere().size())));
 
-        // Styling
+        // CSS-Styling für die Depot-Box
         depotBox.getStyle().set("border", "1px solid #ccc");
         depotBox.getStyle().set("padding", "10px");
         depotBox.getStyle().set("border-radius", "5px");
-        depotBox.getStyle().set("cursor", "pointer");
+        depotBox.getStyle().set("cursor", "pointer"); // Zeigt an, dass die Box klickbar ist
         depotBox.getStyle().set("margin-bottom", "10px");
         depotBox.getStyle().set("background-color", "#f8f8f8");
         depotBox.setWidth("400px");
 
-        // Klick-Handler für Navigation zur Detailansicht
+        // Klick-Handler für die Navigation zur Detailansicht des Depots
         depotBox.addClickListener(event -> {
             getUI().ifPresent(ui -> ui.navigate(DetailedDepotView.class, depot.getDepotId()));
         });

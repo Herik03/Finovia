@@ -1,105 +1,108 @@
 package org.vaadin.example.application.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.vaadin.example.application.classes.Aktie;
+import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.classes.Kauf;
 import org.vaadin.example.application.classes.Transaktion;
 import org.vaadin.example.application.models.StockQuote;
+import org.vaadin.example.application.repositories.AktieRepository;
+import org.vaadin.example.application.repositories.DepotRepository;
+import org.vaadin.example.application.repositories.TransaktionRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Service-Klasse zur Durchführung von Aktienkäufen.
- * Diese Klasse kommuniziert mit dem AlphaVantageService,
- * um aktuelle Kursinformationen abzurufen und darauf basierend
- * ein Kaufobjekt sowie eine neue Aktie zu erstellen.
- *
- * @author Batuhan
- */
 @Service
 public class AktienKaufService {
-    private final AlphaVantageService alphaVantageService;
 
-    public AktienKaufService(AlphaVantageService alphaVantageService) {
+    private final AlphaVantageService alphaVantageService;
+    private final DepotRepository depotRepository;
+    private final TransaktionRepository transaktionRepository;
+    private final AktieRepository aktieRepository;
+
+    public AktienKaufService(AlphaVantageService alphaVantageService,
+                             DepotRepository depotRepository,
+                             TransaktionRepository transaktionRepository,
+                             AktieRepository aktieRepository) {
         this.alphaVantageService = alphaVantageService;
+        this.depotRepository = depotRepository;
+        this.transaktionRepository = transaktionRepository;
+        this.aktieRepository = aktieRepository;
     }
 
     /**
-     * Führt den Kauf einer Aktie durch.
+     * Führt den Kauf einer Aktie durch, speichert die Kauf-Transaktion und fügt die Aktie dem Depot hinzu.
      *
-     * Diese Methode:
-     * - prüft die Eingaben
-     * - ruft den aktuellen Kurs der gewünschten Aktie ab
-     * - erstellt eine Kauf-Transaktion
-     * - erstellt ein neues Aktie-Objekt mit der Kaufhistorie
-     * - verknüpft die Transaktion mit der Aktie
-     *
-     * @param symbol       Das Tickersymbol der Aktie (z. B. AAPL)
+     * @param symbol       Das Tickersymbol der Aktie (z.B. AAPL)
      * @param stueckzahl   Anzahl der zu kaufenden Aktien
      * @param handelsplatz Börsenplatz des Kaufs
-     * @return Ein neues Aktie-Objekt oder null bei Fehler
+     * @param depot        Depot, dem die Aktie hinzugefügt werden soll
+     * @return Das gekaufte Aktie-Objekt oder null bei Fehler
      */
-    public Aktie kaufeAktie(String symbol, int stueckzahl, String handelsplatz) {
-        if (symbol == null || symbol.isBlank() || stueckzahl <= 0) {
+    @Transactional
+    public Aktie kaufeAktie(String symbol, int stueckzahl, String handelsplatz, Depot depot) {
+        if (symbol == null || symbol.isBlank() || stueckzahl <= 0 || depot == null) {
             return null;
         }
 
-        // Abrufen des aktuellen Aktienkurses vom API-Service
         StockQuote quote = alphaVantageService.getCurrentStockQuote(symbol);
         if (quote == null) {
             return null;
         }
 
-        double kurs = quote.getPrice();  // Kurs von der API
-        double gebuehren = 2.50;         // Standardgebühren (optional anpassen)
+        double kurs = quote.getPrice();
+        double gebuehren = 2.50;
 
-        // Erstellen der Kauf-Transaktion
-        Kauf kauf = new Kauf(
-                handelsplatz,
-                LocalDate.now(),
-                gebuehren,
-                kurs,
-                stueckzahl,
-                null,
-                null
-        );
+        Kauf kauf = new Kauf(handelsplatz, LocalDate.now(), gebuehren, kurs, stueckzahl, null, null);
 
         List<Transaktion> transaktionen = new ArrayList<>();
         transaktionen.add(kauf);
 
-        // Erstellen des Aktie-Objekts mit vorhandenem Konstruktor
         Aktie aktie = new Aktie(
                 quote.getSymbol(),
-                "Unternehmen: " + quote.getSymbol(), // unternehmensname
-                "",     // description
-                "",     // exchange
-                "",     // currency
-                "",     // country
-                "",     // sector
-                "",     // industry
-                0L,     // marketCap
-                0L,     // ebitda
-                0.0,    // pegRatio
-                0.0,    // bookValue
-                0.0,    // dividendPerShare
-                0.0,    // dividendYield
-                0.0,    // eps
-                0.0,    // forwardPE
-                0.0,    // beta
-                0.0,    // yearHigh
-                0.0,    // yearLow
-                null    // dividendDate
+                "Unternehmen: " + quote.getSymbol(),
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                0L,
+                0L,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                null
         );
 
-        // Setzen der geerbten Attribute aus Wertpapier
         aktie.setName(quote.getSymbol());
+        aktie.setUnternehmensname("Unternehmen: " + quote.getSymbol());
         aktie.setTransaktionen(transaktionen);
-        aktie.setKurse(new ArrayList<>()); // Hier kannst du später auch historische Kurse setzen, falls gewünscht
+        aktie.setKurse(new ArrayList<>());
 
-        // Verknüpfe die Transaktion mit der Aktie
+        // 1. Aktie speichern, bevor sie in der Transaktion verwendet wird
+        aktie = aktieRepository.save(aktie);
+
+        // 2. Verknüpfung Kauf -> Aktie
         kauf.setWertpapier(aktie);
+
+        // 3. Kauf-Transaktion speichern
+        transaktionRepository.save(kauf);
+
+        // 4. Aktie dem Depot hinzufügen
+        depot.wertpapierHinzufuegen(aktie, stueckzahl);
+
+        // 5. Depot speichern
+        depotRepository.save(depot);
 
         return aktie;
     }
@@ -115,5 +118,9 @@ public class AktienKaufService {
         }
 
         return quote.getPrice();
+    }
+
+    public List<Transaktion> getAllTransaktionen() {
+        return transaktionRepository.findAll();
     }
 }

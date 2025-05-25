@@ -139,5 +139,9 @@ public class NutzerService {
         return false;
     }
 
+    public Nutzer findByUsername(String username) {
+        return nutzerRepository.findByUsername(username); // kann null sein
+    }
+
     //TODO: Passwort ändern
 }

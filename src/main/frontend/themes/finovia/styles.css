@@ -1,0 +1,127 @@
+/* frontend/themes/finovia/styles.css */
+
+:root {
+    /* Primärfarben (für Akzente wie Buttons, Links) */
+    --lumo-primary-color: #44CF6C;
+    --lumo-primary-color-tint: rgba(68, 207, 108, 0.3);
+    --lumo-primary-color-shade: rgba(68, 207, 108, 0.9);
+
+    /* Sekundärfarben (für weniger wichtige Akzente) */
+    --lumo-secondary-color: #C0EFD8;
+    --lumo-secondary-color-tint: rgba(192, 239, 216, 0.3);
+    --lumo-secondary-color-shade: rgba(192, 239, 216, 0.9);
+
+    /* Textfarben */
+    --lumo-body-text-color: #3A3238;
+    --lumo-header-text-color: #3A3238;
+    --lumo-secondary-text-color: #6E4555;
+
+    /* Hintergrundfarben */
+    --lumo-base-color: #FAFAFA;            /* Weiß als Haupthintergrund */
+    --lumo-shade-5pct: #F2F2F2;            /* sehr leichtes Grau */
+    --lumo-shade-10pct: #F5F5F5;           /* leichter Graustich */
+    --lumo-shade-20pct: #EEEEEE;
+    --lumo-shade-30pct: #E0E0E0;
+
+    /* Akzentfarben für spezielle Trading-Funktionen */
+    --trading-positive: #86EF7D;
+    --trading-negative: #FCA5A5;
+    --trading-neutral:  #D1D5DB;
+
+    /* Typografie */
+    --lumo-font-family:        'Inter', sans-serif;
+    --lumo-heading-font-family:'Inter', sans-serif;
+    --lumo-font-size:          16px;
+    --lumo-font-size-s:        0.8rem;
+    --lumo-font-size-m:        1rem;
+    --lumo-font-size-l:        1.2rem;
+    --lumo-font-size-xl:       1.5rem;
+    --lumo-font-size-xxl:      2rem;
+
+    /* Rundungen */
+    --lumo-border-radius: 8px;
+}
+
+/* Buttons */
+vaadin-button {
+    font-family: var(--lumo-font-family);
+    font-size: var(--lumo-font-size-m);
+    border-radius: var(--lumo-border-radius);
+    padding: 10px 20px;
+    background-color: var(--lumo-primary-color);
+    color: #FFFFFF;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+vaadin-button:hover {
+    background-color: var(--lumo-primary-color-tint);
+    transform: scale(1.03);
+}
+
+vaadin-button:active {
+    background-color: var(--lumo-primary-color-shade);
+    transform: scale(1);
+}
+
+/* Textfelder */
+vaadin-text-field {
+    font-family: var(--lumo-font-family);
+    font-size: var(--lumo-font-size-m);
+    border-radius: var(--lumo-border-radius);
+    padding: 10px;
+    background-color: var(--lumo-shade-5pct);
+    border: 1px solid var(--lumo-shade-20pct);
+    color: var(--lumo-body-text-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+vaadin-text-field:focus {
+    border-color: var(--lumo-primary-color);
+    box-shadow: 0 0 0 3px rgba(68, 207, 108, 0.2);
+    outline: none;
+    background-color: #FFFFFF;
+}
+
+/* Grid */
+vaadin-grid {
+    font-family: var(--lumo-font-family);
+    font-size: var(--lumo-font-size-m);
+    border-radius: var(--lumo-border-radius);
+    background-color: var(--lumo-base-color);
+    border: 1px solid var(--lumo-shade-20pct);
+}
+
+vaadin-grid-cell {
+    padding: 14px;
+    border-bottom: 1px solid var(--lumo-shade-30pct);
+    color: var(--lumo-body-text-color);
+}
+
+vaadin-grid-header-cell {
+    background-color: var(--lumo-shade-10pct);
+    color: var(--lumo-header-text-color);
+    font-weight: bold;
+}
+
+/* Depot-Box */
+.depot-box {
+    background-color: #FFFFFF;
+    border: 1px solid var(--lumo-shade-20pct);
+    border-radius: var(--lumo-border-radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.depot-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.depot-box h3 {
+    color: var(--lumo-primary-color);
+    margin-bottom: 8px;
+    font-size: var(--lumo-font-size-l);
+}

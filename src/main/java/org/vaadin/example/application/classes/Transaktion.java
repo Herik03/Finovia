@@ -43,6 +43,8 @@ public abstract class Transaktion {
     @JoinColumn(name = "ausschuettung_id")
     private Ausschuettung ausschüttung;
 
+    private String handelsplatz;
+
 /**
  * Konstruktor zur Initialisierung aller Felder einer Transaktion.
  */
