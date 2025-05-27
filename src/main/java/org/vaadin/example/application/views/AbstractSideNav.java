@@ -145,7 +145,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
         topLayout.setSpacing(false);
 
 
-        bottomLayout.add(userBtn, logoutBtn);
+        bottomLayout.add(settingsBtn, logoutBtn);
         bottomLayout.getStyle().setFlexGrow("1");
 bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END, LumoUtility.Gap.MEDIUM);
 
