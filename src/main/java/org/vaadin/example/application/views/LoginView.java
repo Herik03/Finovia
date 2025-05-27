@@ -396,7 +396,7 @@ forgotPasswordLink.getStyle().set("color", "rgba(68, 207, 108, 0.8)").set("text-
     }
 
     private void handleForgotPassword() {
-        UI.getCurrent().navigate("forgot-password");
+        UI.getCurrent().navigate("passwortvergessen");
     }
 
     private void showErrorNotification(String message) {
