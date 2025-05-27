@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.vaadin.example.application.models.SupportRequest;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
 public class Support {
 
     private final List<SupportRequest> supportRequests = new ArrayList<>();
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
      * Erstellt eine neue Support-Anfrage
@@ -23,7 +25,7 @@ public class Support {
                 category,
                 description,
                 "Offen",
-                LocalDate.now().toString()
+                LocalDate.now().format(formatter)
         );
         supportRequests.add(request);
         return request;
@@ -46,6 +48,51 @@ public class Support {
     public boolean updateRequestStatus(int requestId, String newStatus) {
         if (requestId >= 0 && requestId < supportRequests.size()) {
             supportRequests.get(requestId).setStatus(newStatus);
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Aktualisiert den Status einer Anfrage
+     * @param request Die Anfrage
+     * @param newStatus Neuer Status
+     */
+    public void updateRequestStatus(SupportRequest request, String newStatus) {
+        request.setStatus(newStatus);
+    }
+    
+    /**
+     * Findet eine Anfrage anhand ihrer Ticket-ID
+     * @param ticketId Ticket-ID der Anfrage
+     * @return Die gefundene Anfrage oder null
+     */
+    public SupportRequest findByTicketId(String ticketId) {
+        for (SupportRequest request : supportRequests) {
+            if (ticketId.equals(request.getTicketId())) {
+                return request;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Fügt einen Kommentar zu einer Anfrage hinzu
+     * @param request Die Anfrage
+     * @param comment Der Kommentar
+     */
+    public void addCommentToRequest(SupportRequest request, String comment) {
+        request.addComment(comment);
+    }
+    
+    /**
+     * Löscht eine Support-Anfrage
+     * @param requestId ID der Anfrage
+     * @return true wenn erfolgreich, false wenn Anfrage nicht gefunden
+     */
+    public boolean deleteRequest(int requestId) {
+        if (requestId >= 0 && requestId < supportRequests.size()) {
+            supportRequests.remove(requestId);
             return true;
         }
         return false;
