@@ -3,6 +3,7 @@ package org.vaadin.example.application.views;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.charts.Chart;
 import com.vaadin.flow.component.charts.model.*;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
@@ -25,10 +26,11 @@ import java.util.List;
  *
  * Die Oberfläche wird in einem Dialog dargestellt, welcher responsive gestaltet ist.
  */
+@CssImport("./themes/finovia/styles.css")
 public class WertpapierView extends VerticalLayout {
 
     private final AlphaVantageService alphaVantageService;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private String anzeigeName;
 
     public WertpapierView(AlphaVantageService alphaVantageService) {
         this.alphaVantageService = alphaVantageService;
@@ -41,7 +43,7 @@ public class WertpapierView extends VerticalLayout {
      */
     public void displayWertpapierDetails(String symbol) {
         Dialog dialog = new Dialog();
-        dialog.setHeaderTitle("Details für: " + symbol);
+        //dialog.setHeaderTitle("Details für: " + symbol);
         dialog.setWidthFull();
         dialog.setHeightFull();
         dialog.setModal(true);
@@ -54,7 +56,7 @@ public class WertpapierView extends VerticalLayout {
                     .filter(r -> r.getSymbol().equalsIgnoreCase(symbol))
                     .findFirst()
                     .orElse(null);
-            String anzeigeName = result != null ? result.getName() : symbol;
+             anzeigeName = result != null ? result.getName() : symbol;
 
             if (kurse.isEmpty()) {
                 Notification.show("Keine Daten gefunden.", 3000, Notification.Position.MIDDLE);
@@ -66,7 +68,10 @@ public class WertpapierView extends VerticalLayout {
             layout.setPadding(false);
             layout.setSpacing(false);
             layout.setMargin(false);
-            layout.add(new H2("Wertpapier: " + anzeigeName));
+            H2 titel = new H2("Wertpapier: " + anzeigeName);
+            titel.addClassName("dialog-title");
+            layout.add(titel);
+
 
             Select<String> timeFrameSelect = new Select<>();
             timeFrameSelect.setLabel("Zeitraum");
@@ -98,13 +103,7 @@ public class WertpapierView extends VerticalLayout {
 
                 VerticalLayout descriptionBox = new VerticalLayout(descriptionSpan);
                 descriptionBox.setSizeFull();
-                descriptionBox.getStyle()
-                        .set("background", "#f4f4f4")
-                        .set("padding", "1rem")
-                        .set("border-radius", "8px")
-                        .set("box-shadow", "0 2px 4px rgba(0,0,0,0.05)")
-                        .set("font-size", "0.95rem");
-
+                descriptionBox.addClassName("info-box");
 
                 HorizontalLayout infoAndDescriptionLayout = new HorizontalLayout(scroller, descriptionBox);
                 infoAndDescriptionLayout.setSizeFull();
@@ -113,40 +112,32 @@ public class WertpapierView extends VerticalLayout {
                 infoAndDescriptionLayout.setFlexGrow(2, descriptionBox);
 
                 layout.add(infoAndDescriptionLayout);
+            } else {
+                Span keineDaten = new Span("⚠️ Keine fundamentalen Daten für das Symbol '" + symbol + "' gefunden.");
+                keineDaten.getStyle()
+                        .set("font-size", "1.2rem")
+                        .set("color", "red")
+                        .set("padding", "1rem");
+
+                VerticalLayout infoPlaceholder = new VerticalLayout(keineDaten);
+                infoPlaceholder.setWidthFull();
+                infoPlaceholder.setHeight("150px");
+                infoPlaceholder.addClassName("warning-box");
+
+
+                layout.add(infoPlaceholder);
             }
+
 
             timeFrameSelect.addValueChangeListener(event -> {
                 updateChart(chartContainer, symbol, event.getValue());
             });
 
             Button closeButton = new Button("✕", event -> dialog.close());
-            closeButton.getStyle()
-                    .set("position", "absolute")
-                    .set("top", "10px")
-                    .set("right", "10px")
-                    .set("background", "red")
-                    .set("color", "white")
-                    .set("border", "none")
-                    .set("z-index", "1000");
+            closeButton.addClassName("dialog-close-button");
+
             dialog.add(closeButton);
             dialog.add(layout);
-
-            // Füge auch einen Listener zum Dialog hinzu, falls er auf andere Weise geschlossen wird
-
-           /* dialog.addDialogCloseActionListener(event -> {
-                if (parentView != null) {
-                    parentView.openSideNav();
-                }
-            });
-
-//            dialog.addDialogCloseActionListener(event -> {
-//                if (parentView != null) {
-//                    parentView.openSideNav();
-//                }
-//            });
-
-
-            */
 
             dialog.open();
 
@@ -164,7 +155,7 @@ public class WertpapierView extends VerticalLayout {
     private Chart buildChart(List<Kurs> kurse, String title, String timeFrame) {
         Chart chart = new Chart(ChartType.LINE);
         Configuration config = chart.getConfiguration();
-        config.setTitle("Kursverlauf für " + title);
+        config.setTitle("Kursverlauf für " + anzeigeName );
 
         XAxis xAxis = new XAxis();
         switch (timeFrame.toLowerCase()) {
@@ -270,7 +261,9 @@ public class WertpapierView extends VerticalLayout {
         labelSpan.getStyle().set("font-weight", "bold").set("font-size", "0.85rem");
 
         Span valueSpan = new Span(displayValue);
-        valueSpan.getStyle().set("font-size", "1rem");
+        labelSpan.addClassName("info-label");
+        valueSpan.addClassName("info-value");
+
 
         VerticalLayout block = new VerticalLayout(labelSpan, valueSpan);
         block.setPadding(false);
@@ -290,7 +283,7 @@ public class WertpapierView extends VerticalLayout {
         gridLayout.setSpacing(true);
         gridLayout.setPadding(true);
         gridLayout.setWidthFull();
-        gridLayout.getStyle().set("background", "#f9f9f9").set("border-radius", "8px");
+        gridLayout.addClassName("info-box");
 
         gridLayout.add(createInfoRow("Unternehmensname", aktie.getUnternehmensname(), "Industrie", aktie.getIndustry(), "Sektor", aktie.getSector()));
         gridLayout.add(createInfoRow("Marktkapitalisierung", aktie.getMarketCap(), "EBITDA", aktie.getEbitda(), "PEG Ratio", aktie.getPegRatio()));
