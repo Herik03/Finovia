@@ -85,6 +85,7 @@ public class AktienKaufService {
         );
 
         aktie.setName(quote.getSymbol());
+        aktie.setSymbol(quote.getSymbol());
         aktie.setUnternehmensname("Unternehmen: " + quote.getSymbol());
         aktie.setTransaktionen(transaktionen);
         aktie.setKurse(new ArrayList<>());

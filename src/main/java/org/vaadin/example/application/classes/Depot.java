@@ -133,4 +133,33 @@ public class Depot {
             }
         }
     }
+
+    /**
+     * Liefert das DepotWertpapier zum übergebenen Wertpapier oder null wenn nicht vorhanden.
+     */
+    public DepotWertpapier getDepotWertpapierFor(Wertpapier wertpapier) {
+        for (DepotWertpapier dw : depotWertpapiere) {
+            if (dw.getWertpapier().equals(wertpapier)) {
+                return dw;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Setter für Saldo (Cash Balance).
+     */
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+
+    public int getAnzahlAktien(String symbol) {
+        for (DepotWertpapier dw : depotWertpapiere) {
+            if (dw.getWertpapier() instanceof Aktie aktie && aktie.getSymbol().equals(symbol)) {
+                return dw.getAnzahl();
+            }
+        }
+        return 0;
+    }
+
 }
