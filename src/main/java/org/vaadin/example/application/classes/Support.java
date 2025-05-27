@@ -87,14 +87,12 @@ public class Support {
     
     /**
      * Löscht eine Support-Anfrage
+     *
      * @param requestId ID der Anfrage
-     * @return true wenn erfolgreich, false wenn Anfrage nicht gefunden
      */
-    public boolean deleteRequest(int requestId) {
+    public void deleteRequest(int requestId) {
         if (requestId >= 0 && requestId < supportRequests.size()) {
             supportRequests.remove(requestId);
-            return true;
         }
-        return false;
     }
 }
