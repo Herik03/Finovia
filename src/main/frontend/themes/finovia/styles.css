@@ -1,3 +1,4 @@
+@import "theme-editor.css";
 :root {
     /* Primärfarben (für Akzente wie Buttons, Links) */
     --lumo-primary-color: #44CF6C;
@@ -147,7 +148,7 @@ vaadin-grid-header-cell {
 
 /* Input Field Styling */
 .input-field vaadin-text-field-container {
-    background: rgba(31, 41, 55, 0.6) !important;
+    background: var(--lumo-secondary-color) !important;
     border: 1px solid rgba(68, 207, 108, 0.3) !important;
     border-radius: var(--lumo-border-radius) !important;
     transition: all 0.3s ease !important;
@@ -156,11 +157,11 @@ vaadin-grid-header-cell {
 .input-field:focus-within vaadin-text-field-container {
     border-color: var(--lumo-primary-color) !important;
     box-shadow: 0 0 0 3px rgba(68, 207, 108, 0.2) !important;
-    background: rgba(31, 41, 55, 0.8) !important;
+    background: var(--lumo-secondary-color) !important;
 }
 
 .input-field input {
-    color: white !important;
+    color: var(--lumo-body-text-color) !important;
     font-family: var(--lumo-font-family) !important;
 }
 
@@ -189,8 +190,9 @@ vaadin-grid-header-cell {
 }
 
 .register-button {
-    color: #C0EFD8 !important;
+    color: var(--lumo-primary-color) !important;
     border: 1px solid rgba(68, 207, 108, 0.4) !important;
+    font-weight: 600 !important;
     background: transparent !important;
     transition: all 0.3s ease !important;
     text-transform: none !important;
@@ -198,17 +200,19 @@ vaadin-grid-header-cell {
 
 .register-button:hover {
     border-color: var(--lumo-primary-color) !important;
-    color: white !important;
     background: rgba(68, 207, 108, 0.1) !important;
 }
 
 /* Forgot Password Link */
 .forgot-link {
-    color: rgba(68, 207, 108, 0.8) !important;
+    color: var(--lumo-primary-color-shade) !important;
     text-decoration: underline !important;
+    text-align: center !important;
+    font-weight: 600 !important;
     text-decoration-color: rgba(68, 207, 108, 0.4) !important;
     transition: all 0.3s ease !important;
     cursor: pointer !important;
+    width: 100% !important;
 }
 
 .forgot-link:hover {

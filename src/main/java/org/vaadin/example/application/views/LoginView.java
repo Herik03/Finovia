@@ -67,7 +67,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         // Background styling mit Bild
         addClassName("login-view");
         getStyle()
-                .set("background", "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')")
+                .set("background", "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7))")
                 .set("background-size", "cover")
                 .set("background-position", "center")
                 .set("background-attachment", "fixed")
@@ -94,7 +94,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         H1 title = new H1("Finovia");
         title.getStyle()
                 .set("margin", "0 0 0.5rem 0")
-                .set("color", "white")
+                .set("color", "var(--lumo-header-text-color)")
                 .set("font-size", "2.5rem")
                 .set("font-weight", "700")
                 .set("text-align", "center")
@@ -102,7 +102,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
 
         Span subtitle = new Span("Bitte melden Sie sich mit Ihren Zugangsdaten an");
         subtitle.getStyle()
-                .set("color", "#C0EFD8") // Ihre Sekundärfarbe
+                .set("color", "var(--lumo-body-text-color)") // Ihre Sekundärfarbe
                 .set("font-size", "1rem")
                 .set("text-align", "center")
                 .set("display", "block")
@@ -147,7 +147,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         registerButton.setWidthFull();
         registerButton.addClassName("register-button");
         registerButton.getStyle()
-                .set("color", "#C0EFD8")
+                .set("color", "var(--lumo-primary-color)")
                 .set("border", "1px solid rgba(68, 207, 108, 0.4)")
                 .set("background", "transparent")
                 .set("padding", "0.875rem")
@@ -163,7 +163,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         forgotPasswordLink = new Span("Passwort vergessen?");
         forgotPasswordLink.addClassName("forgot-link");
         forgotPasswordLink.getStyle()
-                .set("color", "rgba(68, 207, 108, 0.8)")
+                .set("color", "var(--lumo-primary-color)")
                 .set("font-size", "0.875rem")
                 .set("cursor", "pointer")
                 .set("text-align", "center")
@@ -208,7 +208,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
     private Span createFieldLabel(String text) {
         Span label = new Span(text);
         label.getStyle()
-                .set("color", "#C0EFD8")
+                .set("color", "var(--lumo-primary-color-shade)")
                 .set("font-size", "0.875rem")
                 .set("font-weight", "500")
                 .set("margin-bottom", "0.5rem")
@@ -229,7 +229,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
                         "const input = this.shadowRoot.querySelector('input');" +
 
                         "if (inputField) {" +
-                        "inputField.style.background = 'rgba(31, 41, 55, 0.6)';" +
+                        "inputField.style.background = 'var(--lumo-shade-20pct)';" +
                         "inputField.style.border = '1px solid rgba(68, 207, 108, 0.3)';" +
                         "inputField.style.borderRadius = 'var(--lumo-border-radius)';" +
                         "inputField.style.color = 'white';" +
@@ -248,7 +248,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
                         "if (inputField) {" +
                         "inputField.style.borderColor = 'var(--lumo-primary-color)';" +
                         "inputField.style.boxShadow = '0 0 0 3px rgba(68, 207, 108, 0.2)';" +
-                        "inputField.style.background = 'rgba(31, 41, 55, 0.8)';" +
+                        "inputField.style.background = 'var(--lumo-shade-30pct)';" +
                         "}" +
                         "});" +
 
@@ -256,7 +256,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
                         "if (inputField) {" +
                         "inputField.style.borderColor = 'rgba(68, 207, 108, 0.3)';" +
                         "inputField.style.boxShadow = 'none';" +
-                        "inputField.style.background = 'rgba(31, 41, 55, 0.6)';" +
+                        "inputField.style.background = 'var(--lumo-shade-20pct)';" +
                         "}" +
                         "});"
         );
@@ -276,7 +276,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
                         "const toggleButton = this.shadowRoot.querySelector('[part=\"toggle-button\"]');" +
 
                         "if (inputField) {" +
-                        "inputField.style.background = 'rgba(31, 41, 55, 0.6)';" +
+                        "inputField.style.background = 'var(--lumo-shade-20pct)';" +
                         "inputField.style.border = '1px solid rgba(68, 207, 108, 0.3)';" +
                         "inputField.style.borderRadius = 'var(--lumo-border-radius)';" +
                         "inputField.style.color = 'white';" +
@@ -300,7 +300,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
                         "if (inputField) {" +
                         "inputField.style.borderColor = 'var(--lumo-primary-color)';" +
                         "inputField.style.boxShadow = '0 0 0 3px rgba(68, 207, 108, 0.2)';" +
-                        "inputField.style.background = 'rgba(31, 41, 55, 0.8)';" +
+                        "inputField.style.background = 'var(--lumo-shade-30pct)';" +
                         "}" +
                         "});" +
 
@@ -308,7 +308,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
                         "if (inputField) {" +
                         "inputField.style.borderColor = 'rgba(68, 207, 108, 0.3)';" +
                         "inputField.style.boxShadow = 'none';" +
-                        "inputField.style.background = 'rgba(31, 41, 55, 0.6)';" +
+                        "inputField.style.background = 'var(--lumo-shade-20pct)';" +
                         "}" +
                         "});"
         );
@@ -351,9 +351,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         });
 
         forgotPasswordLink.getElement().addEventListener("mouseleave", e -> {
-            forgotPasswordLink.getStyle()
-                    .set("color", "rgba(68, 207, 108, 0.8)")
-                    .set("text-decoration-color", "rgba(68, 207, 108, 0.4)");
+forgotPasswordLink.getStyle().set("color", "rgba(68, 207, 108, 0.8)").set("text-decoration-color", "rgba(68, 207, 108, 0.4)").setWidth("100%");
         });
     }
 
