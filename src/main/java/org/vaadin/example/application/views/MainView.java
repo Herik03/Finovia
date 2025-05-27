@@ -13,10 +13,14 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Depot;
+import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.classes.Wertpapier;
 import org.vaadin.example.application.classes.Kurs;
 import org.vaadin.example.application.services.DepotService;
+import org.vaadin.example.application.services.NutzerService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -37,9 +41,47 @@ import java.util.stream.Collectors;
 @PermitAll
 public class MainView extends AbstractSideNav {
 
+    /** Der Inhaltsbereich des Dashboards */
     private final VerticalLayout dashboardContent;
 
+    /** Der Service für Depot-Operationen */
     private final DepotService depotService;
+
+    /** Der Service für Sicherheitsoperationen */
+    private final SecurityService securityService;
+
+    /** Der Service für Nutzer-Operationen */
+    private final NutzerService nutzerService;
+
+    @Autowired
+    public MainView(DepotService depotService, SecurityService securityService, NutzerService nutzerService) {
+        super(); // Ruft den Konstruktor der AbstractView auf, der setupSideNav und configureMainContent aufruft
+        this.depotService = depotService;
+        this.securityService = securityService;
+        this.nutzerService = nutzerService;
+
+        // Dashboard-Content erstellen
+        dashboardContent = new VerticalLayout();
+        dashboardContent.setWidthFull();
+        dashboardContent.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        // Kopfzeile
+        HorizontalLayout header = new HorizontalLayout();
+        header.setWidthFull();
+        header.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        header.setAlignItems(FlexComponent.Alignment.CENTER);
+        H2 title = new H2("Dashboard");
+        header.add(title);
+
+        // Content hinzufügen
+        dashboardContent.add(createWelcomeMessage());
+
+        // Zum Hauptinhalt hinzufügen
+        addToMainContent(header, dashboardContent);
+
+        // Depot-Übersicht konfigurieren
+        setupDepotOverview();
+    }
 
     /**
      * Konstruktor für die MainView.
@@ -82,7 +124,20 @@ public class MainView extends AbstractSideNav {
         depotHeader.setPadding(false);
         depotHeader.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        List<Depot> depots = depotService.getAllDepots();
+        // Depots des aktuellen Nutzers aus der Datenbank laden
+        List<Depot> depots;
+        UserDetails userDetails = securityService.getAuthenticatedUser();
+        if (userDetails != null) {
+            Nutzer currentUser = nutzerService.getNutzerByUsername(userDetails.getUsername());
+            if (currentUser != null) {
+                depots = depotService.getDepotsByNutzerId(currentUser.getId());
+            } else {
+                depots = List.of(); // Leere Liste, wenn Nutzer nicht gefunden
+            }
+        } else {
+            depots = List.of(); // Leere Liste, wenn nicht authentifiziert
+        }
+
 
         VerticalLayout depotList = new VerticalLayout();
         depotList.setSpacing(true);

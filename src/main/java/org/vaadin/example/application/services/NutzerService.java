@@ -1,5 +1,6 @@
 package org.vaadin.example.application.services;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -117,6 +118,29 @@ public class NutzerService {
     public void loescheNutzer(Nutzer nutzer) {
         nutzerRepository.delete(nutzer);
     }
+    /**
+     * Löscht einen Nutzer und alle zugehörigen Daten vollständig aus dem System.
+     *
+     * Durch die Verwendung von CascadeType.ALL und orphanRemoval=true in der Nutzer-Klasse
+     * werden alle abhängigen Objekte (Depots, Watchlist usw.) automatisch gelöscht.
+     *
+     * @param nutzerId Die ID des zu löschenden Nutzers
+     * @return true, wenn der Nutzer erfolgreich gelöscht wurde, sonst false
+     */
+    @Transactional
+    public boolean nutzerVollstaendigLoeschen(Long nutzerId) {
+        Optional<Nutzer> nutzerOpt = nutzerRepository.findById(nutzerId);
+        if (nutzerOpt.isPresent()) {
+            Nutzer nutzer = nutzerOpt.get();
+
+            // Nutzer und alle verknüpften Objekte (Depots, Watchlist usw.) werden durch
+            // die JPA-Cascade-Konfiguration automatisch gelöscht
+            nutzerRepository.delete(nutzer);
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * Authentifiziert einen Nutzer anhand des Benutzernamens und Passworts.

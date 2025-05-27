@@ -47,6 +47,12 @@ public class DepotService {
     }
 
     public void deleteDepot(Long depotId) {
+        Depot depot = depotRepository.findById(depotId).orElse(null);
+        if (depot != null && depot.getBesitzer() != null) {
+            Nutzer besitzer = depot.getBesitzer();
+            besitzer.depotEntfernen(depot);
+            nutzerRepository.save(besitzer);
+        }
         depotRepository.deleteById(depotId);
     }
 
