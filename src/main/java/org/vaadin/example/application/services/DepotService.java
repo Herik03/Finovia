@@ -3,6 +3,7 @@ package org.vaadin.example.application.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.Depot;
+import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.NutzerRepository;
 
@@ -37,6 +38,12 @@ public class DepotService {
     }
 
     public void deleteDepot(Long depotId) {
+        Depot depot = depotRepository.findById(depotId).orElse(null);
+        if (depot != null && depot.getBesitzer() != null) {
+            Nutzer besitzer = depot.getBesitzer();
+            besitzer.depotEntfernen(depot);
+            nutzerRepository.save(besitzer);
+        }
         depotRepository.deleteById(depotId);
     }
 }
