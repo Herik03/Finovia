@@ -24,10 +24,16 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.example.application.classes.Support;
+import org.vaadin.example.application.models.SupportRequest;
+import org.vaadin.example.application.services.EmailService;
+import com.vaadin.flow.component.UI;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Route("settings")
@@ -35,19 +41,24 @@ import java.util.Map;
 @PermitAll
 public class SettingsView extends AbstractSideNav {
 
+    /** Der Service für Support-Anfragen */
+    @Autowired
+private final Support supportService;
+
     private final VerticalLayout contentLayout = new VerticalLayout();
     private final Div settingsContent = new Div();
     private final Map<Tab, Component> tabsToPages = new HashMap<>();
 
-    public SettingsView() {
+    public SettingsView(Support supportService) {
         super(); // Ruft den Konstruktor der Basisklasse auf
-
+        this.supportService = supportService;
+        
         // Haupttitel
         H1 title = new H1("Einstellungen");
 
         // Tabs für verschiedene Einstellungsbereiche erstellen
         Tab allgemeinTab = new Tab(createTabContent(VaadinIcon.COG, "Allgemein"));
-        Tab anzeigeTab = new Tab(createTabContent(VaadinIcon.DESKTOP, "Anzeige"));
+        Tab anzeigeTab = new Tab(createTabContent(VaadinIcon.DESKTOP, "Benutzerverwaltung"));
         Tab benachrichtigungenTab = new Tab(createTabContent(VaadinIcon.BELL, "Benachrichtigungen"));
         Tab datenschutzTab = new Tab(createTabContent(VaadinIcon.LOCK, "Datenschutz & Sicherheit"));
         Tab supportTab = new Tab(createTabContent(VaadinIcon.QUESTION_CIRCLE, "Support"));
@@ -58,7 +69,7 @@ public class SettingsView extends AbstractSideNav {
 
         // Seiteninhalte für jeden Tab erstellen
         tabsToPages.put(allgemeinTab, createAllgemeinSettingsContent());
-        tabsToPages.put(anzeigeTab, createAnzeigeSettingsContent());
+        tabsToPages.put(anzeigeTab, createBenutzerSettingsContent());
         tabsToPages.put(benachrichtigungenTab, createBenachrichtigungenSettingsContent());
         tabsToPages.put(datenschutzTab, createDatenschutzSettingsContent());
         tabsToPages.put(supportTab, createSupportContent());
@@ -142,43 +153,26 @@ public class SettingsView extends AbstractSideNav {
         return content;
     }
 
-    private Component createAnzeigeSettingsContent() {
-        VerticalLayout content = new VerticalLayout();
-        content.setPadding(false);
-        content.setSpacing(true);
+private Component createBenutzerSettingsContent() {
+    VerticalLayout content = new VerticalLayout();
+    content.setPadding(false);
+    content.setSpacing(true);
 
-        H2 sectionTitle = new H2("Anzeige Einstellungen");
-        sectionTitle.addClassNames(LumoUtility.FontSize.XLARGE, LumoUtility.Margin.Bottom.SMALL);
-
-        // Theme-Auswahl
-        Select<String> themeSelect = new Select<>();
-        themeSelect.setLabel("Theme");
-        themeSelect.setItems("Light", "Dark", "System Default");
-        themeSelect.setValue("Light");
-        themeSelect.setWidth("300px");
-
-        // Schriftgrößenauswahl
-        Select<String> fontSizeSelect = new Select<>();
-        fontSizeSelect.setLabel("Schriftgröße");
-        fontSizeSelect.setItems("Klein", "Mittel", "Groß");
-        fontSizeSelect.setValue("Mittel");
-        fontSizeSelect.setWidth("300px");
-
-        // Kontrast
-        NumberField contrastField = new NumberField("Kontrast");
-        contrastField.setValue(100.0); // Standardwert
-        contrastField.setSuffixComponent(new Span("%"));
-        contrastField.setWidth("300px");
-
-        Button saveButton = new Button("Änderungen speichern", event -> {
-            Notification notification = Notification.show("Anzeige Einstellungen gespeichert");
-            notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        });
-        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-        content.add(sectionTitle, themeSelect, fontSizeSelect, contrastField, saveButton);
-        return content;
-    }
+    H2 sectionTitle = new H2("Benutzereinstellungen");
+    sectionTitle.addClassNames(LumoUtility.FontSize.XLARGE, LumoUtility.Margin.Bottom.SMALL);
+    
+    // Info-Text über Benutzerprofil
+    Paragraph infoText = new Paragraph("Hier können Sie Ihre persönlichen Benutzerdaten einsehen und bearbeiten.");
+    
+    // Button, der zur UserView navigiert
+    Button navigateToUserViewButton = new Button("Zum Benutzerprofil", e -> 
+        UI.getCurrent().navigate("user")
+    );
+    navigateToUserViewButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    
+    content.add(sectionTitle, infoText, navigateToUserViewButton);
+    return content;
+}
 
     private Component createBenachrichtigungenSettingsContent() {
         VerticalLayout content = new VerticalLayout();
@@ -260,6 +254,9 @@ public class SettingsView extends AbstractSideNav {
         return content;
     }
 
+@Autowired
+private EmailService emailService;
+
 private Component createSupportContent() {
     VerticalLayout layout = new VerticalLayout();
     layout.setSpacing(true);
@@ -292,6 +289,18 @@ private Component createSupportContent() {
 
     Button submitButton = new Button("Anfrage senden");
     submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    
+    // Container für die Anfragen
+    Div requestsContainer = new Div();
+    requestsContainer.addClassNames(
+            LumoUtility.Border.ALL,
+            LumoUtility.BorderRadius.MEDIUM,
+            LumoUtility.Padding.MEDIUM,
+            LumoUtility.Margin.Top.MEDIUM
+    );
+    
+    // Handler für das Absenden der Anfrage
+    // Im submitButton-Listener in der createSupportContent-Methode:
     submitButton.addClickListener(e -> {
         if (descriptionArea.getValue().isEmpty()) {
             Notification.show("Bitte geben Sie eine Beschreibung ein",
@@ -300,9 +309,28 @@ private Component createSupportContent() {
             return;
         }
 
-        Notification.show("Ihre Anfrage wurde erfolgreich gesendet",
-                3000, Notification.Position.BOTTOM_START)
-                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        // Support-Anfrage erstellen
+        SupportRequest newRequest = supportService.createRequest(
+                categorySelect.getValue(),
+                descriptionArea.getValue()
+        );
+
+        // E-Mail senden
+        boolean emailSent = emailService.sendSupportRequest(newRequest, "benutzer@example.com");
+
+        // Notification anzeigen
+        if (emailSent) {
+            Notification.show("Ihre Anfrage wurde erfolgreich gesendet",
+                    3000, Notification.Position.BOTTOM_START)
+                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        } else {
+            Notification.show("Ihre Anfrage wurde gespeichert, konnte aber nicht per E-Mail gesendet werden",
+                    3000, Notification.Position.BOTTOM_START)
+                    .addThemeVariants(NotificationVariant.LUMO_WARNING);
+        }
+
+        // Anfragen-Liste aktualisieren
+        updateRequestsContainer(requestsContainer);
 
         // Formular zurücksetzen
         descriptionArea.clear();
@@ -317,38 +345,8 @@ private Component createSupportContent() {
     H2 requestHistoryTitle = new H2("Ihre bisherigen Anfragen");
     requestHistoryTitle.getStyle().set("margin-top", "2rem");
 
-    // Support-Anfragen-Liste
-    Div requestsContainer = new Div();
-    requestsContainer.addClassNames(
-            LumoUtility.Border.ALL,
-            LumoUtility.BorderRadius.MEDIUM,
-            LumoUtility.Padding.MEDIUM,
-            LumoUtility.Margin.Top.MEDIUM
-    );
-
-    // Beispiel-Anfragen
-    requestsContainer.add(createSupportRequestItem(
-            "Technisches Problem",
-            "Verbindungsprobleme bei der Wertpapiersuche",
-            "Offen",
-            "2023-06-15"
-    ));
-
-    requestsContainer.add(createSupportRequestItem(
-            "Konto & Sicherheit",
-            "Passwort zurücksetzen funktioniert nicht",
-            "In Bearbeitung",
-            "2023-05-28"
-    ));
-
-    requestsContainer.add(createSupportRequestItem(
-            "Allgemeine Frage",
-            "Wie ändere ich meine Steuer-ID?",
-            "Geschlossen",
-            "2023-04-10"
-    ));
-
-
+    // Initiale Anzeige der Anfragen
+    updateRequestsContainer(requestsContainer);
 
     // Direkte Kontaktmöglichkeiten
     H2 directContactTitle = new H2("Direkter Kontakt");
@@ -400,9 +398,41 @@ private Component createSupportContent() {
 }
 
 /**
+ * Aktualisiert den Container mit den Support-Anfragen
+ */
+private void updateRequestsContainer(Div requestsContainer) {
+    requestsContainer.removeAll();
+    
+    List<SupportRequest> requests = supportService.getAllRequests();
+    
+    if (requests.isEmpty()) {
+        Span noRequestsSpan = new Span("Keine Anfragen vorhanden");
+        noRequestsSpan.addClassNames(
+                LumoUtility.Padding.MEDIUM,
+                LumoUtility.TextColor.SECONDARY
+        );
+        requestsContainer.add(noRequestsSpan);
+    } else {
+        for (int i = 0; i < requests.size(); i++) {
+            SupportRequest request = requests.get(i);
+
+            Div requestItem = createSupportRequestItem(
+                    request.getCategory(),
+                    request.getDescription(),
+                    request.getStatus(),
+                    request.getCreationDate(),
+                    i
+            );
+            
+            requestsContainer.add(requestItem);
+        }
+    }
+}
+
+/**
  * Erstellt ein Element für eine Support-Anfrage in der Liste
  */
-private Div createSupportRequestItem(String category, String description, String status, String date) {
+private Div createSupportRequestItem(String category, String description, String status, String date, int requestIndex) {
     Div requestItem = new Div();
     requestItem.addClassNames(
             LumoUtility.BorderRadius.SMALL,
@@ -446,10 +476,46 @@ private Div createSupportRequestItem(String category, String description, String
     Button detailsButton = new Button("Details anzeigen");
     detailsButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY);
     
-    footerLayout.add(dateSpan, detailsButton);
+    // Status-Änderung ermöglichen
+    Select<String> statusSelect = new Select<>();
+    statusSelect.setItems("Offen", "In Bearbeitung", "Geschlossen");
+    statusSelect.setValue(status);
+    statusSelect.addValueChangeListener(event -> {
+        if (supportService.updateRequestStatus(requestIndex, event.getValue())) {
+            Notification.show("Status aktualisiert", 
+                    2000, Notification.Position.BOTTOM_START)
+                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        }
+    });
     
-    // Alles zum Container hinzufügen
-    requestItem.add(headerLayout, descriptionParagraph, footerLayout);
+    footerLayout.add(dateSpan, statusSelect, detailsButton);
+    
+    // Kommentare anzeigen, falls vorhanden
+    SupportRequest request = supportService.getAllRequests().get(requestIndex);
+    if (request.getComments() != null && !request.getComments().isEmpty()) {
+        Div commentsDiv = new Div();
+        commentsDiv.addClassNames(
+                LumoUtility.Background.CONTRAST_10,
+                LumoUtility.BorderRadius.SMALL,
+                LumoUtility.Padding.SMALL,
+                LumoUtility.Margin.Top.SMALL
+        );
+        
+        H5 commentsTitle = new H5("Kommentare");
+        commentsTitle.getStyle().set("margin-top", "0");
+        commentsDiv.add(commentsTitle);
+        
+        for (String comment : request.getComments()) {
+            Paragraph commentParagraph = new Paragraph(comment);
+            commentParagraph.addClassNames(
+                    LumoUtility.Padding.XSMALL,
+                    LumoUtility.Border.BOTTOM
+            );
+            commentsDiv.add(commentParagraph);
+        }
+        
+        requestItem.add(commentsDiv);
+    }
     
     return requestItem;
 }
