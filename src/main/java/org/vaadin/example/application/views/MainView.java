@@ -41,6 +41,15 @@ public class MainView extends AbstractSideNav {
 
     private final DepotService depotService;
 
+    /**
+     * Konstruktor für die MainView.
+     * <p>
+     * Initialisiert alle Layout-Komponenten und richtet die Benutzeroberfläche ein.
+     * Die Ansicht besteht aus einer Seitenleiste, einem Hauptinhaltsbereich und
+     * einer Übersicht der Depots.
+     *
+     * @param depotService Der Service für Depot-Operationen
+     */
     @Autowired
     public MainView(DepotService depotService) {
         super();
