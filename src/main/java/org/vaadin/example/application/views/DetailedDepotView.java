@@ -3,12 +3,16 @@ package org.vaadin.example.application.views;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
@@ -20,10 +24,6 @@ import org.vaadin.example.application.classes.*;
 import org.vaadin.example.application.services.AlphaVantageService;
 import org.vaadin.example.application.services.DepotService;
 
-/**
- * Die `DetailedDepotView`-Klasse stellt eine detaillierte Ansicht eines Depots dar.
- * Sie zeigt Informationen über das Depot und eine Liste der enthaltenen Wertpapiere an.
- */
 @Route(value = "depot-details")
 @PageTitle("Depot Details")
 @PermitAll
@@ -38,13 +38,6 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
     private final VerticalLayout contentLayout = new VerticalLayout();
     private final Span gesamtwertSpan = new Span();
 
-    /**
-     * Konstruktor für die `DetailedDepotView`-Klasse.
-     * Initialisiert die Ansicht mit einem DepotService.
-     *
-     * @param depotService Der Service für Depot-Operationen
-     */
-    @Autowired
     public DetailedDepotView(DepotService depotService, AlphaVantageService alphaVantageService) {
         super();
         this.depotService = depotService;
@@ -54,22 +47,26 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         contentLayout.setSpacing(true);
         contentLayout.setPadding(true);
 
-        // Back Button
+        // Back Button in RouterLink
         Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         RouterLink routerLink = new RouterLink("", DepotView.class);
         routerLink.add(backButton);
 
-        // Grid konfigurieren
         configureWertpapierGrid();
 
-        contentLayout.add(routerLink, title, depotInfoLayout, new H3("Enthaltene Wertpapiere"), wertpapierGrid, gesamtwertSpan);
+        contentLayout.add(
+                routerLink,
+                title,
+                depotInfoLayout,
+                new H3("Enthaltene Wertpapiere"),
+                wertpapierGrid,
+                gesamtwertSpan
+        );
+
         addToMainContent(contentLayout);
     }
 
-    /**
-     * Konfiguriert das Grid für die Anzeige von Wertpapieren.
-     */
     private void configureWertpapierGrid() {
         wertpapierGrid.removeAllColumns();
 
@@ -107,16 +104,26 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
             return String.format("%.2f € (%s)", gewinnVerlust, gewinnVerlust >= 0 ? "Gewinn" : "Verlust");
         }).setHeader("Gewinn / Verlust").setAutoWidth(true);
 
+        wertpapierGrid.addColumn(new ComponentRenderer<>(dw -> {
+            if (dw.getWertpapier() instanceof Aktie) {
+                Button verkaufenButton = new Button("Verkaufen", new Icon(VaadinIcon.MONEY_WITHDRAW));
+                verkaufenButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_ERROR);
+
+                verkaufenButton.addClickListener(e -> {
+                    Long depotId = currentDepot.getDepotId(); // Falls du es brauchst
+                    String symbol = dw.getWertpapier().getSymbol(); // Hole das Symbol der Aktie
+                    getUI().ifPresent(ui -> ui.navigate("verkaufen/" + symbol));
+                });
+
+                return verkaufenButton;
+            } else {
+                return new Span(""); // Leerer Platzhalter für Nicht-Aktien
+            }
+        })).setHeader("Aktion").setAutoWidth(true);
+
         wertpapierGrid.setWidthFull();
     }
 
-    /**
-     * Wird aufgerufen, bevor die View angezeigt wird.
-     * Lädt das Depot anhand der übergebenen ID.
-     *
-     * @param event Das BeforeEvent
-     * @param depotId Die ID des anzuzeigenden Depots
-     */
     @Override
     public void setParameter(BeforeEvent event, Long depotId) {
         currentDepot = depotService.getDepotById(depotId);
@@ -132,20 +139,8 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
 
         wertpapierGrid.setItems(currentDepot.getDepotWertpapiere());
         updateGesamtwert();
-
-        DividendenPanel dividendenPanel = new DividendenPanel(currentDepot);
-
-        HorizontalLayout mainArea = new HorizontalLayout(contentLayout, dividendenPanel);
-        mainArea.setWidthFull();
-        mainArea.setFlexGrow(2, contentLayout);
-        mainArea.setFlexGrow(1, dividendenPanel);
-
-        addToMainContent(mainArea);
     }
 
-    /**
-     * Aktualisiert die Anzeige der Depot-Informationen.
-     */
     private void updateDepotInfo() {
         depotInfoLayout.removeAll();
 
@@ -173,6 +168,3 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         gesamtwertSpan.setText("Gesamtwert des Depots: " + String.format("%.2f €", gesamtwert));
     }
 }
-
-//TODO:Einbinden der Funktionalität zum Kaufen und Verkaufen von Wertpapieren
-//TODO:Wertpapiere in die Depot-Übersicht einfügen
