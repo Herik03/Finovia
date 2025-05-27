@@ -237,21 +237,37 @@ public class AlphaVantageService {
      * @return Ein {@link Aktie}-Objekt mit den fundamentalen Unternehmensdaten
      * @throws APIException Wenn ein Fehler bei der API-Kommunikation auftritt oder keine Daten verfügbar sind
      */
-    public Aktie getFundamentalData(String symbol)  {
+    public Aktie getFundamentalData(String symbol) {
         var response = AlphaVantage.api()
                 .fundamentalData()
                 .companyOverview()
                 .forSymbol(symbol)
                 .fetchSync();
 
-        if (response.getErrorMessage() != null) {
-            logger.error("Fehler beim Abrufen der Unternehmensdaten: {}", response.getErrorMessage());
-            throw new APIException("Fehler beim Abrufen der Unternehmensdaten: " + response.getErrorMessage());
+        if (response == null || response.getErrorMessage() != null) {
+            logger.warn("Fehler oder leere Antwort beim Symbol {}: {}", symbol, response != null ? response.getErrorMessage() : "null");
+            return null;
         }
 
         var overview = response.getOverview();
 
-        return new Aktie(overview.getSymbol(),
+        if (overview == null || overview.getName() == null || overview.getMarketCapitalization() == null) {
+            logger.warn("Unvollständige Daten erhalten für Symbol {}. Wird ignoriert.", symbol);
+            return null;
+        }
+
+        LocalDate dividendDate = null;
+        try {
+            String rawDate = overview.getDividendDate();
+            if (rawDate != null && !rawDate.isBlank()) {
+                dividendDate = LocalDate.parse(rawDate);
+            }
+        } catch (Exception e) {
+            logger.warn("Konnte DividendDate nicht parsen für {}: {}", overview.getSymbol(), e.getMessage());
+        }
+
+        return new Aktie(
+                overview.getSymbol(),
                 overview.getName(),
                 overview.getDescription(),
                 overview.getExchange(),
@@ -270,9 +286,10 @@ public class AlphaVantageService {
                 overview.getBeta(),
                 overview.getFiftyTwoWeekHigh(),
                 overview.getFiftyTwoWeekLow(),
-                LocalDate.parse(overview.getDividendDate())
+                dividendDate
         );
     }
+
 
     /**
      * Durchsucht Aktien und Wertpapiere basierend auf dem übergebenen Keyword über die AlphaVantage API.
@@ -328,6 +345,9 @@ public class AlphaVantageService {
             return StreamSupport.stream(matches.spliterator(), false)
                     .map(this::mapToSearchResult)
                     .filter(Objects::nonNull)
+                    .filter(result ->
+                            "United States".equals(result.getRegion()) &&
+                                    "USD".equals(result.getCurrency()))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             logger.error("Netzwerk- oder JSON-Parsing-fehler: {}", e.getMessage());
