@@ -139,7 +139,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
         transaktionsBtn.addClickListener(e -> UI.getCurrent().navigate("transaktionen"));
 
 
-        topLayout.add(logo, dashboardBtn, depotBtn, meineKauefeBtn, watchlistBtn, settingsBtn, apiBtn); 
+        topLayout.add(logo, dashboardBtn, depotBtn, transaktionsBtn, watchlistBtn, settingsBtn, apiBtn);
         topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         topLayout.setPadding(false);
         topLayout.setSpacing(false);
