@@ -2,7 +2,6 @@ package org.vaadin.example.application.classes;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
  */
 @Entity
 @Table(name = "Nutzer")
-public class Nutzer implements Beobachter {
+public class Nutzer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +33,10 @@ public class Nutzer implements Beobachter {
     @Column(nullable = false)
     @Getter @Setter
     private String passwort;
+
+    @Column(unique = true)
+    @Getter @Setter
+    private String steuerId;
 
     @Getter @Setter
     private String vorname;
@@ -79,12 +82,13 @@ public class Nutzer implements Beobachter {
      * @param benutzername Der Benutzername des Nutzers
      * @param watchlist Die Watchlist des Nutzers
      */
-    public Nutzer(String vorname, String nachname, String email, String passwort, String benutzername, Watchlist watchlist) {
+    public Nutzer(String vorname, String nachname, String email, String passwort, String benutzername,String steuerId,Watchlist watchlist) {
         this.vorname = vorname;
         this.nachname = nachname;
         this.email = email;
         this.passwort = passwort;
         this.username = benutzername;
+        this.steuerId = steuerId;
         this.watchlist = watchlist;
         this.registrierungsDatum = LocalDateTime.now();
     }
@@ -98,8 +102,8 @@ public class Nutzer implements Beobachter {
      * @param passwort Das Passwort des Nutzers
      * @param benutzername Der Benutzername des Nutzers
      */
-    public Nutzer(String vorname, String nachname, String email, String passwort, String benutzername) {
-        this(vorname, nachname, email, passwort, benutzername, null);
+    public Nutzer(String vorname, String nachname, String email, String passwort, String benutzername,String steuerId) {
+        this(vorname, nachname, email, passwort, benutzername, steuerId, null);
     }
 
     /**
@@ -130,79 +134,7 @@ public class Nutzer implements Beobachter {
         return false;
     }
 
-    // Implementierung der Beobachter-Methode
-    /**
-     * Diese Methode wird aufgerufen, wenn eine Aktualisierung an einer
-     * Supportanfrage erfolgt.
-     *
-     * @param ereignisTyp Der Typ des Ereignisses (z.B. Antwort aktualisiert, Status geändert)
-     * @param supportanfrage Die betroffene Supportanfrage
-     */
-    @Override
-    public void aktualisieren(String ereignisTyp, Supportanfrage supportanfrage) {
-        String benachrichtigung = erstelleBenachrichtigungsText(ereignisTyp, supportanfrage);
 
-        // Benachrichtigung zur Liste hinzufügen
-        benachrichtigungen.add(benachrichtigung);
-
-        // Hier könnte zusätzlich eine E-Mail-Benachrichtigung verschickt werden
-        // oder andere Aktionen durchgeführt werden
-        System.out.println("Benachrichtigung an " + this.username + ": " + benachrichtigung);
-    }
-
-    /**
-     * Erstellt einen Benachrichtigungstext basierend auf dem Ereignistyp
-     *
-     * @param ereignisTyp Der Typ des Ereignisses
-     * @param supportanfrage Die betroffene Supportanfrage
-     * @return Der erstellte Benachrichtigungstext
-     */
-    private String erstelleBenachrichtigungsText(String ereignisTyp, Supportanfrage supportanfrage) {
-        return switch (ereignisTyp) {
-            case "ANTWORT_AKTUALISIERT" -> "Neue Antwort auf Ihre Supportanfrage (ID: " +
-                    supportanfrage.getSupportRequestId() + "): " +
-                    supportanfrage.getAntwort();
-            case "STATUS_GEÄNDERT" -> "Der Status Ihrer Supportanfrage (ID: " +
-                    supportanfrage.getSupportRequestId() + ") wurde auf '" +
-                    supportanfrage.getStatus() + "' geändert.";
-            default -> "Aktualisierung bei Ihrer Supportanfrage (ID: " +
-                    supportanfrage.getSupportRequestId() + ")";
-        };
-    }
-
-    /**
-     * Gibt eine unveränderliche Liste aller Benachrichtigungen zurück
-     *
-     * @return Unveränderliche Liste der Benachrichtigungen
-     */
-    public List<String> getBenachrichtigungen() {
-        return Collections.unmodifiableList(benachrichtigungen);
-    }
-
-    /**
-     * Löscht eine Benachrichtigung an einem bestimmten Index
-     *
-     * @param index Der Index der zu löschenden Benachrichtigung
-     * @throws IndexOutOfBoundsException wenn der Index außerhalb des gültigen Bereichs liegt
-     */
-    public void benachrichtigungLoeschen(int index) {
-        benachrichtigungen.remove(index);
-    }
-
-    /**
-     * Löscht alle Benachrichtigungen
-     */
-    public void allesBenachrichtigungenLoeschen() {
-        benachrichtigungen.clear();
-    }
-
-    /**
-     * Prüft, ob das übergebene Passwort mit dem gespeicherten Passwort übereinstimmt
-     * In einer echten Anwendung würde hier eine Passwort-Hash-Überprüfung erfolgen
-     *
-     * @param passwortEingabe Das zu prüfende Passwort
-     * @return true wenn das Passwort übereinstimmt, sonst false
-     */
     public boolean pruefePasswort(String passwortEingabe) {
         return this.passwort.equals(passwortEingabe);
     }
@@ -227,6 +159,15 @@ public class Nutzer implements Beobachter {
                 .filter(nachricht -> nachricht.toLowerCase().contains(suchbegriff.toLowerCase()))
                 .collect(Collectors.toList());
     }
+    /**
+     * Überprüft, ob die Steuer-ID das korrekte Format hat.
+     *
+     * @return true wenn das Format korrekt ist, false sonst
+     */
+    public boolean istSteuerIdGueltig() {
+        return steuerId != null && steuerId.matches("\\d{11}");
+    }
+
 
     @Override
     public boolean equals(Object o) {
