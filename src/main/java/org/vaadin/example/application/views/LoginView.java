@@ -64,8 +64,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
     }
 
     private void setupBackgroundAndForm() {
-        // Background styling mit Earth-Bild
-        addClassName("earth-login-view");
+        // Background styling mit Bild
+        addClassName("login-view");
         getStyle()
                 .set("background", "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')")
                 .set("background-size", "cover")
@@ -79,7 +79,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
     private void createLoginForm() {
         // Main container mit Glassmorphism-Effekt
         Div loginContainer = new Div();
-        loginContainer.addClassName("earth-login-container");
+        loginContainer.addClassName("login-container");
         loginContainer.getStyle()
                 .set("background", "var(--lumo-base-color)") // Angepasst an Ihr Farbschema
                 .set("backdrop-filter", "blur(15px)")
@@ -127,7 +127,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         loginButton = new Button("Anmelden");
         loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         loginButton.setWidthFull();
-        loginButton.addClassName("earth-login-button");
+        loginButton.addClassName("login-button");
         loginButton.getStyle()
                 .set("background", "linear-gradient(135deg, var(--lumo-primary-color), var(--lumo-primary-color-shade))")
                 .set("border", "none")
@@ -145,7 +145,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         registerButton = new Button("Registrieren");
         registerButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         registerButton.setWidthFull();
-        registerButton.addClassName("earth-register-button");
+        registerButton.addClassName("register-button");
         registerButton.getStyle()
                 .set("color", "#C0EFD8")
                 .set("border", "1px solid rgba(68, 207, 108, 0.4)")
@@ -161,7 +161,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
 
         // Forgot password link
         forgotPasswordLink = new Span("Passwort vergessen?");
-        forgotPasswordLink.addClassName("earth-forgot-link");
+        forgotPasswordLink.addClassName("forgot-link");
         forgotPasswordLink.getStyle()
                 .set("color", "rgba(68, 207, 108, 0.8)")
                 .set("font-size", "0.875rem")
@@ -218,7 +218,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
     }
 
     private void customizeField(TextField field) {
-        field.addClassName("earth-input-field");
+        field.addClassName("input-field");
         field.getStyle()
                 .set("margin-bottom", "1.25rem");
 
@@ -264,7 +264,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
 
     // Separate Methode für PasswordField
     private void customizePasswordField(PasswordField field) {
-        field.addClassName("earth-input-field");
+        field.addClassName("input-field");
         field.getStyle()
                 .set("margin-bottom", "1.25rem");
 

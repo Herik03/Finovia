@@ -121,9 +121,8 @@ vaadin-grid-header-cell {
     font-size: var(--lumo-font-size-l);
 }
 
-/* ogin View Styles */
-
-.earth-login-view {
+/* Login View Styles */
+.login-view {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
     url('images/login-background.jpg') !important;
     background-size: cover !important;
@@ -132,7 +131,7 @@ vaadin-grid-header-cell {
     min-height: 100vh !important;
 }
 
-.earth-login-container {
+.login-container {
     background: var(--lumo-base-color) !important;
     backdrop-filter: blur(15px) !important;
     border: 1px solid rgba(68, 207, 108, 0.2) !important;
@@ -141,36 +140,36 @@ vaadin-grid-header-cell {
     transition: transform 0.3s ease, box-shadow 0.3s ease !important;
 }
 
-.earth-login-container:hover {
+.login-container:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7) !important;
 }
 
 /* Input Field Styling */
-.earth-input-field vaadin-text-field-container {
+.input-field vaadin-text-field-container {
     background: rgba(31, 41, 55, 0.6) !important;
     border: 1px solid rgba(68, 207, 108, 0.3) !important;
     border-radius: var(--lumo-border-radius) !important;
     transition: all 0.3s ease !important;
 }
 
-.earth-input-field:focus-within vaadin-text-field-container {
+.input-field:focus-within vaadin-text-field-container {
     border-color: var(--lumo-primary-color) !important;
     box-shadow: 0 0 0 3px rgba(68, 207, 108, 0.2) !important;
     background: rgba(31, 41, 55, 0.8) !important;
 }
 
-.earth-input-field input {
+.input-field input {
     color: white !important;
     font-family: var(--lumo-font-family) !important;
 }
 
-.earth-input-field input::placeholder {
+.input-field input::placeholder {
     color: rgba(192, 239, 216, 0.6) !important;
 }
 
 /* Button Styling */
-.earth-login-button {
+.login-button {
     background: linear-gradient(135deg, var(--lumo-primary-color), var(--lumo-primary-color-shade)) !important;
     border: none !important;
     color: white !important;
@@ -179,17 +178,17 @@ vaadin-grid-header-cell {
     text-transform: none !important;
 }
 
-.earth-login-button:hover {
+.login-button:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 8px 25px rgba(68, 207, 108, 0.4) !important;
 }
 
-.earth-login-button:active {
+.login-button:active {
     transform: translateY(0) !important;
     box-shadow: 0 4px 15px rgba(68, 207, 108, 0.3) !important;
 }
 
-.earth-register-button {
+.register-button {
     color: #C0EFD8 !important;
     border: 1px solid rgba(68, 207, 108, 0.4) !important;
     background: transparent !important;
@@ -197,14 +196,14 @@ vaadin-grid-header-cell {
     text-transform: none !important;
 }
 
-.earth-register-button:hover {
+.register-button:hover {
     border-color: var(--lumo-primary-color) !important;
     color: white !important;
     background: rgba(68, 207, 108, 0.1) !important;
 }
 
 /* Forgot Password Link */
-.earth-forgot-link {
+.forgot-link {
     color: rgba(68, 207, 108, 0.8) !important;
     text-decoration: underline !important;
     text-decoration-color: rgba(68, 207, 108, 0.4) !important;
@@ -212,14 +211,14 @@ vaadin-grid-header-cell {
     cursor: pointer !important;
 }
 
-.earth-forgot-link:hover {
+.forgot-link:hover {
     color: var(--lumo-primary-color) !important;
     text-decoration-color: var(--lumo-primary-color) !important;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .earth-login-container {
+    .login-container {
         margin: 1rem !important;
         padding: 2rem !important;
         width: calc(100% - 2rem) !important;
@@ -238,16 +237,16 @@ vaadin-grid-header-cell {
     }
 }
 
-.earth-login-container {
+.login-container {
     animation: fadeInUp 0.6s ease-out !important;
 }
 
 /* Loading Animation für Button */
-.earth-login-button.loading {
+.login-button.loading {
     position: relative !important;
 }
 
-.earth-login-button.loading::after {
+.login-button.loading::after {
     content: "" !important;
     position: absolute !important;
     width: 16px !important;
