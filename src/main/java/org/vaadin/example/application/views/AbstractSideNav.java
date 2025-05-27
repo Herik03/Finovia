@@ -122,9 +122,9 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button apiBtn = createNavButton("Wertpapiere", VaadinIcon.CODE);
         apiBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
 
-        
-        Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR); 
-        watchlistBtn.addClickListener(e -> UI.getCurrent().navigate(WatchlistView.class)); 
+
+        Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR);
+        watchlistBtn.addClickListener(e -> UI.getCurrent().navigate(WatchlistView.class));
 
         Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
         aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
@@ -139,7 +139,8 @@ public abstract class AbstractSideNav extends VerticalLayout {
         transaktionsBtn.addClickListener(e -> UI.getCurrent().navigate("transaktionen"));
 
 
-        topLayout.add(logo, dashboardBtn, depotBtn, meineKauefeBtn, watchlistBtn, settingsBtn, apiBtn); 
+
+        topLayout.add(logo, dashboardBtn, depotBtn, transaktionsBtn, watchlistBtn, settingsBtn, apiBtn);
         topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         topLayout.setPadding(false);
         topLayout.setSpacing(false);
@@ -147,10 +148,10 @@ public abstract class AbstractSideNav extends VerticalLayout {
 
         bottomLayout.add(userBtn, logoutBtn);
         bottomLayout.getStyle().setFlexGrow("1");
-bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END, LumoUtility.Gap.MEDIUM);
+        bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END, LumoUtility.Gap.MEDIUM);
 
         sideNav.add(topLayout, bottomLayout);
-sideNav.addClassNames(LumoUtility.Padding.MEDIUM);
+        sideNav.addClassNames(LumoUtility.Padding.MEDIUM);
     }
 
     /**
