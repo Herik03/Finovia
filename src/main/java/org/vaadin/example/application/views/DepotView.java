@@ -12,6 +12,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.factory.DepotAnlegenViewFactory;
 import org.vaadin.example.application.services.DepotService;
@@ -29,6 +31,7 @@ import java.util.List;
 public class DepotView extends AbstractSideNav {
 
     private final DepotService depotService;
+    private final SecurityService securityService;
     private final DepotAnlegenViewFactory depotAnlegenViewFactory;
 
     /**
@@ -39,10 +42,11 @@ public class DepotView extends AbstractSideNav {
      * @param depotAnlegenViewFactory Die Factory zum Erstellen der DepotAnlegenView als Dialog.
      */
     @Autowired
-    public DepotView(DepotService depotService, DepotAnlegenViewFactory depotAnlegenViewFactory) {
+    public DepotView(DepotService depotService, DepotAnlegenViewFactory depotAnlegenViewFactory, SecurityService securityService) {
         super();
         this.depotService = depotService;
         this.depotAnlegenViewFactory = depotAnlegenViewFactory;
+        this.securityService = securityService;
 
         // Überschrift der Ansicht
         H2 title = new H2("Meine Depots");
@@ -60,7 +64,10 @@ public class DepotView extends AbstractSideNav {
         depotHeader.setWidthFull();
 
         // Depots aus der Datenbank laden
-        List<Depot> depots = depotService.getAllDepots();
+        UserDetails userDetails = securityService.getAuthenticatedUser();
+        Long id = userDetails != null ? securityService.getUserIdFromUserDetails(userDetails) : null;
+
+        List<Depot> depots = depotService.getDepotsByNutzerId(id);
 
         // Layout für die Liste der Depots
         VerticalLayout depotList = new VerticalLayout();
