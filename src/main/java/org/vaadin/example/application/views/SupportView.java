@@ -113,11 +113,14 @@ public class SupportView extends VerticalLayout {
 
         // Starte eine periodische Aktualisierung der Anfragen, um automatische Antworten zu erfassen
         UI ui = UI.getCurrent();
-        ui.setPollInterval(10000); // Alle 10 Sekunden aktualisieren
-        ui.addPollListener(event -> {
-            // Führe die Aktualisierung nur im UI-Thread durch
-            ui.access(() -> updateRequestsContainer(requestsContainer));
-        });
+        if (ui != null) {
+            ui.setPollInterval(10000); // Alle 10 Sekunden aktualisieren
+            ui.addPollListener(event -> {
+                // Führe die Aktualisierung nur im UI-Thread durch
+                ui.access(() -> updateRequestsContainer(requestsContainer));
+            });
+        }
+
 
         // Handler für das Absenden der Anfrage
         submitButton.addClickListener(e -> {
