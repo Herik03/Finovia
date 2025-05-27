@@ -12,6 +12,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.services.DepotService;
 
@@ -42,11 +44,14 @@ public class MainView extends AbstractSideNav {
     
     /** Der Service für Depot-Operationen */
     private final DepotService depotService;
+
+    private final SecurityService securityService;
     
     @Autowired
-    public MainView(DepotService depotService) {
+    public MainView(DepotService depotService, SecurityService securityService) {
         super(); // Ruft den Konstruktor der AbstractView auf, der setupSideNav und configureMainContent aufruft
         this.depotService = depotService;
+        this.securityService = securityService;
         
         // Dashboard-Content erstellen
         dashboardContent = new VerticalLayout();
@@ -157,8 +162,11 @@ public class MainView extends AbstractSideNav {
         depotHeader.setPadding(false);
         depotHeader.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        // Depots aus der Datenbank laden und anzeigen
-        List<Depot> depots = depotService.getAllDepots();
+        // Depots aus der Datenbank laden
+        UserDetails userDetails = securityService.getAuthenticatedUser();
+        Long id = userDetails != null ? securityService.getUserIdFromUserDetails(userDetails) : null;
+
+        List<Depot> depots = depotService.getDepotsByNutzerId(id);
 
         // Layout für die Depot-Liste
         VerticalLayout depotList = new VerticalLayout();

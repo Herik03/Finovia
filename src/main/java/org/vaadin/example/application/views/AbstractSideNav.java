@@ -133,13 +133,13 @@ public abstract class AbstractSideNav extends VerticalLayout {
         userBtn.addClickListener(e -> UI.getCurrent().navigate("user"));
 
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
-        logoutBtn.addClickListener(e -> new SecurityService().logout());
+        logoutBtn.addClickListener(e ->  UI.getCurrent().getPage().setLocation("/logout"));
 
         Button transaktionsBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
         transaktionsBtn.addClickListener(e -> UI.getCurrent().navigate("transaktionen"));
 
 
-        topLayout.add(logo, dashboardBtn, depotBtn, meineKauefeBtn, watchlistBtn, settingsBtn, apiBtn); 
+        topLayout.add(logo, dashboardBtn, depotBtn, watchlistBtn, settingsBtn, apiBtn);
         topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         topLayout.setPadding(false);
         topLayout.setSpacing(false);
@@ -147,10 +147,10 @@ public abstract class AbstractSideNav extends VerticalLayout {
 
         bottomLayout.add(userBtn, logoutBtn);
         bottomLayout.getStyle().setFlexGrow("1");
-bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END, LumoUtility.Gap.MEDIUM);
+        bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END, LumoUtility.Gap.MEDIUM);
 
         sideNav.add(topLayout, bottomLayout);
-sideNav.addClassNames(LumoUtility.Padding.MEDIUM);
+        sideNav.addClassNames(LumoUtility.Padding.MEDIUM);
     }
 
     /**
