@@ -15,12 +15,10 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.NutzerService;
@@ -37,6 +35,7 @@ public class RegisterView extends VerticalLayout {
     private final TextField username = new TextField("Benutzername");
     private final TextField vorname = new TextField("Vorname");
     private final TextField nachname = new TextField("Nachname");
+    private final TextField steuerId = new TextField("Steuer-ID");
     private final EmailField email = new EmailField("E-Mail");
     private final PasswordField password = new PasswordField("Passwort");
     private final PasswordField confirmPassword = new PasswordField("Passwort bestätigen");
@@ -87,6 +86,9 @@ public class RegisterView extends VerticalLayout {
         
         vorname.setRequired(true);
         nachname.setRequired(true);
+
+        steuerId.setRequired(true);
+        steuerId.setHelperText("Bitte geben Sie ihre 11-stellige Steuer-ID ein");
         
         email.setRequired(true);
         email.setHelperText("Bitte geben Sie eine gültige E-Mail-Adresse ein");
@@ -135,6 +137,7 @@ public class RegisterView extends VerticalLayout {
                 vorname,
                 nachname,
                 username,
+                steuerId,
                 email,
                 password,
                 confirmPassword
@@ -163,16 +166,7 @@ public class RegisterView extends VerticalLayout {
         
         registerButton.addClickListener(event -> registerUser());
     }
-    
-    /**
-     * Returns the login view class.
-     * 
-     * @return The login view class
-     */
-    private Class<?> getLoginViewClass() {
-        // Sollte die tatsächliche Login-View-Klasse sein
-        return this.getClass(); // Temporärer Platzhalter
-    }
+
     
     /**
      * Checks if a password contains both numbers and letters.
@@ -197,6 +191,7 @@ public class RegisterView extends VerticalLayout {
         binder.forField(username).bind(Nutzer::getUsername, Nutzer::setUsername);
         binder.forField(vorname).bind(Nutzer::getVorname, Nutzer::setVorname);
         binder.forField(nachname).bind(Nutzer::getNachname, Nutzer::setNachname);
+        binder.forField(steuerId).bind(Nutzer::getSteuerId, Nutzer::setSteuerId);
         binder.forField(email).bind(Nutzer::getEmail, Nutzer::setEmail);
         
         // Alle gebundenen Felder in den Nutzer schreiben
@@ -208,6 +203,13 @@ public class RegisterView extends VerticalLayout {
         // Prüfen, ob Benutzername bereits existiert
         if (nutzerService.usernameExists(nutzer.getUsername())) {
             Notification.show("Benutzername bereits vergeben")
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            return;
+        }
+
+        // Prüfen, ob Steuer-ID gültig ist
+        if (!nutzer.istSteuerIdGueltig()) {
+            Notification.show("Die angegebene Steuer-ID ist ungültig. Bitte geben Sie eine 11-stellige Nummer ein.")
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
             return;
         }

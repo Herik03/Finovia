@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.Nutzer;
-import org.vaadin.example.application.classes.Supportanfrage;
-import org.vaadin.example.application.classes.Watchlist;
 
 import org.vaadin.example.application.repositories.NutzerRepository;
 
@@ -40,13 +38,12 @@ public class NutzerService {
     }
 
     /**
-     * Speichert einen Nutzer in der Datenbank. Das Passwort wird vor dem Speichern 
+     * Speichert einen Nutzer in der Datenbank. Das Passwort wird vor dem Speichern
      * mit dem PasswordEncoder verschlüsselt.
-     * 
+     *
      * @param nutzer Der zu speichernde Nutzer
-     * @return Der gespeicherte Nutzer mit aktualisierter ID
      */
-    public Nutzer speichereNutzer(Nutzer nutzer) {
+    public void speichereNutzer(Nutzer nutzer) {
         //Passwort verschlüsseln
         String pw = nutzer.getPasswort();
         if (pw != null && !pw.startsWith("$2a$")) {
@@ -60,7 +57,7 @@ public class NutzerService {
             nutzer.setRoles(List.of("USER"));
         }
 
-        return nutzerRepository.save(nutzer);
+        nutzerRepository.save(nutzer);
     }
 
     /**
@@ -123,7 +120,7 @@ public class NutzerService {
 
     /**
      * Authentifiziert einen Nutzer anhand des Benutzernamens und Passworts.
-     * 
+     * <p>
      * Die Methode überprüft, ob ein Nutzer mit dem angegebenen Benutzernamen existiert
      * und ob das übergebene Passwort mit dem gespeicherten, verschlüsselten Passwort übereinstimmt.
      * 
