@@ -44,8 +44,6 @@ public class PasswortVergessen extends VerticalLayout {
     }
 
     private void createView() {
-        //TODO: Alle Classnames ab titel in css implementieren
-
         addClassName("passwort-vergessen-view");
 
         Div container = new Div();
@@ -62,6 +60,7 @@ public class PasswortVergessen extends VerticalLayout {
         emailField.setPlaceholder("E-Mail Adresse eingeben");
         emailField.setWidthFull();
         emailField.setRequired(true);
+        emailField.setRequiredIndicatorVisible(true);
         emailField.addClassName("vergessen-input-field");
 
         sendButton = new Button("Senden", e -> handleSend());
@@ -88,7 +87,8 @@ public class PasswortVergessen extends VerticalLayout {
 
     private void handleSend() {
         if (isValidEmail(emailField.getValue())){
-
+            nutzerService.sendPasswordResetEmail(emailField.getValue());
+            showSuccessMessage();
         } else {
             showErrorMessage("Bitte geben Sie eine gültige E-Mail Adresse ein.");
             return;
@@ -107,7 +107,7 @@ public class PasswortVergessen extends VerticalLayout {
     }
     
     private void showSuccessMessage() {
-        Notification notification = Notification.show("Ihr Passwort wurde erfolgreich zurückgesetzt");
+        Notification notification = Notification.show("Bitte überprüfen Sie Ihre E-Mails für weitere Anweisungen.");
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         notification.setPosition(Notification.Position.TOP_CENTER);
     }
