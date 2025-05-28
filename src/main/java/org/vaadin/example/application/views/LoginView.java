@@ -222,7 +222,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         field.getStyle()
                 .set("margin-bottom", "1.25rem");
 
-        // Custom styling für die Input-Felder - funktioniert für TextField und PasswordField
+        // Custom styling für die Input-Felder
         field.getElement().executeJs(
                 "const field = this;" +
                         "const inputField = this.shadowRoot.querySelector('[part=\"input-field\"]');" +
@@ -351,7 +351,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         });
 
         forgotPasswordLink.getElement().addEventListener("mouseleave", e -> {
-forgotPasswordLink.getStyle().set("color", "rgba(68, 207, 108, 0.8)").set("text-decoration-color", "rgba(68, 207, 108, 0.4)").setWidth("100%");
+        forgotPasswordLink.getStyle().set("color", "rgba(68, 207, 108, 0.8)").set("text-decoration-color", "rgba(68, 207, 108, 0.4)").setWidth("100%");
         });
     }
 

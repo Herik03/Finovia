@@ -3,107 +3,101 @@ package org.vaadin.example.application.views.register;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.example.application.classes.Nutzer;
+import org.vaadin.example.application.services.NutzerService;
 
 @Route("passwortvergessen")
 @PageTitle("Passwort zurücksetzen")
 @AnonymousAllowed
 public class PasswortVergessen extends VerticalLayout {
-    private final TextField username = new TextField("Benutzername");
-    private final PasswordField password = new PasswordField("Passwort");
-    private final PasswordField confirmPassword = new PasswordField("Passwort bestätigen");
-    private final Button sendButton = new Button("Senden");
-    private final Button cancelButton = new Button("Abbrechen");
 
-    public PasswortVergessen() {
-        addClassNames(LumoUtility.Display.FLEX, LumoUtility.JustifyContent.CENTER, LumoUtility.AlignItems.CENTER);
+    private final NutzerService nutzerService;
+    private EmailField emailField;
+    private Button sendButton;
+    private Button cancelButton;
+
+    @Autowired
+    public PasswortVergessen(NutzerService nutzerService) {
+        this.nutzerService = nutzerService;
+
         setSizeFull();
         setAlignItems(Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.CENTER);
+
+        createView();
+    }
+
+    private void createView() {
+        //TODO: Alle Classnames ab titel in css implementieren
+
+        addClassName("passwort-vergessen-view");
+
+        Div container = new Div();
+        container.addClassName("passwort-vergessen-container");
 
         H1 title = new H1("Passwort zurücksetzen");
-        title.addClassNames(LumoUtility.Margin.Top.MEDIUM, LumoUtility.Margin.Bottom.NONE);
-        
-        Paragraph explanation = new Paragraph("Bitte geben Sie Ihren Benutzernamen und ein neues Passwort ein, um Ihr Passwort zurückzusetzen.");
-        explanation.addClassNames(LumoUtility.Margin.Top.SMALL, LumoUtility.Margin.Bottom.MEDIUM);
-        
-        configureFields();
-        configureButtons();
-        
-        // Horizontal-Layout für Buttons
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.add(cancelButton, sendButton);
-        buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
-        buttonLayout.setSpacing(true);
-        buttonLayout.addClassNames(LumoUtility.Margin.Top.MEDIUM);
+        title.addClassName("passwort-vergessen-title");
+        Span subtitle = new Span("Bitte geben Sie ihre E-Mail Adresse ein, wir melden und dann bei Ihnen");
+        subtitle.addClassName("passwort-vergessen-subtitle");
 
-        sendButton.addClickListener(event -> {
-            if (username.isEmpty()) {
-                showErrorMessage("Bitte geben Sie Ihren Benutzernamen ein");
-            } else if (password.isEmpty()) {
-                showErrorMessage("Bitte geben Sie ein Passwort ein");
-            } else if (password.getValue().length() < 8) {
-                showErrorMessage("Das Passwort muss mindestens 8 Zeichen enthalten");
-            } else if (!containsNumbersAndLetters(password.getValue())) {
-                showErrorMessage("Das Passwort muss Zahlen und Buchstaben enthalten");
-            } else if (!password.getValue().equals(confirmPassword.getValue())) {
-                showErrorMessage("Die Passwörter stimmen nicht überein");
-            } else {
-                // Hier würde die eigentliche Logik zum Zurücksetzen des Passworts stehen
-                showSuccessMessage();
-                UI.getCurrent().navigate("login");
-            }
-        });
+        Span emailLabel = new Span("E-Mail:");
+        emailField = new EmailField();
+        emailLabel.addClassName("passwort-vergessen-label");
+        emailField.setPlaceholder("E-Mail Adresse eingeben");
+        emailField.setWidthFull();
+        emailField.setRequired(true);
+        emailField.addClassName("vergessen-input-field");
 
-        add(
-                title,
-                explanation,
-                username,
-                password,
-                confirmPassword,
-                buttonLayout
-        );
-        
-        addClassName("passwort-vergessen-view");
-    }
-    
-    private void configureFields() {
-        // Einheitliche Feldkonfiguration
-        username.setRequired(true);
-        username.setHelperText("Geben Sie Ihren Benutzernamen ein");
-        username.setWidth("300px");
-        
-        password.setRequired(true);
-        password.setHelperText("Mindestens 8 Zeichen mit Zahlen und Buchstaben");
-        password.setWidth("300px");
-        password.setMinLength(8);
-        
-        confirmPassword.setRequired(true);
-        confirmPassword.setHelperText("Wiederholen Sie Ihr neues Passwort");
-        confirmPassword.setWidth("300px");
-    }
-    
-    private void configureButtons() {
-        // Senden-Button Konfiguration
+        sendButton = new Button("Senden", e -> handleSend());
         sendButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        
-        // Abbrechen-Button Konfiguration
+        sendButton.setWidthFull();
+        sendButton.addClassName("vergessen-send-button");
+
+        cancelButton = new Button("Abbrechen", e -> UI.getCurrent().navigate("login"));
         cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        cancelButton.addClickListener(e -> UI.getCurrent().navigate("login"));
+        cancelButton.setWidthFull();
+        cancelButton.addClassName("vergessen-cancel-button");
+
+        //Key support for Enter key
+        emailField.addKeyDownListener(com.vaadin.flow.component.Key.ENTER, e -> handleSend());
+
+        VerticalLayout formLayout = new VerticalLayout();
+        formLayout.setSpacing(false);
+        formLayout.setPadding(false);
+        formLayout.add(title, subtitle, emailLabel, emailField, sendButton, cancelButton);
+
+        container.add(formLayout);
+        add(container);
     }
-    
-    private boolean containsNumbersAndLetters(String password) {
-        return password.matches(".*\\d.*") && password.matches(".*[a-zA-Z].*");
+
+    private void handleSend() {
+        if (isValidEmail(emailField.getValue())){
+
+        } else {
+            showErrorMessage("Bitte geben Sie eine gültige E-Mail Adresse ein.");
+            return;
+        }
+    }
+
+    private boolean isValidEmail(String email) {
+        String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return email != null && email.matches(regex);
     }
     
     private void showErrorMessage(String message) {

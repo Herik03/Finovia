@@ -165,10 +165,6 @@ vaadin-grid-header-cell {
     font-family: var(--lumo-font-family) !important;
 }
 
-.input-field input::placeholder {
-    color: rgba(192, 239, 216, 0.6) !important;
-}
-
 /* Button Styling */
 .login-button {
     background: linear-gradient(135deg, var(--lumo-primary-color), var(--lumo-primary-color-shade)) !important;
@@ -269,4 +265,121 @@ vaadin-grid-header-cell {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Forgot Password Styles */
+.passwort-vergessen-view {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
+    url('images/login-background.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+    min-height: 100vh !important;
+}
+
+.passwort-vergessen-container {
+    background: var(--lumo-base-color) !important;
+    backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(68, 207, 108, 0.2) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    padding: 3rem !important;
+    width: 20% !important;
+    max-width: 90vw !important;
+}
+
+.passwort-vergessen-container:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7) !important;
+}
+
+.passwort-vergessen-title {
+    margin: 0 0 0.5rem 0 !important;
+    color: var(--lumo-header-text-color) !important;
+    font-size: 2.5rem !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    font-family: var(--lumo-heading-font-family) !important;
+}
+
+.passwort-vergessen-subtitle {
+    color: var(--lumo-body-text-color) !important;
+    font-size: 1rem !important;
+    text-align: center !important;
+    display: block !important;
+    margin-bottom: 2rem !important;
+    opacity: 0.9 !important;
+}
+
+.passwort-vergessen-label {
+    color: var(--lumo-primary-color);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+    font-family: var(--lumo-font-family);
+}
+
+.vergessen-input-field {
+    margin-bottom: 1.25rem;
+}
+
+.vergessen-input-field vaadin-text-field-container{
+    background: var(--lumo-secondary-color) !important;
+    border: 1px solid rgba(68, 207, 108, 0.3) !important;
+    border-radius: var(--lumo-border-radius) !important;
+    color: white;
+    padding: 0.875rem;
+    transition: all 0.3s ease !important;
+}
+
+.vergessen-input-field:focus-within vaadin-text-field-container {
+    border-color: var(--lumo-primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(68, 207, 108, 0.2) !important;
+    background: var(--lumo-secondary-color) !important;
+}
+
+.vergessen-input-field input {
+    color: var(--lumo-body-text-color) !important;
+    font-family: var(--lumo-font-family) !important;
+    background: transparent;
+}
+
+.vergessen-send-button {
+    background: linear-gradient(135deg, var(--lumo-primary-color), var(--lumo-primary-color-shade)) !important;
+    border: none !important;
+    padding: 0.875rem;
+    font-size: 1rem;
+    border-radius: var(--lumo-border-radius) !important;
+    margin-top: 1.5rem;
+    cursor: pointer;
+    color: white !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    text-transform: none !important;
+}
+
+.vergessen-send-button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(68, 207, 108, 0.4) !important;
+}
+
+.vergessen-send-button:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 15px rgba(68, 207, 108, 0.3) !important;
+}
+
+.vergessen-cancel-button {
+    color: var(--lumo-primary-color) !important;
+    border: 1px solid rgba(68, 207, 108, 0.4) !important;
+    font-weight: 500 !important;
+    background: transparent !important;
+    transition: all 0.3s ease !important;
+    text-transform: none !important;
+    padding: 0.875rem;
+    font-size: 1rem;
+    border-radius: var(--lumo-border-radius) !important;
+    margin-top: 0.75rem;
+    cursor: pointer;
 }
