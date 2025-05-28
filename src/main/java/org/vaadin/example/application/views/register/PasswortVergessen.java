@@ -89,6 +89,7 @@ public class PasswortVergessen extends VerticalLayout {
         if (isValidEmail(emailField.getValue())){
             nutzerService.sendPasswordResetEmail(emailField.getValue());
             showSuccessMessage();
+            UI.getCurrent().navigate("login");
         } else {
             showErrorMessage("Bitte geben Sie eine gültige E-Mail Adresse ein.");
             return;

@@ -26,6 +26,7 @@ public class NutzerService {
 
     private final NutzerRepository nutzerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     /**
      * Konstruktor für den NutzerService.
@@ -34,9 +35,10 @@ public class NutzerService {
      * @param passwordEncoder  Encoder für sichere Passwort-Verschlüsselung
      */
     @Autowired
-    public NutzerService(NutzerRepository nutzerRepository, PasswordEncoder passwordEncoder) {
+    public NutzerService(NutzerRepository nutzerRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.nutzerRepository = nutzerRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     /**

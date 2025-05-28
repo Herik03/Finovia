@@ -216,15 +216,6 @@ vaadin-grid-header-cell {
     text-decoration-color: var(--lumo-primary-color) !important;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .login-container {
-        margin: 1rem !important;
-        padding: 2rem !important;
-        width: calc(100% - 2rem) !important;
-    }
-}
-
 /* Animation für sanften Übergang */
 @keyframes fadeInUp {
     from {
@@ -382,4 +373,19 @@ vaadin-grid-header-cell {
     border-radius: var(--lumo-border-radius) !important;
     margin-top: 0.75rem;
     cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .login-container  {
+        margin: 1rem !important;
+        padding: 2rem !important;
+        width: calc(100% - 2rem) !important;
+    }
+
+    .passwort-vergessen-container {
+        margin: 1rem !important;
+        padding: 2rem !important;
+        width: calc(100% - 2rem) !important;
+    }
 }

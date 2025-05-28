@@ -1,5 +1,6 @@
 package org.vaadin.example.application.views;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
@@ -11,6 +12,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.vaadin.example.application.services.NutzerService;
@@ -21,6 +23,7 @@ import java.util.List;
 
 @Route("reset-password")
 @PageTitle("Passwort zurücksetzen")
+@AnonymousAllowed
 public class ResetPasswordView extends VerticalLayout implements BeforeEnterObserver {
 
     private final NutzerService nutzerService;
@@ -33,10 +36,13 @@ public class ResetPasswordView extends VerticalLayout implements BeforeEnterObse
     @Autowired
     public ResetPasswordView(NutzerService nutzerService) {
         this.nutzerService = nutzerService;
+
+        setSizeFull();
+        setAlignItems(Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.CENTER);
     }
 
     private void initUI(BeforeEnterEvent event){
-        //TODO: UI
         addClassName("passwort-vergessen-view");
 
         Div container = new Div();
@@ -44,6 +50,8 @@ public class ResetPasswordView extends VerticalLayout implements BeforeEnterObse
 
         H1 title = new H1("Passwort zurücksetzen");
         title.addClassName("passwort-vergessen-title");
+        Span subtitle = new Span("Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten.");
+        subtitle.addClassName("passwort-vergessen-subtitle");
 
         Span newPasswordLabel = new Span("Neues Passwort:");
         newPasswordField = new PasswordField();
@@ -72,7 +80,7 @@ public class ResetPasswordView extends VerticalLayout implements BeforeEnterObse
         VerticalLayout formLayout = new VerticalLayout();
         formLayout.setSpacing(false);
         formLayout.setPadding(false);
-        formLayout.add(title, newPasswordLabel, newPasswordField, confirmPasswordLabel, confirmPasswordField, resetButton);
+        formLayout.add(title, subtitle, newPasswordLabel, newPasswordField, confirmPasswordLabel, confirmPasswordField, resetButton);
 
         container.add(formLayout);
         add(container);
@@ -86,6 +94,7 @@ public class ResetPasswordView extends VerticalLayout implements BeforeEnterObse
                 notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 notification.setDuration(3000);
                 event.forwardTo("login");
+                UI.getCurrent().navigate("login");
             } else {
                 Notification notification = Notification.show("Fehler beim Zurücksetzen des Passworts.");
                 notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
