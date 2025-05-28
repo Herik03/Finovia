@@ -1,0 +1,133 @@
+package org.vaadin.example.application.views;
+
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.button.ButtonVariant;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.vaadin.example.application.classes.ETF;
+import org.vaadin.example.application.classes.Kurs;
+import org.vaadin.example.application.classes.Nutzer;
+import org.vaadin.example.application.classes.Watchlist;
+import org.vaadin.example.application.classes.Wertpapier;
+import org.vaadin.example.application.repositories.WertpapierRepository;
+import org.vaadin.example.application.services.AlphaVantageService;
+import org.vaadin.example.application.services.NutzerService;
+import org.vaadin.example.application.services.WatchlistService;
+
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.icon.VaadinIcon;
+
+
+@Component
+public class ETFView extends AbstractWertpapierView implements WertpapierDetailView {
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    @Autowired
+    public ETFView(AlphaVantageService alphaVantageService,
+                   WatchlistService watchlistService,
+                   NutzerService nutzerService,
+                   WertpapierRepository wertpapierRepository) {
+        super(alphaVantageService, watchlistService, nutzerService, wertpapierRepository);
+    }
+
+    @Override
+    public Dialog createDetailsDialog(Wertpapier wertpapier) {
+        Dialog dialog = new Dialog();
+        dialog.setWidthFull();
+        dialog.setHeightFull();
+        dialog.setModal(true);
+        dialog.setDraggable(true);
+        dialog.setResizable(true);
+
+        try {
+            ETF etf = (ETF) wertpapier;
+
+            String symbol = etf.getSymbol();
+            String name = etf.getName() != null ? etf.getName() : etf.getSymbol();
+            this.anzeigeName = name; // wichtig für updateChart()
+
+
+            List<Kurs> kurse = alphaVantageService.getMonthlySeries(symbol);
+
+            if (kurse.isEmpty()) {
+                Notification.show("Keine Kursdaten für " + symbol + " gefunden.", 3000, Notification.Position.MIDDLE);
+                dialog.add(new VerticalLayout(new Span("Keine Daten für " + symbol + " vorhanden.")));
+                dialog.open();
+                return dialog;
+            }
+
+            VerticalLayout layout = new VerticalLayout();
+            layout.setSizeFull();
+            layout.setPadding(false);
+            layout.setSpacing(false);
+            layout.setMargin(false);
+
+            H2 titel = new H2("ETF: " + name);
+            titel.addClassName("dialog-title");
+            layout.add(titel);
+
+            Select<String> timeFrameSelect = new Select<>();
+            timeFrameSelect.setLabel("Zeitraum");
+            timeFrameSelect.setItems("Intraday", "Täglich", "Wöchentlich", "Monatlich");
+            timeFrameSelect.setValue("Monatlich");
+
+            Button addToWatchlistButton = createWatchlistButton(symbol);
+
+            HorizontalLayout timeFrameAndButtonLayout = new HorizontalLayout(timeFrameSelect, addToWatchlistButton);
+            timeFrameAndButtonLayout.setAlignItems(Alignment.BASELINE);
+            timeFrameAndButtonLayout.setSpacing(true);
+
+            layout.add(timeFrameAndButtonLayout);
+
+            VerticalLayout chartContainer = new VerticalLayout();
+            chartContainer.setSizeFull();
+            layout.add(chartContainer);
+
+            updateChart(chartContainer, symbol, "Monatlich", anzeigeName);
+
+            // ETF-spezifische Informationen anzeigen
+            VerticalLayout infoBox = new VerticalLayout();
+            infoBox.setSizeFull();
+            infoBox.setSpacing(true);
+            infoBox.setPadding(true);
+            infoBox.addClassName("info-box");
+
+            infoBox.add(createInfoRow("Emittent", etf.getEmittent(), "Index", etf.getIndex()));
+
+            layout.add(infoBox);
+
+            // Listener für Zeitrahmenwechsel
+            timeFrameSelect.addValueChangeListener(event ->
+                    updateChart(chartContainer, symbol, event.getValue(), anzeigeName)
+            );
+
+// Close-Button erstellen und oben rechts ins Layout einfügen
+            Button closeButton = new Button(VaadinIcon.CLOSE.create(), e -> dialog.close());
+            closeButton.addClassName("dialog-close-button");
+            layout.add(closeButton); // Füge ihn ins Layout ein – nicht direkt in den Dialog!
+
+// Danach das Layout in den Dialog setzen
+            dialog.add(layout);
+            dialog.open();
+
+            return dialog;
+
+        } catch (Exception e) {
+            Notification.show("Fehler beim Laden des ETF-Dialogs: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
+            dialog.add(new VerticalLayout(new Span("Fehler beim Laden der Details: " + e.getMessage())));
+            dialog.open();
+            return dialog;
+        }
+    }
+}

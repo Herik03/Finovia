@@ -92,7 +92,7 @@ public class MainView extends AbstractSideNav {
      *
      * @param depotService Der Service für Depot-Operationen
      */
-    @Autowired
+    /*@Autowired
     public MainView(DepotService depotService) {
         super();
         this.depotService = depotService;
@@ -115,6 +115,8 @@ public class MainView extends AbstractSideNav {
 
         setupDepotOverview();
     }
+
+    */
 
     private void setupDepotOverview() {
         H2 title = new H2("Meine Depots");

@@ -63,5 +63,16 @@ public abstract class Wertpapier {
         ausschuettungen.add(ausschuettung);
     }
 
+    /**
+     * Dynamisch abgeleiteter Typ basierend auf der konkreten Unterklasse.
+     */
+    @Transient
+    public String getTyp() {
+        if (this instanceof Aktie) return "Aktie";
+        if (this instanceof Anleihe) return "Anleihe";
+        if (this instanceof ETF) return "ETF";
+        return "Unbekannt";
+    }
+
 
 }
