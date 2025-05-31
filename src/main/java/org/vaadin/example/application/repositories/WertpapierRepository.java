@@ -11,4 +11,6 @@ public interface WertpapierRepository extends JpaRepository<Wertpapier, Long> {
     List<Wertpapier> findByNameContainingIgnoreCase(String name);
     // Hier können benutzerdefinierte Abfragen hinzugefügt werden, wenn nötig
     // Zum Beispiel: List<Wertpapier> findByName(String name);
+
+
 }

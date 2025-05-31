@@ -90,7 +90,7 @@ public class MainView extends AbstractSideNav {
      * Die Ansicht besteht aus einer Seitenleiste, einem Hauptinhaltsbereich und
      * einer Übersicht der Depots.
      *
-     * @param depotService Der Service für Depot-Operationen
+     *
      */
     /*@Autowired
     public MainView(DepotService depotService) {

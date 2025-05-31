@@ -1,6 +1,8 @@
 package org.vaadin.example.application.views;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
@@ -9,11 +11,13 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.router.BeforeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.vaadin.example.application.classes.Anleihe;
 import org.vaadin.example.application.classes.Kurs;
 import org.vaadin.example.application.classes.Wertpapier;
+import org.vaadin.example.application.services.AnleiheKaufService;
 import org.vaadin.example.application.repositories.WertpapierRepository;
 import org.vaadin.example.application.services.AlphaVantageService;
 import org.vaadin.example.application.services.NutzerService;
@@ -26,17 +30,21 @@ import java.util.List;
 
 
 @Component
-public class AnleiheView extends AbstractWertpapierView implements WertpapierDetailView {
+public class AnleiheView extends AbstractWertpapierView{
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final AnleiheKaufService anleiheKaufService;
 
     @Autowired
     public AnleiheView(AlphaVantageService alphaVantageService,
                        WatchlistService watchlistService,
                        NutzerService nutzerService,
-                       WertpapierRepository wertpapierRepository) {
+                       WertpapierRepository wertpapierRepository,
+                       AnleiheKaufService anleiheKaufService) {
         super(alphaVantageService, watchlistService, nutzerService, wertpapierRepository);
+        this.anleiheKaufService = anleiheKaufService;
     }
+
 
     @Override
     public Dialog createDetailsDialog(Wertpapier wertpapier) {
@@ -82,7 +90,20 @@ public class AnleiheView extends AbstractWertpapierView implements WertpapierDet
             timeFrameAndButtonLayout.setAlignItems(Alignment.BASELINE);
             timeFrameAndButtonLayout.setSpacing(true);
 
-            layout.add(timeFrameAndButtonLayout);
+            Button kaufButton = new Button("Kaufen", e -> {
+                try {
+                    UI.getCurrent().navigate("anleihe-kaufen/" + symbol);
+                } catch (Exception ex) {
+                    Notification.show("Fehler beim Weiterleiten zur Kaufmaske: " + ex.getMessage(), 5000, Notification.Position.MIDDLE);
+                }
+            });
+
+            kaufButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+            HorizontalLayout buttons = new HorizontalLayout(timeFrameSelect, addToWatchlistButton, kaufButton);
+            buttons.setAlignItems(Alignment.BASELINE);
+            buttons.setSpacing(true);
+            layout.add(buttons);
 
             VerticalLayout chartContainer = new VerticalLayout();
             chartContainer.setSizeFull();
@@ -129,4 +150,5 @@ public class AnleiheView extends AbstractWertpapierView implements WertpapierDet
             return dialog;
         }
     }
+
 }

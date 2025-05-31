@@ -9,13 +9,10 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.button.ButtonVariant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.vaadin.example.application.classes.ETF;
 import org.vaadin.example.application.classes.Kurs;
-import org.vaadin.example.application.classes.Nutzer;
-import org.vaadin.example.application.classes.Watchlist;
 import org.vaadin.example.application.classes.Wertpapier;
 import org.vaadin.example.application.repositories.WertpapierRepository;
 import org.vaadin.example.application.services.AlphaVantageService;
@@ -24,12 +21,12 @@ import org.vaadin.example.application.services.WatchlistService;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import com.vaadin.flow.component.button.Button;
+
 import com.vaadin.flow.component.icon.VaadinIcon;
 
 
 @Component
-public class ETFView extends AbstractWertpapierView implements WertpapierDetailView {
+public class ETFView extends AbstractWertpapierView {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
