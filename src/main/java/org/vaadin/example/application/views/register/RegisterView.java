@@ -1,5 +1,6 @@
 package org.vaadin.example.application.views.register;
 
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import com.vaadin.flow.component.UI;
@@ -37,6 +38,7 @@ public class RegisterView extends VerticalLayout {
     private TextField vorname;
     private TextField nachname;
     private EmailField email;
+    private TextField steuerID;
     private PasswordField password;
     private PasswordField confirmPassword;
     private Button registerButton;
@@ -123,6 +125,20 @@ public class RegisterView extends VerticalLayout {
             }
         });
 
+        //Steuer-ID
+        Span steuerLabel = new Span("Steuer-ID:");
+        steuerLabel.addClassName("passwort-vergessen-label");
+        steuerID = new TextField();
+        steuerID.setPlaceholder("11-stellige Steuer-ID eingeben");
+        steuerID.setRequiredIndicatorVisible(true);
+        steuerID.setRequired(true);
+        steuerID.setMinLength(3);
+        steuerID.setWidthFull();
+        steuerID.addClassName("vergessen-input-field");
+        steuerID.addValueChangeListener(e -> {
+            steuerID.setInvalid(!e.getValue().matches("^\\d{11}$")); //11 Stellen und nur Ziffern
+        });
+
         // E-Mail
         Span emailLabel = new Span("E-Mail:");
         emailLabel.addClassName("passwort-vergessen-label");
@@ -166,8 +182,10 @@ public class RegisterView extends VerticalLayout {
             if (!event.getValue().equals(password.getValue())) {
                 confirmPassword.setErrorMessage("Passwörter stimmen nicht überein");
                 confirmPassword.setInvalid(true);
+                confirmPassword.getStyle().set("margin-bottom", "0.35rem");
             } else {
                 confirmPassword.setInvalid(false);
+                confirmPassword.getStyle().set("margin-bottom", "1.25rem");
             }
         });
 
@@ -178,34 +196,40 @@ public class RegisterView extends VerticalLayout {
         // Buttons
         registerButton = new Button("Registrieren", e -> registerUser());
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        registerButton.setWidthFull();
+        registerButton.setWidth("48%");
         registerButton.addClassName("vergessen-send-button");
         registerButton.addClickShortcut(com.vaadin.flow.component.Key.ENTER);
+        registerButton.getStyle().set("margin-top", "0.75rem");
 
         cancelButton = new Button("Abbrechen", e -> UI.getCurrent().navigate("login"));
         cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        cancelButton.setWidthFull();
+        cancelButton.setWidth("48%");
         cancelButton.addClassName("vergessen-cancel-button");
+
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.setSpacing(true);
+        buttonLayout.setWidthFull();
+        buttonLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        buttonLayout.add(cancelButton, registerButton);
 
         VerticalLayout formLayout = new VerticalLayout();
         formLayout.setSpacing(false);
         formLayout.setPadding(false);
         formLayout.add(
                 title,
-                //subtitle,
                 vornameLabel, vorname,
                 nachnameLabel, nachname,
                 usernameLabel, username,
+                steuerLabel, steuerID,
                 emailLabel, email,
                 passwordLabel, password,
                 confirmPasswordLabel, confirmPassword,
                 passwordRequirements,
-                registerButton,
-                cancelButton
+                buttonLayout
         );
 
         container.add(formLayout);
-        container.addClassNames(LumoUtility.Padding.MEDIUM);
+        //container.addClassNames(LumoUtility.Padding.MEDIUM);
         add(container);
     }
 
@@ -241,6 +265,14 @@ public class RegisterView extends VerticalLayout {
             // Prüfen, ob E-Mail bereits existiert
             if (nutzerService.emailExists(nutzer.getEmail())) {
                 Notification notification = Notification.show("E-Mail bereits registriert");
+                notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+                notification.setDuration(5000);
+                return;
+            }
+
+            //Prüfen ob Steuer-ID gültig ist
+            if (!steuerID.getValue().matches("^\\d{11}$")) {
+                Notification notification = Notification.show("Steuer-ID muss 11-stellig sein und nur Ziffern enthalten.");
                 notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
                 notification.setDuration(5000);
                 return;
