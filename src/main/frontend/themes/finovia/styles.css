@@ -261,7 +261,7 @@ vaadin-grid-header-cell {
 /* Forgot Password Styles */
 .passwort-vergessen-view {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
-    url('images/login-background.jpg') !important;
+    url("images/login-background.jpg") !important;
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
@@ -373,6 +373,15 @@ vaadin-grid-header-cell {
     border-radius: var(--lumo-border-radius) !important;
     margin-top: 0.75rem;
     cursor: pointer;
+}
+
+.register-subtitle {
+    color: var(--lumo-body-text-color) !important;
+    font-size: 0.7rem !important;
+    text-align: center !important;
+    display: block !important;
+    margin-bottom: 1rem !important;
+    opacity: 0.9 !important;
 }
 
 /* Responsive Design */

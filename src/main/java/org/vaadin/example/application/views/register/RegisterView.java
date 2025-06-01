@@ -1,13 +1,15 @@
 package org.vaadin.example.application.views.register;
 
+import com.vaadin.flow.theme.lumo.LumoUtility;
+
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -15,12 +17,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import com.vaadin.flow.theme.lumo.LumoUtility;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.NutzerService;
@@ -34,23 +33,23 @@ public class RegisterView extends VerticalLayout {
 
     private final NutzerService nutzerService;
 
-    private final TextField username = new TextField("Benutzername");
-    private final TextField vorname = new TextField("Vorname");
-    private final TextField nachname = new TextField("Nachname");
-    private final EmailField email = new EmailField("E-Mail");
-    private final PasswordField password = new PasswordField("Passwort");
-    private final PasswordField confirmPassword = new PasswordField("Passwort bestätigen");
-    private final Button registerButton = new Button("Registrieren");
-    private final Button cancelButton = new Button("Abbrechen");
+    private TextField username;
+    private TextField vorname;
+    private TextField nachname;
+    private EmailField email;
+    private PasswordField password;
+    private PasswordField confirmPassword;
+    private Button registerButton;
+    private Button cancelButton;
 
     /**
      * Binder for form validation.
      */
-    private Binder<Nutzer> binder = new BeanValidationBinder<>(Nutzer.class);
+    private final Binder<Nutzer> binder = new BeanValidationBinder<>(Nutzer.class);
 
     /**
      * Constructor for the RegisterView.
-     * 
+     *
      * @param nutzerService The service for user management operations
      */
     @Autowired
@@ -58,44 +57,111 @@ public class RegisterView extends VerticalLayout {
         this.nutzerService = nutzerService;
 
         configurePage();
-        configureFields();
-        buildForm();
+        initUI();
     }
-    
+
     /**
      * Configures the page layout and styling.
      */
     private void configurePage() {
-        setSpacing(false);
-        addClassNames(LumoUtility.Display.FLEX, LumoUtility.JustifyContent.CENTER, 
-                LumoUtility.AlignItems.CENTER, LumoUtility.Padding.MEDIUM);
         setSizeFull();
-        
-        // Zentrale Ausrichtung des Hauptlayouts
+        setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        addClassName("passwort-vergessen-view");
     }
-    
+
     /**
-     * Configures the form fields with validation rules and helper texts.
+     * Initializes the UI components and layout.
      */
-    private void configureFields() {
-        // Einheitliche Feldkonfiguration
-        username.setRequired(true);
-        username.setHelperText("Mindestens 6 Zeichen");
-        username.setMinLength(3);
-        
+    private void initUI() {
+        Div container = new Div();
+        container.addClassName("passwort-vergessen-container");
+
+        H1 title = new H1("Registrierung");
+        title.addClassName("passwort-vergessen-title");
+
+//        Span subtitle = new Span("Erstellen Sie Ihr neues Konto");
+//        subtitle.addClassName("passwort-vergessen-subtitle");
+
+        // Vorname
+        Span vornameLabel = new Span("Vorname:");
+        vornameLabel.addClassName("passwort-vergessen-label");
+        vorname = new TextField();
+        vorname.setPlaceholder("Vorname eingeben");
+        vorname.setRequiredIndicatorVisible(true);
         vorname.setRequired(true);
+        vorname.setWidthFull();
+        vorname.addClassName("vergessen-input-field");
+
+        // Nachname
+        Span nachnameLabel = new Span("Nachname:");
+        nachnameLabel.addClassName("passwort-vergessen-label");
+        nachname = new TextField();
+        nachname.setPlaceholder("Nachname eingeben");
+        nachname.setRequiredIndicatorVisible(true);
         nachname.setRequired(true);
-        
+        nachname.setWidthFull();
+        nachname.addClassName("vergessen-input-field");
+
+        // Benutzername
+        Span usernameLabel = new Span("Benutzername:");
+        usernameLabel.addClassName("passwort-vergessen-label");
+        username = new TextField();
+        username.setPlaceholder("Benutzername eingeben (mindestens 3 Zeichen)");
+        username.setRequiredIndicatorVisible(true);
+        username.setRequired(true);
+        username.setMinLength(3);
+        username.setWidthFull();
+        username.addClassName("vergessen-input-field");
+
+        username.addValueChangeListener(e -> {
+            if(e.getValue().length() < 3) {
+                username.setErrorMessage("Benutzername muss mindestens 3 Zeichen lang sein");
+                username.setInvalid(true);
+            } else {
+                username.setInvalid(false);
+            }
+        });
+
+        // E-Mail
+        Span emailLabel = new Span("E-Mail:");
+        emailLabel.addClassName("passwort-vergessen-label");
+        email = new EmailField();
+        email.setPlaceholder("E-Mail-Adresse eingeben");
+        email.setRequiredIndicatorVisible(true);
         email.setRequired(true);
-        email.setHelperText("Bitte geben Sie eine gültige E-Mail-Adresse ein");
-        
+        email.setWidthFull();
+        email.addClassName("vergessen-input-field");
+        email.addValueChangeListener(e -> {
+            email.setInvalid(!isValidEmail(e.getValue()));
+        });
+
+        // Passwort
+        Span passwordLabel = new Span("Passwort:");
+        passwordLabel.addClassName("passwort-vergessen-label");
+        password = new PasswordField();
+        password.setPlaceholder("Passwort eingeben");
+        password.setRequiredIndicatorVisible(true);
         password.setRequired(true);
-        password.setHelperText("Mindestens 8 Zeichen mit Zahlen und Buchstaben");
         password.setMinLength(8);
-        
+        password.setWidthFull();
+        password.addClassName("vergessen-input-field");
+
+        password.addValueChangeListener(e -> {
+            //TODO: Validierung einfügen
+        });
+
+        // Passwort bestätigen
+        Span confirmPasswordLabel = new Span("Passwort bestätigen:");
+        confirmPasswordLabel.addClassName("passwort-vergessen-label");
+        confirmPassword = new PasswordField();
+        confirmPassword.setPlaceholder("Passwort bestätigen");
+        confirmPassword.setRequiredIndicatorVisible(true);
         confirmPassword.setRequired(true);
+        confirmPassword.setWidthFull();
+        confirmPassword.addClassName("vergessen-input-field");
+
+        // Passwort-Validierung bei Eingabe
         confirmPassword.addValueChangeListener(event -> {
             if (!event.getValue().equals(password.getValue())) {
                 confirmPassword.setErrorMessage("Passwörter stimmen nicht überein");
@@ -104,145 +170,123 @@ public class RegisterView extends VerticalLayout {
                 confirmPassword.setInvalid(false);
             }
         });
-        
-        // Button-Konfiguration
+
+        // Passwort-Anforderungen
+        Span passwordRequirements = new Span("Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten.");
+        passwordRequirements.addClassName("register-subtitle");
+
+        // Buttons
+        registerButton = new Button("Registrieren", e -> registerUser());
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        registerButton.setMinWidth("150px");
-        
+        registerButton.setWidthFull();
+        registerButton.addClassName("vergessen-send-button");
+        registerButton.addClickShortcut(com.vaadin.flow.component.Key.ENTER);
+
+        cancelButton = new Button("Abbrechen", e -> UI.getCurrent().navigate("login"));
         cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        cancelButton.addClickListener(e -> UI.getCurrent().navigate("login"));
-    }
-    
-    /**
-     * Builds the form layout and adds all components to the view.
-     */
-    private void buildForm() {
-        // Container für Formular und alle anderen Elemente mit begrenzter Breite
-        VerticalLayout contentContainer = new VerticalLayout();
-        contentContainer.setPadding(true);
-        contentContainer.setSpacing(true);
-        contentContainer.setAlignItems(Alignment.CENTER);
-        contentContainer.setWidth("100%");
-        contentContainer.setMaxWidth("600px");
-        
-        // Überschrift als separate Komponente
-        H1 title = new H1("Registrierung");
-        title.getStyle().set("margin-bottom", "1rem");
-        
-        // Erstellen eines FormLayouts für die Eingabefelder
-        FormLayout formLayout = new FormLayout();
+        cancelButton.setWidthFull();
+        cancelButton.addClassName("vergessen-cancel-button");
+
+        VerticalLayout formLayout = new VerticalLayout();
+        formLayout.setSpacing(false);
+        formLayout.setPadding(false);
         formLayout.add(
-                vorname,
-                nachname,
-                username,
-                email,
-                password,
-                confirmPassword
+                title,
+                //subtitle,
+                vornameLabel, vorname,
+                nachnameLabel, nachname,
+                usernameLabel, username,
+                emailLabel, email,
+                passwordLabel, password,
+                confirmPasswordLabel, confirmPassword,
+                passwordRequirements,
+                registerButton,
+                cancelButton
         );
-        
-        // Verbesserte responsive Einstellungen für das Web
-        formLayout.setResponsiveSteps(
-                new FormLayout.ResponsiveStep("0", 1),
-                new FormLayout.ResponsiveStep("600px", 2)
-        );
-        
-        // Formularlayout auf volle Breite des Containers setzen
-        formLayout.setWidth("100%");
-        
-        // Horizontales Layout für Buttons
-        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, registerButton);
-        buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
-        buttonLayout.setMargin(true);
-        buttonLayout.setSpacing(true);
-        
-        // Komponenten zum Container hinzufügen
-        contentContainer.add(title, formLayout, buttonLayout);
-        
-        // Container zum Hauptlayout hinzufügen
-        add(contentContainer);
-        
-        registerButton.addClickListener(event -> registerUser());
+
+        container.add(formLayout);
+        container.addClassNames(LumoUtility.Padding.MEDIUM);
+        add(container);
     }
-    
-    /**
-     * Returns the login view class.
-     * 
-     * @return The login view class
-     */
-    private Class<?> getLoginViewClass() {
-        // Sollte die tatsächliche Login-View-Klasse sein
-        return this.getClass(); // Temporärer Platzhalter
-    }
-    
-    /**
-     * Checks if a password contains both numbers and letters.
-     * 
-     * @param password The password to check
-     * @return True if the password contains both numbers and letters, false otherwise
-     */
-    private boolean containsNumbersAndLetters(String password) {
-        return password.matches(".*\\d.*") && password.matches(".*[a-zA-Z].*");
-    }
-    
+
     /**
      * Handles the user registration process.
      * Validates the form data, checks for existing usernames and emails,
      * and creates a new user if all validations pass.
      */
     private void registerUser() {
-    try {
-        Nutzer nutzer = new Nutzer();
-        
-        // Nur die anderen Felder an den Binder binden (ohne Passwort)
-        binder.forField(username).bind(Nutzer::getUsername, Nutzer::setUsername);
-        binder.forField(vorname).bind(Nutzer::getVorname, Nutzer::setVorname);
-        binder.forField(nachname).bind(Nutzer::getNachname, Nutzer::setNachname);
-        binder.forField(email).bind(Nutzer::getEmail, Nutzer::setEmail);
-        
-        // Alle gebundenen Felder in den Nutzer schreiben
-        binder.writeBean(nutzer);
-        
-        // Passwort manuell setzen (da es nicht über den Binder gebunden ist)
-        nutzer.setPasswort(password.getValue());
+        try {
+            Nutzer nutzer = new Nutzer();
 
-        // Prüfen, ob Benutzername bereits existiert
-        if (nutzerService.usernameExists(nutzer.getUsername())) {
-            Notification.show("Benutzername bereits vergeben")
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
-            return;
+            // Nur die anderen Felder an den Binder binden (ohne Passwort)
+            binder.forField(username).bind(Nutzer::getUsername, Nutzer::setUsername);
+            binder.forField(vorname).bind(Nutzer::getVorname, Nutzer::setVorname);
+            binder.forField(nachname).bind(Nutzer::getNachname, Nutzer::setNachname);
+            binder.forField(email).bind(Nutzer::getEmail, Nutzer::setEmail);
+
+            // Alle gebundenen Felder in den Nutzer schreiben
+            binder.writeBean(nutzer);
+
+            // Passwort manuell setzen (da es nicht über den Binder gebunden ist)
+            nutzer.setPasswort(password.getValue());
+
+            // Prüfen, ob Benutzername bereits existiert
+            if (nutzerService.usernameExists(nutzer.getUsername())) {
+                Notification notification = Notification.show("Benutzername bereits vergeben");
+                notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+                notification.setDuration(5000);
+                return;
+            }
+
+            // Prüfen, ob E-Mail bereits existiert
+            if (nutzerService.emailExists(nutzer.getEmail())) {
+                Notification notification = Notification.show("E-Mail bereits registriert");
+                notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+                notification.setDuration(5000);
+                return;
+            }
+
+            // Prüfen, ob Passwort gültig ist
+            if (!isValidPassword(password.getValue())) {
+                Notification notification = Notification.show("Passwort muss mindestens 8 Zeichen lang sein und mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten.");
+                notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+                notification.setDuration(5000);
+                return;
+            }
+
+            // Prüfen, ob Passwörter übereinstimmen
+            if (!password.getValue().equals(confirmPassword.getValue())) {
+                Notification notification = Notification.show("Passwörter stimmen nicht überein");
+                notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+                notification.setDuration(5000);
+                return;
+            }
+
+            nutzerService.speichereNutzer(nutzer);
+
+            Notification notification = Notification.show("Registrierung erfolgreich. Sie können sich jetzt anmelden.");
+            notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            notification.setDuration(3000);
+
+            getUI().ifPresent(ui -> ui.navigate("login"));
+
+        } catch (ValidationException e) {
+            Notification notification = Notification.show("Ungültige Eingaben. Bitte überprüfen Sie Ihre Daten.");
+            notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+            notification.setDuration(5000);
         }
-
-        // Prüfen, ob E-Mail bereits existiert
-        if (nutzerService.emailExists(nutzer.getEmail())) {
-            Notification.show("E-Mail bereits registriert")
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
-            return;
-        }
-
-        // Prüfen, ob Passwort gültig ist
-        if (!containsNumbersAndLetters(password.getValue())) {
-            Notification.show("Passwort muss mindestens 8 Zeichen lang sein und Zahlen und Buchstaben enthalten")
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
-            return;
-        }
-
-        // Prüfen, ob Passwörter übereinstimmen
-        if (!password.getValue().equals(confirmPassword.getValue())) {
-            Notification.show("Passwörter stimmen nicht überein")
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
-            return;
-        }
-
-        nutzerService.speichereNutzer(nutzer);
-
-        Notification.show("Registrierung erfolgreich. Sie können sich jetzt anmelden.")
-                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-
-        getUI().ifPresent(ui -> ui.navigate("login"));
-
-    } catch (ValidationException e) {
-        Notification.show("Ungültige Eingaben. Bitte überprüfen Sie Ihre Daten.")
-                .addThemeVariants(NotificationVariant.LUMO_ERROR);
     }
-}
+
+    private boolean isValidPassword(String password) {
+        /*
+         * Passwort muss mindestens 8 Zeichen lang sein, mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten.
+         */
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9])\\S{8,}$";
+        return password != null && password.matches(regex);
+    }
+
+    private boolean isValidEmail(String email) {
+        String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return email != null && email.matches(regex);
+    }
 }
