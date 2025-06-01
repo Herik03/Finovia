@@ -44,6 +44,7 @@ public class RegisterView extends VerticalLayout {
     private Button registerButton;
     private Button cancelButton;
 
+
     /**
      * Binder for form validation.
      */
@@ -81,9 +82,6 @@ public class RegisterView extends VerticalLayout {
 
         H1 title = new H1("Registrierung");
         title.addClassName("passwort-vergessen-title");
-
-//        Span subtitle = new Span("Erstellen Sie Ihr neues Konto");
-//        subtitle.addClassName("passwort-vergessen-subtitle");
 
         // Vorname
         Span vornameLabel = new Span("Vorname:");
@@ -231,6 +229,7 @@ public class RegisterView extends VerticalLayout {
         container.add(formLayout);
         //container.addClassNames(LumoUtility.Padding.MEDIUM);
         add(container);
+
     }
 
     /**

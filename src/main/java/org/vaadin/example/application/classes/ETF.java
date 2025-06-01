@@ -32,11 +32,12 @@ public class ETF extends Wertpapier{
 /**
  * Konstruktor zur Initialisierung eines ETF-Objekts mit allen Attributen.
  */
-    public ETF(String emittent, String index, String name, List<Transaktion> transaktionen, List<Kurs> kurse) {
-        super(name, transaktionen, kurse);
+    public ETF(String emittent, String index, String name, String symbol, List<Transaktion> transaktionen, List<Kurs> kurse) {
+
+        super(name, symbol, transaktionen, kurse);
         this.emittent = emittent;
         this.index = index;
-    }
+}
 
     public void addDividende(Dividende dividende) {
         this.dividende.add(dividende);

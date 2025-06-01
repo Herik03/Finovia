@@ -78,6 +78,10 @@ public class WatchlistView extends AbstractSideNav {
         watchlistContent.setSpacing(true);
         watchlistContent.addClassNames(LumoUtility.Padding.LARGE, LumoUtility.Gap.MEDIUM); // Zusätzliche Polsterung und Lücken
 
+        // GEÄNDERT: Verbesserte Höhen-Konfiguration
+        watchlistContent.setHeightFull();
+        watchlistContent.getStyle().set("min-height", "100vh"); // Mindesthöhe auf Viewport-Höhe setzen
+
         H2 header = new H2("Meine Watchlist");
         header.addClassNames(LumoUtility.Margin.Top.NONE, LumoUtility.Margin.Bottom.MEDIUM); // Oberen Rand entfernen, unteren Rand hinzufügen
         watchlistContent.add(header);
@@ -93,17 +97,18 @@ public class WatchlistView extends AbstractSideNav {
         topControls.setJustifyContentMode(JustifyContentMode.END); // Button rechts ausrichten
         watchlistContent.add(topControls);
 
-
         configureGrid();
-        // Setzt flex-grow auf 1, damit das Grid den übrigen Platz im VerticalLayout einnimmt
-        // Dies ist der entscheidende Schritt, um das Grid "größer" zu machen,
-        // da es sich nun vertikal ausdehnt.
+
+        // GEÄNDERT: Das Grid soll den restlichen Platz in watchlistContent einnehmen
         watchlistContent.setFlexGrow(1, grid);
         watchlistContent.add(grid); // Grid zum Watchlist-Inhalt hinzufügen
 
-
         // Füge das Watchlist-Inhaltslayout zum Hauptinhaltsbereich der SideNav hinzu
         addToMainContent(watchlistContent);
+
+        // GEÄNDERT: Stelle sicher, dass der Hauptinhalt die volle Höhe nutzt
+        getMainContent().setSizeFull();
+        getMainContent().setFlexGrow(1, watchlistContent);
 
         loadData();
     }
@@ -111,14 +116,24 @@ public class WatchlistView extends AbstractSideNav {
     /**
      * Konfiguriert das Grid für die Anzeige der Wertpapiere. Es wurde erweitert,
      * um aktuelle Preis- und Trendinformationen anzuzeigen.
+     * GEÄNDERT: Verbesserte Höhen-Konfiguration für das Grid
      */
     private void configureGrid() {
-        grid.setSizeFull(); // Grid nimmt die gesamte Größe des verfügbaren Raums ein
+        grid.setSizeFull();
+
+        // GEÄNDERT: Verbesserte Grid-Höhen-Konfiguration
+        grid.setHeightFull(); // Explizit auf volle Höhe setzen
+        grid.getStyle().set("flex-grow", "1"); // Grid soll wachsen
+        grid.getStyle().set("min-height", "400px"); // Mindesthöhe für das Grid
+        grid.getStyle().set("max-height", "none"); // Keine Maximalhöhe
+
+        // ENTFERNT: overflow:hidden - erlaubt normales Scrollen im Grid
+        // grid.getStyle().set("overflow", "hidden");
+
         grid.addClassNames(LumoUtility.BorderRadius.MEDIUM, LumoUtility.BoxShadow.SMALL, LumoUtility.Background.CONTRAST_5); // Abgerundete Ecken, Schatten, leichter Hintergrund
 
         grid.addColumn(Wertpapier::getName).setHeader("Name").setFlexGrow(2);
 
-        // Spalte für den aktuellen Preis
         grid.addComponentColumn(wertpapier -> {
             Span priceSpan = new Span("Loading...");
             priceSpan.setId("price-" + wertpapier.getWertpapierId());
@@ -126,7 +141,6 @@ public class WatchlistView extends AbstractSideNav {
             return priceSpan;
         }).setHeader("Aktueller Preis").setFlexGrow(1);
 
-        // Spalte für die Trendanzeige
         grid.addComponentColumn(wertpapier -> {
             HorizontalLayout trendLayout = new HorizontalLayout();
             trendLayout.setAlignItems(Alignment.CENTER);
@@ -141,7 +155,6 @@ public class WatchlistView extends AbstractSideNav {
             return trendLayout;
         }).setHeader("Trend (24h)").setFlexGrow(1);
 
-        // Aktionen-Spalte
         grid.addComponentColumn(wertpapier -> {
             HorizontalLayout actions = new HorizontalLayout();
             Button detailsButton = new Button(new Icon(VaadinIcon.SEARCH), e -> showDetails(wertpapier));
@@ -171,23 +184,18 @@ public class WatchlistView extends AbstractSideNav {
                     List<Wertpapier> wertpapiere = watchlistOpt.get().getWertpapiere();
                     grid.setItems(wertpapiere);
 
-                    // Asynchrone Abfrage von Preis und Trend für jedes Wertpapier
                     for (Wertpapier wertpapier : wertpapiere) {
-                        // Verwenden Sie CompletableFuture, um die Abfragen parallel auszuführen
                         CompletableFuture.supplyAsync(() -> {
                             try {
-                                // Annahme: Es gibt eine Methode im AlphaVantageService, um den aktuellen Preis abzurufen
                                 double aktuellerPreis = alphaVantageService.getAktuellerKurs(wertpapier.getName());
-                                // Annahme: Und eine für den Trend
                                 double prozentualeAenderung24h = alphaVantageService.getProzentualeAenderung24h(wertpapier.getName());
                                 return new Object[]{aktuellerPreis, prozentualeAenderung24h}; //Return als Object Array
                             } catch (Exception e) {
-                                // Loggen Sie die Ausnahme, um Fehlerbehebung zu erleichtern
                                 e.printStackTrace(); // TODO: Replace with proper logging
                                 return new Object[] {null, null};
                             }
                         }).thenAccept(result -> {
-                            // Aktualisieren Sie die UI mit den abgerufenen Daten
+
                             UI.getCurrent().access(() -> {
                                 Span priceSpan = priceSpanMap.get(wertpapier.getWertpapierId());
                                 Span trendTextSpan = trendTextSpanMap.get(wertpapier.getWertpapierId());

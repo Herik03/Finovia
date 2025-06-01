@@ -37,13 +37,15 @@ public class Anleihe extends Wertpapier {
 /**
  * Konstruktor zum Erzeugen einer vollständigen Anleihe-Instanz.
  */
-    public Anleihe(String emittent, double kupon, LocalDate laufzeit, double nennwert, String name, List<Transaktion> transaktionen, List<Kurs> kurse) {
-        super(name, transaktionen, kurse);
+    public Anleihe(String emittent, double kupon, LocalDate laufzeit, double nennwert,
+               String name, String symbol, List<Transaktion> transaktionen, List<Kurs> kurse) {
+
+        super(name, symbol, transaktionen, kurse);
         this.emittent = emittent;
         this.kupon = kupon;
         this.laufzeit = laufzeit;
         this.nennwert = nennwert;
-    }
+}
 
     public void addZinszahlung(Zinszahlung zinszahlung) {
         this.zinszahlungen.add(zinszahlung);

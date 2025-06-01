@@ -52,7 +52,7 @@ public class Aktie extends Wertpapier {
                  double dividendPerShare, double dividendYield, double eps, double forwardPE, double beta,
                  double yearHigh, double yearLow, LocalDate dividendDate) {
 
-        super(symbol, new ArrayList<Transaktion>(), new ArrayList<Kurs>());
+        super(symbol, symbol, new ArrayList<>(), new ArrayList<>());  // Name und Symbol setzen
 
         this.unternehmensname = unternehmensname;
         this.description = description;
@@ -74,5 +74,6 @@ public class Aktie extends Wertpapier {
         this.yearLow = yearLow;
         this.dividendDate = dividendDate;
     }
+
 
 }
