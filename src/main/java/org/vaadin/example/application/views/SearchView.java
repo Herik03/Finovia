@@ -176,7 +176,9 @@ public class SearchView extends AbstractSideNav {
         CompletableFuture
                 .supplyAsync(() -> {
                     List<SearchResult> apiResults = alphaVantageService.search(keyword);
-                    List<Wertpapier> lokaleTreffer = wertpapierRepository.findByNameContainingIgnoreCase(keyword);
+                    List<Wertpapier> lokaleTreffer = wertpapierRepository.searchByNameOrSymbol(keyword);
+
+                    //List<Wertpapier> lokaleTreffer = wertpapierRepository.findByNameContainingIgnoreCase(keyword);
                     List<SearchResult> lokaleResults = lokaleTreffer.stream()
                             .map(w -> new SearchResult(w.getSymbol(), w.getName(), "Lokale DB", "EUR"))
                             .collect(Collectors.toList());
@@ -245,6 +247,16 @@ public class SearchView extends AbstractSideNav {
     }
 
      */
+    /**
+     * Öffnet ein Detail-Dialogfenster für das übergebene Suchergebnis.
+     * <p>
+     * Wenn das Wertpapier bereits in der Datenbank existiert, wird dessen gespeicherte Version verwendet.
+     * Falls nicht, wird es über die AlphaVantage-API geladen (nur für Aktien).
+     *
+     * Beim Schließen des Dialogs wird automatisch das SideNav erneut eingeblendet.
+     *
+     * @param result Das {@link SearchResult}, das die Symbolinformationen enthält
+     */
     private void showDetails(SearchResult result) {
         closeSideNav();
 
@@ -264,6 +276,7 @@ public class SearchView extends AbstractSideNav {
 
         detailsDialog.addDetachListener(event -> openSideNav());
     }
+
 
 
 

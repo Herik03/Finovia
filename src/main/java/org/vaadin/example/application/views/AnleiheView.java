@@ -24,17 +24,33 @@ import org.vaadin.example.application.services.NutzerService;
 import org.vaadin.example.application.services.WatchlistService;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 
-
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-
+/**
+ * Ansicht zur Darstellung von Detailinformationen über Anleihen.
+ * <p>
+ * Diese View wird über die Factory in der Anwendung zur Anzeige von Kursverläufen
+ * und Detailinformationen wie Kupon, Emittent oder Laufzeit verwendet.
+ */
 @Component
-public class AnleiheView extends AbstractWertpapierView{
+public class AnleiheView extends AbstractWertpapierView {
 
+    /** Formatierer für Datumsangaben. */
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    /** Service für Anleihe-bezogene Transaktionen. */
     private final AnleiheKaufService anleiheKaufService;
 
+    /**
+     * Konstruktor zum Initialisieren aller benötigten Services.
+     *
+     * @param alphaVantageService   Service zur Kursabfrage
+     * @param watchlistService      Service zur Verwaltung der Watchlist
+     * @param nutzerService         Service zur Nutzerverwaltung
+     * @param wertpapierRepository  Repository für Wertpapierdaten
+     * @param anleiheKaufService    Service für Anleihekäufe
+     */
     @Autowired
     public AnleiheView(AlphaVantageService alphaVantageService,
                        WatchlistService watchlistService,
@@ -45,7 +61,12 @@ public class AnleiheView extends AbstractWertpapierView{
         this.anleiheKaufService = anleiheKaufService;
     }
 
-
+    /**
+     * Erstellt einen Dialog mit Detailinformationen zur übergebenen Anleihe.
+     *
+     * @param wertpapier Das anzuzeigende Wertpapier (Anleihe)
+     * @return Ein vollständig aufgebauter Dialog mit Kursverlauf, Kennzahlen und Watchlist-Integration
+     */
     @Override
     public Dialog createDetailsDialog(Wertpapier wertpapier) {
         Dialog dialog = new Dialog();
@@ -61,7 +82,6 @@ public class AnleiheView extends AbstractWertpapierView{
             String name = anleihe.getName();
 
             List<Kurs> kurse = alphaVantageService.getMonthlySeries(symbol);
-
             if (kurse.isEmpty()) {
                 Notification.show("Keine Kursdaten für " + symbol + " gefunden.", 3000, Notification.Position.MIDDLE);
                 dialog.add(new VerticalLayout(new Span("Keine Daten für " + symbol + " vorhanden.")));
@@ -69,49 +89,40 @@ public class AnleiheView extends AbstractWertpapierView{
                 return dialog;
             }
 
+            // Hauptlayout vorbereiten
             VerticalLayout layout = new VerticalLayout();
             layout.setSizeFull();
             layout.setPadding(false);
             layout.setSpacing(false);
             layout.setMargin(false);
 
+            // Titel
             H2 titel = new H2("Anleihe: " + name);
             titel.addClassName("dialog-title");
             layout.add(titel);
 
+            // Auswahl für Zeitrahmen
             Select<String> timeFrameSelect = new Select<>();
             timeFrameSelect.setLabel("Zeitraum");
             timeFrameSelect.setItems("Intraday", "Täglich", "Wöchentlich", "Monatlich");
             timeFrameSelect.setValue("Monatlich");
 
+            // Watchlist-Button
             Button addToWatchlistButton = createWatchlistButton(symbol);
 
             HorizontalLayout timeFrameAndButtonLayout = new HorizontalLayout(timeFrameSelect, addToWatchlistButton);
             timeFrameAndButtonLayout.setAlignItems(Alignment.BASELINE);
             timeFrameAndButtonLayout.setSpacing(true);
+            layout.add(timeFrameAndButtonLayout);
 
-            Button kaufButton = new Button("Kaufen", e -> {
-                try {
-                    UI.getCurrent().navigate("anleihe-kaufen/" + symbol);
-                } catch (Exception ex) {
-                    Notification.show("Fehler beim Weiterleiten zur Kaufmaske: " + ex.getMessage(), 5000, Notification.Position.MIDDLE);
-                }
-            });
-
-            kaufButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-            HorizontalLayout buttons = new HorizontalLayout(timeFrameSelect, addToWatchlistButton, kaufButton);
-            buttons.setAlignItems(Alignment.BASELINE);
-            buttons.setSpacing(true);
-            layout.add(buttons);
-
+            // Chartbereich
             VerticalLayout chartContainer = new VerticalLayout();
             chartContainer.setSizeFull();
             layout.add(chartContainer);
 
-            updateChart(chartContainer, symbol, "Monatlich", anleihe.getName() );
+            updateChart(chartContainer, symbol, "Monatlich", anleihe.getName());
 
-            // Anleihe-spezifische Informationen
+            // Detailinformationen zur Anleihe
             VerticalLayout infoBox = new VerticalLayout();
             infoBox.setSizeFull();
             infoBox.setSpacing(true);
@@ -123,21 +134,18 @@ public class AnleiheView extends AbstractWertpapierView{
                     "Laufzeit", anleihe.getLaufzeit() != null ? formatter.format(anleihe.getLaufzeit()) : "n.v."));
 
             infoBox.add(createInfoRow("Nennwert", anleihe.getNennwert() + " €", "", ""));
-
-
             layout.add(infoBox);
 
+            // Aktualisiere Chart beim Wechsel des Zeitrahmens
             timeFrameSelect.addValueChangeListener(event ->
-                    updateChart(chartContainer, symbol, event.getValue(),anzeigeName)
+                    updateChart(chartContainer, symbol, event.getValue(), anzeigeName)
             );
 
-
-            // Close-Button erstellen und oben rechts ins Layout einfügen
+            // Schließen-Button
             Button closeButton = new Button(VaadinIcon.CLOSE.create(), e -> dialog.close());
             closeButton.addClassName("dialog-close-button");
-            layout.add(closeButton); // Füge ihn ins Layout ein – nicht direkt in den Dialog!
+            layout.add(closeButton);
 
-// Danach das Layout in den Dialog setzen
             dialog.add(layout);
             dialog.open();
 
@@ -150,5 +158,4 @@ public class AnleiheView extends AbstractWertpapierView{
             return dialog;
         }
     }
-
 }

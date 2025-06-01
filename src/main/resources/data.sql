@@ -130,606 +130,607 @@ INSERT INTO wertpapier (wertpapier_id, name, symbol) VALUES (60, 'Staatsanleihe 
 INSERT INTO anleihe (wertpapier_id, emittent, kupon, laufzeit, nennwert) VALUES (60, 'Staat5', 3.18, '2029-05-27', 500);
 
 --Kursdaten
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (1, 1, '2025-04-01 00:00:00', 98.96, 97.23, 99.25, 97.1);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (2, 1, '2025-04-02 00:00:00', 105.11, 104.25, 105.28, 103.8);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (3, 1, '2025-04-03 00:00:00', 96.54, 96.5, 96.63, 96.43);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (4, 1, '2025-04-04 00:00:00', 100.95, 99.89, 100.96, 99.62);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (5, 1, '2025-04-05 00:00:00', 96.68, 98.58, 98.69, 96.46);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (6, 1, '2025-04-06 00:00:00', 95.81, 97.05, 97.37, 95.38);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (7, 1, '2025-04-07 00:00:00', 97.24, 96.38, 97.57, 96.36);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (8, 1, '2025-04-08 00:00:00', 99.25, 100.91, 101.35, 98.8);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (9, 1, '2025-04-09 00:00:00', 100.28, 99.96, 100.37, 99.77);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (10, 1, '2025-04-10 00:00:00', 95.92, 95.42, 96.36, 95.02);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (11, 1, '2025-04-11 00:00:00', 100.11, 100.62, 101.09, 99.93);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (12, 1, '2025-04-12 00:00:00', 103.46, 103.44, 103.9, 102.98);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (13, 1, '2025-04-13 00:00:00', 103.31, 102.72, 103.62, 102.44);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (14, 1, '2025-04-14 00:00:00', 94.88, 96.48, 96.58, 94.67);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (15, 1, '2025-04-15 00:00:00', 98.78, 99.48, 99.95, 98.71);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (16, 1, '2025-04-16 00:00:00', 100.1, 99.4, 100.56, 99.28);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (17, 1, '2025-04-17 00:00:00', 104.94, 104.54, 105.18, 104.28);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (18, 1, '2025-04-18 00:00:00', 95.93, 95.68, 96.14, 95.6);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (19, 1, '2025-04-19 00:00:00', 95.23, 96.8, 96.86, 95.13);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (20, 1, '2025-04-20 00:00:00', 105.56, 104.41, 105.58, 104.32);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (21, 2, '2025-04-01 00:00:00', 95.12, 95.52, 96.02, 94.91);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (22, 2, '2025-04-02 00:00:00', 103.02, 103.03, 103.24, 102.81);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (23, 2, '2025-04-03 00:00:00', 101.15, 99.21, 101.63, 99.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (24, 2, '2025-04-04 00:00:00', 103.53, 103.62, 104.1, 103.36);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (25, 2, '2025-04-05 00:00:00', 103.98, 103.58, 104.4, 103.51);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (26, 2, '2025-04-06 00:00:00', 99.12, 98.16, 99.3, 97.94);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (27, 2, '2025-04-07 00:00:00', 98.52, 98.78, 98.79, 98.35);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (28, 2, '2025-04-08 00:00:00', 104.09, 104.56, 104.65, 103.78);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (29, 2, '2025-04-09 00:00:00', 95.4, 95.45, 95.66, 95.28);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (30, 2, '2025-04-10 00:00:00', 101.43, 102.78, 102.97, 101.22);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (31, 2, '2025-04-11 00:00:00', 94.7, 95.8, 95.91, 94.44);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (32, 2, '2025-04-12 00:00:00', 99.47, 98.92, 99.76, 98.46);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (33, 2, '2025-04-13 00:00:00', 97.54, 97.48, 97.76, 97.39);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (34, 2, '2025-04-14 00:00:00', 101.66, 101.56, 102.11, 101.56);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (35, 2, '2025-04-15 00:00:00', 103.52, 103.5, 103.57, 103.41);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (36, 2, '2025-04-16 00:00:00', 96.33, 96.57, 96.79, 95.89);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (37, 2, '2025-04-17 00:00:00', 103.41, 104.04, 104.08, 103.34);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (38, 2, '2025-04-18 00:00:00', 102.23, 101.95, 102.6, 101.7);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (39, 2, '2025-04-19 00:00:00', 105.42, 103.63, 105.71, 103.26);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (40, 2, '2025-04-20 00:00:00', 103.88, 105.01, 105.31, 103.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (41, 3, '2025-04-01 00:00:00', 100.91, 100.29, 101.32, 100.12);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (42, 3, '2025-04-02 00:00:00', 95.34, 95.2, 95.69, 95.05);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (43, 3, '2025-04-03 00:00:00', 96.22, 95.74, 96.48, 95.69);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (44, 3, '2025-04-04 00:00:00', 98.15, 98.42, 98.61, 98.01);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (45, 3, '2025-04-05 00:00:00', 104.38, 104.08, 104.47, 103.72);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (46, 3, '2025-04-06 00:00:00', 102.89, 104.0, 104.47, 102.6);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (47, 3, '2025-04-07 00:00:00', 101.36, 101.88, 102.19, 100.86);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (48, 3, '2025-04-08 00:00:00', 98.79, 97.65, 98.81, 97.24);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (49, 3, '2025-04-09 00:00:00', 97.4, 97.45, 97.89, 97.02);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (50, 3, '2025-04-10 00:00:00', 102.06, 101.43, 102.1, 101.24);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (51, 3, '2025-04-11 00:00:00', 104.19, 105.49, 105.75, 103.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (52, 3, '2025-04-12 00:00:00', 104.27, 104.15, 104.34, 103.66);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (53, 3, '2025-04-13 00:00:00', 98.11, 97.43, 98.56, 97.16);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (54, 3, '2025-04-14 00:00:00', 102.13, 102.57, 103.04, 101.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (55, 3, '2025-04-15 00:00:00', 99.33, 99.99, 99.99, 98.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (56, 3, '2025-04-16 00:00:00', 98.38, 98.07, 98.6, 98.0);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (57, 3, '2025-04-17 00:00:00', 96.97, 95.82, 97.37, 95.39);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (58, 3, '2025-04-18 00:00:00', 97.31, 98.27, 98.56, 97.3);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (59, 3, '2025-04-19 00:00:00', 96.64, 95.91, 96.79, 95.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (60, 3, '2025-04-20 00:00:00', 99.39, 100.46, 100.85, 99.02);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (61, 4, '2025-04-01 00:00:00', 103.64, 102.73, 103.9, 102.44);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (62, 4, '2025-04-02 00:00:00', 96.19, 95.93, 96.38, 95.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (63, 4, '2025-04-03 00:00:00', 103.88, 102.37, 104.27, 101.98);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (64, 4, '2025-04-04 00:00:00', 96.82, 97.4, 97.7, 96.55);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (65, 4, '2025-04-05 00:00:00', 96.19, 97.09, 97.14, 95.94);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (66, 4, '2025-04-06 00:00:00', 99.05, 100.4, 100.49, 98.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (67, 4, '2025-04-07 00:00:00', 103.71, 103.72, 103.93, 103.31);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (68, 4, '2025-04-08 00:00:00', 97.81, 99.73, 100.17, 97.69);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (69, 4, '2025-04-09 00:00:00', 101.9, 102.73, 103.0, 101.44);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (70, 4, '2025-04-10 00:00:00', 98.02, 98.14, 98.38, 97.88);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (71, 4, '2025-04-11 00:00:00', 99.08, 98.02, 99.09, 97.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (72, 4, '2025-04-12 00:00:00', 95.88, 95.21, 96.28, 95.02);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (73, 4, '2025-04-13 00:00:00', 95.64, 94.84, 95.76, 94.75);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (74, 4, '2025-04-14 00:00:00', 97.12, 97.2, 97.28, 96.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (75, 4, '2025-04-15 00:00:00', 96.21, 96.53, 96.94, 96.01);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (76, 4, '2025-04-16 00:00:00', 102.2, 101.96, 102.65, 101.74);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (77, 4, '2025-04-17 00:00:00', 97.28, 96.06, 97.55, 95.99);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (78, 4, '2025-04-18 00:00:00', 96.38, 97.17, 97.19, 96.1);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (79, 4, '2025-04-19 00:00:00', 101.66, 101.92, 102.36, 101.28);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (80, 4, '2025-04-20 00:00:00', 99.69, 100.83, 101.0, 99.22);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (81, 5, '2025-04-01 00:00:00', 102.72, 102.46, 103.15, 102.31);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (82, 5, '2025-04-02 00:00:00', 99.86, 99.7, 100.22, 99.49);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (83, 5, '2025-04-03 00:00:00', 96.66, 97.68, 97.95, 96.26);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (84, 5, '2025-04-04 00:00:00', 105.75, 104.18, 106.06, 104.03);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (85, 5, '2025-04-05 00:00:00', 95.49, 96.16, 96.58, 95.49);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (86, 5, '2025-04-06 00:00:00', 95.56, 95.98, 96.32, 95.5);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (87, 5, '2025-04-07 00:00:00', 103.82, 103.37, 103.95, 103.05);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (88, 5, '2025-04-08 00:00:00', 101.06, 102.54, 102.62, 101.03);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (89, 5, '2025-04-09 00:00:00', 95.17, 95.37, 95.68, 95.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (90, 5, '2025-04-10 00:00:00', 97.11, 98.05, 98.37, 96.74);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (91, 5, '2025-04-11 00:00:00', 99.42, 99.34, 99.61, 99.17);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (92, 5, '2025-04-12 00:00:00', 98.55, 97.93, 99.01, 97.58);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (93, 5, '2025-04-13 00:00:00', 99.26, 99.98, 100.35, 98.9);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (94, 5, '2025-04-14 00:00:00', 97.37, 97.38, 97.78, 97.22);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (95, 5, '2025-04-15 00:00:00', 102.01, 101.06, 102.15, 100.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (96, 5, '2025-04-16 00:00:00', 100.74, 101.46, 101.55, 100.33);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (97, 5, '2025-04-17 00:00:00', 101.36, 101.63, 101.71, 101.27);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (98, 5, '2025-04-18 00:00:00', 100.84, 101.42, 101.82, 100.79);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (99, 5, '2025-04-19 00:00:00', 102.36, 101.71, 102.83, 101.57);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (100, 5, '2025-04-20 00:00:00', 97.14, 95.91, 97.19, 95.51);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (101, 6, '2025-04-01 00:00:00', 100.36, 100.52, 100.86, 100.21);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (102, 6, '2025-04-02 00:00:00', 98.06, 98.98, 99.32, 97.94);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (103, 6, '2025-04-03 00:00:00', 96.42, 96.51, 96.6, 96.06);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (104, 6, '2025-04-04 00:00:00', 99.49, 99.36, 99.7, 99.14);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (105, 6, '2025-04-05 00:00:00', 103.4, 104.09, 104.58, 103.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (106, 6, '2025-04-06 00:00:00', 104.32, 103.62, 104.42, 103.58);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (107, 6, '2025-04-07 00:00:00', 102.54, 104.02, 104.19, 102.19);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (108, 6, '2025-04-08 00:00:00', 103.74, 104.71, 105.17, 103.66);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (109, 6, '2025-04-09 00:00:00', 97.38, 97.55, 97.66, 97.17);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (110, 6, '2025-04-10 00:00:00', 98.78, 97.2, 98.81, 96.92);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (111, 6, '2025-04-11 00:00:00', 98.83, 100.17, 100.23, 98.53);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (112, 6, '2025-04-12 00:00:00', 101.34, 101.82, 101.95, 101.22);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (113, 6, '2025-04-13 00:00:00', 104.79, 104.91, 105.12, 104.6);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (114, 6, '2025-04-14 00:00:00', 100.56, 99.71, 100.61, 99.56);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (115, 6, '2025-04-15 00:00:00', 99.63, 99.88, 100.3, 99.47);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (116, 6, '2025-04-16 00:00:00', 104.08, 103.9, 104.3, 103.52);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (117, 6, '2025-04-17 00:00:00', 95.31, 96.11, 96.52, 95.08);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (118, 6, '2025-04-18 00:00:00', 98.62, 99.57, 99.82, 98.49);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (119, 6, '2025-04-19 00:00:00', 104.78, 105.08, 105.33, 104.28);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (120, 6, '2025-04-20 00:00:00', 97.12, 98.43, 98.49, 96.88);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (121, 7, '2025-04-01 00:00:00', 104.17, 104.44, 104.74, 103.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (122, 7, '2025-04-02 00:00:00', 99.99, 99.15, 100.45, 99.01);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (123, 7, '2025-04-03 00:00:00', 104.62, 104.53, 105.07, 104.19);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (124, 7, '2025-04-04 00:00:00', 96.06, 96.65, 97.04, 96.03);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (125, 7, '2025-04-05 00:00:00', 96.1, 96.03, 96.58, 95.79);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (126, 7, '2025-04-06 00:00:00', 96.9, 96.96, 97.3, 96.69);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (127, 7, '2025-04-07 00:00:00', 96.12, 95.93, 96.55, 95.84);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (128, 7, '2025-04-08 00:00:00', 101.55, 100.12, 101.88, 99.78);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (129, 7, '2025-04-09 00:00:00', 98.67, 97.56, 98.92, 97.09);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (130, 7, '2025-04-10 00:00:00', 96.8, 96.78, 96.91, 96.54);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (131, 7, '2025-04-11 00:00:00', 98.35, 98.22, 98.74, 98.07);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (132, 7, '2025-04-12 00:00:00', 99.29, 99.04, 99.5, 98.82);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (133, 7, '2025-04-13 00:00:00', 99.75, 99.09, 100.15, 98.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (134, 7, '2025-04-14 00:00:00', 98.09, 96.73, 98.57, 96.69);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (135, 7, '2025-04-15 00:00:00', 103.53, 102.97, 103.67, 102.58);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (136, 7, '2025-04-16 00:00:00', 103.14, 102.56, 103.32, 102.3);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (137, 7, '2025-04-17 00:00:00', 97.43, 97.5, 97.56, 96.94);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (138, 7, '2025-04-18 00:00:00', 98.15, 99.25, 99.69, 98.13);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (139, 7, '2025-04-19 00:00:00', 102.64, 102.79, 102.85, 102.29);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (140, 7, '2025-04-20 00:00:00', 102.73, 103.05, 103.37, 102.24);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (141, 8, '2025-04-01 00:00:00', 100.07, 101.76, 102.22, 99.98);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (142, 8, '2025-04-02 00:00:00', 103.7, 104.86, 105.08, 103.46);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (143, 8, '2025-04-03 00:00:00', 102.42, 103.94, 104.06, 102.21);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (144, 8, '2025-04-04 00:00:00', 99.47, 99.59, 100.07, 99.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (145, 8, '2025-04-05 00:00:00', 102.04, 101.38, 102.3, 101.02);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (146, 8, '2025-04-06 00:00:00', 103.03, 103.0, 103.35, 102.68);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (147, 8, '2025-04-07 00:00:00', 102.09, 102.53, 102.83, 101.78);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (148, 8, '2025-04-08 00:00:00', 95.61, 95.64, 95.93, 95.45);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (149, 8, '2025-04-09 00:00:00', 101.24, 101.32, 101.56, 101.2);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (150, 8, '2025-04-10 00:00:00', 95.6, 97.06, 97.13, 95.3);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (151, 8, '2025-04-11 00:00:00', 95.61, 95.85, 96.17, 95.37);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (152, 8, '2025-04-12 00:00:00', 99.68, 99.31, 100.18, 99.06);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (153, 8, '2025-04-13 00:00:00', 95.75, 96.1, 96.38, 95.52);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (154, 8, '2025-04-14 00:00:00', 101.31, 101.9, 102.19, 101.19);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (155, 8, '2025-04-15 00:00:00', 97.98, 98.84, 98.85, 97.71);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (156, 8, '2025-04-16 00:00:00', 100.24, 100.27, 100.38, 100.18);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (157, 8, '2025-04-17 00:00:00', 100.21, 99.62, 100.28, 99.45);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (158, 8, '2025-04-18 00:00:00', 97.51, 98.13, 98.55, 97.41);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (159, 8, '2025-04-19 00:00:00', 98.22, 97.25, 98.59, 97.04);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (160, 8, '2025-04-20 00:00:00', 102.6, 101.73, 102.86, 101.73);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (161, 9, '2025-04-01 00:00:00', 95.33, 95.59, 95.95, 95.26);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (162, 9, '2025-04-02 00:00:00', 96.93, 96.93, 97.38, 96.61);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (163, 9, '2025-04-03 00:00:00', 104.06, 104.17, 104.39, 103.66);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (164, 9, '2025-04-04 00:00:00', 102.42, 102.14, 102.74, 101.69);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (165, 9, '2025-04-05 00:00:00', 99.41, 99.08, 99.5, 98.78);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (166, 9, '2025-04-06 00:00:00', 102.43, 101.92, 102.53, 101.73);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (167, 9, '2025-04-07 00:00:00', 98.17, 98.67, 98.78, 97.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (168, 9, '2025-04-08 00:00:00', 96.96, 97.57, 97.8, 96.66);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (169, 9, '2025-04-09 00:00:00', 103.82, 103.44, 104.1, 103.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (170, 9, '2025-04-10 00:00:00', 102.3, 102.35, 102.56, 101.91);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (171, 9, '2025-04-11 00:00:00', 96.31, 97.03, 97.32, 96.07);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (172, 9, '2025-04-12 00:00:00', 102.05, 102.07, 102.36, 101.97);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (173, 9, '2025-04-13 00:00:00', 98.67, 98.17, 98.89, 98.04);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (174, 9, '2025-04-14 00:00:00', 103.28, 102.85, 103.77, 102.79);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (175, 9, '2025-04-15 00:00:00', 98.09, 97.98, 98.41, 97.66);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (176, 9, '2025-04-16 00:00:00', 98.61, 99.15, 99.58, 98.44);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (177, 9, '2025-04-17 00:00:00', 97.29, 97.21, 97.6, 96.78);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (178, 9, '2025-04-18 00:00:00', 100.15, 99.89, 100.38, 99.54);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (179, 9, '2025-04-19 00:00:00', 96.35, 95.89, 96.7, 95.8);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (180, 9, '2025-04-20 00:00:00', 95.54, 96.43, 96.55, 95.45);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (181, 10, '2025-04-01 00:00:00', 94.79, 95.8, 95.85, 94.66);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (182, 10, '2025-04-02 00:00:00', 104.59, 104.29, 104.74, 104.08);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (183, 10, '2025-04-03 00:00:00', 98.77, 98.56, 99.17, 98.43);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (184, 10, '2025-04-04 00:00:00', 102.03, 101.78, 102.47, 101.36);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (185, 10, '2025-04-05 00:00:00', 104.56, 104.73, 105.23, 104.26);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (186, 10, '2025-04-06 00:00:00', 97.34, 97.53, 97.96, 97.21);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (187, 10, '2025-04-07 00:00:00', 98.35, 98.14, 98.56, 97.97);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (188, 10, '2025-04-08 00:00:00', 95.7, 96.55, 96.81, 95.35);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (189, 10, '2025-04-09 00:00:00', 98.0, 98.11, 98.25, 97.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (190, 10, '2025-04-10 00:00:00', 97.21, 97.8, 97.89, 97.03);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (191, 10, '2025-04-11 00:00:00', 97.29, 97.19, 97.45, 96.94);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (192, 10, '2025-04-12 00:00:00', 100.91, 100.6, 101.17, 100.23);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (193, 10, '2025-04-13 00:00:00', 98.76, 100.2, 100.24, 98.73);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (194, 10, '2025-04-14 00:00:00', 99.26, 100.44, 100.52, 98.88);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (195, 10, '2025-04-15 00:00:00', 98.34, 97.86, 98.47, 97.72);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (196, 10, '2025-04-16 00:00:00', 96.36, 97.45, 97.94, 95.9);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (197, 10, '2025-04-17 00:00:00', 104.1, 102.46, 104.41, 102.13);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (198, 10, '2025-04-18 00:00:00', 99.37, 98.73, 99.4, 98.68);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (199, 10, '2025-04-19 00:00:00', 102.63, 102.37, 103.08, 102.27);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (200, 10, '2025-04-20 00:00:00', 99.76, 99.38, 99.85, 99.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (201, 11, '2025-04-01 00:00:00', 96.51, 96.9, 97.03, 96.47);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (202, 11, '2025-04-02 00:00:00', 100.9, 101.52, 102.0, 100.82);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (203, 11, '2025-04-03 00:00:00', 102.89, 103.58, 103.68, 102.58);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (204, 11, '2025-04-04 00:00:00', 103.29, 104.16, 104.24, 103.02);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (205, 11, '2025-04-05 00:00:00', 98.06, 97.88, 98.34, 97.69);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (206, 11, '2025-04-06 00:00:00', 100.95, 99.92, 101.45, 99.68);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (207, 11, '2025-04-07 00:00:00', 99.63, 100.64, 101.01, 99.35);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (208, 11, '2025-04-08 00:00:00', 98.9, 98.73, 99.01, 98.32);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (209, 11, '2025-04-09 00:00:00', 101.66, 100.24, 101.75, 100.13);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (210, 11, '2025-04-10 00:00:00', 96.35, 96.13, 96.62, 95.72);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (211, 11, '2025-04-11 00:00:00', 99.77, 99.79, 99.87, 99.28);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (212, 11, '2025-04-12 00:00:00', 98.35, 97.65, 98.83, 97.31);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (213, 11, '2025-04-13 00:00:00', 101.66, 101.26, 101.83, 100.99);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (214, 11, '2025-04-14 00:00:00', 100.6, 99.27, 100.98, 99.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (215, 11, '2025-04-15 00:00:00', 98.84, 99.86, 100.15, 98.65);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (216, 11, '2025-04-16 00:00:00', 99.03, 99.1, 99.34, 98.72);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (217, 11, '2025-04-17 00:00:00', 95.56, 97.08, 97.31, 95.54);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (218, 11, '2025-04-18 00:00:00', 99.58, 100.21, 100.58, 99.53);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (219, 11, '2025-04-19 00:00:00', 100.02, 98.51, 100.06, 98.4);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (220, 11, '2025-04-20 00:00:00', 94.81, 95.55, 95.85, 94.75);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (221, 12, '2025-04-01 00:00:00', 97.58, 97.59, 98.08, 97.08);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (222, 12, '2025-04-02 00:00:00', 104.26, 104.26, 104.26, 104.22);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (223, 12, '2025-04-03 00:00:00', 102.47, 101.52, 102.67, 101.45);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (224, 12, '2025-04-04 00:00:00', 95.35, 96.36, 96.42, 94.86);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (225, 12, '2025-04-05 00:00:00', 95.83, 96.9, 97.35, 95.77);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (226, 12, '2025-04-06 00:00:00', 103.75, 102.91, 103.89, 102.74);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (227, 12, '2025-04-07 00:00:00', 98.69, 98.74, 99.02, 98.26);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (228, 12, '2025-04-08 00:00:00', 98.52, 97.42, 98.68, 97.23);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (229, 12, '2025-04-09 00:00:00', 103.53, 103.64, 104.1, 103.36);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (230, 12, '2025-04-10 00:00:00', 98.52, 97.17, 98.76, 96.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (231, 12, '2025-04-11 00:00:00', 103.22, 103.13, 103.36, 102.72);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (232, 12, '2025-04-12 00:00:00', 103.9, 103.08, 103.97, 102.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (233, 12, '2025-04-13 00:00:00', 99.73, 100.25, 100.67, 99.63);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (234, 12, '2025-04-14 00:00:00', 99.46, 99.68, 100.08, 99.19);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (235, 12, '2025-04-15 00:00:00', 103.87, 103.75, 104.16, 103.39);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (236, 12, '2025-04-16 00:00:00', 100.75, 102.21, 102.51, 100.38);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (237, 12, '2025-04-17 00:00:00', 102.2, 102.1, 102.33, 101.95);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (238, 12, '2025-04-18 00:00:00', 100.54, 100.51, 100.65, 100.44);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (239, 12, '2025-04-19 00:00:00', 96.51, 95.79, 96.77, 95.71);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (240, 12, '2025-04-20 00:00:00', 103.33, 103.53, 103.7, 103.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (241, 13, '2025-04-01 00:00:00', 97.39, 96.94, 97.82, 96.52);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (242, 13, '2025-04-02 00:00:00', 95.86, 96.27, 96.32, 95.77);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (243, 13, '2025-04-03 00:00:00', 96.5, 96.15, 96.67, 95.68);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (244, 13, '2025-04-04 00:00:00', 98.64, 96.92, 98.69, 96.5);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (245, 13, '2025-04-05 00:00:00', 101.26, 101.34, 101.56, 100.77);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (246, 13, '2025-04-06 00:00:00', 100.07, 98.43, 100.4, 98.26);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (247, 13, '2025-04-07 00:00:00', 101.61, 101.59, 101.75, 101.21);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (248, 13, '2025-04-08 00:00:00', 104.76, 104.13, 105.14, 104.1);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (249, 13, '2025-04-09 00:00:00', 102.89, 101.92, 103.21, 101.72);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (250, 13, '2025-04-10 00:00:00', 95.2, 96.48, 96.65, 94.9);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (251, 13, '2025-04-11 00:00:00', 103.05, 102.94, 103.35, 102.88);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (252, 13, '2025-04-12 00:00:00', 100.42, 101.04, 101.36, 100.01);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (253, 13, '2025-04-13 00:00:00', 96.15, 95.44, 96.55, 94.97);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (254, 13, '2025-04-14 00:00:00', 102.61, 102.2, 102.83, 101.91);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (255, 13, '2025-04-15 00:00:00', 96.28, 97.28, 97.33, 96.27);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (256, 13, '2025-04-16 00:00:00', 95.95, 97.11, 97.35, 95.88);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (257, 13, '2025-04-17 00:00:00', 101.25, 102.58, 102.67, 101.07);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (258, 13, '2025-04-18 00:00:00', 96.86, 95.89, 96.92, 95.66);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (259, 13, '2025-04-19 00:00:00', 98.76, 99.77, 100.19, 98.68);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (260, 13, '2025-04-20 00:00:00', 96.2, 96.71, 97.19, 96.08);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (261, 14, '2025-04-01 00:00:00', 98.37, 98.79, 98.81, 98.27);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (262, 14, '2025-04-02 00:00:00', 97.03, 96.15, 97.43, 96.04);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (263, 14, '2025-04-03 00:00:00', 101.05, 99.88, 101.27, 99.64);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (264, 14, '2025-04-04 00:00:00', 104.28, 103.21, 104.31, 103.14);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (265, 14, '2025-04-05 00:00:00', 99.85, 99.77, 99.96, 99.4);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (266, 14, '2025-04-06 00:00:00', 100.79, 101.46, 101.9, 100.31);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (267, 14, '2025-04-07 00:00:00', 100.26, 99.74, 100.52, 99.73);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (268, 14, '2025-04-08 00:00:00', 104.9, 105.59, 105.96, 104.78);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (269, 14, '2025-04-09 00:00:00', 96.73, 96.87, 97.13, 96.66);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (270, 14, '2025-04-10 00:00:00', 102.14, 101.34, 102.22, 101.08);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (271, 14, '2025-04-11 00:00:00', 99.9, 98.85, 100.17, 98.47);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (272, 14, '2025-04-12 00:00:00', 96.85, 96.74, 97.19, 96.38);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (273, 14, '2025-04-13 00:00:00', 103.56, 103.49, 104.05, 103.21);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (274, 14, '2025-04-14 00:00:00', 103.12, 103.08, 103.32, 102.94);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (275, 14, '2025-04-15 00:00:00', 94.45, 95.27, 95.33, 94.44);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (276, 14, '2025-04-16 00:00:00', 98.79, 98.4, 98.88, 98.16);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (277, 14, '2025-04-17 00:00:00', 96.3, 97.76, 97.78, 95.96);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (278, 14, '2025-04-18 00:00:00', 97.47, 98.42, 98.86, 97.02);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (279, 14, '2025-04-19 00:00:00', 102.84, 102.92, 103.3, 102.47);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (280, 14, '2025-04-20 00:00:00', 96.46, 96.64, 96.68, 96.35);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (281, 15, '2025-04-01 00:00:00', 96.65, 96.87, 97.06, 96.42);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (282, 15, '2025-04-02 00:00:00', 100.77, 100.14, 101.24, 99.72);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (283, 15, '2025-04-03 00:00:00', 102.43, 103.25, 103.35, 102.3);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (284, 15, '2025-04-04 00:00:00', 103.13, 103.93, 104.34, 103.08);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (285, 15, '2025-04-05 00:00:00', 96.04, 96.78, 97.06, 95.79);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (286, 15, '2025-04-06 00:00:00', 103.58, 104.47, 104.82, 103.24);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (287, 15, '2025-04-07 00:00:00', 98.59, 98.96, 99.4, 98.41);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (288, 15, '2025-04-08 00:00:00', 95.41, 94.52, 95.64, 94.35);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (289, 15, '2025-04-09 00:00:00', 99.51, 99.29, 99.93, 98.93);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (290, 15, '2025-04-10 00:00:00', 98.01, 98.52, 98.71, 97.72);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (291, 15, '2025-04-11 00:00:00', 96.46, 95.64, 96.73, 95.27);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (292, 15, '2025-04-12 00:00:00', 102.33, 103.94, 104.36, 101.9);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (293, 15, '2025-04-13 00:00:00', 95.57, 96.69, 96.93, 95.08);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (294, 15, '2025-04-14 00:00:00', 102.42, 102.56, 102.82, 102.09);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (295, 15, '2025-04-15 00:00:00', 101.0, 101.04, 101.29, 100.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (296, 15, '2025-04-16 00:00:00', 101.96, 102.0, 102.28, 101.9);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (297, 15, '2025-04-17 00:00:00', 102.9, 102.59, 103.24, 102.45);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (298, 15, '2025-04-18 00:00:00', 101.3, 102.66, 102.79, 101.28);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (299, 15, '2025-04-19 00:00:00', 103.53, 103.47, 103.8, 103.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (300, 15, '2025-04-20 00:00:00', 103.34, 102.78, 103.47, 102.61);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (301, 16, '2025-04-01 00:00:00', 102.85, 102.83, 103.25, 102.54);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (302, 16, '2025-04-02 00:00:00', 101.62, 99.96, 101.77, 99.62);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (303, 16, '2025-04-03 00:00:00', 97.98, 97.97, 98.38, 97.78);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (304, 16, '2025-04-04 00:00:00', 96.65, 97.73, 97.8, 96.25);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (305, 16, '2025-04-05 00:00:00', 104.65, 104.08, 104.77, 103.79);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (306, 16, '2025-04-06 00:00:00', 99.2, 98.09, 99.24, 97.77);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (307, 16, '2025-04-07 00:00:00', 95.63, 95.17, 96.03, 94.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (308, 16, '2025-04-08 00:00:00', 103.5, 104.43, 104.88, 103.37);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (309, 16, '2025-04-09 00:00:00', 104.4, 105.42, 105.49, 103.98);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (310, 16, '2025-04-10 00:00:00', 101.61, 100.85, 101.88, 100.53);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (311, 16, '2025-04-11 00:00:00', 95.18, 96.01, 96.25, 94.74);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (312, 16, '2025-04-12 00:00:00', 99.0, 99.53, 99.62, 98.86);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (313, 16, '2025-04-13 00:00:00', 100.12, 99.92, 100.35, 99.58);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (314, 16, '2025-04-14 00:00:00', 97.56, 97.27, 97.96, 96.9);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (315, 16, '2025-04-15 00:00:00', 94.52, 95.09, 95.48, 94.26);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (316, 16, '2025-04-16 00:00:00', 98.46, 98.73, 99.17, 98.19);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (317, 16, '2025-04-17 00:00:00', 104.84, 105.54, 105.86, 104.54);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (318, 16, '2025-04-18 00:00:00', 94.56, 95.24, 95.52, 94.06);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (319, 16, '2025-04-19 00:00:00', 101.95, 101.16, 102.2, 100.67);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (320, 16, '2025-04-20 00:00:00', 96.81, 96.09, 97.14, 95.74);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (321, 17, '2025-04-01 00:00:00', 99.07, 99.69, 99.77, 98.81);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (322, 17, '2025-04-02 00:00:00', 96.96, 97.35, 97.63, 96.56);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (323, 17, '2025-04-03 00:00:00', 101.75, 100.84, 101.96, 100.62);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (324, 17, '2025-04-04 00:00:00', 103.31, 102.76, 103.52, 102.5);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (325, 17, '2025-04-05 00:00:00', 99.92, 98.85, 100.23, 98.65);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (326, 17, '2025-04-06 00:00:00', 104.63, 104.2, 104.91, 103.97);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (327, 17, '2025-04-07 00:00:00', 100.94, 100.34, 101.32, 100.24);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (328, 17, '2025-04-08 00:00:00', 101.82, 101.17, 102.07, 101.07);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (329, 17, '2025-04-09 00:00:00', 102.39, 101.53, 102.48, 101.2);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (330, 17, '2025-04-10 00:00:00', 103.79, 103.6, 104.16, 103.33);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (331, 17, '2025-04-11 00:00:00', 96.29, 95.79, 96.37, 95.77);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (332, 17, '2025-04-12 00:00:00', 103.0, 103.0, 103.28, 102.88);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (333, 17, '2025-04-13 00:00:00', 103.59, 104.21, 104.33, 103.57);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (334, 17, '2025-04-14 00:00:00', 100.96, 100.44, 101.29, 100.31);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (335, 17, '2025-04-15 00:00:00', 102.05, 102.09, 102.55, 101.97);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (336, 17, '2025-04-16 00:00:00', 102.97, 101.96, 103.14, 101.56);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (337, 17, '2025-04-17 00:00:00', 103.34, 103.55, 103.8, 103.19);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (338, 17, '2025-04-18 00:00:00', 95.94, 96.75, 97.12, 95.7);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (339, 17, '2025-04-19 00:00:00', 104.19, 104.04, 104.5, 103.98);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (340, 17, '2025-04-20 00:00:00', 104.91, 103.59, 104.94, 103.14);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (341, 18, '2025-04-01 00:00:00', 98.23, 98.25, 98.31, 98.09);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (342, 18, '2025-04-02 00:00:00', 94.84, 96.13, 96.6, 94.76);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (343, 18, '2025-04-03 00:00:00', 102.48, 101.98, 102.82, 101.65);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (344, 18, '2025-04-04 00:00:00', 99.2, 100.24, 100.58, 98.93);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (345, 18, '2025-04-05 00:00:00', 105.01, 104.58, 105.43, 104.46);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (346, 18, '2025-04-06 00:00:00', 102.53, 104.27, 104.42, 102.26);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (347, 18, '2025-04-07 00:00:00', 97.52, 97.87, 98.16, 97.04);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (348, 18, '2025-04-08 00:00:00', 95.23, 95.0, 95.65, 94.78);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (349, 18, '2025-04-09 00:00:00', 96.37, 95.81, 96.86, 95.8);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (350, 18, '2025-04-10 00:00:00', 102.44, 103.21, 103.38, 102.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (351, 18, '2025-04-11 00:00:00', 98.61, 99.5, 99.76, 98.49);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (352, 18, '2025-04-12 00:00:00', 100.63, 99.99, 100.93, 99.89);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (353, 18, '2025-04-13 00:00:00', 100.4, 100.88, 100.93, 99.92);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (354, 18, '2025-04-14 00:00:00', 104.52, 105.13, 105.32, 104.19);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (355, 18, '2025-04-15 00:00:00', 95.54, 96.68, 96.9, 95.44);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (356, 18, '2025-04-16 00:00:00', 103.88, 102.56, 104.05, 102.19);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (357, 18, '2025-04-17 00:00:00', 102.94, 104.29, 104.39, 102.67);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (358, 18, '2025-04-18 00:00:00', 101.28, 100.31, 101.35, 100.25);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (359, 18, '2025-04-19 00:00:00', 96.03, 96.7, 96.93, 95.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (360, 18, '2025-04-20 00:00:00', 97.03, 97.05, 97.37, 96.62);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (361, 19, '2025-04-01 00:00:00', 102.03, 103.46, 103.58, 101.81);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (362, 19, '2025-04-02 00:00:00', 97.29, 96.15, 97.62, 95.95);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (363, 19, '2025-04-03 00:00:00', 98.21, 99.31, 99.46, 97.98);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (364, 19, '2025-04-04 00:00:00', 99.31, 100.23, 100.6, 99.15);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (365, 19, '2025-04-05 00:00:00', 94.78, 95.77, 96.08, 94.61);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (366, 19, '2025-04-06 00:00:00', 96.15, 95.58, 96.15, 95.34);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (367, 19, '2025-04-07 00:00:00', 102.88, 102.83, 103.14, 102.59);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (368, 19, '2025-04-08 00:00:00', 99.23, 98.19, 99.63, 97.91);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (369, 19, '2025-04-09 00:00:00', 104.48, 103.7, 104.9, 103.63);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (370, 19, '2025-04-10 00:00:00', 104.25, 104.39, 104.42, 103.77);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (371, 19, '2025-04-11 00:00:00', 99.62, 99.06, 100.05, 98.84);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (372, 19, '2025-04-12 00:00:00', 102.17, 103.08, 103.5, 101.89);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (373, 19, '2025-04-13 00:00:00', 99.39, 99.93, 100.18, 99.15);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (374, 19, '2025-04-14 00:00:00', 102.24, 101.91, 102.55, 101.79);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (375, 19, '2025-04-15 00:00:00', 101.22, 100.82, 101.39, 100.37);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (376, 19, '2025-04-16 00:00:00', 105.67, 105.31, 105.9, 105.24);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (377, 19, '2025-04-17 00:00:00', 97.34, 96.3, 97.78, 95.85);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (378, 19, '2025-04-18 00:00:00', 104.86, 104.85, 104.87, 104.69);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (379, 19, '2025-04-19 00:00:00', 103.16, 104.34, 104.47, 102.74);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (380, 19, '2025-04-20 00:00:00', 96.87, 96.65, 97.3, 96.41);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (381, 20, '2025-04-01 00:00:00', 103.12, 104.07, 104.33, 103.07);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (382, 20, '2025-04-02 00:00:00', 97.36, 96.47, 97.39, 96.17);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (383, 20, '2025-04-03 00:00:00', 103.95, 105.08, 105.21, 103.85);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (384, 20, '2025-04-04 00:00:00', 99.26, 99.16, 99.57, 99.09);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (385, 20, '2025-04-05 00:00:00', 97.11, 98.86, 98.91, 96.7);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (386, 20, '2025-04-06 00:00:00', 101.68, 100.79, 101.95, 100.32);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (387, 20, '2025-04-07 00:00:00', 97.49, 95.94, 97.75, 95.7);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (388, 20, '2025-04-08 00:00:00', 95.3, 95.72, 96.06, 94.96);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (389, 20, '2025-04-09 00:00:00', 101.31, 101.04, 101.75, 100.55);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (390, 20, '2025-04-10 00:00:00', 96.34, 96.58, 96.58, 96.16);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (391, 20, '2025-04-11 00:00:00', 99.22, 100.02, 100.3, 98.99);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (392, 20, '2025-04-12 00:00:00', 95.42, 95.36, 95.58, 95.01);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (393, 20, '2025-04-13 00:00:00', 96.23, 97.12, 97.24, 95.92);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (394, 20, '2025-04-14 00:00:00', 101.71, 101.98, 102.35, 101.42);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (395, 20, '2025-04-15 00:00:00', 102.37, 101.32, 102.74, 100.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (396, 20, '2025-04-16 00:00:00', 103.29, 102.17, 103.51, 101.71);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (397, 20, '2025-04-17 00:00:00', 98.16, 97.09, 98.28, 96.91);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (398, 20, '2025-04-18 00:00:00', 103.08, 101.19, 103.17, 100.82);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (399, 20, '2025-04-19 00:00:00', 97.81, 97.57, 97.89, 97.15);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (400, 20, '2025-04-20 00:00:00', 100.54, 100.68, 100.68, 100.5);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (401, 21, '2025-04-01 00:00:00', 98.64, 99.76, 100.18, 98.53);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (402, 21, '2025-04-02 00:00:00', 94.11, 95.67, 96.15, 93.73);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (403, 21, '2025-04-03 00:00:00', 99.95, 99.71, 100.42, 99.29);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (404, 21, '2025-04-04 00:00:00', 96.63, 96.59, 97.04, 96.17);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (405, 21, '2025-04-05 00:00:00', 103.63, 104.88, 105.35, 103.63);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (406, 21, '2025-04-06 00:00:00', 105.05, 103.34, 105.05, 103.02);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (407, 21, '2025-04-07 00:00:00', 103.21, 102.35, 103.67, 102.04);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (408, 21, '2025-04-08 00:00:00', 100.92, 102.26, 102.48, 100.6);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (409, 21, '2025-04-09 00:00:00', 99.84, 98.29, 100.01, 98.15);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (410, 21, '2025-04-10 00:00:00', 97.5, 97.58, 97.89, 97.4);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (411, 21, '2025-04-11 00:00:00', 94.56, 94.77, 95.17, 94.28);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (412, 21, '2025-04-12 00:00:00', 94.63, 94.83, 94.88, 94.26);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (413, 21, '2025-04-13 00:00:00', 103.21, 103.11, 103.28, 102.92);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (414, 21, '2025-04-14 00:00:00', 96.41, 95.48, 96.6, 95.02);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (415, 21, '2025-04-15 00:00:00', 104.02, 102.61, 104.04, 102.34);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (416, 21, '2025-04-16 00:00:00', 102.3, 103.28, 103.45, 101.95);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (417, 21, '2025-04-17 00:00:00', 98.04, 98.14, 98.39, 97.93);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (418, 21, '2025-04-18 00:00:00', 97.78, 97.14, 97.88, 97.09);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (419, 21, '2025-04-19 00:00:00', 101.12, 102.54, 102.9, 100.86);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (420, 21, '2025-04-20 00:00:00', 102.96, 102.99, 103.16, 102.85);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (421, 22, '2025-04-01 00:00:00', 95.93, 95.58, 96.25, 95.5);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (422, 22, '2025-04-02 00:00:00', 104.35, 103.65, 104.69, 103.57);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (423, 22, '2025-04-03 00:00:00', 99.86, 99.77, 100.06, 99.63);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (424, 22, '2025-04-04 00:00:00', 100.62, 101.65, 101.91, 100.27);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (425, 22, '2025-04-05 00:00:00', 96.67, 98.22, 98.5, 96.46);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (426, 22, '2025-04-06 00:00:00', 102.43, 102.54, 102.83, 102.01);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (427, 22, '2025-04-07 00:00:00', 100.72, 101.12, 101.61, 100.55);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (428, 22, '2025-04-08 00:00:00', 98.29, 96.98, 98.48, 96.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (429, 22, '2025-04-09 00:00:00', 99.83, 99.92, 100.37, 99.55);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (430, 22, '2025-04-10 00:00:00', 104.5, 103.2, 104.52, 103.05);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (431, 22, '2025-04-11 00:00:00', 103.14, 104.37, 104.51, 102.89);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (432, 22, '2025-04-12 00:00:00', 100.46, 101.08, 101.38, 100.23);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (433, 22, '2025-04-13 00:00:00', 101.55, 101.77, 101.9, 101.37);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (434, 22, '2025-04-14 00:00:00', 99.18, 97.84, 99.38, 97.78);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (435, 22, '2025-04-15 00:00:00', 98.51, 97.52, 98.51, 97.34);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (436, 22, '2025-04-16 00:00:00', 100.58, 101.8, 102.19, 100.33);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (437, 22, '2025-04-17 00:00:00', 98.61, 98.6, 98.88, 98.47);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (438, 22, '2025-04-18 00:00:00', 99.87, 100.17, 100.32, 99.67);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (439, 22, '2025-04-19 00:00:00', 98.2, 99.35, 99.49, 97.81);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (440, 22, '2025-04-20 00:00:00', 97.96, 96.98, 98.2, 96.85);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (441, 23, '2025-04-01 00:00:00', 95.78, 96.26, 96.38, 95.69);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (442, 23, '2025-04-02 00:00:00', 98.51, 98.64, 98.83, 98.16);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (443, 23, '2025-04-03 00:00:00', 96.82, 96.48, 97.17, 96.3);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (444, 23, '2025-04-04 00:00:00', 100.67, 101.59, 101.89, 100.47);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (445, 23, '2025-04-05 00:00:00', 97.93, 99.79, 100.1, 97.71);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (446, 23, '2025-04-06 00:00:00', 99.8, 98.66, 100.14, 98.22);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (447, 23, '2025-04-07 00:00:00', 102.83, 101.93, 102.88, 101.79);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (448, 23, '2025-04-08 00:00:00', 102.58, 102.24, 102.86, 102.09);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (449, 23, '2025-04-09 00:00:00', 104.76, 104.2, 104.91, 104.15);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (450, 23, '2025-04-10 00:00:00', 102.56, 103.15, 103.39, 102.47);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (451, 23, '2025-04-11 00:00:00', 95.77, 97.17, 97.61, 95.45);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (452, 23, '2025-04-12 00:00:00', 97.86, 99.67, 99.91, 97.78);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (453, 23, '2025-04-13 00:00:00', 101.79, 101.4, 101.94, 101.22);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (454, 23, '2025-04-14 00:00:00', 98.0, 97.01, 98.14, 96.84);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (455, 23, '2025-04-15 00:00:00', 96.25, 95.98, 96.64, 95.54);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (456, 23, '2025-04-16 00:00:00', 101.26, 101.8, 102.0, 100.77);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (457, 23, '2025-04-17 00:00:00', 97.48, 95.79, 97.5, 95.43);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (458, 23, '2025-04-18 00:00:00', 97.97, 96.85, 98.18, 96.66);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (459, 23, '2025-04-19 00:00:00', 102.53, 101.46, 103.01, 101.34);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (460, 23, '2025-04-20 00:00:00', 97.32, 98.06, 98.42, 96.88);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (461, 24, '2025-04-01 00:00:00', 98.0, 97.4, 98.43, 97.16);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (462, 24, '2025-04-02 00:00:00', 104.71, 102.94, 104.93, 102.67);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (463, 24, '2025-04-03 00:00:00', 97.37, 97.5, 97.74, 96.94);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (464, 24, '2025-04-04 00:00:00', 95.77, 94.48, 95.97, 94.07);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (465, 24, '2025-04-05 00:00:00', 97.63, 97.49, 97.64, 97.4);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (466, 24, '2025-04-06 00:00:00', 96.29, 96.2, 96.52, 95.97);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (467, 24, '2025-04-07 00:00:00', 101.4, 102.3, 102.66, 101.25);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (468, 24, '2025-04-08 00:00:00', 96.64, 97.38, 97.7, 96.42);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (469, 24, '2025-04-09 00:00:00', 102.4, 102.82, 103.0, 102.35);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (470, 24, '2025-04-10 00:00:00', 94.8, 95.5, 95.71, 94.72);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (471, 24, '2025-04-11 00:00:00', 99.28, 98.03, 99.51, 97.65);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (472, 24, '2025-04-12 00:00:00', 103.94, 104.18, 104.3, 103.46);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (473, 24, '2025-04-13 00:00:00', 101.79, 101.84, 101.89, 101.63);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (474, 24, '2025-04-14 00:00:00', 104.58, 103.92, 104.85, 103.64);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (475, 24, '2025-04-15 00:00:00', 102.15, 102.08, 102.63, 101.85);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (476, 24, '2025-04-16 00:00:00', 99.88, 98.42, 99.88, 97.97);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (477, 24, '2025-04-17 00:00:00', 96.41, 97.22, 97.58, 96.3);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (478, 24, '2025-04-18 00:00:00', 103.67, 103.85, 104.12, 103.57);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (479, 24, '2025-04-19 00:00:00', 102.98, 103.92, 104.27, 102.75);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (480, 24, '2025-04-20 00:00:00', 101.79, 101.61, 101.85, 101.13);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (481, 25, '2025-04-01 00:00:00', 97.28, 97.83, 98.14, 97.14);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (482, 25, '2025-04-02 00:00:00', 103.64, 103.53, 103.98, 103.05);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (483, 25, '2025-04-03 00:00:00', 96.72, 97.84, 98.27, 96.44);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (484, 25, '2025-04-04 00:00:00', 101.68, 102.79, 103.06, 101.24);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (485, 25, '2025-04-05 00:00:00', 100.55, 101.22, 101.32, 100.15);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (486, 25, '2025-04-06 00:00:00', 100.57, 100.66, 101.12, 100.38);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (487, 25, '2025-04-07 00:00:00', 101.2, 101.89, 101.92, 100.82);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (488, 25, '2025-04-08 00:00:00', 102.94, 102.52, 103.11, 102.35);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (489, 25, '2025-04-09 00:00:00', 95.34, 96.59, 96.59, 95.32);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (490, 25, '2025-04-10 00:00:00', 100.88, 101.63, 101.91, 100.53);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (491, 25, '2025-04-11 00:00:00', 99.31, 99.42, 99.7, 99.13);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (492, 25, '2025-04-12 00:00:00', 99.93, 98.44, 99.93, 98.21);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (493, 25, '2025-04-13 00:00:00', 104.59, 104.1, 105.07, 103.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (494, 25, '2025-04-14 00:00:00', 99.94, 98.8, 100.14, 98.69);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (495, 25, '2025-04-15 00:00:00', 101.56, 102.33, 102.63, 101.4);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (496, 25, '2025-04-16 00:00:00', 99.25, 100.62, 100.75, 99.19);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (497, 25, '2025-04-17 00:00:00', 103.96, 102.65, 103.97, 102.51);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (498, 25, '2025-04-18 00:00:00', 96.09, 96.96, 97.21, 95.6);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (499, 25, '2025-04-19 00:00:00', 96.38, 97.96, 98.23, 96.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (500, 25, '2025-04-20 00:00:00', 94.45, 95.35, 95.54, 94.03);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (501, 26, '2025-04-01 00:00:00', 103.43, 102.72, 103.49, 102.35);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (502, 26, '2025-04-02 00:00:00', 100.6, 101.31, 101.53, 100.48);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (503, 26, '2025-04-03 00:00:00', 97.7, 98.73, 98.75, 97.28);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (504, 26, '2025-04-04 00:00:00', 101.39, 102.54, 102.92, 101.02);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (505, 26, '2025-04-05 00:00:00', 101.75, 101.27, 101.98, 100.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (506, 26, '2025-04-06 00:00:00', 103.58, 103.94, 104.33, 103.57);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (507, 26, '2025-04-07 00:00:00', 102.61, 103.05, 103.32, 102.61);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (508, 26, '2025-04-08 00:00:00', 101.32, 101.49, 101.8, 101.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (509, 26, '2025-04-09 00:00:00', 100.66, 101.36, 101.71, 100.6);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (510, 26, '2025-04-10 00:00:00', 102.27, 101.41, 102.57, 101.38);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (511, 26, '2025-04-11 00:00:00', 99.85, 100.8, 101.23, 99.8);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (512, 26, '2025-04-12 00:00:00', 95.84, 94.87, 96.3, 94.49);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (513, 26, '2025-04-13 00:00:00', 99.45, 98.97, 99.61, 98.55);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (514, 26, '2025-04-14 00:00:00', 99.24, 100.3, 100.65, 99.19);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (515, 26, '2025-04-15 00:00:00', 97.33, 98.16, 98.48, 97.32);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (516, 26, '2025-04-16 00:00:00', 99.68, 99.39, 100.16, 99.09);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (517, 26, '2025-04-17 00:00:00', 102.07, 101.24, 102.5, 100.96);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (518, 26, '2025-04-18 00:00:00', 95.99, 95.96, 96.43, 95.82);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (519, 26, '2025-04-19 00:00:00', 103.03, 103.46, 103.72, 102.98);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (520, 26, '2025-04-20 00:00:00', 96.68, 95.79, 97.06, 95.29);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (521, 27, '2025-04-01 00:00:00', 95.57, 95.85, 95.95, 95.26);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (522, 27, '2025-04-02 00:00:00', 100.01, 100.17, 100.29, 99.98);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (523, 27, '2025-04-03 00:00:00', 100.27, 101.31, 101.45, 99.91);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (524, 27, '2025-04-04 00:00:00', 96.72, 97.81, 98.02, 96.69);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (525, 27, '2025-04-05 00:00:00', 103.51, 103.41, 103.57, 103.27);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (526, 27, '2025-04-06 00:00:00', 99.36, 99.72, 100.18, 99.06);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (527, 27, '2025-04-07 00:00:00', 102.66, 103.27, 103.44, 102.55);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (528, 27, '2025-04-08 00:00:00', 98.21, 98.66, 99.11, 98.0);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (529, 27, '2025-04-09 00:00:00', 98.72, 98.14, 98.8, 98.07);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (530, 27, '2025-04-10 00:00:00', 95.41, 96.83, 97.19, 95.22);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (531, 27, '2025-04-11 00:00:00', 98.69, 97.13, 99.19, 96.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (532, 27, '2025-04-12 00:00:00', 98.81, 99.82, 100.06, 98.65);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (533, 27, '2025-04-13 00:00:00', 100.47, 100.24, 100.48, 100.16);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (534, 27, '2025-04-14 00:00:00', 94.48, 95.26, 95.68, 94.02);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (535, 27, '2025-04-15 00:00:00', 96.42, 96.66, 97.12, 96.06);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (536, 27, '2025-04-16 00:00:00', 100.8, 100.39, 101.19, 100.19);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (537, 27, '2025-04-17 00:00:00', 103.76, 104.65, 105.0, 103.52);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (538, 27, '2025-04-18 00:00:00', 96.17, 96.78, 97.19, 96.11);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (539, 27, '2025-04-19 00:00:00', 101.43, 102.3, 102.6, 101.31);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (540, 27, '2025-04-20 00:00:00', 94.27, 94.69, 94.7, 94.15);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (541, 28, '2025-04-01 00:00:00', 103.32, 101.97, 103.46, 101.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (542, 28, '2025-04-02 00:00:00', 100.55, 100.48, 100.81, 100.15);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (543, 28, '2025-04-03 00:00:00', 98.55, 98.8, 99.22, 98.34);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (544, 28, '2025-04-04 00:00:00', 103.0, 102.92, 103.21, 102.64);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (545, 28, '2025-04-05 00:00:00', 102.11, 100.58, 102.35, 100.36);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (546, 28, '2025-04-06 00:00:00', 104.63, 103.71, 104.88, 103.34);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (547, 28, '2025-04-07 00:00:00', 96.15, 96.67, 96.89, 95.97);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (548, 28, '2025-04-08 00:00:00', 103.35, 102.98, 103.53, 102.63);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (549, 28, '2025-04-09 00:00:00', 98.04, 97.38, 98.39, 97.16);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (550, 28, '2025-04-10 00:00:00', 99.7, 98.64, 99.89, 98.15);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (551, 28, '2025-04-11 00:00:00', 99.96, 101.52, 101.66, 99.47);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (552, 28, '2025-04-12 00:00:00', 105.59, 105.17, 105.9, 104.75);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (553, 28, '2025-04-13 00:00:00', 100.56, 101.38, 101.7, 100.5);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (554, 28, '2025-04-14 00:00:00', 96.94, 98.19, 98.61, 96.55);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (555, 28, '2025-04-15 00:00:00', 101.97, 101.55, 102.09, 101.5);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (556, 28, '2025-04-16 00:00:00', 99.17, 98.62, 99.64, 98.59);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (557, 28, '2025-04-17 00:00:00', 103.4, 103.42, 103.54, 102.9);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (558, 28, '2025-04-18 00:00:00', 96.5, 95.22, 96.8, 94.93);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (559, 28, '2025-04-19 00:00:00', 98.91, 98.83, 98.98, 98.67);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (560, 28, '2025-04-20 00:00:00', 104.31, 104.47, 104.97, 103.94);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (561, 29, '2025-04-01 00:00:00', 97.35, 99.05, 99.45, 96.92);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (562, 29, '2025-04-02 00:00:00', 94.58, 94.78, 94.93, 94.21);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (563, 29, '2025-04-03 00:00:00', 98.91, 98.19, 99.03, 97.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (564, 29, '2025-04-04 00:00:00', 100.17, 100.9, 101.32, 100.01);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (565, 29, '2025-04-05 00:00:00', 99.05, 98.22, 99.11, 97.88);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (566, 29, '2025-04-06 00:00:00', 95.49, 96.39, 96.61, 95.43);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (567, 29, '2025-04-07 00:00:00', 104.83, 103.97, 105.21, 103.73);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (568, 29, '2025-04-08 00:00:00', 102.05, 102.86, 102.94, 102.02);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (569, 29, '2025-04-09 00:00:00', 103.1, 103.51, 103.73, 103.07);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (570, 29, '2025-04-10 00:00:00', 101.1, 101.52, 101.93, 100.88);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (571, 29, '2025-04-11 00:00:00', 102.34, 101.96, 102.44, 101.6);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (572, 29, '2025-04-12 00:00:00', 103.11, 103.35, 103.78, 102.93);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (573, 29, '2025-04-13 00:00:00', 103.05, 104.38, 104.64, 102.9);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (574, 29, '2025-04-14 00:00:00', 103.67, 105.14, 105.5, 103.27);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (575, 29, '2025-04-15 00:00:00', 100.54, 98.99, 100.87, 98.77);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (576, 29, '2025-04-16 00:00:00', 101.2, 100.37, 101.59, 100.19);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (577, 29, '2025-04-17 00:00:00', 100.41, 100.13, 100.53, 99.81);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (578, 29, '2025-04-18 00:00:00', 98.67, 98.64, 99.04, 98.43);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (579, 29, '2025-04-19 00:00:00', 104.34, 103.69, 104.74, 103.5);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (580, 29, '2025-04-20 00:00:00', 97.82, 98.6, 99.01, 97.81);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (581, 30, '2025-04-01 00:00:00', 96.79, 97.19, 97.31, 96.64);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (582, 30, '2025-04-02 00:00:00', 101.77, 102.53, 102.84, 101.36);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (583, 30, '2025-04-03 00:00:00', 102.22, 101.72, 102.34, 101.24);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (584, 30, '2025-04-04 00:00:00', 94.96, 94.66, 95.04, 94.4);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (585, 30, '2025-04-05 00:00:00', 98.82, 97.84, 99.03, 97.54);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (586, 30, '2025-04-06 00:00:00', 105.66, 105.29, 105.72, 105.2);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (587, 30, '2025-04-07 00:00:00', 100.32, 99.71, 100.42, 99.36);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (588, 30, '2025-04-08 00:00:00', 97.02, 96.45, 97.21, 96.05);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (589, 30, '2025-04-09 00:00:00', 99.96, 100.19, 100.53, 99.87);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (590, 30, '2025-04-10 00:00:00', 99.43, 99.34, 99.58, 99.13);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (591, 30, '2025-04-11 00:00:00', 98.81, 99.46, 99.65, 98.76);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (592, 30, '2025-04-12 00:00:00', 101.6, 101.35, 102.02, 101.04);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (593, 30, '2025-04-13 00:00:00', 104.46, 104.19, 104.71, 104.04);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (594, 30, '2025-04-14 00:00:00', 101.28, 101.93, 102.39, 100.82);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (595, 30, '2025-04-15 00:00:00', 104.01, 103.63, 104.28, 103.29);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (596, 30, '2025-04-16 00:00:00', 100.92, 101.29, 101.77, 100.72);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (597, 30, '2025-04-17 00:00:00', 95.93, 96.25, 96.7, 95.83);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (598, 30, '2025-04-18 00:00:00', 103.06, 101.95, 103.09, 101.86);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (599, 30, '2025-04-19 00:00:00', 99.73, 99.74, 100.09, 99.29);
-INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (600, 30, '2025-04-20 00:00:00', 99.75, 99.6, 100.01, 99.41);
+INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low, symbol) VALUES
+                                                                                                     (1, 1, '2025-04-01 00:00:00', 107.55, 107.81, 108.09, 107.06, 'ETF001'),
+                                                                                                     (2, 1, '2025-04-02 00:00:00', 101.17, 99.53, 101.3, 99.39, 'ETF001'),
+                                                                                                     (3, 1, '2025-04-03 00:00:00', 101.7, 100.15, 102.0, 99.56, 'ETF001'),
+                                                                                                     (4, 1, '2025-04-04 00:00:00', 90.06, 90.52, 90.76, 89.63, 'ETF001'),
+                                                                                                     (5, 1, '2025-04-05 00:00:00', 91.31, 91.07, 91.51, 90.43, 'ETF001'),
+                                                                                                     (6, 1, '2025-04-06 00:00:00', 103.47, 101.98, 104.17, 101.39, 'ETF001'),
+                                                                                                     (7, 1, '2025-04-07 00:00:00', 94.62, 96.12, 96.82, 94.11, 'ETF001'),
+                                                                                                     (8, 1, '2025-04-08 00:00:00', 93.08, 92.47, 94.01, 92.09, 'ETF001'),
+                                                                                                     (9, 1, '2025-04-09 00:00:00', 92.67, 93.6, 93.74, 92.31, 'ETF001'),
+                                                                                                     (10, 1, '2025-04-10 00:00:00', 103.62, 102.31, 104.16, 102.09, 'ETF001'),
+                                                                                                     (11, 1, '2025-04-11 00:00:00', 108.13, 109.89, 110.15, 107.57, 'ETF001'),
+                                                                                                     (12, 1, '2025-04-12 00:00:00', 98.78, 99.53, 99.7, 97.93, 'ETF001'),
+                                                                                                     (13, 1, '2025-04-13 00:00:00', 98.48, 98.16, 98.97, 97.63, 'ETF001'),
+                                                                                                     (14, 1, '2025-04-14 00:00:00', 108.52, 110.36, 111.0, 107.88, 'ETF001'),
+                                                                                                     (15, 1, '2025-04-15 00:00:00', 93.72, 93.47, 93.84, 92.98, 'ETF001'),
+                                                                                                     (16, 1, '2025-04-16 00:00:00', 100.79, 102.18, 102.93, 100.27, 'ETF001'),
+                                                                                                     (17, 1, '2025-04-17 00:00:00', 90.68, 91.01, 92.01, 89.95, 'ETF001'),
+                                                                                                     (18, 1, '2025-04-18 00:00:00', 93.9, 92.83, 94.22, 92.37, 'ETF001'),
+                                                                                                     (19, 1, '2025-04-19 00:00:00', 90.33, 90.03, 91.09, 89.79, 'ETF001'),
+                                                                                                     (20, 1, '2025-04-20 00:00:00', 106.58, 106.93, 107.21, 105.78, 'ETF001'),
+                                                                                                     (21, 2, '2025-04-01 00:00:00', 96.7, 97.14, 97.56, 96.01, 'ETF002'),
+                                                                                                     (22, 2, '2025-04-02 00:00:00', 104.7, 103.7, 105.49, 103.5, 'ETF002'),
+                                                                                                     (23, 2, '2025-04-03 00:00:00', 105.45, 107.27, 107.41, 104.49, 'ETF002'),
+                                                                                                     (24, 2, '2025-04-04 00:00:00', 108.85, 110.21, 110.42, 108.62, 'ETF002'),
+                                                                                                     (25, 2, '2025-04-05 00:00:00', 105.82, 107.41, 108.07, 105.32, 'ETF002'),
+                                                                                                     (26, 2, '2025-04-06 00:00:00', 100.28, 101.7, 102.23, 99.42, 'ETF002'),
+                                                                                                     (27, 2, '2025-04-07 00:00:00', 97.24, 96.22, 98.12, 95.48, 'ETF002'),
+                                                                                                     (28, 2, '2025-04-08 00:00:00', 91.51, 91.88, 91.95, 91.02, 'ETF002'),
+                                                                                                     (29, 2, '2025-04-09 00:00:00', 106.93, 107.4, 107.79, 106.62, 'ETF002'),
+                                                                                                     (30, 2, '2025-04-10 00:00:00', 95.99, 97.95, 98.87, 95.84, 'ETF002'),
+                                                                                                     (31, 2, '2025-04-11 00:00:00', 107.16, 108.42, 109.2, 106.79, 'ETF002'),
+                                                                                                     (32, 2, '2025-04-12 00:00:00', 100.2, 98.65, 100.32, 97.71, 'ETF002'),
+                                                                                                     (33, 2, '2025-04-13 00:00:00', 105.55, 107.44, 108.04, 104.83, 'ETF002'),
+                                                                                                     (34, 2, '2025-04-14 00:00:00', 92.22, 92.9, 92.95, 92.2, 'ETF002'),
+                                                                                                     (35, 2, '2025-04-15 00:00:00', 95.28, 95.71, 95.94, 94.71, 'ETF002'),
+                                                                                                     (36, 2, '2025-04-16 00:00:00', 105.48, 104.51, 105.56, 103.7, 'ETF002'),
+                                                                                                     (37, 2, '2025-04-17 00:00:00', 92.47, 93.12, 93.99, 92.04, 'ETF002'),
+                                                                                                     (38, 2, '2025-04-18 00:00:00', 100.61, 100.93, 101.28, 99.96, 'ETF002'),
+                                                                                                     (39, 2, '2025-04-19 00:00:00', 94.17, 94.19, 94.91, 93.93, 'ETF002'),
+                                                                                                     (40, 2, '2025-04-20 00:00:00', 96.92, 98.16, 98.55, 96.38, 'ETF002'),
+                                                                                                     (41, 3, '2025-04-01 00:00:00', 95.25, 95.93, 96.23, 94.99, 'ETF003'),
+                                                                                                     (42, 3, '2025-04-02 00:00:00', 102.77, 101.3, 102.92, 101.01, 'ETF003'),
+                                                                                                     (43, 3, '2025-04-03 00:00:00', 95.32, 95.81, 96.27, 95.18, 'ETF003'),
+                                                                                                     (44, 3, '2025-04-04 00:00:00', 96.48, 97.8, 97.99, 95.73, 'ETF003'),
+                                                                                                     (45, 3, '2025-04-05 00:00:00', 101.42, 102.92, 102.96, 101.34, 'ETF003'),
+                                                                                                     (46, 3, '2025-04-06 00:00:00', 93.57, 94.38, 94.44, 93.03, 'ETF003'),
+                                                                                                     (47, 3, '2025-04-07 00:00:00', 107.03, 106.25, 107.64, 105.7, 'ETF003'),
+                                                                                                     (48, 3, '2025-04-08 00:00:00', 91.99, 92.55, 92.72, 91.16, 'ETF003'),
+                                                                                                     (49, 3, '2025-04-09 00:00:00', 90.7, 92.4, 92.56, 90.36, 'ETF003'),
+                                                                                                     (50, 3, '2025-04-10 00:00:00', 109.43, 109.24, 109.94, 109.11, 'ETF003'),
+                                                                                                     (51, 3, '2025-04-11 00:00:00', 106.56, 105.88, 107.42, 105.43, 'ETF003'),
+                                                                                                     (52, 3, '2025-04-12 00:00:00', 100.71, 101.39, 102.01, 100.6, 'ETF003'),
+                                                                                                     (53, 3, '2025-04-13 00:00:00', 90.51, 90.0, 91.04, 89.19, 'ETF003'),
+                                                                                                     (54, 3, '2025-04-14 00:00:00', 98.0, 99.19, 99.64, 97.79, 'ETF003'),
+                                                                                                     (55, 3, '2025-04-15 00:00:00', 107.18, 108.7, 109.1, 106.74, 'ETF003'),
+                                                                                                     (56, 3, '2025-04-16 00:00:00', 101.03, 102.83, 103.43, 100.33, 'ETF003'),
+                                                                                                     (57, 3, '2025-04-17 00:00:00', 105.09, 106.58, 107.13, 104.93, 'ETF003'),
+                                                                                                     (58, 3, '2025-04-18 00:00:00', 90.44, 89.68, 90.98, 88.98, 'ETF003'),
+                                                                                                     (59, 3, '2025-04-19 00:00:00', 93.49, 94.9, 95.84, 92.68, 'ETF003'),
+                                                                                                     (60, 3, '2025-04-20 00:00:00', 92.22, 93.72, 94.68, 91.64, 'ETF003'),
+                                                                                                     (61, 4, '2025-04-01 00:00:00', 98.32, 97.22, 98.64, 96.91, 'ETF004'),
+                                                                                                     (62, 4, '2025-04-02 00:00:00', 91.52, 92.0, 92.28, 90.99, 'ETF004'),
+                                                                                                     (63, 4, '2025-04-03 00:00:00', 92.4, 92.85, 93.03, 91.59, 'ETF004'),
+                                                                                                     (64, 4, '2025-04-04 00:00:00', 92.27, 93.02, 93.08, 92.01, 'ETF004'),
+                                                                                                     (65, 4, '2025-04-05 00:00:00', 100.85, 101.19, 101.55, 100.1, 'ETF004'),
+                                                                                                     (66, 4, '2025-04-06 00:00:00', 101.26, 99.29, 102.1, 98.63, 'ETF004'),
+                                                                                                     (67, 4, '2025-04-07 00:00:00', 99.11, 97.56, 99.12, 96.62, 'ETF004'),
+                                                                                                     (68, 4, '2025-04-08 00:00:00', 102.86, 103.09, 103.19, 102.53, 'ETF004'),
+                                                                                                     (69, 4, '2025-04-09 00:00:00', 95.93, 97.34, 98.16, 95.18, 'ETF004'),
+                                                                                                     (70, 4, '2025-04-10 00:00:00', 109.17, 107.6, 110.11, 106.77, 'ETF004'),
+                                                                                                     (71, 4, '2025-04-11 00:00:00', 106.85, 107.79, 108.1, 106.2, 'ETF004'),
+                                                                                                     (72, 4, '2025-04-12 00:00:00', 94.01, 93.35, 94.41, 92.61, 'ETF004'),
+                                                                                                     (73, 4, '2025-04-13 00:00:00', 102.72, 104.55, 105.03, 102.23, 'ETF004'),
+                                                                                                     (74, 4, '2025-04-14 00:00:00', 102.9, 104.37, 105.15, 102.5, 'ETF004'),
+                                                                                                     (75, 4, '2025-04-15 00:00:00', 101.64, 102.56, 103.24, 101.02, 'ETF004'),
+                                                                                                     (76, 4, '2025-04-16 00:00:00', 101.29, 99.67, 101.5, 99.02, 'ETF004'),
+                                                                                                     (77, 4, '2025-04-17 00:00:00', 90.7, 89.53, 90.81, 89.34, 'ETF004'),
+                                                                                                     (78, 4, '2025-04-18 00:00:00', 103.72, 102.14, 103.96, 101.27, 'ETF004'),
+                                                                                                     (79, 4, '2025-04-19 00:00:00', 95.57, 95.45, 95.63, 94.74, 'ETF004'),
+                                                                                                     (80, 4, '2025-04-20 00:00:00', 108.36, 106.85, 108.76, 106.0, 'ETF004'),
+                                                                                                     (81, 5, '2025-04-01 00:00:00', 104.56, 104.72, 105.71, 104.16, 'ETF005'),
+                                                                                                     (82, 5, '2025-04-02 00:00:00', 98.15, 98.92, 99.09, 97.97, 'ETF005'),
+                                                                                                     (83, 5, '2025-04-03 00:00:00', 99.43, 100.58, 101.11, 99.17, 'ETF005'),
+                                                                                                     (84, 5, '2025-04-04 00:00:00', 108.12, 109.4, 109.77, 107.23, 'ETF005'),
+                                                                                                     (85, 5, '2025-04-05 00:00:00', 91.55, 89.87, 92.13, 89.25, 'ETF005'),
+                                                                                                     (86, 5, '2025-04-06 00:00:00', 100.03, 99.11, 100.2, 98.19, 'ETF005'),
+                                                                                                     (87, 5, '2025-04-07 00:00:00', 94.72, 95.16, 95.68, 94.22, 'ETF005'),
+                                                                                                     (88, 5, '2025-04-08 00:00:00', 107.47, 108.97, 109.12, 106.7, 'ETF005'),
+                                                                                                     (89, 5, '2025-04-09 00:00:00', 92.37, 91.43, 93.36, 90.5, 'ETF005'),
+                                                                                                     (90, 5, '2025-04-10 00:00:00', 104.53, 105.16, 106.01, 104.24, 'ETF005'),
+                                                                                                     (91, 5, '2025-04-11 00:00:00', 102.79, 101.88, 103.22, 101.78, 'ETF005'),
+                                                                                                     (92, 5, '2025-04-12 00:00:00', 91.53, 90.53, 92.5, 89.87, 'ETF005'),
+                                                                                                     (93, 5, '2025-04-13 00:00:00', 103.53, 103.44, 103.86, 103.1, 'ETF005'),
+                                                                                                     (94, 5, '2025-04-14 00:00:00', 92.71, 93.07, 93.31, 92.25, 'ETF005'),
+                                                                                                     (95, 5, '2025-04-15 00:00:00', 104.88, 106.88, 107.05, 104.51, 'ETF005'),
+                                                                                                     (96, 5, '2025-04-16 00:00:00', 90.98, 90.31, 91.8, 89.97, 'ETF005'),
+                                                                                                     (97, 5, '2025-04-17 00:00:00', 109.47, 110.71, 111.61, 109.13, 'ETF005'),
+                                                                                                     (98, 5, '2025-04-18 00:00:00', 91.99, 90.59, 92.69, 89.71, 'ETF005'),
+                                                                                                     (99, 5, '2025-04-19 00:00:00', 92.9, 92.55, 92.99, 91.57, 'ETF005'),
+                                                                                                     (100, 5, '2025-04-20 00:00:00', 90.98, 92.72, 92.92, 89.98, 'ETF005'),
+                                                                                                     (101, 6, '2025-04-01 00:00:00', 95.78, 97.34, 97.42, 95.54, 'ETF006'),
+                                                                                                     (102, 6, '2025-04-02 00:00:00', 102.54, 102.84, 103.22, 102.08, 'ETF006'),
+                                                                                                     (103, 6, '2025-04-03 00:00:00', 94.11, 92.42, 94.73, 91.47, 'ETF006'),
+                                                                                                     (104, 6, '2025-04-04 00:00:00', 95.82, 94.81, 96.67, 94.1, 'ETF006'),
+                                                                                                     (105, 6, '2025-04-05 00:00:00', 97.35, 95.55, 98.22, 94.64, 'ETF006'),
+                                                                                                     (106, 6, '2025-04-06 00:00:00', 107.32, 107.52, 107.82, 106.74, 'ETF006'),
+                                                                                                     (107, 6, '2025-04-07 00:00:00', 104.15, 103.88, 104.49, 103.15, 'ETF006'),
+                                                                                                     (108, 6, '2025-04-08 00:00:00', 93.91, 95.23, 95.73, 93.55, 'ETF006'),
+                                                                                                     (109, 6, '2025-04-09 00:00:00', 105.3, 105.51, 106.0, 104.33, 'ETF006'),
+                                                                                                     (110, 6, '2025-04-10 00:00:00', 90.41, 88.73, 90.79, 88.4, 'ETF006'),
+                                                                                                     (111, 6, '2025-04-11 00:00:00', 106.2, 107.23, 108.2, 105.5, 'ETF006'),
+                                                                                                     (112, 6, '2025-04-12 00:00:00', 93.22, 92.37, 93.34, 91.46, 'ETF006'),
+                                                                                                     (113, 6, '2025-04-13 00:00:00', 95.9, 97.88, 98.41, 95.71, 'ETF006'),
+                                                                                                     (114, 6, '2025-04-14 00:00:00', 102.09, 103.64, 104.16, 102.09, 'ETF006'),
+                                                                                                     (115, 6, '2025-04-15 00:00:00', 102.87, 104.18, 104.54, 102.26, 'ETF006'),
+                                                                                                     (116, 6, '2025-04-16 00:00:00', 93.48, 93.15, 93.7, 92.59, 'ETF006'),
+                                                                                                     (117, 6, '2025-04-17 00:00:00', 107.54, 106.44, 107.8, 106.12, 'ETF006'),
+                                                                                                     (118, 6, '2025-04-18 00:00:00', 103.48, 102.17, 103.7, 101.55, 'ETF006'),
+                                                                                                     (119, 6, '2025-04-19 00:00:00', 97.29, 97.27, 98.23, 97.25, 'ETF006'),
+                                                                                                     (120, 6, '2025-04-20 00:00:00', 92.27, 93.81, 94.62, 91.87, 'ETF006'),
+                                                                                                     (121, 7, '2025-04-01 00:00:00', 108.57, 110.18, 110.42, 108.46, 'ETF007'),
+                                                                                                     (122, 7, '2025-04-02 00:00:00', 90.27, 88.3, 90.59, 87.6, 'ETF007'),
+                                                                                                     (123, 7, '2025-04-03 00:00:00', 100.74, 100.15, 101.16, 99.72, 'ETF007'),
+                                                                                                     (124, 7, '2025-04-04 00:00:00', 104.76, 103.05, 105.03, 102.82, 'ETF007'),
+                                                                                                     (125, 7, '2025-04-05 00:00:00', 109.12, 108.99, 109.88, 108.02, 'ETF007'),
+                                                                                                     (126, 7, '2025-04-06 00:00:00', 95.0, 93.48, 95.81, 92.95, 'ETF007'),
+                                                                                                     (127, 7, '2025-04-07 00:00:00', 108.07, 106.96, 108.3, 106.07, 'ETF007'),
+                                                                                                     (128, 7, '2025-04-08 00:00:00', 104.04, 104.43, 105.23, 103.88, 'ETF007'),
+                                                                                                     (129, 7, '2025-04-09 00:00:00', 93.72, 93.81, 94.37, 93.03, 'ETF007'),
+                                                                                                     (130, 7, '2025-04-10 00:00:00', 94.01, 93.84, 94.34, 93.28, 'ETF007'),
+                                                                                                     (131, 7, '2025-04-11 00:00:00', 109.59, 108.29, 110.04, 107.82, 'ETF007'),
+                                                                                                     (132, 7, '2025-04-12 00:00:00', 97.62, 96.69, 98.06, 96.69, 'ETF007'),
+                                                                                                     (133, 7, '2025-04-13 00:00:00', 107.0, 107.66, 108.39, 106.12, 'ETF007'),
+                                                                                                     (134, 7, '2025-04-14 00:00:00', 98.68, 100.22, 100.44, 97.91, 'ETF007'),
+                                                                                                     (135, 7, '2025-04-15 00:00:00', 102.71, 103.47, 103.49, 101.82, 'ETF007'),
+                                                                                                     (136, 7, '2025-04-16 00:00:00', 90.63, 90.88, 91.4, 90.2, 'ETF007'),
+                                                                                                     (137, 7, '2025-04-17 00:00:00', 108.55, 109.86, 109.96, 108.25, 'ETF007'),
+                                                                                                     (138, 7, '2025-04-18 00:00:00', 95.52, 96.88, 97.77, 95.45, 'ETF007'),
+                                                                                                     (139, 7, '2025-04-19 00:00:00', 102.42, 100.82, 102.86, 100.49, 'ETF007'),
+                                                                                                     (140, 7, '2025-04-20 00:00:00', 95.19, 93.44, 95.67, 93.15, 'ETF007'),
+                                                                                                     (141, 8, '2025-04-01 00:00:00', 97.43, 96.74, 97.83, 96.69, 'ETF008'),
+                                                                                                     (142, 8, '2025-04-02 00:00:00', 90.16, 90.1, 90.44, 89.62, 'ETF008'),
+                                                                                                     (143, 8, '2025-04-03 00:00:00', 103.89, 103.62, 104.29, 102.9, 'ETF008'),
+                                                                                                     (144, 8, '2025-04-04 00:00:00', 107.87, 107.31, 108.27, 107.17, 'ETF008'),
+                                                                                                     (145, 8, '2025-04-05 00:00:00', 98.66, 97.2, 99.31, 96.55, 'ETF008'),
+                                                                                                     (146, 8, '2025-04-06 00:00:00', 101.41, 102.62, 103.2, 101.25, 'ETF008'),
+                                                                                                     (147, 8, '2025-04-07 00:00:00', 93.38, 94.27, 94.6, 92.51, 'ETF008'),
+                                                                                                     (148, 8, '2025-04-08 00:00:00', 105.48, 106.65, 107.3, 104.72, 'ETF008'),
+                                                                                                     (149, 8, '2025-04-09 00:00:00', 99.77, 97.9, 100.28, 96.94, 'ETF008'),
+                                                                                                     (150, 8, '2025-04-10 00:00:00', 94.9, 95.17, 95.62, 94.34, 'ETF008'),
+                                                                                                     (151, 8, '2025-04-11 00:00:00', 100.05, 101.44, 101.78, 99.64, 'ETF008'),
+                                                                                                     (152, 8, '2025-04-12 00:00:00', 109.14, 110.92, 111.43, 108.68, 'ETF008'),
+                                                                                                     (153, 8, '2025-04-13 00:00:00', 93.62, 92.27, 94.54, 91.43, 'ETF008'),
+                                                                                                     (154, 8, '2025-04-14 00:00:00', 103.58, 101.91, 103.84, 101.54, 'ETF008'),
+                                                                                                     (155, 8, '2025-04-15 00:00:00', 90.6, 92.39, 92.57, 90.27, 'ETF008'),
+                                                                                                     (156, 8, '2025-04-16 00:00:00', 95.13, 95.1, 96.06, 95.04, 'ETF008'),
+                                                                                                     (157, 8, '2025-04-17 00:00:00', 102.88, 103.03, 103.3, 102.03, 'ETF008'),
+                                                                                                     (158, 8, '2025-04-18 00:00:00', 100.55, 101.82, 102.31, 100.41, 'ETF008'),
+                                                                                                     (159, 8, '2025-04-19 00:00:00', 97.44, 96.6, 97.89, 96.11, 'ETF008'),
+                                                                                                     (160, 8, '2025-04-20 00:00:00', 98.03, 98.87, 99.51, 97.84, 'ETF008'),
+                                                                                                     (161, 9, '2025-04-01 00:00:00', 100.54, 99.91, 100.58, 99.41, 'ETF009'),
+                                                                                                     (162, 9, '2025-04-02 00:00:00', 93.45, 91.79, 94.15, 91.63, 'ETF009'),
+                                                                                                     (163, 9, '2025-04-03 00:00:00', 109.09, 110.59, 111.2, 109.07, 'ETF009'),
+                                                                                                     (164, 9, '2025-04-04 00:00:00', 90.2, 88.49, 90.47, 88.09, 'ETF009'),
+                                                                                                     (165, 9, '2025-04-05 00:00:00', 94.23, 92.85, 94.87, 92.49, 'ETF009'),
+                                                                                                     (166, 9, '2025-04-06 00:00:00', 108.97, 108.4, 109.46, 108.2, 'ETF009'),
+                                                                                                     (167, 9, '2025-04-07 00:00:00', 105.99, 105.86, 106.79, 105.24, 'ETF009'),
+                                                                                                     (168, 9, '2025-04-08 00:00:00', 104.34, 103.36, 104.44, 103.24, 'ETF009'),
+                                                                                                     (169, 9, '2025-04-09 00:00:00', 97.05, 95.33, 97.22, 95.12, 'ETF009'),
+                                                                                                     (170, 9, '2025-04-10 00:00:00', 97.69, 97.39, 97.72, 96.61, 'ETF009'),
+                                                                                                     (171, 9, '2025-04-11 00:00:00', 109.45, 110.11, 110.44, 109.27, 'ETF009'),
+                                                                                                     (172, 9, '2025-04-12 00:00:00', 93.49, 95.0, 95.51, 93.05, 'ETF009'),
+                                                                                                     (173, 9, '2025-04-13 00:00:00', 98.53, 98.29, 99.17, 98.1, 'ETF009'),
+                                                                                                     (174, 9, '2025-04-14 00:00:00', 98.01, 99.32, 99.78, 97.85, 'ETF009'),
+                                                                                                     (175, 9, '2025-04-15 00:00:00', 107.95, 109.36, 109.44, 107.48, 'ETF009'),
+                                                                                                     (176, 9, '2025-04-16 00:00:00', 106.36, 107.24, 107.28, 106.34, 'ETF009'),
+                                                                                                     (177, 9, '2025-04-17 00:00:00', 105.54, 105.4, 106.41, 104.79, 'ETF009'),
+                                                                                                     (178, 9, '2025-04-18 00:00:00', 93.36, 95.34, 95.73, 92.51, 'ETF009'),
+                                                                                                     (179, 9, '2025-04-19 00:00:00', 105.85, 107.1, 107.46, 105.46, 'ETF009'),
+                                                                                                     (180, 9, '2025-04-20 00:00:00', 96.67, 95.86, 97.15, 95.3, 'ETF009'),
+                                                                                                     (181, 10, '2025-04-01 00:00:00', 100.86, 100.87, 101.51, 99.91, 'ETF010'),
+                                                                                                     (182, 10, '2025-04-02 00:00:00', 104.58, 103.35, 105.17, 102.85, 'ETF010'),
+                                                                                                     (183, 10, '2025-04-03 00:00:00', 98.15, 96.67, 98.9, 95.98, 'ETF010'),
+                                                                                                     (184, 10, '2025-04-04 00:00:00', 109.05, 107.74, 109.57, 107.29, 'ETF010'),
+                                                                                                     (185, 10, '2025-04-05 00:00:00', 102.49, 101.11, 103.33, 101.07, 'ETF010'),
+                                                                                                     (186, 10, '2025-04-06 00:00:00', 107.12, 109.03, 109.2, 107.0, 'ETF010'),
+                                                                                                     (187, 10, '2025-04-07 00:00:00', 102.39, 103.24, 103.45, 102.14, 'ETF010'),
+                                                                                                     (188, 10, '2025-04-08 00:00:00', 94.05, 92.92, 94.44, 92.39, 'ETF010'),
+                                                                                                     (189, 10, '2025-04-09 00:00:00', 92.38, 91.68, 92.96, 91.19, 'ETF010'),
+                                                                                                     (190, 10, '2025-04-10 00:00:00', 101.13, 102.47, 103.01, 100.99, 'ETF010'),
+                                                                                                     (191, 10, '2025-04-11 00:00:00', 93.36, 91.37, 94.2, 90.49, 'ETF010'),
+                                                                                                     (192, 10, '2025-04-12 00:00:00', 93.53, 91.78, 93.58, 91.27, 'ETF010'),
+                                                                                                     (193, 10, '2025-04-13 00:00:00', 103.01, 101.43, 103.04, 100.67, 'ETF010'),
+                                                                                                     (194, 10, '2025-04-14 00:00:00', 109.67, 111.63, 111.83, 109.12, 'ETF010'),
+                                                                                                     (195, 10, '2025-04-15 00:00:00', 91.5, 89.7, 91.64, 89.28, 'ETF010'),
+                                                                                                     (196, 10, '2025-04-16 00:00:00', 93.62, 92.0, 93.94, 91.38, 'ETF010'),
+                                                                                                     (197, 10, '2025-04-17 00:00:00', 102.32, 100.65, 102.84, 99.73, 'ETF010'),
+                                                                                                     (198, 10, '2025-04-18 00:00:00', 93.43, 93.56, 93.83, 92.56, 'ETF010'),
+                                                                                                     (199, 10, '2025-04-19 00:00:00', 105.29, 103.86, 105.36, 103.75, 'ETF010'),
+                                                                                                     (200, 10, '2025-04-20 00:00:00', 102.77, 104.03, 104.99, 102.09, 'ETF010'),
+                                                                                                     (201, 11, '2025-04-01 00:00:00', 105.89, 104.82, 106.77, 104.2, 'ETF011'),
+                                                                                                     (202, 11, '2025-04-02 00:00:00', 91.28, 92.79, 93.51, 90.51, 'ETF011'),
+                                                                                                     (203, 11, '2025-04-03 00:00:00', 105.6, 103.89, 105.97, 103.85, 'ETF011'),
+                                                                                                     (204, 11, '2025-04-04 00:00:00', 104.26, 104.74, 105.68, 103.3, 'ETF011'),
+                                                                                                     (205, 11, '2025-04-05 00:00:00', 93.0, 91.65, 93.64, 91.46, 'ETF011'),
+                                                                                                     (206, 11, '2025-04-06 00:00:00', 101.34, 103.09, 103.14, 101.28, 'ETF011'),
+                                                                                                     (207, 11, '2025-04-07 00:00:00', 96.79, 95.81, 97.09, 95.61, 'ETF011'),
+                                                                                                     (208, 11, '2025-04-08 00:00:00', 95.62, 96.74, 96.84, 94.88, 'ETF011'),
+                                                                                                     (209, 11, '2025-04-09 00:00:00', 91.49, 92.81, 93.03, 91.46, 'ETF011'),
+                                                                                                     (210, 11, '2025-04-10 00:00:00', 94.15, 93.1, 94.73, 92.61, 'ETF011'),
+                                                                                                     (211, 11, '2025-04-11 00:00:00', 99.57, 101.22, 102.18, 99.23, 'ETF011'),
+                                                                                                     (212, 11, '2025-04-12 00:00:00', 95.65, 94.81, 96.28, 94.35, 'ETF011'),
+                                                                                                     (213, 11, '2025-04-13 00:00:00', 103.65, 101.67, 104.13, 101.22, 'ETF011'),
+                                                                                                     (214, 11, '2025-04-14 00:00:00', 102.11, 100.92, 102.39, 100.69, 'ETF011'),
+                                                                                                     (215, 11, '2025-04-15 00:00:00', 96.69, 95.72, 96.97, 95.36, 'ETF011'),
+                                                                                                     (216, 11, '2025-04-16 00:00:00', 107.25, 105.57, 107.8, 105.5, 'ETF011'),
+                                                                                                     (217, 11, '2025-04-17 00:00:00', 97.63, 95.85, 98.09, 95.49, 'ETF011'),
+                                                                                                     (218, 11, '2025-04-18 00:00:00', 104.97, 105.86, 106.6, 103.99, 'ETF011'),
+                                                                                                     (219, 11, '2025-04-19 00:00:00', 107.96, 108.66, 109.62, 107.2, 'ETF011'),
+                                                                                                     (220, 11, '2025-04-20 00:00:00', 99.1, 101.04, 101.85, 98.49, 'ETF011'),
+                                                                                                     (221, 12, '2025-04-01 00:00:00', 90.98, 89.04, 91.92, 88.28, 'ETF012'),
+                                                                                                     (222, 12, '2025-04-02 00:00:00', 105.19, 105.21, 105.68, 104.8, 'ETF012'),
+                                                                                                     (223, 12, '2025-04-03 00:00:00', 91.27, 89.48, 91.9, 89.23, 'ETF012'),
+                                                                                                     (224, 12, '2025-04-04 00:00:00', 98.32, 100.32, 101.07, 97.36, 'ETF012'),
+                                                                                                     (225, 12, '2025-04-05 00:00:00', 102.64, 101.96, 102.73, 101.29, 'ETF012'),
+                                                                                                     (226, 12, '2025-04-06 00:00:00', 102.94, 103.85, 104.4, 102.69, 'ETF012'),
+                                                                                                     (227, 12, '2025-04-07 00:00:00', 98.04, 99.65, 99.76, 98.02, 'ETF012'),
+                                                                                                     (228, 12, '2025-04-08 00:00:00', 95.48, 94.5, 95.83, 94.32, 'ETF012'),
+                                                                                                     (229, 12, '2025-04-09 00:00:00', 102.41, 101.21, 103.28, 100.98, 'ETF012'),
+                                                                                                     (230, 12, '2025-04-10 00:00:00', 105.27, 104.33, 105.89, 104.12, 'ETF012'),
+                                                                                                     (231, 12, '2025-04-11 00:00:00', 90.37, 91.85, 91.88, 90.01, 'ETF012'),
+                                                                                                     (232, 12, '2025-04-12 00:00:00', 108.28, 108.62, 108.97, 107.79, 'ETF012'),
+                                                                                                     (233, 12, '2025-04-13 00:00:00', 106.72, 107.47, 107.65, 106.31, 'ETF012'),
+                                                                                                     (234, 12, '2025-04-14 00:00:00', 105.6, 106.79, 107.31, 105.33, 'ETF012'),
+                                                                                                     (235, 12, '2025-04-15 00:00:00', 107.62, 109.12, 110.09, 107.19, 'ETF012'),
+                                                                                                     (236, 12, '2025-04-16 00:00:00', 91.78, 93.49, 94.06, 91.13, 'ETF012'),
+                                                                                                     (237, 12, '2025-04-17 00:00:00', 97.93, 99.44, 100.15, 97.23, 'ETF012'),
+                                                                                                     (238, 12, '2025-04-18 00:00:00', 101.66, 101.38, 102.02, 101.12, 'ETF012'),
+                                                                                                     (239, 12, '2025-04-19 00:00:00', 99.65, 100.7, 101.68, 98.72, 'ETF012'),
+                                                                                                     (240, 12, '2025-04-20 00:00:00', 109.93, 110.1, 110.76, 109.75, 'ETF012'),
+                                                                                                     (241, 13, '2025-04-01 00:00:00', 96.51, 97.82, 98.23, 96.14, 'ETF013'),
+                                                                                                     (242, 13, '2025-04-02 00:00:00', 93.67, 93.93, 94.22, 93.17, 'ETF013'),
+                                                                                                     (243, 13, '2025-04-03 00:00:00', 104.1, 105.69, 105.85, 103.52, 'ETF013'),
+                                                                                                     (244, 13, '2025-04-04 00:00:00', 95.68, 95.15, 96.16, 94.29, 'ETF013'),
+                                                                                                     (245, 13, '2025-04-05 00:00:00', 102.27, 101.41, 102.56, 100.65, 'ETF013'),
+                                                                                                     (246, 13, '2025-04-06 00:00:00', 91.07, 92.45, 92.49, 91.01, 'ETF013'),
+                                                                                                     (247, 13, '2025-04-07 00:00:00', 96.34, 96.59, 96.79, 96.06, 'ETF013'),
+                                                                                                     (248, 13, '2025-04-08 00:00:00', 107.42, 105.58, 108.03, 105.12, 'ETF013'),
+                                                                                                     (249, 13, '2025-04-09 00:00:00', 92.55, 92.67, 93.4, 91.64, 'ETF013'),
+                                                                                                     (250, 13, '2025-04-10 00:00:00', 97.9, 96.38, 98.02, 95.63, 'ETF013'),
+                                                                                                     (251, 13, '2025-04-11 00:00:00', 95.88, 95.62, 95.91, 95.16, 'ETF013'),
+                                                                                                     (252, 13, '2025-04-12 00:00:00', 99.04, 100.16, 101.09, 98.25, 'ETF013'),
+                                                                                                     (253, 13, '2025-04-13 00:00:00', 103.31, 102.91, 104.11, 101.93, 'ETF013'),
+                                                                                                     (254, 13, '2025-04-14 00:00:00', 99.85, 101.7, 102.1, 98.93, 'ETF013'),
+                                                                                                     (255, 13, '2025-04-15 00:00:00', 102.4, 102.3, 102.46, 101.79, 'ETF013'),
+                                                                                                     (256, 13, '2025-04-16 00:00:00', 101.42, 102.51, 102.8, 100.79, 'ETF013'),
+                                                                                                     (257, 13, '2025-04-17 00:00:00', 107.36, 106.67, 107.98, 106.17, 'ETF013'),
+                                                                                                     (258, 13, '2025-04-18 00:00:00', 93.35, 92.97, 93.35, 92.72, 'ETF013'),
+                                                                                                     (259, 13, '2025-04-19 00:00:00', 93.9, 92.21, 94.65, 91.65, 'ETF013'),
+                                                                                                     (260, 13, '2025-04-20 00:00:00', 92.64, 91.34, 93.36, 91.14, 'ETF013'),
+                                                                                                     (261, 14, '2025-04-01 00:00:00', 107.84, 107.79, 108.65, 106.89, 'ETF014'),
+                                                                                                     (262, 14, '2025-04-02 00:00:00', 90.92, 91.65, 92.47, 90.09, 'ETF014'),
+                                                                                                     (263, 14, '2025-04-03 00:00:00', 103.72, 103.19, 103.83, 102.55, 'ETF014'),
+                                                                                                     (264, 14, '2025-04-04 00:00:00', 94.05, 94.39, 94.75, 93.17, 'ETF014'),
+                                                                                                     (265, 14, '2025-04-05 00:00:00', 104.87, 104.72, 105.58, 103.95, 'ETF014'),
+                                                                                                     (266, 14, '2025-04-06 00:00:00', 97.12, 97.54, 97.58, 96.56, 'ETF014'),
+                                                                                                     (267, 14, '2025-04-07 00:00:00', 93.9, 94.35, 94.78, 93.1, 'ETF014'),
+                                                                                                     (268, 14, '2025-04-08 00:00:00', 95.16, 97.05, 97.51, 94.62, 'ETF014'),
+                                                                                                     (269, 14, '2025-04-09 00:00:00', 106.6, 107.17, 107.67, 106.19, 'ETF014'),
+                                                                                                     (270, 14, '2025-04-10 00:00:00', 92.07, 90.79, 92.45, 90.68, 'ETF014'),
+                                                                                                     (271, 14, '2025-04-11 00:00:00', 100.24, 101.26, 101.77, 99.4, 'ETF014'),
+                                                                                                     (272, 14, '2025-04-12 00:00:00', 90.52, 89.13, 90.8, 89.01, 'ETF014'),
+                                                                                                     (273, 14, '2025-04-13 00:00:00', 93.02, 94.68, 95.04, 93.01, 'ETF014'),
+                                                                                                     (274, 14, '2025-04-14 00:00:00', 100.23, 99.9, 101.19, 99.04, 'ETF014'),
+                                                                                                     (275, 14, '2025-04-15 00:00:00', 90.18, 88.23, 90.64, 87.35, 'ETF014'),
+                                                                                                     (276, 14, '2025-04-16 00:00:00', 95.18, 93.92, 95.44, 93.5, 'ETF014'),
+                                                                                                     (277, 14, '2025-04-17 00:00:00', 97.46, 96.83, 98.32, 96.74, 'ETF014'),
+                                                                                                     (278, 14, '2025-04-18 00:00:00', 98.36, 100.33, 101.23, 97.47, 'ETF014'),
+                                                                                                     (279, 14, '2025-04-19 00:00:00', 103.8, 103.62, 103.95, 103.58, 'ETF014'),
+                                                                                                     (280, 14, '2025-04-20 00:00:00', 94.88, 94.93, 95.7, 94.76, 'ETF014'),
+                                                                                                     (281, 15, '2025-04-01 00:00:00', 103.55, 104.4, 104.47, 103.29, 'ETF015'),
+                                                                                                     (282, 15, '2025-04-02 00:00:00', 108.52, 107.83, 108.62, 107.13, 'ETF015'),
+                                                                                                     (283, 15, '2025-04-03 00:00:00', 98.63, 97.25, 99.42, 96.6, 'ETF015'),
+                                                                                                     (284, 15, '2025-04-04 00:00:00', 97.11, 97.44, 97.98, 96.31, 'ETF015'),
+                                                                                                     (285, 15, '2025-04-05 00:00:00', 91.97, 90.86, 92.72, 89.97, 'ETF015'),
+                                                                                                     (286, 15, '2025-04-06 00:00:00', 90.55, 92.27, 92.61, 90.23, 'ETF015'),
+                                                                                                     (287, 15, '2025-04-07 00:00:00', 97.04, 98.55, 98.67, 96.1, 'ETF015'),
+                                                                                                     (288, 15, '2025-04-08 00:00:00', 107.11, 106.54, 107.23, 105.63, 'ETF015'),
+                                                                                                     (289, 15, '2025-04-09 00:00:00', 95.02, 97.02, 97.34, 94.24, 'ETF015'),
+                                                                                                     (290, 15, '2025-04-10 00:00:00', 95.55, 94.87, 95.61, 94.48, 'ETF015'),
+                                                                                                     (291, 15, '2025-04-11 00:00:00', 90.88, 88.93, 91.01, 88.42, 'ETF015'),
+                                                                                                     (292, 15, '2025-04-12 00:00:00', 104.51, 103.23, 105.11, 103.12, 'ETF015'),
+                                                                                                     (293, 15, '2025-04-13 00:00:00', 103.86, 105.23, 105.49, 103.42, 'ETF015'),
+                                                                                                     (294, 15, '2025-04-14 00:00:00', 107.84, 109.15, 109.22, 107.47, 'ETF015'),
+                                                                                                     (295, 15, '2025-04-15 00:00:00', 109.62, 111.14, 111.45, 109.15, 'ETF015'),
+                                                                                                     (296, 15, '2025-04-16 00:00:00', 94.6, 93.73, 95.33, 93.52, 'ETF015'),
+                                                                                                     (297, 15, '2025-04-17 00:00:00', 100.96, 99.2, 101.01, 98.63, 'ETF015'),
+                                                                                                     (298, 15, '2025-04-18 00:00:00', 102.36, 104.24, 105.12, 101.85, 'ETF015'),
+                                                                                                     (299, 15, '2025-04-19 00:00:00', 106.4, 104.43, 107.18, 104.08, 'ETF015'),
+                                                                                                     (300, 15, '2025-04-20 00:00:00', 96.7, 98.43, 98.83, 95.89, 'ETF015'),
+                                                                                                     (301, 16, '2025-04-01 00:00:00', 107.15, 106.26, 107.52, 106.2, 'ETF016'),
+                                                                                                     (302, 16, '2025-04-02 00:00:00', 106.35, 106.23, 107.11, 105.72, 'ETF016'),
+                                                                                                     (303, 16, '2025-04-03 00:00:00', 100.55, 101.03, 101.6, 100.11, 'ETF016'),
+                                                                                                     (304, 16, '2025-04-04 00:00:00', 107.58, 109.35, 109.93, 107.18, 'ETF016'),
+                                                                                                     (305, 16, '2025-04-05 00:00:00', 93.32, 95.23, 95.31, 92.62, 'ETF016'),
+                                                                                                     (306, 16, '2025-04-06 00:00:00', 96.86, 96.29, 97.68, 95.83, 'ETF016'),
+                                                                                                     (307, 16, '2025-04-07 00:00:00', 101.58, 101.61, 101.85, 101.36, 'ETF016'),
+                                                                                                     (308, 16, '2025-04-08 00:00:00', 94.01, 92.19, 94.46, 92.11, 'ETF016'),
+                                                                                                     (309, 16, '2025-04-09 00:00:00', 104.75, 104.23, 105.52, 103.96, 'ETF016'),
+                                                                                                     (310, 16, '2025-04-10 00:00:00', 103.2, 103.04, 103.29, 102.7, 'ETF016'),
+                                                                                                     (311, 16, '2025-04-11 00:00:00', 108.13, 108.24, 108.62, 107.31, 'ETF016'),
+                                                                                                     (312, 16, '2025-04-12 00:00:00', 105.98, 106.24, 106.32, 105.73, 'ETF016'),
+                                                                                                     (313, 16, '2025-04-13 00:00:00', 93.48, 92.28, 94.39, 91.6, 'ETF016'),
+                                                                                                     (314, 16, '2025-04-14 00:00:00', 102.71, 104.04, 104.41, 102.3, 'ETF016'),
+                                                                                                     (315, 16, '2025-04-15 00:00:00', 106.25, 105.61, 106.63, 104.98, 'ETF016'),
+                                                                                                     (316, 16, '2025-04-16 00:00:00', 105.92, 104.56, 106.11, 104.51, 'ETF016'),
+                                                                                                     (317, 16, '2025-04-17 00:00:00', 90.02, 89.59, 90.57, 89.49, 'ETF016'),
+                                                                                                     (318, 16, '2025-04-18 00:00:00', 104.43, 104.92, 105.42, 103.88, 'ETF016'),
+                                                                                                     (319, 16, '2025-04-19 00:00:00', 96.11, 95.73, 96.48, 94.78, 'ETF016'),
+                                                                                                     (320, 16, '2025-04-20 00:00:00', 104.7, 105.82, 106.59, 104.2, 'ETF016'),
+                                                                                                     (321, 17, '2025-04-01 00:00:00', 97.27, 97.7, 98.41, 96.69, 'ETF017'),
+                                                                                                     (322, 17, '2025-04-02 00:00:00', 109.46, 110.25, 110.51, 109.01, 'ETF017'),
+                                                                                                     (323, 17, '2025-04-03 00:00:00', 93.06, 94.86, 94.9, 92.54, 'ETF017'),
+                                                                                                     (324, 17, '2025-04-04 00:00:00', 98.51, 98.36, 98.85, 97.51, 'ETF017'),
+                                                                                                     (325, 17, '2025-04-05 00:00:00', 102.41, 103.35, 103.91, 102.22, 'ETF017'),
+                                                                                                     (326, 17, '2025-04-06 00:00:00', 95.0, 97.0, 97.48, 94.03, 'ETF017'),
+                                                                                                     (327, 17, '2025-04-07 00:00:00', 105.99, 107.55, 108.1, 105.34, 'ETF017'),
+                                                                                                     (328, 17, '2025-04-08 00:00:00', 93.68, 94.04, 94.88, 93.15, 'ETF017'),
+                                                                                                     (329, 17, '2025-04-09 00:00:00', 103.2, 101.52, 103.51, 100.72, 'ETF017'),
+                                                                                                     (330, 17, '2025-04-10 00:00:00', 108.66, 109.51, 110.19, 107.76, 'ETF017'),
+                                                                                                     (331, 17, '2025-04-11 00:00:00', 94.92, 96.34, 97.34, 94.53, 'ETF017'),
+                                                                                                     (332, 17, '2025-04-12 00:00:00', 99.67, 100.86, 101.66, 99.46, 'ETF017'),
+                                                                                                     (333, 17, '2025-04-13 00:00:00', 109.72, 110.48, 110.58, 109.6, 'ETF017'),
+                                                                                                     (334, 17, '2025-04-14 00:00:00', 108.38, 108.21, 108.91, 107.94, 'ETF017'),
+                                                                                                     (335, 17, '2025-04-15 00:00:00', 99.78, 99.31, 99.81, 98.62, 'ETF017'),
+                                                                                                     (336, 17, '2025-04-16 00:00:00', 107.09, 108.21, 109.17, 106.16, 'ETF017'),
+                                                                                                     (337, 17, '2025-04-17 00:00:00', 104.63, 103.95, 105.11, 103.56, 'ETF017'),
+                                                                                                     (338, 17, '2025-04-18 00:00:00', 101.28, 102.54, 103.38, 100.42, 'ETF017'),
+                                                                                                     (339, 17, '2025-04-19 00:00:00', 91.19, 89.43, 91.89, 88.74, 'ETF017'),
+                                                                                                     (340, 17, '2025-04-20 00:00:00', 94.58, 94.15, 94.78, 93.21, 'ETF017'),
+                                                                                                     (341, 18, '2025-04-01 00:00:00', 97.46, 98.09, 99.07, 97.17, 'ETF018'),
+                                                                                                     (342, 18, '2025-04-02 00:00:00', 96.43, 95.12, 96.66, 94.3, 'ETF018'),
+                                                                                                     (343, 18, '2025-04-03 00:00:00', 106.39, 105.79, 107.03, 105.6, 'ETF018'),
+                                                                                                     (344, 18, '2025-04-04 00:00:00', 94.56, 96.44, 96.85, 94.14, 'ETF018'),
+                                                                                                     (345, 18, '2025-04-05 00:00:00', 105.25, 105.89, 106.64, 105.21, 'ETF018'),
+                                                                                                     (346, 18, '2025-04-06 00:00:00', 99.4, 100.81, 101.75, 98.71, 'ETF018'),
+                                                                                                     (347, 18, '2025-04-07 00:00:00', 97.39, 96.62, 97.55, 96.5, 'ETF018'),
+                                                                                                     (348, 18, '2025-04-08 00:00:00', 104.72, 103.5, 105.06, 103.15, 'ETF018'),
+                                                                                                     (349, 18, '2025-04-09 00:00:00', 97.54, 95.69, 97.84, 95.09, 'ETF018'),
+                                                                                                     (350, 18, '2025-04-10 00:00:00', 105.71, 107.11, 107.11, 105.1, 'ETF018'),
+                                                                                                     (351, 18, '2025-04-11 00:00:00', 90.79, 89.7, 91.1, 89.33, 'ETF018'),
+                                                                                                     (352, 18, '2025-04-12 00:00:00', 101.84, 102.43, 102.7, 101.36, 'ETF018'),
+                                                                                                     (353, 18, '2025-04-13 00:00:00', 92.84, 91.02, 93.47, 90.83, 'ETF018'),
+                                                                                                     (354, 18, '2025-04-14 00:00:00', 90.93, 90.58, 91.2, 90.55, 'ETF018'),
+                                                                                                     (355, 18, '2025-04-15 00:00:00', 106.98, 107.7, 108.56, 106.83, 'ETF018'),
+                                                                                                     (356, 18, '2025-04-16 00:00:00', 107.51, 108.75, 109.24, 107.33, 'ETF018'),
+                                                                                                     (357, 18, '2025-04-17 00:00:00', 98.12, 99.52, 100.25, 97.16, 'ETF018'),
+                                                                                                     (358, 18, '2025-04-18 00:00:00', 103.22, 103.39, 103.57, 102.35, 'ETF018'),
+                                                                                                     (359, 18, '2025-04-19 00:00:00', 107.78, 109.37, 109.51, 107.28, 'ETF018'),
+                                                                                                     (360, 18, '2025-04-20 00:00:00', 106.74, 105.98, 107.48, 104.98, 'ETF018'),
+                                                                                                     (361, 19, '2025-04-01 00:00:00', 103.44, 102.63, 103.73, 102.41, 'ETF019'),
+                                                                                                     (362, 19, '2025-04-02 00:00:00', 95.28, 94.45, 95.86, 93.53, 'ETF019'),
+                                                                                                     (363, 19, '2025-04-03 00:00:00', 105.48, 105.59, 106.19, 104.83, 'ETF019'),
+                                                                                                     (364, 19, '2025-04-04 00:00:00', 93.5, 95.41, 95.93, 92.55, 'ETF019'),
+                                                                                                     (365, 19, '2025-04-05 00:00:00', 97.29, 98.74, 99.21, 97.15, 'ETF019'),
+                                                                                                     (366, 19, '2025-04-06 00:00:00', 96.91, 98.54, 98.9, 96.55, 'ETF019'),
+                                                                                                     (367, 19, '2025-04-07 00:00:00', 96.32, 96.03, 96.45, 95.18, 'ETF019'),
+                                                                                                     (368, 19, '2025-04-08 00:00:00', 91.64, 91.45, 92.47, 91.21, 'ETF019'),
+                                                                                                     (369, 19, '2025-04-09 00:00:00', 96.97, 97.59, 98.29, 96.57, 'ETF019'),
+                                                                                                     (370, 19, '2025-04-10 00:00:00', 94.45, 92.47, 95.21, 92.4, 'ETF019'),
+                                                                                                     (371, 19, '2025-04-11 00:00:00', 103.68, 103.21, 104.67, 103.19, 'ETF019'),
+                                                                                                     (372, 19, '2025-04-12 00:00:00', 101.28, 100.28, 101.46, 99.77, 'ETF019'),
+                                                                                                     (373, 19, '2025-04-13 00:00:00', 103.46, 103.6, 103.65, 103.1, 'ETF019'),
+                                                                                                     (374, 19, '2025-04-14 00:00:00', 90.68, 91.63, 92.05, 90.14, 'ETF019'),
+                                                                                                     (375, 19, '2025-04-15 00:00:00', 105.21, 106.87, 107.04, 104.75, 'ETF019'),
+                                                                                                     (376, 19, '2025-04-16 00:00:00', 96.8, 96.79, 96.87, 96.12, 'ETF019'),
+                                                                                                     (377, 19, '2025-04-17 00:00:00', 109.73, 107.99, 109.82, 107.36, 'ETF019'),
+                                                                                                     (378, 19, '2025-04-18 00:00:00', 105.78, 106.33, 106.95, 105.09, 'ETF019'),
+                                                                                                     (379, 19, '2025-04-19 00:00:00', 101.64, 102.25, 102.99, 100.66, 'ETF019'),
+                                                                                                     (380, 19, '2025-04-20 00:00:00', 96.74, 97.09, 97.97, 96.59, 'ETF019'),
+                                                                                                     (381, 20, '2025-04-01 00:00:00', 91.07, 91.13, 91.89, 90.88, 'ETF020'),
+                                                                                                     (382, 20, '2025-04-02 00:00:00', 91.51, 92.29, 92.52, 90.52, 'ETF020'),
+                                                                                                     (383, 20, '2025-04-03 00:00:00', 90.74, 88.91, 91.32, 88.09, 'ETF020'),
+                                                                                                     (384, 20, '2025-04-04 00:00:00', 99.87, 100.73, 100.87, 99.6, 'ETF020'),
+                                                                                                     (385, 20, '2025-04-05 00:00:00', 95.92, 97.68, 98.47, 95.2, 'ETF020'),
+                                                                                                     (386, 20, '2025-04-06 00:00:00', 100.2, 100.95, 101.5, 99.65, 'ETF020'),
+                                                                                                     (387, 20, '2025-04-07 00:00:00', 96.65, 96.61, 97.34, 96.22, 'ETF020'),
+                                                                                                     (388, 20, '2025-04-08 00:00:00', 97.72, 96.55, 98.69, 95.83, 'ETF020'),
+                                                                                                     (389, 20, '2025-04-09 00:00:00', 106.42, 105.69, 107.41, 105.15, 'ETF020'),
+                                                                                                     (390, 20, '2025-04-10 00:00:00', 95.78, 94.46, 96.44, 93.64, 'ETF020'),
+                                                                                                     (391, 20, '2025-04-11 00:00:00', 107.68, 107.25, 108.15, 106.34, 'ETF020'),
+                                                                                                     (392, 20, '2025-04-12 00:00:00', 94.47, 92.52, 94.69, 92.08, 'ETF020'),
+                                                                                                     (393, 20, '2025-04-13 00:00:00', 96.97, 95.59, 97.91, 95.18, 'ETF020'),
+                                                                                                     (394, 20, '2025-04-14 00:00:00', 92.09, 93.03, 93.11, 91.94, 'ETF020'),
+                                                                                                     (395, 20, '2025-04-15 00:00:00', 101.64, 103.14, 104.1, 101.31, 'ETF020'),
+                                                                                                     (396, 20, '2025-04-16 00:00:00', 91.19, 93.09, 93.49, 90.98, 'ETF020'),
+                                                                                                     (397, 20, '2025-04-17 00:00:00', 93.55, 92.23, 94.09, 91.84, 'ETF020'),
+                                                                                                     (398, 20, '2025-04-18 00:00:00', 104.46, 102.88, 104.9, 102.86, 'ETF020'),
+                                                                                                     (399, 20, '2025-04-19 00:00:00', 97.95, 97.33, 98.21, 96.37, 'ETF020'),
+                                                                                                     (400, 20, '2025-04-20 00:00:00', 106.63, 107.09, 108.05, 106.6, 'ETF020'),
+                                                                                                     (401, 21, '2025-04-01 00:00:00', 90.67, 88.77, 91.48, 87.89, 'ETF021'),
+                                                                                                     (402, 21, '2025-04-02 00:00:00', 108.64, 108.7, 109.65, 107.86, 'ETF021'),
+                                                                                                     (403, 21, '2025-04-03 00:00:00', 93.43, 92.32, 93.82, 91.68, 'ETF021'),
+                                                                                                     (404, 21, '2025-04-04 00:00:00', 104.0, 103.2, 104.3, 102.3, 'ETF021'),
+                                                                                                     (405, 21, '2025-04-05 00:00:00', 109.51, 109.58, 110.07, 109.28, 'ETF021'),
+                                                                                                     (406, 21, '2025-04-06 00:00:00', 109.42, 108.53, 109.55, 108.42, 'ETF021'),
+                                                                                                     (407, 21, '2025-04-07 00:00:00', 104.67, 106.59, 107.27, 104.18, 'ETF021'),
+                                                                                                     (408, 21, '2025-04-08 00:00:00', 98.1, 97.6, 98.71, 96.82, 'ETF021'),
+                                                                                                     (409, 21, '2025-04-09 00:00:00', 91.93, 93.13, 93.46, 91.06, 'ETF021'),
+                                                                                                     (410, 21, '2025-04-10 00:00:00', 106.44, 108.01, 108.78, 105.62, 'ETF021'),
+                                                                                                     (411, 21, '2025-04-11 00:00:00', 92.03, 90.09, 92.6, 89.47, 'ETF021'),
+                                                                                                     (412, 21, '2025-04-12 00:00:00', 93.14, 92.24, 93.83, 91.99, 'ETF021'),
+                                                                                                     (413, 21, '2025-04-13 00:00:00', 104.14, 102.74, 104.99, 102.66, 'ETF021'),
+                                                                                                     (414, 21, '2025-04-14 00:00:00', 105.45, 105.09, 106.4, 104.79, 'ETF021'),
+                                                                                                     (415, 21, '2025-04-15 00:00:00', 99.03, 98.87, 99.05, 98.19, 'ETF021'),
+                                                                                                     (416, 21, '2025-04-16 00:00:00', 101.05, 102.17, 102.68, 100.75, 'ETF021'),
+                                                                                                     (417, 21, '2025-04-17 00:00:00', 94.73, 93.37, 95.35, 93.27, 'ETF021'),
+                                                                                                     (418, 21, '2025-04-18 00:00:00', 91.35, 90.78, 92.32, 90.5, 'ETF021'),
+                                                                                                     (419, 21, '2025-04-19 00:00:00', 103.86, 104.99, 105.56, 103.79, 'ETF021'),
+                                                                                                     (420, 21, '2025-04-20 00:00:00', 90.88, 89.82, 91.61, 89.57, 'ETF021'),
+                                                                                                     (421, 22, '2025-04-01 00:00:00', 101.71, 101.88, 102.23, 101.01, 'ETF022'),
+                                                                                                     (422, 22, '2025-04-02 00:00:00', 91.09, 89.21, 91.57, 88.53, 'ETF022'),
+                                                                                                     (423, 22, '2025-04-03 00:00:00', 91.15, 90.69, 91.58, 90.48, 'ETF022'),
+                                                                                                     (424, 22, '2025-04-04 00:00:00', 95.39, 93.8, 95.45, 93.39, 'ETF022'),
+                                                                                                     (425, 22, '2025-04-05 00:00:00', 103.02, 103.92, 104.11, 102.25, 'ETF022'),
+                                                                                                     (426, 22, '2025-04-06 00:00:00', 95.8, 97.54, 98.36, 95.22, 'ETF022'),
+                                                                                                     (427, 22, '2025-04-07 00:00:00', 93.89, 94.86, 95.69, 93.8, 'ETF022'),
+                                                                                                     (428, 22, '2025-04-08 00:00:00', 103.58, 104.0, 104.9, 102.74, 'ETF022'),
+                                                                                                     (429, 22, '2025-04-09 00:00:00', 93.81, 92.84, 94.39, 91.88, 'ETF022'),
+                                                                                                     (430, 22, '2025-04-10 00:00:00', 109.15, 109.2, 109.52, 108.53, 'ETF022'),
+                                                                                                     (431, 22, '2025-04-11 00:00:00', 96.32, 97.05, 97.94, 96.21, 'ETF022'),
+                                                                                                     (432, 22, '2025-04-12 00:00:00', 109.91, 108.2, 110.85, 107.36, 'ETF022'),
+                                                                                                     (433, 22, '2025-04-13 00:00:00', 109.06, 108.82, 109.59, 108.32, 'ETF022'),
+                                                                                                     (434, 22, '2025-04-14 00:00:00', 101.17, 102.93, 103.48, 100.97, 'ETF022'),
+                                                                                                     (435, 22, '2025-04-15 00:00:00', 90.48, 90.3, 91.23, 89.56, 'ETF022'),
+                                                                                                     (436, 22, '2025-04-16 00:00:00', 102.78, 103.2, 103.34, 102.06, 'ETF022'),
+                                                                                                     (437, 22, '2025-04-17 00:00:00', 109.16, 110.33, 111.1, 108.36, 'ETF022'),
+                                                                                                     (438, 22, '2025-04-18 00:00:00', 98.09, 97.85, 98.36, 97.53, 'ETF022'),
+                                                                                                     (439, 22, '2025-04-19 00:00:00', 98.35, 100.31, 100.98, 98.29, 'ETF022'),
+                                                                                                     (440, 22, '2025-04-20 00:00:00', 106.21, 105.42, 106.6, 105.11, 'ETF022'),
+                                                                                                     (441, 23, '2025-04-01 00:00:00', 97.43, 95.5, 98.41, 95.25, 'ETF023'),
+                                                                                                     (442, 23, '2025-04-02 00:00:00', 98.03, 97.62, 98.95, 96.89, 'ETF023'),
+                                                                                                     (443, 23, '2025-04-03 00:00:00', 104.16, 105.56, 105.96, 104.05, 'ETF023'),
+                                                                                                     (444, 23, '2025-04-04 00:00:00', 104.94, 105.57, 105.9, 104.6, 'ETF023'),
+                                                                                                     (445, 23, '2025-04-05 00:00:00', 94.08, 94.39, 95.14, 93.73, 'ETF023'),
+                                                                                                     (446, 23, '2025-04-06 00:00:00', 91.76, 89.81, 92.52, 89.42, 'ETF023'),
+                                                                                                     (447, 23, '2025-04-07 00:00:00', 100.33, 101.56, 101.83, 99.67, 'ETF023'),
+                                                                                                     (448, 23, '2025-04-08 00:00:00', 95.65, 93.96, 96.18, 93.92, 'ETF023'),
+                                                                                                     (449, 23, '2025-04-09 00:00:00', 94.16, 92.68, 94.74, 91.95, 'ETF023'),
+                                                                                                     (450, 23, '2025-04-10 00:00:00', 96.97, 97.4, 97.51, 96.3, 'ETF023'),
+                                                                                                     (451, 23, '2025-04-11 00:00:00', 92.24, 91.55, 92.58, 90.81, 'ETF023'),
+                                                                                                     (452, 23, '2025-04-12 00:00:00', 105.25, 103.32, 105.39, 103.16, 'ETF023'),
+                                                                                                     (453, 23, '2025-04-13 00:00:00', 97.8, 96.51, 98.64, 96.49, 'ETF023'),
+                                                                                                     (454, 23, '2025-04-14 00:00:00', 95.39, 97.31, 97.92, 94.69, 'ETF023'),
+                                                                                                     (455, 23, '2025-04-15 00:00:00', 106.05, 107.16, 107.8, 105.14, 'ETF023'),
+                                                                                                     (456, 23, '2025-04-16 00:00:00', 108.44, 106.71, 108.82, 105.83, 'ETF023'),
+                                                                                                     (457, 23, '2025-04-17 00:00:00', 108.94, 108.9, 109.8, 108.54, 'ETF023'),
+                                                                                                     (458, 23, '2025-04-18 00:00:00', 95.53, 94.11, 95.99, 93.8, 'ETF023'),
+                                                                                                     (459, 23, '2025-04-19 00:00:00', 95.88, 96.2, 97.1, 95.19, 'ETF023'),
+                                                                                                     (460, 23, '2025-04-20 00:00:00', 106.57, 107.64, 107.78, 105.71, 'ETF023'),
+                                                                                                     (461, 24, '2025-04-01 00:00:00', 93.01, 93.74, 94.38, 92.5, 'ETF024'),
+                                                                                                     (462, 24, '2025-04-02 00:00:00', 108.0, 106.64, 108.94, 106.04, 'ETF024'),
+                                                                                                     (463, 24, '2025-04-03 00:00:00', 107.62, 107.36, 108.16, 107.09, 'ETF024'),
+                                                                                                     (464, 24, '2025-04-04 00:00:00', 104.69, 103.28, 105.19, 102.3, 'ETF024'),
+                                                                                                     (465, 24, '2025-04-05 00:00:00', 98.25, 96.72, 98.49, 96.22, 'ETF024'),
+                                                                                                     (466, 24, '2025-04-06 00:00:00', 96.95, 97.68, 98.18, 96.5, 'ETF024'),
+                                                                                                     (467, 24, '2025-04-07 00:00:00', 102.45, 102.79, 103.61, 101.97, 'ETF024'),
+                                                                                                     (468, 24, '2025-04-08 00:00:00', 98.42, 99.61, 100.06, 97.47, 'ETF024'),
+                                                                                                     (469, 24, '2025-04-09 00:00:00', 103.44, 103.73, 104.39, 102.51, 'ETF024'),
+                                                                                                     (470, 24, '2025-04-10 00:00:00', 102.11, 102.73, 103.3, 101.33, 'ETF024'),
+                                                                                                     (471, 24, '2025-04-11 00:00:00', 98.14, 98.07, 98.66, 97.59, 'ETF024'),
+                                                                                                     (472, 24, '2025-04-12 00:00:00', 95.49, 93.58, 95.49, 93.06, 'ETF024'),
+                                                                                                     (473, 24, '2025-04-13 00:00:00', 102.92, 101.42, 103.22, 101.27, 'ETF024'),
+                                                                                                     (474, 24, '2025-04-14 00:00:00', 95.32, 94.94, 96.04, 94.72, 'ETF024'),
+                                                                                                     (475, 24, '2025-04-15 00:00:00', 90.35, 91.33, 92.22, 90.32, 'ETF024'),
+                                                                                                     (476, 24, '2025-04-16 00:00:00', 106.51, 105.79, 107.33, 105.39, 'ETF024'),
+                                                                                                     (477, 24, '2025-04-17 00:00:00', 94.09, 93.73, 94.82, 93.71, 'ETF024'),
+                                                                                                     (478, 24, '2025-04-18 00:00:00', 106.82, 107.94, 108.04, 106.01, 'ETF024'),
+                                                                                                     (479, 24, '2025-04-19 00:00:00', 106.76, 106.36, 107.63, 106.04, 'ETF024'),
+                                                                                                     (480, 24, '2025-04-20 00:00:00', 103.76, 102.4, 104.03, 101.84, 'ETF024'),
+                                                                                                     (481, 25, '2025-04-01 00:00:00', 93.69, 92.9, 93.82, 92.24, 'ETF025'),
+                                                                                                     (482, 25, '2025-04-02 00:00:00', 102.18, 102.2, 102.8, 101.96, 'ETF025'),
+                                                                                                     (483, 25, '2025-04-03 00:00:00', 100.6, 100.02, 101.21, 99.99, 'ETF025'),
+                                                                                                     (484, 25, '2025-04-04 00:00:00', 93.11, 94.78, 95.69, 92.94, 'ETF025'),
+                                                                                                     (485, 25, '2025-04-05 00:00:00', 94.39, 93.33, 94.65, 93.11, 'ETF025'),
+                                                                                                     (486, 25, '2025-04-06 00:00:00', 109.87, 108.56, 110.71, 108.45, 'ETF025'),
+                                                                                                     (487, 25, '2025-04-07 00:00:00', 94.71, 93.43, 95.28, 93.43, 'ETF025'),
+                                                                                                     (488, 25, '2025-04-08 00:00:00', 91.51, 91.85, 91.98, 91.31, 'ETF025'),
+                                                                                                     (489, 25, '2025-04-09 00:00:00', 108.49, 110.47, 110.71, 107.7, 'ETF025'),
+                                                                                                     (490, 25, '2025-04-10 00:00:00', 93.58, 92.53, 93.86, 92.02, 'ETF025'),
+                                                                                                     (491, 25, '2025-04-11 00:00:00', 95.98, 94.69, 96.03, 94.18, 'ETF025'),
+                                                                                                     (492, 25, '2025-04-12 00:00:00', 100.59, 102.53, 102.9, 99.83, 'ETF025'),
+                                                                                                     (493, 25, '2025-04-13 00:00:00', 105.84, 104.42, 106.74, 103.63, 'ETF025'),
+                                                                                                     (494, 25, '2025-04-14 00:00:00', 104.98, 103.81, 105.76, 103.08, 'ETF025'),
+                                                                                                     (495, 25, '2025-04-15 00:00:00', 100.87, 101.85, 102.27, 100.82, 'ETF025'),
+                                                                                                     (496, 25, '2025-04-16 00:00:00', 96.47, 96.6, 96.61, 96.31, 'ETF025'),
+                                                                                                     (497, 25, '2025-04-17 00:00:00', 97.15, 96.58, 97.36, 95.9, 'ETF025'),
+                                                                                                     (498, 25, '2025-04-18 00:00:00', 105.46, 106.18, 106.95, 105.43, 'ETF025'),
+                                                                                                     (499, 25, '2025-04-19 00:00:00', 99.65, 99.11, 100.26, 98.42, 'ETF025'),
+                                                                                                     (500, 25, '2025-04-20 00:00:00', 93.79, 93.39, 93.96, 92.55, 'ETF025'),
+                                                                                                     (501, 26, '2025-04-01 00:00:00', 107.81, 109.21, 109.5, 107.02, 'ETF026'),
+                                                                                                     (502, 26, '2025-04-02 00:00:00', 108.62, 109.0, 109.33, 108.28, 'ETF026'),
+                                                                                                     (503, 26, '2025-04-03 00:00:00', 96.68, 94.88, 97.15, 94.56, 'ETF026'),
+                                                                                                     (504, 26, '2025-04-04 00:00:00', 104.59, 103.46, 105.15, 103.27, 'ETF026'),
+                                                                                                     (505, 26, '2025-04-05 00:00:00', 99.93, 100.84, 101.58, 99.59, 'ETF026'),
+                                                                                                     (506, 26, '2025-04-06 00:00:00', 97.33, 95.53, 97.56, 95.33, 'ETF026'),
+                                                                                                     (507, 26, '2025-04-07 00:00:00', 93.03, 91.98, 93.35, 91.49, 'ETF026'),
+                                                                                                     (508, 26, '2025-04-08 00:00:00', 104.1, 104.72, 105.7, 103.63, 'ETF026'),
+                                                                                                     (509, 26, '2025-04-09 00:00:00', 100.06, 101.05, 101.68, 99.46, 'ETF026'),
+                                                                                                     (510, 26, '2025-04-10 00:00:00', 99.64, 98.23, 100.4, 97.68, 'ETF026'),
+                                                                                                     (511, 26, '2025-04-11 00:00:00', 101.81, 100.32, 102.31, 100.06, 'ETF026'),
+                                                                                                     (512, 26, '2025-04-12 00:00:00', 91.52, 92.43, 93.06, 91.18, 'ETF026'),
+                                                                                                     (513, 26, '2025-04-13 00:00:00', 99.5, 100.53, 101.37, 98.69, 'ETF026'),
+                                                                                                     (514, 26, '2025-04-14 00:00:00', 104.63, 104.43, 105.54, 103.63, 'ETF026'),
+                                                                                                     (515, 26, '2025-04-15 00:00:00', 92.84, 93.86, 94.84, 92.52, 'ETF026'),
+                                                                                                     (516, 26, '2025-04-16 00:00:00', 99.33, 97.74, 99.97, 96.83, 'ETF026'),
+                                                                                                     (517, 26, '2025-04-17 00:00:00', 90.53, 92.38, 93.26, 90.2, 'ETF026'),
+                                                                                                     (518, 26, '2025-04-18 00:00:00', 97.98, 99.23, 99.49, 97.78, 'ETF026'),
+                                                                                                     (519, 26, '2025-04-19 00:00:00', 107.3, 105.47, 107.63, 105.37, 'ETF026'),
+                                                                                                     (520, 26, '2025-04-20 00:00:00', 108.89, 107.34, 109.56, 106.51, 'ETF026'),
+                                                                                                     (521, 27, '2025-04-01 00:00:00', 91.18, 89.21, 91.21, 89.06, 'ETF027'),
+                                                                                                     (522, 27, '2025-04-02 00:00:00', 109.18, 110.36, 111.0, 108.4, 'ETF027'),
+                                                                                                     (523, 27, '2025-04-03 00:00:00', 106.3, 104.72, 106.43, 104.41, 'ETF027'),
+                                                                                                     (524, 27, '2025-04-04 00:00:00', 102.18, 102.27, 102.71, 101.19, 'ETF027'),
+                                                                                                     (525, 27, '2025-04-05 00:00:00', 95.5, 96.29, 96.56, 94.53, 'ETF027'),
+                                                                                                     (526, 27, '2025-04-06 00:00:00', 96.37, 97.17, 98.15, 95.54, 'ETF027'),
+                                                                                                     (527, 27, '2025-04-07 00:00:00', 98.07, 97.93, 98.86, 97.4, 'ETF027'),
+                                                                                                     (528, 27, '2025-04-08 00:00:00', 91.42, 93.11, 93.21, 91.39, 'ETF027'),
+                                                                                                     (529, 27, '2025-04-09 00:00:00', 109.75, 111.35, 112.12, 109.43, 'ETF027'),
+                                                                                                     (530, 27, '2025-04-10 00:00:00', 92.06, 91.55, 92.47, 90.75, 'ETF027'),
+                                                                                                     (531, 27, '2025-04-11 00:00:00', 95.13, 96.28, 96.45, 94.75, 'ETF027'),
+                                                                                                     (532, 27, '2025-04-12 00:00:00', 105.32, 106.04, 106.13, 104.84, 'ETF027'),
+                                                                                                     (533, 27, '2025-04-13 00:00:00', 91.47, 90.25, 92.39, 89.76, 'ETF027'),
+                                                                                                     (534, 27, '2025-04-14 00:00:00', 107.97, 109.1, 109.19, 107.56, 'ETF027'),
+                                                                                                     (535, 27, '2025-04-15 00:00:00', 98.15, 96.25, 98.62, 95.53, 'ETF027'),
+                                                                                                     (536, 27, '2025-04-16 00:00:00', 92.49, 91.06, 93.49, 90.7, 'ETF027'),
+                                                                                                     (537, 27, '2025-04-17 00:00:00', 102.97, 102.24, 103.63, 101.32, 'ETF027'),
+                                                                                                     (538, 27, '2025-04-18 00:00:00', 91.75, 90.58, 92.55, 89.93, 'ETF027'),
+                                                                                                     (539, 27, '2025-04-19 00:00:00', 104.87, 106.63, 107.16, 104.09, 'ETF027'),
+                                                                                                     (540, 27, '2025-04-20 00:00:00', 100.64, 100.14, 100.98, 99.79, 'ETF027'),
+                                                                                                     (541, 28, '2025-04-01 00:00:00', 107.26, 108.75, 109.71, 106.77, 'ETF028'),
+                                                                                                     (542, 28, '2025-04-02 00:00:00', 98.77, 97.97, 99.18, 97.32, 'ETF028'),
+                                                                                                     (543, 28, '2025-04-03 00:00:00', 94.22, 94.23, 95.09, 94.15, 'ETF028'),
+                                                                                                     (544, 28, '2025-04-04 00:00:00', 100.06, 98.98, 100.6, 98.63, 'ETF028'),
+                                                                                                     (545, 28, '2025-04-05 00:00:00', 109.04, 110.72, 111.06, 108.16, 'ETF028'),
+                                                                                                     (546, 28, '2025-04-06 00:00:00', 97.17, 98.79, 98.86, 96.41, 'ETF028'),
+                                                                                                     (547, 28, '2025-04-07 00:00:00', 106.5, 108.42, 108.68, 105.53, 'ETF028'),
+                                                                                                     (548, 28, '2025-04-08 00:00:00', 90.93, 92.27, 92.71, 90.32, 'ETF028'),
+                                                                                                     (549, 28, '2025-04-09 00:00:00', 90.94, 92.44, 93.09, 90.52, 'ETF028'),
+                                                                                                     (550, 28, '2025-04-10 00:00:00', 106.3, 104.91, 106.91, 104.67, 'ETF028'),
+                                                                                                     (551, 28, '2025-04-11 00:00:00', 98.06, 97.42, 98.3, 97.12, 'ETF028'),
+                                                                                                     (552, 28, '2025-04-12 00:00:00', 101.2, 102.04, 102.46, 101.16, 'ETF028'),
+                                                                                                     (553, 28, '2025-04-13 00:00:00', 94.97, 94.72, 95.02, 94.49, 'ETF028'),
+                                                                                                     (554, 28, '2025-04-14 00:00:00', 97.78, 99.74, 99.89, 97.38, 'ETF028'),
+                                                                                                     (555, 28, '2025-04-15 00:00:00', 91.56, 92.78, 92.86, 90.57, 'ETF028'),
+                                                                                                     (556, 28, '2025-04-16 00:00:00', 96.89, 96.99, 97.76, 96.31, 'ETF028'),
+                                                                                                     (557, 28, '2025-04-17 00:00:00', 103.66, 105.02, 105.63, 102.95, 'ETF028'),
+                                                                                                     (558, 28, '2025-04-18 00:00:00', 97.78, 99.01, 99.86, 96.79, 'ETF028'),
+                                                                                                     (559, 28, '2025-04-19 00:00:00', 102.7, 100.99, 103.68, 100.27, 'ETF028'),
+                                                                                                     (560, 28, '2025-04-20 00:00:00', 104.4, 105.34, 105.63, 103.81, 'ETF028'),
+                                                                                                     (561, 29, '2025-04-01 00:00:00', 93.0, 92.91, 93.11, 92.72, 'ETF029'),
+                                                                                                     (562, 29, '2025-04-02 00:00:00', 98.23, 100.13, 100.34, 97.6, 'ETF029'),
+                                                                                                     (563, 29, '2025-04-03 00:00:00', 96.72, 97.05, 97.89, 96.48, 'ETF029'),
+                                                                                                     (564, 29, '2025-04-04 00:00:00', 106.03, 107.14, 107.91, 105.47, 'ETF029'),
+                                                                                                     (565, 29, '2025-04-05 00:00:00', 101.33, 100.48, 101.43, 99.78, 'ETF029'),
+                                                                                                     (566, 29, '2025-04-06 00:00:00', 90.63, 91.08, 91.72, 89.88, 'ETF029'),
+                                                                                                     (567, 29, '2025-04-07 00:00:00', 97.46, 95.76, 97.58, 95.66, 'ETF029'),
+                                                                                                     (568, 29, '2025-04-08 00:00:00', 103.19, 101.46, 103.25, 100.63, 'ETF029'),
+                                                                                                     (569, 29, '2025-04-09 00:00:00', 109.15, 109.11, 109.55, 108.88, 'ETF029'),
+                                                                                                     (570, 29, '2025-04-10 00:00:00', 104.98, 105.9, 106.05, 104.18, 'ETF029'),
+                                                                                                     (571, 29, '2025-04-11 00:00:00', 99.76, 97.93, 100.61, 97.24, 'ETF029'),
+                                                                                                     (572, 29, '2025-04-12 00:00:00', 107.79, 108.55, 108.7, 107.17, 'ETF029'),
+                                                                                                     (573, 29, '2025-04-13 00:00:00', 99.34, 99.22, 99.71, 98.53, 'ETF029'),
+                                                                                                     (574, 29, '2025-04-14 00:00:00', 104.25, 103.37, 104.97, 102.68, 'ETF029'),
+                                                                                                     (575, 29, '2025-04-15 00:00:00', 109.34, 109.14, 110.2, 108.67, 'ETF029'),
+                                                                                                     (576, 29, '2025-04-16 00:00:00', 106.26, 104.76, 106.87, 104.11, 'ETF029'),
+                                                                                                     (577, 29, '2025-04-17 00:00:00', 108.31, 110.07, 110.73, 107.45, 'ETF029'),
+                                                                                                     (578, 29, '2025-04-18 00:00:00', 103.35, 101.48, 103.35, 101.43, 'ETF029'),
+                                                                                                     (579, 29, '2025-04-19 00:00:00', 92.46, 90.54, 92.98, 90.47, 'ETF029'),
+                                                                                                     (580, 29, '2025-04-20 00:00:00', 108.05, 109.69, 110.54, 107.48, 'ETF029'),
+                                                                                                     (581, 30, '2025-04-01 00:00:00', 90.97, 91.13, 91.67, 90.13, 'ETF030'),
+                                                                                                     (582, 30, '2025-04-02 00:00:00', 103.95, 104.05, 104.7, 103.59, 'ETF030'),
+                                                                                                     (583, 30, '2025-04-03 00:00:00', 92.7, 93.9, 94.78, 91.87, 'ETF030'),
+                                                                                                     (584, 30, '2025-04-04 00:00:00', 108.4, 107.18, 109.02, 106.55, 'ETF030'),
+                                                                                                     (585, 30, '2025-04-05 00:00:00', 95.49, 97.12, 98.04, 94.67, 'ETF030'),
+                                                                                                     (586, 30, '2025-04-06 00:00:00', 94.94, 93.14, 95.65, 92.59, 'ETF030'),
+                                                                                                     (587, 30, '2025-04-07 00:00:00', 90.8, 92.72, 92.97, 90.28, 'ETF030'),
+                                                                                                     (588, 30, '2025-04-08 00:00:00', 99.9, 99.04, 100.04, 98.88, 'ETF030'),
+                                                                                                     (589, 30, '2025-04-09 00:00:00', 98.11, 97.72, 99.1, 96.97, 'ETF030'),
+                                                                                                     (590, 30, '2025-04-10 00:00:00', 99.49, 100.61, 101.39, 98.69, 'ETF030'),
+                                                                                                     (591, 30, '2025-04-11 00:00:00', 91.85, 90.65, 92.1, 89.73, 'ETF030'),
+                                                                                                     (592, 30, '2025-04-12 00:00:00', 92.97, 93.01, 93.11, 91.98, 'ETF030'),
+                                                                                                     (593, 30, '2025-04-13 00:00:00', 108.95, 108.05, 109.49, 107.59, 'ETF030'),
+                                                                                                     (594, 30, '2025-04-14 00:00:00', 109.41, 108.38, 109.84, 107.66, 'ETF030'),
+                                                                                                     (595, 30, '2025-04-15 00:00:00', 98.86, 96.94, 99.76, 96.12, 'ETF030'),
+                                                                                                     (596, 30, '2025-04-16 00:00:00', 107.91, 106.59, 108.6, 106.13, 'ETF030'),
+                                                                                                     (597, 30, '2025-04-17 00:00:00', 91.41, 90.29, 92.0, 90.22, 'ETF030'),
+                                                                                                     (598, 30, '2025-04-18 00:00:00', 99.85, 98.4, 100.28, 98.37, 'ETF030'),
+                                                                                                     (599, 30, '2025-04-19 00:00:00', 109.51, 108.22, 109.66, 107.71, 'ETF030'),
+                                                                                                     (600, 30, '2025-04-20 00:00:00', 95.94, 96.41, 97.33, 95.16, 'ETF030');
 INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (601, 31, '2025-04-01 00:00:00', 99.02, 99.2, 99.68, 98.57);
 INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (602, 31, '2025-04-02 00:00:00', 100.86, 100.46, 101.34, 100.45);
 INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (603, 31, '2025-04-03 00:00:00', 100.78, 99.09, 100.96, 98.74);

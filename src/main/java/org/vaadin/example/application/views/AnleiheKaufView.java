@@ -28,10 +28,22 @@ import org.vaadin.example.application.services.NutzerService;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * View zur Durchführung eines Anleihekaufs.
+ * <p>
+ * Diese Ansicht ermöglicht es Nutzern, eine Anleihe anhand ihres Symbols auszuwählen,
+ * die Stückzahl und den Handelsplatz anzugeben und den Kauf über ein ausgewähltes Depot abzuwickeln.
+ */
 @Route("kaufe/:symbol")
 @PageTitle("Anleihe kaufen")
 @PermitAll
-public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObserver{
+public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObserver {
+
+    /**
+     * Wird vor dem Aufrufen der View ausgeführt, um das Symbol aus der URL zu übernehmen.
+     *
+     * @param event Event mit Informationen zur Navigation
+     */
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         String symbol = event.getLocation()
@@ -59,6 +71,14 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
     private TextField kursField;
     private String initialSymbol;
 
+    /**
+     * Konstruktor zur Initialisierung der View mit allen benötigten Services.
+     *
+     * @param anleiheKaufService Service für den Anleihekauf
+     * @param depotService       Service zur Depotverwaltung
+     * @param securityService    Service zur Nutzer-Authentifizierung
+     * @param nutzerService      Service zur Nutzerverwaltung
+     */
     @Autowired
     public AnleiheKaufView(AnleiheKaufService anleiheKaufService,
                            DepotService depotService,
@@ -78,8 +98,13 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
         addToMainContent(contentLayout);
     }
 
-
+    /**
+     * Erstellt und konfiguriert alle UI-Komponenten der Kaufansicht.
+     *
+     * @param container Der übergeordnete Layout-Container
+     */
     private void setupUI(VerticalLayout container) {
+        // Zurück-Button
         Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         RouterLink routerLink = new RouterLink("", MainView.class);
@@ -91,9 +116,11 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
         topLeftLayout.setWidthFull();
         topLeftLayout.setAlignItems(FlexComponent.Alignment.START);
 
+        // Titel
         H3 title = new H3("Anleihe kaufen");
         title.addClassName("view-title");
 
+        // Formularfelder
         symbolField = new TextField("Symbol");
         symbolField.setWidthFull();
 
@@ -123,14 +150,17 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
         depotComboBox.setItemLabelGenerator(Depot::getName);
         depotComboBox.setWidthFull();
 
+        // Formularlayout
         FormLayout formLayout = new FormLayout();
         formLayout.setWidth("400px");
         formLayout.add(symbolField, einzelkursField, stueckzahlField, handelsplatzAuswahl, kursField, depotComboBox);
 
+        // Kauf-Button
         Button kaufButton = new Button("Jetzt Kaufen");
         kaufButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         kaufButton.setWidthFull();
 
+        // Event-Listener
         symbolField.addValueChangeListener(e -> aktualisiereEinzelkurs());
         stueckzahlField.addValueChangeListener(e -> aktualisiereKurs());
 
@@ -157,6 +187,7 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
             }
         });
 
+        // Layoutstruktur
         VerticalLayout centerLayout = new VerticalLayout(title, formLayout, kaufButton);
         centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         container.add(topLeftLayout, centerLayout);
@@ -165,13 +196,15 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
             symbolField.setValue(initialSymbol);
             aktualisiereEinzelkurs();
         }
-
     }
 
+    /**
+     * Holt den aktuellen Kurs für das eingegebene Symbol und aktualisiert das Kursfeld.
+     */
     private void aktualisiereEinzelkurs() {
         String symbol = symbolField.getValue();
         try {
-            double kurs = anleiheKaufService.getKursFürSymbol(symbol); // Verwende den Service
+            double kurs = anleiheKaufService.getKursFürSymbol(symbol);
             einzelkursField.setValue(String.format("%.2f", kurs));
             aktualisiereKurs();
         } catch (Exception e) {
@@ -179,7 +212,10 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
         }
     }
 
-
+    /**
+     * Aktualisiert den Gesamtpreis basierend auf Kurs und Stückzahl.
+     * Es wird ein fixer Zuschlag (z. B. Gebühren) von 2,50 € berücksichtigt.
+     */
     private void aktualisiereKurs() {
         String value = einzelkursField.getValue();
         if (value != null && !value.equals("Fehler")) {
@@ -190,6 +226,11 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
         }
     }
 
+    /**
+     * Liefert die ID des aktuell angemeldeten Nutzers.
+     *
+     * @return Nutzer-ID oder {@code null}, wenn kein Nutzer gefunden wurde
+     */
     private Long getAktuelleNutzerId() {
         UserDetails userDetails = securityService.getAuthenticatedUser();
         Nutzer nutzer = nutzerService.findByUsername(userDetails.getUsername());

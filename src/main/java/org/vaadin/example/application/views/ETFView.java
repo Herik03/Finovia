@@ -9,11 +9,13 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.vaadin.example.application.classes.ETF;
 import org.vaadin.example.application.classes.Kurs;
 import org.vaadin.example.application.classes.Wertpapier;
+import org.vaadin.example.application.repositories.KursRepository;
 import org.vaadin.example.application.repositories.WertpapierRepository;
 import org.vaadin.example.application.services.AlphaVantageService;
 import org.vaadin.example.application.services.NutzerService;
@@ -22,22 +24,46 @@ import org.vaadin.example.application.services.WatchlistService;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import com.vaadin.flow.component.icon.VaadinIcon;
-
-
+/**
+ * Ansicht für die Detaildarstellung eines ETFs (Exchange Traded Fund).
+ * <p>
+ * Diese View zeigt Kursverläufe, ETF-spezifische Informationen wie Emittent und Index,
+ * sowie Interaktionen wie Watchlist-Hinzufügung und Zeitrahmenwechsel.
+ */
 @Component
 public class ETFView extends AbstractWertpapierView {
 
+    /** Formatierung für Zeitstempel auf Kursdaten. */
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    /** Repository zur Kursdatenabfrage für ETFs. */
+    private final KursRepository kursRepository;
+
+    /**
+     * Konstruktor zur Initialisierung aller Services und Repositories.
+     *
+     * @param alphaVantageService   Service zur externen Kursabfrage
+     * @param watchlistService      Service zur Verwaltung der Watchlist
+     * @param nutzerService         Service zur Nutzeridentifikation
+     * @param wertpapierRepository  Repository für Wertpapierdaten
+     * @param kursRepository        Repository für Kursverläufe
+     */
     @Autowired
     public ETFView(AlphaVantageService alphaVantageService,
                    WatchlistService watchlistService,
                    NutzerService nutzerService,
-                   WertpapierRepository wertpapierRepository) {
+                   WertpapierRepository wertpapierRepository,
+                   KursRepository kursRepository) {
         super(alphaVantageService, watchlistService, nutzerService, wertpapierRepository);
+        this.kursRepository = kursRepository;
     }
 
+    /**
+     * Erstellt einen Dialog mit Detailinformationen und Kursverlauf zum übergebenen ETF.
+     *
+     * @param wertpapier Das ETF-Objekt, das angezeigt werden soll
+     * @return Ein Dialog mit ETF-Details, Chart, Watchlist-Option und Metadaten
+     */
     @Override
     public Dialog createDetailsDialog(Wertpapier wertpapier) {
         Dialog dialog = new Dialog();
@@ -49,13 +75,11 @@ public class ETFView extends AbstractWertpapierView {
 
         try {
             ETF etf = (ETF) wertpapier;
-
             String symbol = etf.getSymbol();
             String name = etf.getName() != null ? etf.getName() : etf.getSymbol();
             this.anzeigeName = name; // wichtig für updateChart()
 
-
-            List<Kurs> kurse = alphaVantageService.getMonthlySeries(symbol);
+            List<Kurs> kurse = kursRepository.findByWertpapier_SymbolOrderByDatumAsc(symbol);
 
             if (kurse.isEmpty()) {
                 Notification.show("Keine Kursdaten für " + symbol + " gefunden.", 3000, Notification.Position.MIDDLE);
@@ -64,36 +88,41 @@ public class ETFView extends AbstractWertpapierView {
                 return dialog;
             }
 
+            // Hauptlayout vorbereiten
             VerticalLayout layout = new VerticalLayout();
             layout.setSizeFull();
             layout.setPadding(false);
             layout.setSpacing(false);
             layout.setMargin(false);
 
+            // Titel
             H2 titel = new H2("ETF: " + name);
             titel.addClassName("dialog-title");
             layout.add(titel);
 
+            // Auswahl für Zeitrahmen
             Select<String> timeFrameSelect = new Select<>();
             timeFrameSelect.setLabel("Zeitraum");
             timeFrameSelect.setItems("Intraday", "Täglich", "Wöchentlich", "Monatlich");
             timeFrameSelect.setValue("Monatlich");
 
+            // Watchlist-Button
             Button addToWatchlistButton = createWatchlistButton(symbol);
 
             HorizontalLayout timeFrameAndButtonLayout = new HorizontalLayout(timeFrameSelect, addToWatchlistButton);
             timeFrameAndButtonLayout.setAlignItems(Alignment.BASELINE);
             timeFrameAndButtonLayout.setSpacing(true);
-
             layout.add(timeFrameAndButtonLayout);
 
+            // Chart-Bereich
             VerticalLayout chartContainer = new VerticalLayout();
             chartContainer.setSizeFull();
             layout.add(chartContainer);
 
+            // Initiale Chartanzeige
             updateChart(chartContainer, symbol, "Monatlich", anzeigeName);
 
-            // ETF-spezifische Informationen anzeigen
+            // ETF-spezifische Informationen
             VerticalLayout infoBox = new VerticalLayout();
             infoBox.setSizeFull();
             infoBox.setSpacing(true);
@@ -101,23 +130,20 @@ public class ETFView extends AbstractWertpapierView {
             infoBox.addClassName("info-box");
 
             infoBox.add(createInfoRow("Emittent", etf.getEmittent(), "Index", etf.getIndex()));
-
             layout.add(infoBox);
 
-            // Listener für Zeitrahmenwechsel
+            // Zeitrahmenwechsel-Listener
             timeFrameSelect.addValueChangeListener(event ->
                     updateChart(chartContainer, symbol, event.getValue(), anzeigeName)
             );
 
-// Close-Button erstellen und oben rechts ins Layout einfügen
+            // Schließen-Button
             Button closeButton = new Button(VaadinIcon.CLOSE.create(), e -> dialog.close());
             closeButton.addClassName("dialog-close-button");
-            layout.add(closeButton); // Füge ihn ins Layout ein – nicht direkt in den Dialog!
+            layout.add(closeButton);
 
-// Danach das Layout in den Dialog setzen
             dialog.add(layout);
             dialog.open();
-
             return dialog;
 
         } catch (Exception e) {

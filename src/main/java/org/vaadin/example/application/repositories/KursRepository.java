@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface KursRepository extends JpaRepository<Kurs, Long> {
     List<Kurs> findByWertpapierSymbolOrderByDatumAsc(String symbol);
+    List<Kurs> findByWertpapier_SymbolOrderByDatumAsc(String symbol);
 
 }
