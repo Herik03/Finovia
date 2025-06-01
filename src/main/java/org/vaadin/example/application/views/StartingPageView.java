@@ -19,12 +19,14 @@ public class StartingPageView extends VerticalLayout {
         setSpacing(false);
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.START);
+        getStyle().set("background-color", "var(--lumo-contrast-5pct)");
 
         add(createHeader());
         add(createHeroSection());
         add(createFeatureSection());
+        add(createTestimonialSection());
         add(createCTASection());
-        add(createFooter()); // Füge den Footer hinzu
+        add(createFooter()); // Angepasster Footer wird hinzugefügt
     }
 
     private HorizontalLayout createHeader() {
@@ -33,78 +35,140 @@ public class StartingPageView extends VerticalLayout {
         header.setPadding(true);
         header.setAlignItems(Alignment.CENTER);
         header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        header.getStyle().set("background-color", "#eef4fb");
-        header.getStyle().set("flex-wrap", "wrap");
+        header.getStyle()
+                .set("background-color", "var(--lumo-base-color)")
+                .set("box-shadow", "0 4px 12px rgba(0,0,0,0.1)")
+                .set("position", "sticky")
+                .set("top", "0")
+                .set("z-index", "1000")
+                .set("flex-wrap", "wrap")
+                .set("min-height", "70px");
 
-        Image logo = new Image("images/finovia-logo.png", "Finovia Logo");
-        logo.setWidth("50px");
+        Image logo = new Image("icons/logo.png", "Finovia Logo");
+        logo.setHeight("45px");
 
         HorizontalLayout nav = new HorizontalLayout();
         nav.setSpacing(true);
-        nav.getStyle().set("flex-wrap", "wrap");;
+        nav.getStyle().set("flex-wrap", "wrap")
+                .set("gap", "20px");
 
         Anchor startseite = new Anchor("#", "Startseite");
+        styleNavLink(startseite);
         Anchor funktionen = new Anchor("#funktionen", "Funktionen");
-        Anchor preise = new Anchor("#preise", "Preise");
+        styleNavLink(funktionen);
         Anchor hilfe = new Anchor("#hilfe", "Hilfe");
+        styleNavLink(hilfe);
 
         Button loginButton = new Button("Login", e -> UI.getCurrent().navigate("login"));
         loginButton.getStyle()
-                .set("background-color", "white")
-                .set("color", "#2b4c5f")
-                .set("border", "1px solid #2b4c5f")
-                .set("border-radius", "6px")
-                .set("padding", "6px 12px");
+                .set("background-color", "var(--lumo-primary-color)")
+                .set("color", "white")
+                .set("border", "none")
+                .set("border-radius", "var(--lumo-border-radius-m)")
+                .set("padding", "10px 20px")
+                .set("font-weight", "600")
+                .set("cursor", "pointer")
+                .set("transition", "background-color 0.3s ease, transform 0.2s ease");
+        loginButton.addAttachListener(e -> {
+            loginButton.getElement().addEventListener("mouseover", event -> loginButton.getStyle().set("background-color", "var(--lumo-primary-color-shade)").set("transform", "translateY(-2px)")); // Angepasst an dein Theme
+            loginButton.getElement().addEventListener("mouseout", event -> loginButton.getStyle().set("background-color", "var(--lumo-primary-color)").set("transform", "translateY(0)"));
+        });
 
-        nav.add(startseite, funktionen, preise, hilfe, loginButton);
+
+        nav.add(startseite, funktionen, hilfe, loginButton);
         header.add(logo, nav);
         return header;
     }
 
+    private void styleNavLink(Anchor anchor) {
+        anchor.getStyle()
+                .set("color", "var(--lumo-primary-text-color)")
+                .set("font-weight", "500")
+                .set("text-decoration", "none")
+                .set("padding", "5px 10px")
+                .set("transition", "color 0.3s ease, text-decoration 0.3s ease");
+        anchor.addAttachListener(e -> {
+            anchor.getElement().addEventListener("mouseover", event -> anchor.getStyle().set("color", "var(--lumo-primary-color)").set("text-decoration", "underline"));
+            anchor.getElement().addEventListener("mouseout", event -> anchor.getStyle().set("color", "var(--lumo-primary-text-color)").set("text-decoration", "none"));
+        });
+    }
+
+
     private FlexLayout createHeroSection() {
         FlexLayout hero = new FlexLayout();
         hero.setWidthFull();
-        hero.getStyle().set("flex-wrap", "wrap");;
-        hero.setJustifyContentMode(JustifyContentMode.CENTER);
-        hero.setAlignItems(Alignment.CENTER);
-        hero.getStyle().set("padding", "40px 20px");
-        hero.getStyle().set("background-color", "#ffffff");
+        hero.getStyle()
+                .set("flex-wrap", "wrap")
+                .set("justify-content", "center")
+                .set("align-items", "center")
+                .set("padding", "100px 20px")
+                .set("background", "linear-gradient(to right, var(--lumo-primary-color-tint), var(--lumo-base-color))"); // Angepasst an dein Theme
+        hero.getStyle().set("gap", "50px");
 
-        // Textbereich
         VerticalLayout textBlock = new VerticalLayout();
         textBlock.setSpacing(true);
         textBlock.setPadding(false);
         textBlock.setWidthFull();
-        textBlock.setMaxWidth("500px");
+        textBlock.setMaxWidth("700px");
+        textBlock.setAlignItems(Alignment.START);
 
-        H1 title = new H1("Starte dein Depot mit Vertrauen.");
-        title.getStyle().set("font-size", "2em");
+        H1 title = new H1("Investieren leicht gemacht – Starte dein Depot mit Vertrauen.");
+        title.getStyle()
+                .set("font-size", "var(--lumo-font-size-xxxl)")
+                .set("color", "var(--lumo-header-text-color)")
+                .set("line-height", "1.1")
+                .set("margin-bottom", "15px");
 
-        Paragraph subtitle = new Paragraph("Investieren leicht gemacht – für Anfänger & Fortgeschrittene");
-        subtitle.getStyle().set("font-size", "1.1em");
+        Paragraph subtitle = new Paragraph("Wir bieten dir intuitive Werkzeuge und fundierte Informationen, die du für den erfolgreichen Handel mit Aktien und ETFs benötigst – egal ob du Anfänger bist oder ein erfahrener Investor.");
+        subtitle.getStyle()
+                .set("font-size", "var(--lumo-font-size-xl)")
+                .set("color", "var(--lumo-secondary-text-color)")
+                .set("margin-bottom", "40px");
 
-        Button primaryButton = new Button("Depot eröffnen", e -> UI.getCurrent().navigate("register"));
-        primaryButton.getStyle().set("background-color", "#3b61e2")
+        Button primaryButton = new Button("Depot jetzt eröffnen", e -> UI.getCurrent().navigate("register"));
+        primaryButton.getStyle()
+                .set("background-color", "var(--lumo-primary-color)")
                 .set("color", "white")
-                .set("border-radius", "8px")
-                .set("padding", "10px 20px");
+                .set("border-radius", "var(--lumo-border-radius-l)")
+                .set("padding", "20px 40px")
+                .set("font-size", "var(--lumo-font-size-l)")
+                .set("font-weight", "bold")
+                .set("cursor", "pointer")
+                .set("box-shadow", "0 6px 12px rgba(0, 0, 0, 0.2)"); // Hier könnte man auch rgba(var(--lumo-primary-color-rgb), 0.2) nutzen, wenn es definiert wäre
+        primaryButton.addAttachListener(e -> {
+            primaryButton.getElement().addEventListener("mouseover", event -> primaryButton.getStyle().set("background-color", "var(--lumo-primary-color-shade)").set("transform", "translateY(-3px)")); // Angepasst an dein Theme
+            primaryButton.getElement().addEventListener("mouseout", event -> primaryButton.getStyle().set("background-color", "var(--lumo-primary-color)").set("transform", "translateY(0)"));
+        });
 
-        Button secondaryButton = new Button("Mehr erfahren");
-        secondaryButton.getStyle().set("background-color", "#e0e0e0")
-                .set("color", "#000")
-                .set("border-radius", "8px")
-                .set("padding", "10px 20px");
+
+        Button secondaryButton = new Button("Mehr erfahren", e -> UI.getCurrent().getPage().setLocation("mehr-erfahren.html"));
+        secondaryButton.getStyle()
+                .set("background-color", "transparent")
+                .set("border", "2px solid var(--lumo-shade-30pct)") // Angepasst an dein Theme
+                .set("color", "var(--lumo-primary-text-color)")
+                .set("border-radius", "var(--lumo-border-radius-l)")
+                .set("padding", "20px 40px")
+                .set("font-size", "var(--lumo-font-size-l)")
+                .set("font-weight", "bold")
+                .set("cursor", "pointer")
+                .set("transition", "background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease");
+        secondaryButton.addAttachListener(e -> {
+            secondaryButton.getElement().addEventListener("mouseover", event -> secondaryButton.getStyle().set("background-color", "var(--lumo-shade-5pct)").set("border-color", "var(--lumo-primary-color)").set("transform", "translateY(-3px)"));
+            secondaryButton.getElement().addEventListener("mouseout", event -> secondaryButton.getStyle().set("background-color", "transparent").set("border-color", "var(--lumo-shade-30pct)").set("transform", "translateY(0)")); // Angepasst an dein Theme
+        });
+
 
         HorizontalLayout buttons = new HorizontalLayout(primaryButton, secondaryButton);
         buttons.setSpacing(true);
-        buttons.getStyle().set("flex-wrap", "wrap");;
+        buttons.getStyle().set("flex-wrap", "wrap");
 
         textBlock.add(title, subtitle, buttons);
 
-        // Bildbereich
         Image illustration = new Image("images/illustration.png", "Illustration");
-        illustration.setWidth("300px");
+        illustration.setWidth("550px");
         illustration.getStyle().set("max-width", "100%");
+        illustration.getStyle().set("border-radius", "var(--lumo-border-radius-xl)");
+        illustration.getStyle().set("box-shadow", "0 15px 30px rgba(0,0,0,0.2)");
 
         hero.add(textBlock, illustration);
         return hero;
@@ -117,59 +181,163 @@ public class StartingPageView extends VerticalLayout {
         section.setAlignItems(Alignment.CENTER);
         section.setSpacing(true);
         section.setPadding(true);
-        section.getStyle().set("background-color", "#ffffff");
+        section.getStyle().set("background-color", "var(--lumo-base-color)");
+        section.getStyle().set("padding", "80px 20px");
 
-        H2 headline = new H2("Funktionen im Überblick");
+        H2 headline = new H2("Deine Vorteile bei Finovia");
+        headline.getStyle().set("color", "var(--lumo-header-text-color)");
+        headline.getStyle().set("font-size", "var(--lumo-font-size-xxxl)");
+        headline.getStyle().set("margin-bottom", "60px");
 
-        // Features Layout
         FlexLayout features = new FlexLayout();
-        features.getStyle().set("flex-wrap", "wrap");;
+        features.getStyle().set("flex-wrap", "wrap");
         features.setJustifyContentMode(JustifyContentMode.CENTER);
-        features.getStyle().set("gap", "30px");;
+        features.getStyle().set("gap", "40px");
 
         features.add(
-                createFeature("Einfach Depot eröffnen", "Schnelle und unkomplizierte Kontoeröffnung", "icon-depot.png"),
-                createFeature("Aktien & ETFs vergleichen", "Details, Informationen und Vergleichsmöglichkeiten", "icon-vergleich.png"),
-                createFeature("Echtzeit-Daten & Analysen", "Marktinformationen und Auswertungen in Echtzeit", "icon-analyse.png")
+                createFeatureCard("Nahtlose Kontoeröffnung", "Beginne in wenigen Minuten mit deiner Geldanlage – einfach und sicher, ohne unnötigen Papierkram.", "images/icon-depot.png"),
+                createFeatureCard("Transparente Vergleiche", "Analysiere Aktien und ETFs detailliert mit unseren innovativen Tools, um die besten Entscheidungen zu treffen.", "images/icon-vergleich.png"),
+                createFeatureCard("Echtzeit-Einblicke", "Bleibe mit aktuellen Marktinformationen und professionellen Analysen immer einen Schritt voraus und optimiere dein Portfolio.", "images/icon-analyse.png")
         );
 
         section.add(headline, features);
         return section;
     }
 
-    private VerticalLayout createFeature(String title, String desc, String iconFile) {
-        Image icon = new Image("images/" + iconFile, title);
-        icon.setHeight("40px");
+    private VerticalLayout createFeatureCard(String title, String desc, String iconFile) {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setAlignItems(Alignment.CENTER);
+        layout.setSpacing(true);
+        layout.setPadding(true);
+        layout.setWidth("300px");
+        layout.getStyle()
+                .set("background-color", "white")
+                .set("border-radius", "var(--lumo-border-radius-l)")
+                .set("box-shadow", "0 4px 8px rgba(0,0,0,0.05)")
+                .set("transition", "all 0.3s ease");
+        layout.addAttachListener(e -> {
+            layout.getElement().addEventListener("mouseover", event -> layout.getStyle().set("box-shadow", "0 8px 16px rgba(0,0,0,0.1)"));
+            layout.getElement().addEventListener("mouseout", event -> layout.getStyle().set("box-shadow", "0 4px 8px rgba(0,0,0,0.05)"));
+        });
 
-        Paragraph featureTitle = new Paragraph(title);
-        featureTitle.getStyle().set("font-weight", "bold").set("margin", "0");
+        Image icon = new Image(iconFile, title);
+        icon.setHeight("60px");
+
+        H3 featureTitle = new H3(title);
+        featureTitle.getStyle().set("font-weight", "bold").set("margin", "0")
+                .set("color", "var(--lumo-header-text-color)");
 
         Paragraph featureDesc = new Paragraph(desc);
-        featureDesc.getStyle().set("font-size", "0.9em").set("text-align", "center").set("margin", "0");
+        featureDesc.getStyle().set("font-size", "var(--lumo-font-size-m)").set("text-align", "center").set("margin", "0")
+                .set("color", "var(--lumo-body-text-color)");
 
-        VerticalLayout layout = new VerticalLayout(icon, featureTitle, featureDesc);
-        layout.setAlignItems(Alignment.CENTER);
-        layout.setSpacing(false);
-        layout.setWidth("220px");
-
+        layout.add(icon, featureTitle, featureDesc);
         return layout;
     }
+
+    private VerticalLayout createTestimonialSection() {
+        VerticalLayout section = new VerticalLayout();
+        section.setWidthFull();
+        section.setAlignItems(Alignment.CENTER);
+        section.setSpacing(true);
+        section.setPadding(true);
+        section.getStyle().set("background-color", "var(--lumo-contrast-5pct)");
+        section.getStyle().set("padding", "80px 20px");
+
+        H2 headline = new H2("Was unsere Kunden sagen");
+        headline.getStyle().set("color", "var(--lumo-header-text-color)");
+        headline.getStyle().set("font-size", "var(--lumo-font-size-xxl)");
+        headline.getStyle().set("margin-bottom", "40px");
+
+        FlexLayout testimonials = new FlexLayout();
+        testimonials.getStyle().set("flex-wrap", "wrap");
+        testimonials.setJustifyContentMode(JustifyContentMode.CENTER);
+        testimonials.getStyle().set("gap", "30px");
+
+        testimonials.add(
+                createTestimonialCard(
+                        "\"Finovia hat mir den Einstieg in die Welt der Aktien unglaublich leicht gemacht. Die Oberfläche ist intuitiv und die Informationen sehr hilfreich.\"",
+                        "Max Mustermann",
+                        "Privatanleger"
+                ),
+                createTestimonialCard(
+                        "\"Als erfahrener Trader schätze ich die Echtzeit-Daten und tiefgehenden Analysetools. Finovia ist eine Bereicherung für mein Portfolio-Management.\"",
+                        "Anna Schmidt",
+                        "Finanzberaterin"
+                ),
+                createTestimonialCard(
+                        "\"Der Kundenservice ist herausragend und die Gebühren sind fair. Ich kann Finovia jedem empfehlen, der ernsthaft investieren möchte.\"",
+                        "Lena Mayer",
+                        "Studentin & Investorin"
+                )
+        );
+
+        section.add(headline, testimonials);
+        return section;
+    }
+
+    private VerticalLayout createTestimonialCard(String quote, String author, String role) {
+        VerticalLayout card = new VerticalLayout();
+        card.setAlignItems(Alignment.CENTER);
+        card.setSpacing(true);
+        card.setPadding(true);
+        card.setWidth("350px");
+        card.getStyle()
+                .set("background-color", "white")
+                .set("border-radius", "var(--lumo-border-radius-l)")
+                .set("box-shadow", "0 6px 12px rgba(0,0,0,0.1)");
+        card.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        Paragraph quoteText = new Paragraph(quote);
+        quoteText.getStyle()
+                .set("font-size", "var(--lumo-font-size-m)")
+                .set("text-align", "center")
+                .set("font-style", "italic")
+                .set("color", "var(--lumo-body-text-color)");
+
+        Span authorName = new Span(author);
+        authorName.getStyle()
+                .set("font-weight", "bold")
+                .set("font-size", "var(--lumo-font-size-l)")
+                .set("color", "var(--lumo-header-text-color)");
+
+        Span authorRole = new Span(role);
+        authorRole.getStyle()
+                .set("font-size", "var(--lumo-font-size-s)")
+                .set("color", "var(--lumo-secondary-text-color)");
+
+        card.add(quoteText, authorName, authorRole);
+        return card;
+    }
+
 
     private VerticalLayout createCTASection() {
         VerticalLayout cta = new VerticalLayout();
         cta.setAlignItems(Alignment.CENTER);
         cta.setSpacing(true);
         cta.setPadding(true);
-        cta.getStyle().set("background-color", "#f5f5f5");
+        cta.getStyle().set("background-color", "var(--lumo-primary-color)");
+        cta.getStyle().set("color", "white");
+        cta.getStyle().set("padding", "60px 20px");
 
-        H2 text = new H2("Jetzt kostenlos starten");
+        H2 text = new H2("Bereit für deinen Start in die Investment-Welt?");
+        text.getStyle().set("color", "white");
+        text.getStyle().set("font-size", "var(--lumo-font-size-xxl)");
+        text.getStyle().set("margin-bottom", "20px");
 
-        Button button = new Button("Jetzt kostenlos starten", e -> UI.getCurrent().navigate("register"));
-        button.getStyle().set("background-color", "#3b61e2")
-                .set("color", "white")
-                .set("border-radius", "8px")
-                .set("padding", "12px 30px")
-                .set("font-size", "1.1em");
+        Button button = new Button("Jetzt kostenlos Depot eröffnen", e -> UI.getCurrent().navigate("register"));
+        button.getStyle().set("background-color", "white")
+                .set("color", "var(--lumo-primary-color)")
+                .set("border-radius", "var(--lumo-border-radius-l)")
+                .set("padding", "18px 40px")
+                .set("font-size", "var(--lumo-font-size-l)")
+                .set("font-weight", "bold")
+                .set("cursor", "pointer")
+                .set("transition", "background-color 0.3s ease, color 0.3s ease, transform 0.2s ease");
+        button.addAttachListener(e -> {
+            button.getElement().addEventListener("mouseover", event -> button.getStyle().set("background-color", "var(--lumo-shade-5pct)").set("transform", "translateY(-2px)"));
+            button.getElement().addEventListener("mouseout", event -> button.getStyle().set("background-color", "white").set("transform", "translateY(0)"));
+        });
 
         cta.add(text, button);
         return cta;
@@ -178,29 +346,53 @@ public class StartingPageView extends VerticalLayout {
     private Footer createFooter() {
         Footer footer = new Footer();
         footer.setWidthFull();
-        footer.getStyle().set("background-color", "#2b4c5f")
-                .set("color", "white")
-                .set("padding", "20px");
+        footer.getStyle()
+                .set("background-color", "var(--lumo-body-text-color)") // Dunkler Hintergrund für hohe Sichtbarkeit
+                .set("color", "white") // Weiße Schrift auf dunklem Hintergrund
+                .set("padding", "30px 40px"); // Größeres Padding
 
         HorizontalLayout container = new HorizontalLayout();
         container.setWidthFull();
         container.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         container.setAlignItems(Alignment.CENTER);
         container.getStyle().set("flex-wrap", "wrap");
+        container.setMaxWidth("1200px");
+        container.setMargin(Boolean.parseBoolean("0 auto"));
 
-        Paragraph copyright = new Paragraph("© 2025 Finovia. Alle Rechte vorbehalten.");
-        copyright.getStyle().set("font-size", "0.9em");
+
+        Paragraph copyright = new Paragraph("© " + java.time.Year.now().getValue() + " Finovia. Alle Rechte vorbehalten.");
+        copyright.getStyle()
+                .set("font-size", "var(--lumo-font-size-m)") // Etwas größere Schrift
+                .set("color", "var(--lumo-secondary-color)"); // Hellere Farbe aus deinem Theme für Kontrast
+
 
         HorizontalLayout links = new HorizontalLayout();
         links.setSpacing(true);
+        links.getStyle().set("gap", "20px"); // Größerer Abstand zwischen den Links
 
-        Anchor impressum = new Anchor("#impressum", "Impressum");
-        impressum.getStyle().set("color", "white").set("font-size", "0.9em");
+        Anchor impressumLink = new Anchor("impressum", "Impressum");
+        impressumLink.getStyle()
+                .set("color", "var(--lumo-secondary-color)") // Passende Farbe aus deinem Theme
+                .set("font-size", "var(--lumo-font-size-m)") // Etwas größere Schrift
+                .set("text-decoration", "none")
+                .set("font-weight", "500"); // Leichterer Fettdruck
+        impressumLink.addAttachListener(e -> {
+            impressumLink.getElement().addEventListener("mouseover", event -> impressumLink.getStyle().set("text-decoration", "underline").set("color", "white")); // Bei Hover weiß
+            impressumLink.getElement().addEventListener("mouseout", event -> impressumLink.getStyle().set("text-decoration", "none").set("color", "var(--lumo-secondary-color)"));
+        });
 
-        Anchor datenschutz = new Anchor("#datenschutz", "Datenschutz");
-        datenschutz.getStyle().set("color", "white").set("font-size", "0.9em");
+        Anchor datenschutzLink = new Anchor("datenschutz", "Datenschutz");
+        datenschutzLink.getStyle()
+                .set("color", "var(--lumo-secondary-color)") // Passende Farbe aus deinem Theme
+                .set("font-size", "var(--lumo-font-size-m)") // Etwas größere Schrift
+                .set("text-decoration", "none")
+                .set("font-weight", "500");
+        datenschutzLink.addAttachListener(e -> {
+            datenschutzLink.getElement().addEventListener("mouseover", event -> datenschutzLink.getStyle().set("text-decoration", "underline").set("color", "white"));
+            datenschutzLink.getElement().addEventListener("mouseout", event -> datenschutzLink.getStyle().set("text-decoration", "none").set("color", "var(--lumo-secondary-color)"));
+        });
 
-        links.add(impressum, datenschutz);
+        links.add(impressumLink, datenschutzLink);
 
         container.add(copyright, links);
         footer.add(container);

@@ -107,8 +107,8 @@ public abstract class AbstractSideNav extends VerticalLayout {
 
         H1 logo = new H1("Finovia");
         logo.getStyle().set("font-size", "var(--lumo-font-size-l)")
-                .set("margin", "0")
-                .set("padding", "var(--lumo-space-m)");
+             .set("margin", "0")
+             .set("padding", "var(--lumo-space-m)");
 
         Button dashboardBtn = createNavButton("Dashboard", VaadinIcon.DASHBOARD);
         dashboardBtn.addClickListener(e -> UI.getCurrent().navigate("uebersicht"));
@@ -122,35 +122,35 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button apiBtn = createNavButton("Wertpapiere", VaadinIcon.CODE);
         apiBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
 
-        
-        Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR); 
-        watchlistBtn.addClickListener(e -> UI.getCurrent().navigate(WatchlistView.class)); 
+
+
+        Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR);
+        watchlistBtn.addClickListener(e -> UI.getCurrent().navigate(WatchlistView.class));
+
 
         Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
         aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
 
-        Button userBtn = createNavButton("Benutzer", VaadinIcon.USER);
-        userBtn.addClickListener(e -> UI.getCurrent().navigate("user"));
-
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
         logoutBtn.addClickListener(e -> new SecurityService().logout());
 
-        Button transaktionsBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
-        transaktionsBtn.addClickListener(e -> UI.getCurrent().navigate("transaktionen"));
+        Button meineKauefeBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
+        meineKauefeBtn.addClickListener(e -> UI.getCurrent().navigate("meine-kauefe"));
 
 
-        topLayout.add(logo, dashboardBtn, depotBtn, meineKauefeBtn, watchlistBtn, settingsBtn, apiBtn); 
+
+        topLayout.add(logo, dashboardBtn, depotBtn, transaktionsBtn, watchlistBtn, settingsBtn, apiBtn);
         topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         topLayout.setPadding(false);
         topLayout.setSpacing(false);
 
 
-        bottomLayout.add(userBtn, logoutBtn);
+        bottomLayout.add(settingsBtn, logoutBtn);
         bottomLayout.getStyle().setFlexGrow("1");
-bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END, LumoUtility.Gap.MEDIUM);
+        bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END, LumoUtility.Gap.MEDIUM);
 
         sideNav.add(topLayout, bottomLayout);
-sideNav.addClassNames(LumoUtility.Padding.MEDIUM);
+        sideNav.addClassNames(LumoUtility.Padding.MEDIUM);
     }
 
     /**
@@ -182,7 +182,7 @@ sideNav.addClassNames(LumoUtility.Padding.MEDIUM);
      * Fügt Komponenten zum Hauptinhaltsbereich hinzu.
      * <p>
      * Hilfsmethode, um Komponenten zum Hauptinhaltsbereich hinzuzufügen.
-     *
+     * 
      * @param components Die hinzuzufügenden Komponenten
      */
     protected void addToMainContent(Component... components) {

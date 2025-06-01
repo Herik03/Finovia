@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kosten bei Finovia: Transparent & Fair Handeln im Web</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+
+        :root {
+            /* Branding-Farben von Finovia, die auf Ihrem Lumo-Theme basieren und der StartingPageView.java entsprechen */
+            --finovia-primary-accent: #44CF6C; /* Individuelles Blau von der StartingPageView */
+            --finovia-secondary-accent: #3b61e2; /* Lumo Primärfarbe (Grün) */
+            --finovia-dark-background: #2b4c5f; /* Individuelles Dunkelblau aus dem Footer der StartingPageView */
+            --finovia-red-highlight: #dc3545; /* Rot für negative Hervorhebungen */
+
+            /* Zugeordnete Lumo-Variablen für allgemeine Verwendung */
+            --lumo-body-text-color: #3A3238;
+            --lumo-header-text-color: #3A3238;
+            --lumo-secondary-text-color: #6E4555;
+            --lumo-base-color: #FAFAFA;            /* Weiß als Haupthintergrund */
+            --lumo-shade-5pct: #F2F2F2;            /* Sehr leichtes Grau */
+            --lumo-shade-10pct: #F5F5F5;           /* Leichter Graustich */
+            --lumo-shade-20pct: #EEEEEE;
+            --lumo-shade-30pct: #E0E0E0;
+            --lumo-primary-color-shade: rgba(68, 207, 108, 0.9); /* Aus Ihrem Lumo CSS */
+
+            /* Typografie-Variablen von Lumo */
+            --lumo-font-family:        'Inter', sans-serif;
+            --lumo-heading-font-family:'Inter', sans-serif;
+            --lumo-font-size:          16px;
+            --lumo-font-size-s:        0.8rem;
+            --lumo-font-size-m:        1rem;
+            --lumo-font-size-l:        1.2rem;
+            --lumo-font-size-xl:       1.5rem;
+            --lumo-font-size-xxl:      2rem;
+
+            /* Rundungen von Lumo */
+            --lumo-border-radius: 8px;
+        }
+
+        body {
+            font-family: var(--lumo-font-family); /* Konsistente Schriftart aus Lumo-Theme */
+            line-height: 1.6;
+            color: var(--lumo-body-text-color); /* Textfarbe aus Lumo-Theme */
+            margin: 0;
+            padding: 0;
+            background-color: var(--lumo-base-color); /* Hintergrundfarbe aus Lumo-Theme */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: var(--finovia-primary-accent); /* Hintergrundfarbe des Headers angepasst */
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            border-bottom: 5px solid var(--finovia-secondary-accent); /* Farbe des unteren Randes angepasst */
+        }
+
+        header h1 {
+            font-family: var(--lumo-heading-font-family); /* Konsistente Überschriften-Schriftart */
+            font-size: var(--lumo-font-size-xxl); /* Schriftgröße angepasst */
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: var(--lumo-font-size-l); /* Schriftgröße angepasst */
+            opacity: 0.9;
+        }
+
+        section {
+            padding: 40px 0;
+        }
+
+        .section-title {
+            font-family: var(--lumo-heading-font-family); /* Konsistente Überschriften-Schriftart */
+            font-size: var(--lumo-font-size-xxl); /* Schriftgröße angepasst */
+            color: var(--finovia-primary-accent); /* Farbe des Abschnittstitels angepasst */
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .cost-box {
+            background-color: var(--lumo-base-color); /* Hintergrundfarbe der Kostenbox angepasst */
+            border-radius: var(--lumo-border-radius); /* Randradius aus Lumo-Theme */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Angepasster Schatten für weicheren Look */
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 1px solid var(--lumo-shade-20pct); /* Rahmenfarbe aus Lumo-Theme */
+        }
+
+        .cost-box h2 {
+            font-family: var(--lumo-heading-font-family); /* Konsistente Überschriften-Schriftart */
+            color: var(--finovia-primary-accent); /* Farbe der Überschrift angepasst */
+            font-size: var(--lumo-font-size-xxl); /* Schriftgröße angepasst */
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .cost-box p {
+            font-size: var(--lumo-font-size-m); /* Schriftgröße angepasst */
+            color: var(--lumo-body-text-color); /* Textfarbe angepasst */
+            margin-bottom: 20px;
+        }
+
+        .cost-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .cost-item .icon {
+            font-size: var(--lumo-font-size-xl); /* Icon-Größe angepasst */
+            margin-right: 15px;
+            color: var(--finovia-secondary-accent); /* Icon-Farbe angepasst */
+        }
+
+        .cost-item .icon.red {
+            color: var(--finovia-red-highlight); /* Rote Icon-Farbe angepasst */
+        }
+
+        .highlight {
+            font-family: var(--lumo-heading-font-family); /* Konsistente Schriftart */
+            color: var(--finovia-secondary-accent); /* Highlight-Farbe angepasst */
+            font-weight: 700;
+        }
+
+        .highlight.red {
+            color: var(--finovia-red-highlight); /* Rote Highlight-Farbe angepasst */
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--lumo-base-color); /* Hintergrundfarbe der Feature-Card angepasst */
+            border-radius: var(--lumo-border-radius); /* Randradius aus Lumo-Theme */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Angepasster Schatten für weicheren Look */
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border: 1px solid var(--lumo-shade-20pct); /* Rahmenfarbe aus Lumo-Theme */
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px); /* Leichterer Hover-Effekt */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Angepasster Hover-Schatten */
+        }
+
+        .feature-card .feature-icon {
+            font-size: var(--lumo-font-size-xl); /* Icon-Größe angepasst */
+            color: var(--finovia-primary-accent); /* Icon-Farbe angepasst */
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-family: var(--lumo-heading-font-family); /* Konsistente Überschriften-Schriftart */
+            font-size: var(--lumo-font-size-l); /* Schriftgröße angepasst */
+            color: var(--lumo-header-text-color); /* Textfarbe angepasst */
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            font-size: var(--lumo-font-size-m); /* Schriftgröße angepasst */
+            color: var(--lumo-body-text-color); /* Textfarbe angepasst */
+        }
+
+        .cta-section {
+            background-color: var(--finovia-primary-accent); /* Hintergrundfarbe des CTA-Bereichs angepasst */
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+            margin-top: 40px;
+            border-top: 5px solid var(--finovia-secondary-accent); /* Farbe des oberen Randes angepasst */
+        }
+
+        .cta-section h2 {
+            font-family: var(--lumo-heading-font-family); /* Konsistente Überschriften-Schriftart */
+            font-size: var(--lumo-font-size-xxl); /* Schriftgröße angepasst */
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--finovia-secondary-accent); /* Hintergrundfarbe des CTA-Buttons angepasst (Lumo primary) */
+            color: white;
+            padding: 15px 30px;
+            border-radius: var(--lumo-border-radius); /* Randradius aus Lumo-Theme */
+            text-decoration: none;
+            font-family: var(--lumo-font-family); /* Konsistente Schriftart */
+            font-weight: 600;
+            font-size: var(--lumo-font-size-m); /* Schriftgröße angepasst */
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: var(--lumo-primary-color-shade); /* Hover-Farbe des CTA-Buttons aus Lumo-Theme */
+        }
+
+        footer {
+            background-color: var(--finovia-dark-background); /* Hintergrundfarbe des Footers angepasst */
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: var(--lumo-font-size-s); /* Schriftgröße angepasst */
+        }
+
+        /* Basis Font Awesome Icons (Unicode für Demo-Zwecke) */
+        /* Normalerweise würden Sie die Font Awesome Bibliothek direkt verlinken:
+           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        */
+        .fa-dollar-sign::before { content: "\f155"; font-family: "Font Awesome 5 Free"; font-weight: 900; }
+        .fa-euro-sign::before { content: "\f153"; font-family: "Font Awesome 5 Free"; font-weight: 900; }
+        .fa-percent::before { content: "\f295"; font-family: "Font Awesome 5 Free"; font-weight: 900; }
+        .fa-piggy-bank::before { content: "\f4d3"; font-family: "Font Awesome 5 Free"; font-weight: 900; }
+        .fa-exchange-alt::before { content: "\f362"; font-family: "Font Awesome 5 Free"; font-weight: 900; } /* Geändert für Web-Trading */
+        .fa-chart-line::before { content: "\f201"; font-family: "Font Awesome 5 Free"; font-weight: 900; }
+        .fa-shield-alt::before { content: "\f3ed"; font-family: "Font Awesome 5 Free"; font-weight: 900; }
+        .fa-desktop::before { content: "\f108"; font-family: "Font Awesome 5 Free"; font-weight: 900; } /* Geändert für Web-App */
+        .fa-lightbulb::before { content: "\f0eb"; font-family: "Font Awesome 5 Free"; font-weight: 900; } /* Neues Icon für Bildung */
+        .fa-file-invoice-dollar::before { content: "\f571"; font-family: "Font Awesome 5 Free"; font-weight: 900; } /* Neues Icon für Transparenz */
+        .fa-boxes::before { content: "\f468"; font-family: "Font Awesome 5 Free"; font-weight: 900; } /* Neues Icon für Produktauswahl */
+
+
+        /* Responsive Anpassungen */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: var(--lumo-font-size-xl);
+            }
+            header p {
+                font-size: var(--lumo-font-size-m);
+            }
+            .section-title {
+                font-size: var(--lumo-font-size-xl);
+            }
+            .cost-box h2 {
+                font-size: var(--lumo-font-size-l);
+            }
+            .cta-section h2 {
+                font-size: var(--lumo-font-size-xl);
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: var(--lumo-font-size-l);
+            }
+            header p {
+                font-size: var(--lumo-font-size-s);
+            }
+            .cost-box {
+                padding: 20px;
+            }
+            .cta-button {
+                padding: 12px 25px;
+                font-size: var(--lumo-font-size-m);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEbFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>Transparente Kosten bei Finovia</h1>
+        <p>Dein Depot. Dein Browser. Dein Investment. Einfach, fair und ohne versteckte Gebühren.</p>
+    </div>
+</header>
+
+<main>
+    <section class="cost-overview">
+        <div class="container">
+            <h2 class="section-title">Dein Depot. Deine Regeln. Deine Kosten.</h2>
+            <div class="cost-box">
+                <h2>Das Depot ist <span class="highlight">dauerhaft kostenlos!</span></h2>
+                <p>Bei Finovia ermöglichen wir dir einen unkomplizierten Zugang zum Finanzmarkt direkt über deinen Browser. Deshalb fallen für die Führung deines Depots keinerlei Gebühren an. Kein Grundpreis, keine monatlichen Kosten – einfach **0 € für dein Wertpapierdepot**.</p>
+                <div class="cost-item">
+                    <span class="icon fa-piggy-bank"></span>
+                    <p><strong>0 € Depotgebühr</strong> – Dein Vermögen wächst, ohne zusätzliche Lasten.</p>
+                </div>
+            </div>
+
+            <div class="cost-box">
+                <h2>Transaktionsgebühr: <span class="highlight red">Nur 2,50 € pro Trade!</span></h2>
+                <p>Wir machen die Kosten pro Trade absolut transparent. Egal wie hoch dein Handelsvolumen ist oder welche Stückzahl du handelst – jede einzelne Transaktion für **Aktien, ETFs und Anleihen** kostet dich lediglich eine geringe Pauschalgebühr von **2,50 €**.</p>
+                <div class="cost-item">
+                    <span class="icon fa-euro-sign red"></span>
+                    <p><strong>2,50 €</strong> pro Kauf oder Verkauf – Festpreis ohne Überraschungen.</p>
+                </div>
+                <p>Diese einfache und faire Struktur ermöglicht dir, deine Handelsentscheidungen klar zu kalkulieren. Keine prozentualen Gebühren, die bei größeren Investitionen explodieren, und keine versteckten Spreads.</p>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section class="why-finovia">
+        <div class="container">
+            <h2 class="section-title">Warum Finovia die richtige Wahl für dein Investment ist</h2>
+            <p style="text-align: center; font-size: 1.1em; margin-bottom: 40px;">
+                Neben unseren fairen Preisen bieten wir dir eine Reihe von Vorteilen, die dich beim Erreichen deiner finanziellen Ziele unterstützen.
+            </p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <span class="feature-icon fa-desktop"></span>
+                    <h3>Intuitive Web-Plattform</h3>
+                    <p>Handle Wertpapiere bequem und übersichtlich direkt in deinem Browser. Entwickelt für eine einfache Navigation und effizientes Management deines Depots.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon fa-boxes"></span>
+                    <h3>Fokus auf solide Werte</h3>
+                    <p>Konzentriere dich auf das Wesentliche: Wir bieten dir eine breite Auswahl an **Aktien, ETFs und Anleihen**, um dein Portfolio fundiert und sicher aufzubauen.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon fa-shield-alt"></span>
+                    <h3>Höchste Sicherheit & Regulierung</h3>
+                    <p>Deine Einlagen sind geschützt, und wir erfüllen strengste regulatorische Standards. Sicherheit hat bei uns oberste Priorität.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon fa-chart-line"></span>
+                    <h3>Umfassende Marktinformationen</h3>
+                    <p>Erhalte Echtzeitkurse, aktuelle Nachrichten und Analysen direkt in deiner Web-App, um fundierte Entscheidungen zu treffen.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon fa-lightbulb"></span>
+                    <h3>Bildung & Wissen</h3>
+                    <p>Wir unterstützen dich mit Lernmaterialien und Insights, um dein Finanzwissen zu erweitern und kluge Investmententscheidungen zu treffen.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon fa-file-invoice-dollar"></span>
+                    <h3>Volle Kostenkontrolle</h3>
+                    <p>Transparenz ist unser Versprechen. Alle Gebühren werden klar kommuniziert, damit du jederzeit den Überblick behältst.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Bereit, mit Finovia durchzustarten?</h2>
+            <p>Eröffne dein kostenloses Wertpapierdepot in wenigen Minuten und beginne noch heute, online zu handeln!</p>
+            <a href="/login" class="cta-button">Jetzt Depot eröffnen</a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Finovia. Alle Rechte vorbehalten. | <a href="/impressum" style="color: white; text-decoration: none;">Impressum</a> | <a href="/datenschutz" style="color: white; text-decoration: none;">Datenschutzerklärung</a></p>
+    </div>
+</footer>
+
+</body>
+</html>

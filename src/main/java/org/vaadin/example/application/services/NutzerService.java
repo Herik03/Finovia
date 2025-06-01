@@ -1,11 +1,10 @@
 package org.vaadin.example.application.services;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.Nutzer;
-import org.vaadin.example.application.classes.Supportanfrage;
-import org.vaadin.example.application.classes.Watchlist;
 
 import org.vaadin.example.application.repositories.NutzerRepository;
 
@@ -40,13 +39,12 @@ public class NutzerService {
     }
 
     /**
-     * Speichert einen Nutzer in der Datenbank. Das Passwort wird vor dem Speichern 
+     * Speichert einen Nutzer in der Datenbank. Das Passwort wird vor dem Speichern
      * mit dem PasswordEncoder verschlüsselt.
-     * 
+     *
      * @param nutzer Der zu speichernde Nutzer
-     * @return Der gespeicherte Nutzer mit aktualisierter ID
      */
-    public Nutzer speichereNutzer(Nutzer nutzer) {
+    public void speichereNutzer(Nutzer nutzer) {
         //Passwort verschlüsseln
         String pw = nutzer.getPasswort();
         if (pw != null && !pw.startsWith("$2a$")) {
@@ -60,7 +58,7 @@ public class NutzerService {
             nutzer.setRoles(List.of("USER"));
         }
 
-        return nutzerRepository.save(nutzer);
+        nutzerRepository.save(nutzer);
     }
 
     /**
@@ -120,10 +118,33 @@ public class NutzerService {
     public void loescheNutzer(Nutzer nutzer) {
         nutzerRepository.delete(nutzer);
     }
+    /**
+     * Löscht einen Nutzer und alle zugehörigen Daten vollständig aus dem System.
+     *
+     * Durch die Verwendung von CascadeType.ALL und orphanRemoval=true in der Nutzer-Klasse
+     * werden alle abhängigen Objekte (Depots, Watchlist usw.) automatisch gelöscht.
+     *
+     * @param nutzerId Die ID des zu löschenden Nutzers
+     * @return true, wenn der Nutzer erfolgreich gelöscht wurde, sonst false
+     */
+    @Transactional
+    public boolean nutzerVollstaendigLoeschen(Long nutzerId) {
+        Optional<Nutzer> nutzerOpt = nutzerRepository.findById(nutzerId);
+        if (nutzerOpt.isPresent()) {
+            Nutzer nutzer = nutzerOpt.get();
+
+            // Nutzer und alle verknüpften Objekte (Depots, Watchlist usw.) werden durch
+            // die JPA-Cascade-Konfiguration automatisch gelöscht
+            nutzerRepository.delete(nutzer);
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * Authentifiziert einen Nutzer anhand des Benutzernamens und Passworts.
-     * 
+     * <p>
      * Die Methode überprüft, ob ein Nutzer mit dem angegebenen Benutzernamen existiert
      * und ob das übergebene Passwort mit dem gespeicherten, verschlüsselten Passwort übereinstimmt.
      * 

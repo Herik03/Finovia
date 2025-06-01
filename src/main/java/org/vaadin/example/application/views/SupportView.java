@@ -1,10 +1,13 @@
 package org.vaadin.example.application.views;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -12,195 +15,370 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import jakarta.annotation.security.PermitAll;
-import org.vaadin.example.application.classes.Nutzer;
-import org.vaadin.example.application.classes.Supportanfrage;
+import org.vaadin.example.application.classes.Support;
+import org.vaadin.example.application.models.SupportRequest;
+import org.vaadin.example.application.services.EmailService;
 
-@Route("support")
-@PageTitle("Support - Finovia")
-@PermitAll
-public class SupportView extends AbstractSideNav {
+import java.util.List;
 
-    private final TextArea nachrichtField = new TextArea("Ihre Anfrage");
-    private final TextField betreffField = new TextField("Betreff");
-    private final Select<String> kategorieSelect = new Select<>();
-    private final Button sendenButton = new Button("Senden");
-    private final Button abbrechenButton = new Button("Abbrechen");
+/**
+ * Komponente zur Darstellung des Support-Bereichs
+ */
+@org.springframework.stereotype.Component
+public class SupportView extends VerticalLayout {
+
+    private final Support supportService;
+    private final EmailService emailService;
 
     /**
-     * Konstruktor für die SupportView.
-     * Erstellt eine Benutzeroberfläche für die Erstellung von Supportanfragen.
+     * Erstellt eine neue SupportView-Komponente
+     *
+     * @param supportService Der Service für Support-Anfragen
+     * @param emailService Der Service für E-Mail-Kommunikation
      */
-    public SupportView() {
-        super(); // Konstruktor der Basisklasse aufrufen
-        
-        VerticalLayout contentLayout = new VerticalLayout();
-        contentLayout.setSizeFull();
-        contentLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        contentLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
-        contentLayout.setPadding(true);
-        contentLayout.setSpacing(true);
-        contentLayout.addClassNames(LumoUtility.MaxWidth.SCREEN_LARGE, LumoUtility.Margin.Horizontal.AUTO);
-        
-        configureForm(contentLayout);
-        setupButtons(contentLayout);
-        addToMainContent(contentLayout);
+    public SupportView(Support supportService, EmailService emailService) {
+        this.supportService = supportService;
+        this.emailService = emailService;
+
+        setSpacing(true);
+        setPadding(false);
+
+        add(createSupportContent());
     }
 
     /**
-     * Konfiguriert das Formular für die Supportanfrage.
+     * Erstellt den Inhalt des Support-Bereichs
      */
-    private void configureForm(VerticalLayout contentLayout) {
-        // Header
-        H1 title = new H1("Support-Anfrage erstellen");
-        Paragraph description = new Paragraph("Beschreiben Sie Ihr Anliegen, und unser Support-Team wird sich so schnell wie möglich bei Ihnen melden.");
+    private Component createSupportContent() {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setSpacing(true);
+        layout.setPadding(false);
 
-        // Formular-Komponenten
-        betreffField.setPlaceholder("Kurze Beschreibung Ihres Anliegens");
-        betreffField.setRequired(true);
-        betreffField.setWidth("100%");
-        betreffField.setMaxLength(100);
-        betreffField.setHelperText("Max. 100 Zeichen");
+        H2 sectionTitle = new H2("Support");
 
-        kategorieSelect.setLabel("Kategorie");
-        kategorieSelect.setItems("Technisches Problem", "Finanzfrage", "Depotproblem", "Kontoproblem", "Sonstiges");
-        kategorieSelect.setValue("Sonstiges");
-        kategorieSelect.getElement().setAttribute("required", "true");
-        kategorieSelect.setWidth("100%");
+        // Support-Informationen
+        Paragraph supportDescription = new Paragraph("Hier können Sie den Kundensupport kontaktieren und Ihre bisherigen Anfragen einsehen.");
 
-        nachrichtField.setPlaceholder("Beschreiben Sie Ihr Problem oder Anliegen detailliert...");
-        nachrichtField.setRequired(true);
-        nachrichtField.setMinHeight("200px");
-        nachrichtField.setWidth("100%");
-        nachrichtField.setMaxLength(2000);
-        nachrichtField.setHelperText("Max. 2000 Zeichen");
+        // Neue Supportanfrage erstellen
+        H2 newRequestTitle = new H2("Neue Supportanfrage");
+        newRequestTitle.getStyle().set("margin-top", "1rem");
 
-        VerticalLayout formLayout = new VerticalLayout(
-                title,
-                description,
-                betreffField,
-                kategorieSelect,
-                nachrichtField
+        // Felder für die neue Anfrage
+        Select<String> categorySelect = new Select<>();
+        categorySelect.setLabel("Kategorie");
+        categorySelect.setItems("Allgemeine Frage", "Technisches Problem", "Depotproblem", "Konto & Sicherheit", "Sonstiges");
+        categorySelect.setValue("Allgemeine Frage");
+
+        TextArea descriptionArea = new TextArea("Beschreibung");
+        descriptionArea.setPlaceholder("Beschreiben Sie Ihr Anliegen...");
+        descriptionArea.setMinHeight("150px");
+        descriptionArea.setWidthFull();
+
+        Upload fileUpload = new Upload();
+        fileUpload.setMaxFiles(3);
+        fileUpload.setDropLabel(new Span("Dateien hier ablegen (max. 3)"));
+        fileUpload.setAcceptedFileTypes("image/*", ".pdf", ".docx");
+
+        Button submitButton = new Button("Anfrage senden");
+        submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        // Container für die Anfragen
+        Div requestsContainer = new Div();
+        requestsContainer.addClassNames(
+                LumoUtility.Border.ALL,
+                LumoUtility.BorderRadius.MEDIUM,
+                LumoUtility.Padding.MEDIUM,
+                LumoUtility.Margin.Top.MEDIUM
         );
-        formLayout.setPadding(false);
-        formLayout.setSpacing(true);
-        formLayout.setMaxWidth("800px");
-        formLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
 
-        contentLayout.add(formLayout);
+        // Bisherige Support-Anfragen
+        H2 requestHistoryTitle = new H2("Ihre bisherigen Anfragen");
+        requestHistoryTitle.getStyle().set("margin-top", "2rem");
+
+        // Button zum manuellen Aktualisieren der Anfragenliste
+        Button refreshButton = new Button("Aktualisieren", new Icon(VaadinIcon.REFRESH));
+        refreshButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_SMALL);
+        refreshButton.addClickListener(e -> updateRequestsContainer(requestsContainer));
+
+        // Layout für Überschrift und Aktualisieren-Button
+        HorizontalLayout requestHistoryHeader = new HorizontalLayout(requestHistoryTitle, refreshButton);
+        requestHistoryHeader.setWidthFull();
+        requestHistoryHeader.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        requestHistoryHeader.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        // Initiale Anzeige der Anfragen
+        updateRequestsContainer(requestsContainer);
+
+        // Starte eine periodische Aktualisierung der Anfragen, um automatische Antworten zu erfassen
+        UI ui = UI.getCurrent();
+        if (ui != null) {
+            ui.setPollInterval(10000); // Alle 10 Sekunden aktualisieren
+            ui.addPollListener(event -> {
+                // Führe die Aktualisierung nur im UI-Thread durch
+                ui.access(() -> updateRequestsContainer(requestsContainer));
+            });
+        }
+
+
+        // Handler für das Absenden der Anfrage
+        submitButton.addClickListener(e -> {
+            if (descriptionArea.getValue().isEmpty()) {
+                Notification.show("Bitte geben Sie eine Beschreibung ein",
+                                3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return;
+            }
+
+            // Support-Anfrage erstellen
+            SupportRequest newRequest = supportService.createRequest(
+                    categorySelect.getValue(),
+                    descriptionArea.getValue()
+            );
+
+            // E-Mail senden
+            boolean emailSent = emailService.sendSupportRequest(newRequest, "benutzer@example.com");
+
+            // Sofortige Aktualisierung der Anfragenliste
+            updateRequestsContainer(requestsContainer);
+
+            // Notification anzeigen
+            if (emailSent) {
+                Notification.show("Ihre Anfrage wurde erfolgreich gesendet",
+                                3000, Notification.Position.BOTTOM_START)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            } else {
+                Notification.show("Ihre Anfrage wurde gespeichert, konnte aber nicht per E-Mail gesendet werden",
+                                3000, Notification.Position.BOTTOM_START)
+                        .addThemeVariants(NotificationVariant.LUMO_WARNING);
+            }
+
+            // Formular zurücksetzen
+            descriptionArea.clear();
+            categorySelect.setValue("Allgemeine Frage");
+
+            // Scrolle zum Anfragenbereich, damit Benutzer die neue Anfrage sehen können
+            requestsContainer.scrollIntoView();
+        });
+
+        HorizontalLayout submitLayout = new HorizontalLayout(submitButton);
+        submitLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        submitLayout.setWidthFull();
+
+        // Direkte Kontaktmöglichkeiten
+        H2 directContactTitle = new H2("Direkter Kontakt");
+        directContactTitle.getStyle().set("margin-top", "2rem");
+
+        VerticalLayout contactInfoLayout = new VerticalLayout();
+        contactInfoLayout.setSpacing(false);
+        contactInfoLayout.setPadding(false);
+
+        HorizontalLayout emailLayout = new HorizontalLayout(
+                new Icon(VaadinIcon.ENVELOPE),
+                new Span("support@finovia.de")
+        );
+        emailLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        emailLayout.setSpacing(true);
+
+        HorizontalLayout phoneLayout = new HorizontalLayout(
+                new Icon(VaadinIcon.PHONE),
+                new Span("+49 (0) 123 456789")
+        );
+        phoneLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        phoneLayout.setSpacing(true);
+
+        HorizontalLayout timeLayout = new HorizontalLayout(
+                new Icon(VaadinIcon.CLOCK),
+                new Span("Mo-Fr: 9:00 - 18:00 Uhr")
+        );
+        timeLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        timeLayout.setSpacing(true);
+
+        contactInfoLayout.add(emailLayout, phoneLayout, timeLayout);
+
+        // Komponenten zum Layout hinzufügen
+        layout.add(
+                sectionTitle,
+                supportDescription,
+                newRequestTitle,
+                categorySelect,
+                descriptionArea,
+                fileUpload,
+                submitLayout,
+                requestHistoryHeader,
+                requestsContainer,
+                directContactTitle,
+                contactInfoLayout
+        );
+
+        return layout;
     }
 
     /**
-     * Richtet die Buttons zum Senden und Abbrechen ein.
+     * Aktualisiert den Container mit den Support-Anfragen
      */
-    private void setupButtons(VerticalLayout contentLayout) {
-        // Buttons konfigurieren
-        sendenButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        sendenButton.setMinWidth("150px");
+    private void updateRequestsContainer(Div requestsContainer) {
+        requestsContainer.removeAll();
 
-        abbrechenButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        abbrechenButton.setMinWidth("150px");
+        List<SupportRequest> requests = supportService.getAllRequests();
 
-        // Button-Container
-        HorizontalLayout buttonLayout = new HorizontalLayout(abbrechenButton, sendenButton);
-        buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
-        buttonLayout.setWidthFull();
-        buttonLayout.setSpacing(true);
-        buttonLayout.setPadding(false);
-        buttonLayout.addClassNames(LumoUtility.Margin.Top.MEDIUM);
+        if (requests.isEmpty()) {
+            Span noRequestsSpan = new Span("Keine Anfragen vorhanden");
+            noRequestsSpan.addClassNames(
+                    LumoUtility.Padding.MEDIUM,
+                    LumoUtility.TextColor.SECONDARY
+            );
+            requestsContainer.add(noRequestsSpan);
+        } else {
+            for (int i = 0; i < requests.size(); i++) {
+                SupportRequest request = requests.get(i);
 
-        // Click-Listener
-        sendenButton.addClickListener(event -> sendeAnfrage());
-        abbrechenButton.addClickListener(event -> UI.getCurrent().navigate(""));
-
-        contentLayout.add(buttonLayout);
-    }
-
-    /**
-     * Verarbeitet die Supportanfrage nach dem Absenden.
-     */
-    private void sendeAnfrage() {
-        if (formIsValid()) {
-            try {
-                // Testdaten für einen Nutzer erstellen
-                Nutzer aktuellerNutzer = new Nutzer(
-                        "testuser",
-                        "Test",
-                        "Nutzer",
-                        "test.nutzer@example.com",
-                        "password123"
+                Div requestItem = createSupportRequestItem(
+                        request.getCategory(),
+                        request.getDescription(),
+                        request.getStatus(),
+                        request.getCreationDate(),
+                        i
                 );
 
-                String nachricht = "Kategorie: " + kategorieSelect.getValue() +
-                        "\nBetreff: " + betreffField.getValue() +
-                        "\n\n" + nachrichtField.getValue();
-
-                // Supportanfrage erstellen
-                Supportanfrage anfrage = new Supportanfrage(nachricht, aktuellerNutzer);
-
-                showSuccessMessage();
-                clearForm();
-
-                // Optional: Nach kurzer Verzögerung zurück zur Hauptseite navigieren
-                UI.getCurrent().getPage().executeJs("setTimeout(() => {$0.navigate('');}, 2000)", UI.getCurrent());
-
-            } catch (Exception e) {
-                Notification.show("Fehler beim Senden: " + e.getMessage(),
-                                3000, Notification.Position.TOP_CENTER)
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                requestsContainer.add(requestItem);
             }
         }
     }
 
-
     /**
-     * Überprüft, ob alle Pflichtfelder ausgefüllt sind.
+     * Erstellt ein Element für eine Support-Anfrage in der Liste
      */
-    private boolean formIsValid() {
-        boolean valid = true;
+    private Div createSupportRequestItem(String category, String description, String status, String date, int requestIndex) {
+        Div requestItem = new Div();
+        requestItem.addClassNames(
+                LumoUtility.BorderRadius.SMALL,
+                LumoUtility.Padding.SMALL,
+                LumoUtility.Margin.Vertical.SMALL,
+                LumoUtility.Background.CONTRAST_5
+        );
 
-        if (betreffField.isEmpty()) {
-            betreffField.setInvalid(true);
-            betreffField.setErrorMessage("Bitte geben Sie einen Betreff ein");
-            valid = false;
+        // Header mit Kategorie und Status
+        HorizontalLayout headerLayout = new HorizontalLayout();
+        headerLayout.setWidthFull();
+        headerLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+
+        Span categorySpan = new Span(category);
+        categorySpan.addClassNames(LumoUtility.FontWeight.BOLD);
+
+        Span statusSpan = new Span(status);
+        if ("Offen".equals(status)) {
+            statusSpan.addClassNames(LumoUtility.TextColor.ERROR);
+        } else if ("In Bearbeitung".equals(status)) {
+            statusSpan.addClassNames(LumoUtility.TextColor.WARNING);
+        } else {
+            statusSpan.addClassNames(LumoUtility.TextColor.SUCCESS);
         }
 
-        if (nachrichtField.isEmpty()) {
-            nachrichtField.setInvalid(true);
-            nachrichtField.setErrorMessage("Bitte beschreiben Sie Ihr Anliegen");
-            valid = false;
+        headerLayout.add(categorySpan, statusSpan);
+
+        // Beschreibung
+        Paragraph descriptionParagraph = new Paragraph(description);
+        descriptionParagraph.getStyle().set("margin", "0.5rem 0");
+
+        // Footer mit Datum, Status-Auswahl, Details-Button und Löschen-Button
+        HorizontalLayout footerLayout = new HorizontalLayout();
+        footerLayout.setWidthFull();
+        footerLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        footerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        Span dateSpan = new Span("Erstellt am: " + date);
+        dateSpan.addClassNames(LumoUtility.FontSize.SMALL, LumoUtility.TextColor.SECONDARY);
+
+        // Buttons-Layout für Details und Löschen
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.setSpacing(true);
+
+        Button detailsButton = new Button("Details anzeigen");
+        detailsButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY);
+
+        // Löschen-Button hinzufügen
+        Button deleteButton = new Button("Löschen");
+        deleteButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_TERTIARY);
+        deleteButton.getElement().getStyle().set("margin-left", "8px");
+
+        // Löschen-Button-Funktionalität
+        deleteButton.addClickListener(event -> {
+            // Bestätigungsdialog anzeigen
+            ConfirmDialog dialog = new ConfirmDialog();
+            dialog.setHeader("Anfrage löschen");
+            dialog.setText("Möchten Sie diese Support-Anfrage wirklich löschen?");
+
+            dialog.setCancelable(true);
+            dialog.setCancelText("Abbrechen");
+
+            dialog.setConfirmText("Löschen");
+            dialog.setConfirmButtonTheme("error primary");
+
+            dialog.addConfirmListener(confirmEvent -> {
+                // Anfrage löschen
+                supportService.deleteRequest(requestIndex);
+
+                // Erfolgsbenachrichtigung anzeigen
+                Notification.show("Anfrage wurde gelöscht",
+                                3000, Notification.Position.BOTTOM_START)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+                // Container aktualisieren
+                Div container = (Div) requestItem.getParent().get();
+                updateRequestsContainer(container);
+            });
+
+            dialog.open();
+        });
+
+        buttonsLayout.add(detailsButton, deleteButton);
+
+        // Status-Änderung ermöglichen
+        Select<String> statusSelect = new Select<>();
+        statusSelect.setItems("Offen", "In Bearbeitung", "Geschlossen");
+        statusSelect.setValue(status);
+        statusSelect.addValueChangeListener(event -> {
+            if (supportService.updateRequestStatus(requestIndex, event.getValue())) {
+                Notification.show("Status aktualisiert",
+                                2000, Notification.Position.BOTTOM_START)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            }
+        });
+
+        footerLayout.add(dateSpan, statusSelect, buttonsLayout);
+
+        // Die UI-Elemente zum requestItem hinzufügen
+        requestItem.add(headerLayout, descriptionParagraph, footerLayout);
+
+        // Kommentare anzeigen, falls vorhanden
+        SupportRequest request = supportService.getAllRequests().get(requestIndex);
+        if (request.getComments() != null && !request.getComments().isEmpty()) {
+            Div commentsDiv = new Div();
+            commentsDiv.addClassNames(
+                    LumoUtility.Background.CONTRAST_10,
+                    LumoUtility.BorderRadius.SMALL,
+                    LumoUtility.Padding.SMALL,
+                    LumoUtility.Margin.Top.SMALL
+            );
+
+            H5 commentsTitle = new H5("Kommentare");
+            commentsTitle.getStyle().set("margin-top", "0");
+            commentsDiv.add(commentsTitle);
+
+            for (String comment : request.getComments()) {
+                Paragraph commentParagraph = new Paragraph(comment);
+                commentParagraph.addClassNames(
+                        LumoUtility.Padding.XSMALL,
+                        LumoUtility.Border.BOTTOM
+                );
+                commentsDiv.add(commentParagraph);
+            }
+
+            requestItem.add(commentsDiv);
         }
 
-        if (kategorieSelect.isEmpty()) {
-            kategorieSelect.setInvalid(true);
-            kategorieSelect.setErrorMessage("Bitte wählen Sie eine Kategorie");
-            valid = false;
-        }
-
-        return valid;
-    }
-
-    /**
-     * Zeigt eine Erfolgsmeldung nach dem erfolgreichen Senden der Anfrage.
-     */
-    private void showSuccessMessage() {
-        Notification notification = Notification.show(
-                "Ihre Supportanfrage wurde erfolgreich übermittelt. Wir werden uns in Kürze bei Ihnen melden.",
-                5000,
-                Notification.Position.TOP_CENTER);
-        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-    }
-
-    /**
-     * Setzt das Formular zurück.
-     */
-    private void clearForm() {
-        betreffField.clear();
-        nachrichtField.clear();
-        kategorieSelect.setValue("Sonstiges");
+        return requestItem;
     }
 }
