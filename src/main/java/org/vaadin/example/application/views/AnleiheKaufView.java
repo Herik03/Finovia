@@ -34,7 +34,7 @@ import java.util.List;
  * Diese Ansicht ermöglicht es Nutzern, eine Anleihe anhand ihres Symbols auszuwählen,
  * die Stückzahl und den Handelsplatz anzugeben und den Kauf über ein ausgewähltes Depot abzuwickeln.
  */
-@Route("kaufe/:symbol")
+@Route("kaufen/anleihe/:symbol")
 @PageTitle("Anleihe kaufen")
 @PermitAll
 public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObserver {
@@ -50,8 +50,11 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
                 .getQueryParameters()
                 .getParameters()
                 .getOrDefault("symbol", List.of(""))
-                .get(0);
+                .getFirst();
 
+        initialSymbol = symbol != null ? symbol : "";
+
+        assert symbol != null;
         if (!symbol.isBlank()) {
             symbolField.setValue(symbol);
             aktualisiereEinzelkurs();
