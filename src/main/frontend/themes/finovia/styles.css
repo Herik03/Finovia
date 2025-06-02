@@ -47,21 +47,26 @@ vaadin-button {
     font-family: var(--lumo-font-family);
     font-size: var(--lumo-font-size-m);
     border-radius: var(--lumo-border-radius);
-    padding: 10px 20px;
-    background-color: var(--lumo-primary-color);
-    color: #FFFFFF;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, transform 0.1s ease;
+    padding: 8px 12px;
+    background-color: transparent;
+    color: var(--lumo-primary-color);
+    box-shadow: none;
+    border: none;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease;
 }
 
 vaadin-button:hover {
     background-color: var(--lumo-primary-color-tint);
-    transform: scale(1.03);
+    color: var(--lumo-primary-color-shade);
+    border-color: var(--lumo-primary-color-shade);
+    transform: translateY(-1px);
 }
 
 vaadin-button:active {
     background-color: var(--lumo-primary-color-shade);
-    transform: scale(1);
+    color: #FFFFFF;
+
+    transform: translateY(0);
 }
 
 /* Textfelder */
@@ -169,4 +174,3 @@ vaadin-grid-header-cell {
     font-weight: bold;
     font-size: var(--lumo-font-size-s);
 }
-
