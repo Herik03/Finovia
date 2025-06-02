@@ -33,6 +33,7 @@ import java.util.List;
 public class DepotView extends AbstractSideNav {
 
     private final DepotService depotService;
+    private final SecurityService securityService;
     private final DepotAnlegenViewFactory depotAnlegenViewFactory;
     private final SecurityService securityService;
     private final NutzerService nutzerService;

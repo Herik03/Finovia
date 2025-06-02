@@ -63,12 +63,13 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
      * @param securityService Der Service für Security-Operationen
      */
     @Autowired
-    public DetailedDepotView(DepotService depotService, NutzerService nutzerService, AlphaVantageService alphaVantageService, SecurityService securityService) {
+    public DetailedDepotView(DepotService depotService, NutzerService nutzerService, AlphaVantageService alphaVantageService, SecurityService securityService, NutzerService nutzerService) {
         super(securityService);
         this.depotService = depotService;
         this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
         this.securityService = securityService;
+
 
 
         contentLayout.setWidthFull();
@@ -293,3 +294,4 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
 }
 //TODO:Einbinden der Funktionalität zum Kaufen und Verkaufen von Wertpapieren
 //TODO:Wertpapiere in die Depot-Übersicht einfügen
+
