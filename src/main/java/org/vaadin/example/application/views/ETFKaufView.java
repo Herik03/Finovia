@@ -18,27 +18,21 @@ import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.vaadin.example.application.Security.SecurityService;
-import org.vaadin.example.application.classes.Anleihe;
 import org.vaadin.example.application.classes.Depot;
+import org.vaadin.example.application.classes.ETF;
 import org.vaadin.example.application.classes.Nutzer;
-import org.vaadin.example.application.services.AnleiheKaufService;
 import org.vaadin.example.application.services.DepotService;
+import org.vaadin.example.application.services.ETFKaufService;
 import org.vaadin.example.application.services.NutzerService;
 
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * View zur Durchführung eines Anleihekaufs.
- * <p>
- * Diese Ansicht ermöglicht es Nutzern, eine Anleihe anhand ihres Symbols auszuwählen,
- * die Stückzahl und den Handelsplatz anzugeben und den Kauf über ein ausgewähltes Depot abzuwickeln.
- */
-@Route("kaufen/anleihe/:symbol")
-@PageTitle("Anleihe kaufen")
+@Route("kaufen/etf/:symbol")
+@PageTitle("ETF kaufen")
 @PermitAll
-public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObserver {
-    private final AnleiheKaufService anleiheKaufService;
+public class ETFKaufView extends AbstractSideNav implements BeforeEnterObserver {
+    private final ETFKaufService etfKaufService;
     private final DepotService depotService;
     private final SecurityService securityService;
     private final NutzerService nutzerService;
@@ -51,41 +45,11 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
     private TextField kursField;
     private String initialSymbol;
 
-    /**
-     * Wird vor dem Aufrufen der View ausgeführt, um das Symbol aus der URL zu übernehmen.
-     *
-     * @param event Event mit Informationen zur Navigation
-     */
-    @Override
-    public void beforeEnter(BeforeEnterEvent event) {
-        String symbol = event.getRouteParameters()
-                .get("symbol")
-                .orElse("");
-
-        initialSymbol = symbol;
-
-        if (!symbol.isBlank()) {
-            symbolField.setValue(symbol);
-            aktualisiereEinzelkurs();
-        }
-    }
-
-
-    /**
-     * Konstruktor zur Initialisierung der View mit allen benötigten Services.
-     *
-     * @param anleiheKaufService Service für den Anleihekauf
-     * @param depotService       Service zur Depotverwaltung
-     * @param securityService    Service zur Nutzer-Authentifizierung
-     * @param nutzerService      Service zur Nutzerverwaltung
-     */
     @Autowired
-    public AnleiheKaufView(AnleiheKaufService anleiheKaufService,
-                           DepotService depotService,
-                           SecurityService securityService,
-                           NutzerService nutzerService) {
-        super(securityService);
-        this.anleiheKaufService = anleiheKaufService;
+    public ETFKaufView(ETFKaufService etfKaufService, DepotService depotService,
+                       SecurityService securityService, NutzerService nutzerService) {
+        super();
+        this.etfKaufService = etfKaufService;
         this.depotService = depotService;
         this.securityService = securityService;
         this.nutzerService = nutzerService;
@@ -93,9 +57,9 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
         VerticalLayout contentLayout = new VerticalLayout();
         contentLayout.setPadding(true);
         contentLayout.setSpacing(true);
-        contentLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        contentLayout.setAlignItems(Alignment.CENTER);
 
-        setupUI(contentLayout);
+        initUI(contentLayout);
         addToMainContent(contentLayout);
     }
 
@@ -104,7 +68,7 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
      *
      * @param container Der übergeordnete Layout-Container
      */
-    private void setupUI(VerticalLayout container) {
+    private void initUI(VerticalLayout container) {
         // Zurück-Button
         Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -179,8 +143,8 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
                 return;
             }
 
-            Anleihe anleihe = anleiheKaufService.kaufeAnleihe(symbol, stueckzahl, handelsplatz, depot);
-            if (anleihe != null) {
+            ETF etf = etfKaufService.kaufeETF(symbol, stueckzahl, handelsplatz, depot);
+            if (etf != null) {
                 Notification.show("Anleihe erfolgreich gekauft!", 3000, Notification.Position.TOP_CENTER)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 UI.getCurrent().navigate("transaktionen");
@@ -212,7 +176,7 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
     private void aktualisiereEinzelkurs() {
         String symbol = symbolField.getValue(); //Wichtig, da man rein theoretisch auch ein anderes Symbol eingeben könnte
         try {
-            double kurs = anleiheKaufService.getKursFürSymbol(symbol);
+            double kurs = etfKaufService.getKursFuerSymbol(symbol);
             einzelkursField.setValue(String.format("%.2f", kurs));
             aktualisiereKurs();
         } catch (Exception e) {
@@ -243,5 +207,20 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
         UserDetails userDetails = securityService.getAuthenticatedUser();
         Nutzer nutzer = nutzerService.findByUsername(userDetails.getUsername());
         return (nutzer != null) ? nutzer.getId() : null;
+    }
+
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        String symbol = event.getRouteParameters()
+                .get("symbol")
+                .orElse("");
+
+        initialSymbol = symbol;
+
+        if (!symbol.isBlank()) {
+            symbolField.setValue(symbol);
+            aktualisiereEinzelkurs();
+        }
     }
 }

@@ -77,7 +77,7 @@ public class AnleiheKaufService {
         dwp.setEinstandspreis(letzterKurs);
         depotWertpapierRepository.save(dwp);
 
-        Kauf kauf = new Kauf(handelsplatz, LocalDate.now(), 0.0, letzterKurs, stueckzahl, anleihe, null);
+        Kauf kauf = new Kauf(handelsplatz, LocalDate.now(), 2.5, letzterKurs, stueckzahl, anleihe, null);
         transaktionRepository.save(kauf);
 
         return anleihe;

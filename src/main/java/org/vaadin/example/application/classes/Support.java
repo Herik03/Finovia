@@ -1,7 +1,6 @@
 package org.vaadin.example.application.classes;
 
 import org.springframework.stereotype.Service;
-import org.vaadin.example.application.models.SupportRequest;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

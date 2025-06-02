@@ -292,6 +292,5 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         dialog.open();
     }
 }
-//TODO:Einbinden der Funktionalität zum Kaufen und Verkaufen von Wertpapieren
-//TODO:Wertpapiere in die Depot-Übersicht einfügen
+
 

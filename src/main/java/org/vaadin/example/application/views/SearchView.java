@@ -1,6 +1,8 @@
 package org.vaadin.example.application.views;
 
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import org.vaadin.example.application.classes.*;
+import org.vaadin.example.application.classes.enums.SearchResultTypeEnum;
 import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Wertpapier;
@@ -29,7 +31,6 @@ import com.vaadin.flow.component.dialog.Dialog; // Import for Dialog
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
  * View-Klasse für die Wertpapier-Suche.
@@ -140,7 +141,15 @@ public class SearchView extends AbstractSideNav {
             Button kaufenButton = new Button("Kaufen", new Icon(VaadinIcon.CART));
             kaufenButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_PRIMARY);
             kaufenButton.addClickListener(e ->
-                    getUI().ifPresent(ui -> ui.navigate("kaufen/" + result.getSymbol()))
+                    {
+                        var url = switch(result.getType()) {
+                            case SearchResultTypeEnum.AKTIE -> "aktie/";
+                            case SearchResultTypeEnum.ETF -> "etf/";
+                            case SearchResultTypeEnum.ANLEIHE -> "anleihe/";
+                            default -> "";
+                        };
+                        getUI().ifPresent(ui -> ui.navigate("kaufen/" + url + result.getSymbol()));
+                    }
             );
 
             actions.add(detailsButton, kaufenButton);
@@ -182,8 +191,25 @@ public class SearchView extends AbstractSideNav {
 
                     //List<Wertpapier> lokaleTreffer = wertpapierRepository.findByNameContainingIgnoreCase(keyword);
                     List<SearchResult> lokaleResults = lokaleTreffer.stream()
-                            .map(w -> new SearchResult(w.getSymbol(), w.getName(), "Lokale DB", "EUR"))
-                            .collect(Collectors.toList());
+                            .map(w -> {
+                                SearchResultTypeEnum typ;
+                                if (w instanceof ETF) {
+                                    typ = SearchResultTypeEnum.ETF;
+                                } else if (w instanceof Anleihe) {
+                                    typ = SearchResultTypeEnum.ANLEIHE;
+                                } else {
+                                    typ = SearchResultTypeEnum.UNBEKANNT;
+                                }
+
+                                return new SearchResult(
+                                        w.getSymbol(),
+                                        w.getName(),
+                                        "Lokale DB",
+                                        "EUR",
+                                        typ
+                                );
+                            })
+                            .toList();
                     apiResults.addAll(lokaleResults);
                     return apiResults;
                 })

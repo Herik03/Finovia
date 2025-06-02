@@ -7,7 +7,7 @@ import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.classes.Kauf;
 import org.vaadin.example.application.classes.Transaktion;
-import org.vaadin.example.application.models.StockQuote;
+import org.vaadin.example.application.classes.StockQuote;
 import org.vaadin.example.application.repositories.AktieRepository;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;

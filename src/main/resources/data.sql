@@ -1,4 +1,6 @@
 DELETE FROM ausschuettung;
+DELETE FROM kauf;
+DELETE FROM ausschuettung;
 DELETE FROM transaktion;
 DELETE FROM kurs;
 
@@ -7,6 +9,7 @@ DELETE FROM anleihe;
 DELETE FROM aktie;
 
 DELETE FROM wertpapier;
+
 
 INSERT INTO wertpapier (wertpapier_id, name, symbol) VALUES (1, 'Shanghai Composite ETF 1', 'ETF001');
 INSERT INTO etf (wertpapier_id, emittent, index) VALUES (1, 'Emittent1', 'Shanghai Composite');
@@ -128,6 +131,9 @@ INSERT INTO wertpapier (wertpapier_id, name, symbol) VALUES (59, 'Staatsanleihe 
 INSERT INTO anleihe (wertpapier_id, emittent, kupon, laufzeit, nennwert) VALUES (59, 'Staat4', 0.92, '2030-05-27', 2000);
 INSERT INTO wertpapier (wertpapier_id, name, symbol) VALUES (60, 'Staatsanleihe 2034', 'BND030');
 INSERT INTO anleihe (wertpapier_id, emittent, kupon, laufzeit, nennwert) VALUES (60, 'Staat5', 3.18, '2029-05-27', 500);
+
+-- Sequenzzähler anpassen
+SELECT setval('wertpapier_seq', (SELECT MAX(wertpapier_id) FROM wertpapier));
 
 --Kursdaten
 INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low, symbol) VALUES

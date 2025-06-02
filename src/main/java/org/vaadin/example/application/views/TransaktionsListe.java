@@ -4,6 +4,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Route("transaktionen")
+@PageTitle("Transaktionen")
 @PermitAll
 public class TransaktionsListe extends AbstractSideNav {
 
@@ -47,7 +49,12 @@ public class TransaktionsListe extends AbstractSideNav {
         grid.addColumn(t -> kursFormat.format(t.getStückzahl() * t.getKurs() + t.getGebühren()))
                 .setHeader("Gesamtpreis (€)");
         grid.addColumn(t -> t.getDatum().format(datumFormat)).setHeader("Kaufdatum");
-        grid.addColumn(Transaktion::getHandelsplatz).setHeader("Handelsplatz");
+        grid.addColumn(t -> {
+            if (t instanceof org.vaadin.example.application.classes.Kauf kauf) {
+                return kauf.getHandelsplatz();
+            }
+            return "Unbekannt";
+        }).setHeader("Handelsplatz");
 
         // Aktuellen Benutzer identifizieren
         UserDetails userDetails = securityService.getAuthenticatedUser();
@@ -60,12 +67,12 @@ public class TransaktionsListe extends AbstractSideNav {
                 grid.setItems(nutzerTransaktionen);
 
                 // Hinweis zur erfolgreichen Filterung
-                Notification.show("Ihre Transaktionen werden angezeigt", 
+                Notification.show("Ihre Transaktionen werden angezeigt",
                                   3000, Notification.Position.BOTTOM_START)
                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
             } catch (Exception e) {
-                Notification.show("Fehler beim Abrufen der Transaktionen: " + e.getMessage(), 
+                Notification.show("Fehler beim Abrufen der Transaktionen: " + e.getMessage(),
                                   5000, Notification.Position.MIDDLE)
                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }

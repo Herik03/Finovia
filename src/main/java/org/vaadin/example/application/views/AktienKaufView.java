@@ -13,9 +13,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.router.*;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,16 +28,24 @@ import org.vaadin.example.application.services.NutzerService;
 import java.util.Arrays;
 import java.util.List;
 
-@Route("kaufen/:symbol")
+@Route("kaufen/aktie/:symbol")
 @PageTitle("Aktie kaufen")
 @PermitAll
-public class AktienKaufView extends AbstractSideNav {
+public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserver {
 
     private final AktienKaufService aktienKaufService;
     private final DepotService depotService;
     private final SecurityService securityService;
     private final NutzerService nutzerService;
     private final List<String> handelsplaetze = Arrays.asList("Xetra", "Frankfurt", "Tradegate");
+
+    String initialSymbol;
+    Button backButton;
+    TextField symbolField;
+    TextField einzelkursField;
+    NumberField stueckzahlField;
+    NumberField gebuehrenField;
+    TextField kursField;
 
     @Autowired
     public AktienKaufView(AktienKaufService aktienKaufService,
@@ -61,7 +67,7 @@ public class AktienKaufView extends AbstractSideNav {
     }
 
     private void setupUI(VerticalLayout container) {
-        Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
+        backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         RouterLink routerLink = new RouterLink("", MainView.class);
         routerLink.add(backButton);
@@ -75,16 +81,16 @@ public class AktienKaufView extends AbstractSideNav {
         H3 title = new H3("Aktien Kaufen");
         title.addClassName("view-title");
 
-        TextField symbolField = new TextField("Aktiensymbol");
-        symbolField.setPlaceholder("z. B. AAPL");
+        symbolField = new TextField("Aktiensymbol");
+        symbolField.setReadOnly(true);
         symbolField.setWidthFull();
 
-        TextField einzelkursField = new TextField("Aktueller Kurs (€/Aktie)");
+        einzelkursField = new TextField("Aktueller Kurs (€/Aktie)");
         einzelkursField.setReadOnly(true);
         einzelkursField.setValue("0.00");
         einzelkursField.setWidthFull();
 
-        NumberField stueckzahlField = new NumberField("Stückzahl");
+        stueckzahlField = new NumberField("Stückzahl");
         stueckzahlField.setMin(1);
         stueckzahlField.setValue(1.0);
         stueckzahlField.setWidthFull();
@@ -95,12 +101,12 @@ public class AktienKaufView extends AbstractSideNav {
         handelsplatzAuswahl.setRequired(true);
         handelsplatzAuswahl.setWidthFull();
 
-        NumberField gebuehrenField = new NumberField("Gebühren (EUR)");
+        gebuehrenField = new NumberField("Gebühren (EUR)");
         gebuehrenField.setValue(2.50);
         gebuehrenField.setReadOnly(true);
         gebuehrenField.setWidthFull();
 
-        TextField kursField = new TextField("Gesamtpreis (€)");
+        kursField = new TextField("Gesamtpreis (€)");
         kursField.setReadOnly(true);
         kursField.setValue("0.00");
         kursField.setWidthFull();
@@ -121,10 +127,10 @@ public class AktienKaufView extends AbstractSideNav {
         kaufButton.setWidthFull();
 
         symbolField.addValueChangeListener(e -> {
-            aktualisiereEinzelkurs(symbolField, einzelkursField);
-            aktualisiereKurs(symbolField, stueckzahlField, kursField);
+            aktualisiereEinzelkurs();
+            aktualisiereKurs();
         });
-        stueckzahlField.addValueChangeListener(e -> aktualisiereKurs(symbolField, stueckzahlField, kursField));
+        stueckzahlField.addValueChangeListener(e -> aktualisiereKurs());
 
         kaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
@@ -167,7 +173,7 @@ public class AktienKaufView extends AbstractSideNav {
         container.add(topLeftLayout, centerLayout);
     }
 
-    private void aktualisiereEinzelkurs(TextField symbolField, TextField einzelkursField) {
+    private void aktualisiereEinzelkurs() {
         String symbol = symbolField.getValue();
         if (symbol != null && !symbol.isBlank()) {
             try {
@@ -181,7 +187,7 @@ public class AktienKaufView extends AbstractSideNav {
         }
     }
 
-    private void aktualisiereKurs(TextField symbolField, NumberField stueckzahlField, TextField kursField) {
+    private void aktualisiereKurs() {
         String symbol = symbolField.getValue();
         Double stueckzahl = stueckzahlField.getValue();
 
@@ -205,5 +211,24 @@ public class AktienKaufView extends AbstractSideNav {
         }
         Nutzer nutzer = nutzerService.findByUsername(userDetails.getUsername()); // korrekt: Nutzer zurückgeben
         return (nutzer != null) ? nutzer.getId() : null;
+    }
+
+    /**
+     * Wird vor dem Aufrufen der View ausgeführt, um das Symbol aus der URL zu übernehmen.
+     *
+     * @param event Event mit Informationen zur Navigation
+     */
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        String symbol = event.getRouteParameters()
+                .get("symbol")
+                .orElse("");
+
+        initialSymbol = symbol;
+
+        if (!symbol.isBlank()) {
+            symbolField.setValue(symbol);
+            aktualisiereEinzelkurs();
+        }
     }
 }
