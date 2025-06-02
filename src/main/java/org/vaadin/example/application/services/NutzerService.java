@@ -200,6 +200,7 @@ public class NutzerService {
             }
         }
         return false;
+    }
 
     public Nutzer getAngemeldeterNutzer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
