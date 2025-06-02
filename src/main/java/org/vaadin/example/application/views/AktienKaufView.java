@@ -13,9 +13,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.router.*;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,16 +28,17 @@ import org.vaadin.example.application.services.NutzerService;
 import java.util.Arrays;
 import java.util.List;
 
-@Route("kaufen/:symbol")
+@Route("kaufen/aktie/:symbol")
 @PageTitle("Aktie kaufen")
 @PermitAll
-public class AktienKaufView extends AbstractSideNav {
+public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserver {
 
     private final AktienKaufService aktienKaufService;
     private final DepotService depotService;
     private final SecurityService securityService;
     private final NutzerService nutzerService;
     private final List<String> handelsplaetze = Arrays.asList("Xetra", "Frankfurt", "Tradegate");
+    String initialSymbol;
 
     @Autowired
     public AktienKaufView(AktienKaufService aktienKaufService,
@@ -76,7 +75,7 @@ public class AktienKaufView extends AbstractSideNav {
         title.addClassName("view-title");
 
         TextField symbolField = new TextField("Aktiensymbol");
-        symbolField.setPlaceholder("z. B. AAPL");
+        symbolField.setValue(initialSymbol);
         symbolField.setWidthFull();
 
         TextField einzelkursField = new TextField("Aktueller Kurs (€/Aktie)");
@@ -205,5 +204,21 @@ public class AktienKaufView extends AbstractSideNav {
         }
         Nutzer nutzer = nutzerService.findByUsername(userDetails.getUsername()); // korrekt: Nutzer zurückgeben
         return (nutzer != null) ? nutzer.getId() : null;
+    }
+
+    /**
+     * Wird vor dem Aufrufen der View ausgeführt, um das Symbol aus der URL zu übernehmen.
+     *
+     * @param event Event mit Informationen zur Navigation
+     */
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        String symbol = event.getLocation()
+                .getQueryParameters()
+                .getParameters()
+                .getOrDefault("symbol", List.of(""))
+                .getFirst();
+
+        initialSymbol = symbol != null ? symbol : "";
     }
 }

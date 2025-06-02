@@ -10,10 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.vaadin.example.application.classes.*;
-import org.vaadin.example.application.models.SearchResult;
-import org.vaadin.example.application.models.StockQuote;
+import org.vaadin.example.application.classes.SearchResult;
+import org.vaadin.example.application.classes.StockQuote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.example.application.classes.enums.SearchResultTypeEnum;
 import org.vaadin.example.application.repositories.KursRepository;
 
 import java.io.IOException;
@@ -25,7 +26,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -405,7 +405,8 @@ public class AlphaVantageService {
                     getTextSafely(node, "1. symbol"),
                     getTextSafely(node, "2. name"),
                     getTextSafely(node, "4. region"),
-                    getTextSafely(node, "8. currency")
+                    getTextSafely(node, "8. currency"),
+                    SearchResultTypeEnum.AKTIE // API liefert nur Aktien, daher immer AKTIE
             );
         } catch (Exception e) {
             logger.warn("Konnte Suchergebnis nicht parsen: {}", e.getMessage());
