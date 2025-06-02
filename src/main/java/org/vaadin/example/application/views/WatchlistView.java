@@ -48,13 +48,15 @@ public class WatchlistView extends AbstractSideNav {
     private final WatchlistService watchlistService;
     private final NutzerService nutzerService;
     private final AlphaVantageService alphaVantageService;
-    private final WertpapierView wertpapierView;
     private final Grid<Wertpapier> grid = new Grid<>(Wertpapier.class, false);
     private Nutzer currentUser;
     private final Map<Integer, Span> priceSpanMap = new HashMap<>();
     private final Map<Integer, HorizontalLayout> trendLayoutMap = new HashMap<>();
     private final Map<Integer, Span> trendTextSpanMap = new HashMap<>();
     private final Map<Integer, Icon> trendIconMap = new HashMap<>();
+    @Autowired
+    private WertpapierDetailViewFactory detailViewFactory;
+
 
     /**
      * Konstruktor für die WatchlistView.
@@ -62,15 +64,15 @@ public class WatchlistView extends AbstractSideNav {
      * @param watchlistService    Service für den Zugriff auf Watchlist-Funktionen
      * @param nutzerService       Service für den Zugriff auf Nutzer-Funktionen
      * @param alphaVantageService Service für den Zugriff auf Wertpapier-Daten
-     * @param wertpapierView      Service für die Anzeige von Wertpapierdetails
      */
     @Autowired
+
     public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierView wertpapierView) {
         super();
+
         this.watchlistService = watchlistService;
         this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
-        this.wertpapierView = wertpapierView;
 
         VerticalLayout watchlistContent = new VerticalLayout();
         watchlistContent.setSizeFull();
@@ -241,18 +243,22 @@ public class WatchlistView extends AbstractSideNav {
      *
      * @param wertpapier Das ausgewählte Wertpapier
      */
-    private void showDetails(Wertpapier wertpapier) {
+  private void showDetails(Wertpapier wertpapier) {
         try {
             closeSideNav();
 
+
             String symbol = wertpapier.getName();
             Dialog detailsDialog = wertpapierView.displayWertpapierDetails(symbol);
+
 
             detailsDialog.addDetachListener(event -> openSideNav());
         } catch (Exception e) {
             showNotification("Fehler beim Anzeigen der Details: " + e.getMessage(), NotificationVariant.LUMO_ERROR);
         }
     }
+
+
 
     /**
      * Entfernt ein Wertpapier aus der Watchlist.

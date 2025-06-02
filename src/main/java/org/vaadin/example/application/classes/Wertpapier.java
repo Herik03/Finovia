@@ -32,6 +32,8 @@ public abstract class Wertpapier {
 
     private String name; // Dieser Parameter ist wichtig für die Suche
 
+    private String symbol;
+
     @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Transaktion> transaktionen;
 
@@ -41,8 +43,9 @@ public abstract class Wertpapier {
     @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Kurs> kurse;
 
-    public Wertpapier(String name, List<Transaktion> transaktionen, List<Kurs> kurse) {
+    public Wertpapier(String name, String symbol, List<Transaktion> transaktionen, List<Kurs> kurse) {
         this.name = name;
+        this.symbol = symbol;
         this.transaktionen = transaktionen;
         this.kurse = kurse;
     }
@@ -58,6 +61,17 @@ public abstract class Wertpapier {
 
     public void addAusschuettung(Ausschuettung ausschuettung) {
         ausschuettungen.add(ausschuettung);
+    }
+
+    /**
+     * Dynamisch abgeleiteter Typ basierend auf der konkreten Unterklasse.
+     */
+    @Transient
+    public String getTyp() {
+        if (this instanceof Aktie) return "Aktie";
+        if (this instanceof Anleihe) return "Anleihe";
+        if (this instanceof ETF) return "ETF";
+        return "Unbekannt";
     }
 
 

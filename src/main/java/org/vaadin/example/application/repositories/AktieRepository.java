@@ -6,4 +6,5 @@ import org.vaadin.example.application.classes.Aktie;
 
 @Repository
 public interface AktieRepository extends JpaRepository<Aktie, Long> {
+    Aktie findBySymbol(String symbol);
 }
