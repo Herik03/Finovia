@@ -27,7 +27,8 @@ import java.util.List;
 @NoArgsConstructor
 public abstract class Wertpapier {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wertpapier_seq")
+    @SequenceGenerator(name = "wertpapier_seq", sequenceName = "wertpapier_seq", allocationSize = 1)
     private Long wertpapierId;
 
     private String name; // Dieser Parameter ist wichtig für die Suche

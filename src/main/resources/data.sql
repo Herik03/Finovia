@@ -129,6 +129,9 @@ INSERT INTO anleihe (wertpapier_id, emittent, kupon, laufzeit, nennwert) VALUES 
 INSERT INTO wertpapier (wertpapier_id, name, symbol) VALUES (60, 'Staatsanleihe 2034', 'BND030');
 INSERT INTO anleihe (wertpapier_id, emittent, kupon, laufzeit, nennwert) VALUES (60, 'Staat5', 3.18, '2029-05-27', 500);
 
+-- Sequenzzähler anpassen
+SELECT setval('wertpapier_seq', (SELECT MAX(wertpapier_id) FROM wertpapier));
+
 --Kursdaten
 INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low, symbol) VALUES
                                                                                                      (1, 1, '2025-04-01 00:00:00', 107.55, 107.81, 108.09, 107.06, 'ETF001'),
