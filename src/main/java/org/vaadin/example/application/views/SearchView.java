@@ -57,7 +57,7 @@ public class SearchView extends AbstractSideNav {
      *
      */
     @Autowired
-    public SearchView(AlphaVantageService alphaVantageService, WertpapierView wertpapierView, SecurityService securityService) {
+    public SearchView(AlphaVantageService alphaVantageService, WertpapierDetailViewFactory detailViewFactory, SecurityService securityService) {
         super(securityService);
         this.securityService = securityService;
         this.alphaVantageService = alphaVantageService;

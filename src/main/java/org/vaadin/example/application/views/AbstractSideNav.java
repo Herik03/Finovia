@@ -131,7 +131,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button apiBtn = createNavButton("Wertpapiere", VaadinIcon.CODE);
         apiBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
 
-        Button transaktionsBtn = createNavButton("Transaktionen", VaadinIcon.MONEY);
+        Button transaktionsBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
         transaktionsBtn.addClickListener(e -> UI.getCurrent().navigate("transaktionen"));
 
         Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR);
@@ -150,8 +150,6 @@ public abstract class AbstractSideNav extends VerticalLayout {
         });
         logoutBtn.addClickListener(e ->  UI.getCurrent().getPage().setLocation("/logout"));
 
-        Button transaktionsBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
-        transaktionsBtn.addClickListener(e -> UI.getCurrent().navigate("transaktionen"));
 
         // Admin-Button hinzufügen - überprüfen Sie die Rolle direkt
         Button adminBtn = createNavButton("Admin", VaadinIcon.USER_STAR);
@@ -174,9 +172,8 @@ public abstract class AbstractSideNav extends VerticalLayout {
         }
 
 
-        topLayout.add(logo, dashboardBtn, depotBtn, transaktionsBtn, watchlistBtn, settingsBtn, apiBtn);
+        topLayout.add(logo, dashboardBtn, depotBtn, transaktionsBtn, watchlistBtn, apiBtn);
 
-        topLayout.add(logo, dashboardBtn, depotBtn, watchlistBtn, settingsBtn, apiBtn);
 
 
         topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);

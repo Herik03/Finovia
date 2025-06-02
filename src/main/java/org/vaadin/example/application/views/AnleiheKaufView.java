@@ -39,6 +39,7 @@ import java.util.List;
 @PermitAll
 public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObserver {
 
+
     /**
      * Wird vor dem Aufrufen der View ausgeführt, um das Symbol aus der URL zu übernehmen.
      *
@@ -84,7 +85,7 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
                            DepotService depotService,
                            SecurityService securityService,
                            NutzerService nutzerService) {
-        super();
+        super(securityService);
         this.anleiheKaufService = anleiheKaufService;
         this.depotService = depotService;
         this.securityService = securityService;

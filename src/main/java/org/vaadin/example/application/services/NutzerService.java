@@ -200,6 +200,7 @@ public class NutzerService {
             }
         }
         return false;
+    }
 
     public Nutzer getAngemeldeterNutzer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -214,7 +215,6 @@ public class NutzerService {
         if (nutzer == null) {
             throw new IllegalStateException("Kein Nutzer mit Benutzernamen '" + username + "' gefunden");
         }
-
         return nutzer;
 
     }

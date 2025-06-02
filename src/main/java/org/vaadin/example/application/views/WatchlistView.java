@@ -68,7 +68,7 @@ public class WatchlistView extends AbstractSideNav {
      * @param alphaVantageService Service für den Zugriff auf Wertpapier-Daten
      */
     @Autowired
-    public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierView wertpapierView, SecurityService securityService) {
+    public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierDetailViewFactory detailViewFactory, SecurityService securityService) {
         super(securityService); // Ruft den Konstruktor von AbstractSideNav auf
         this.watchlistService = watchlistService;
         this.nutzerService = nutzerService;
@@ -244,20 +244,20 @@ public class WatchlistView extends AbstractSideNav {
      *
      * @param wertpapier Das ausgewählte Wertpapier
      */
-  private void showDetails(Wertpapier wertpapier) {
+    private void showDetails(Wertpapier wertpapier) {
         try {
             closeSideNav();
 
-
-            String symbol = wertpapier.getName();
-            Dialog detailsDialog = wertpapierView.displayWertpapierDetails(symbol);
-
+            // Verwende die bereits injizierte detailViewFactory anstelle von wertpapierView
+            Dialog detailsDialog = detailViewFactory.getDetailsDialog(wertpapier);
 
             detailsDialog.addDetachListener(event -> openSideNav());
+            detailsDialog.open(); // Stellen Sie sicher, dass der Dialog geöffnet wird
         } catch (Exception e) {
             showNotification("Fehler beim Anzeigen der Details: " + e.getMessage(), NotificationVariant.LUMO_ERROR);
         }
     }
+
 
 
 

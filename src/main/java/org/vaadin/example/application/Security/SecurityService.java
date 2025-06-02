@@ -1,5 +1,6 @@
 package org.vaadin.example.application.Security;
 
+import com.vaadin.flow.component.UI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -83,4 +84,12 @@ public class SecurityService {
         }
         return false;
     }
+    /**
+     * Meldet den aktuellen Benutzer ab und leitet zur Login-Seite weiter.
+     */
+    public void logout() {
+        SecurityContextHolder.clearContext();
+        UI.getCurrent().getPage().setLocation(LOGOUT_SUCCESS_URL);
+    }
+
 }
