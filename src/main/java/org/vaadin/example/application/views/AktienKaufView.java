@@ -38,7 +38,14 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
     private final SecurityService securityService;
     private final NutzerService nutzerService;
     private final List<String> handelsplaetze = Arrays.asList("Xetra", "Frankfurt", "Tradegate");
+
     String initialSymbol;
+    Button backButton;
+    TextField symbolField;
+    TextField einzelkursField;
+    NumberField stueckzahlField;
+    NumberField gebuehrenField;
+    TextField kursField;
 
     @Autowired
     public AktienKaufView(AktienKaufService aktienKaufService,
@@ -60,7 +67,7 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
     }
 
     private void setupUI(VerticalLayout container) {
-        Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
+        backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         RouterLink routerLink = new RouterLink("", MainView.class);
         routerLink.add(backButton);
@@ -74,16 +81,16 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
         H3 title = new H3("Aktien Kaufen");
         title.addClassName("view-title");
 
-        TextField symbolField = new TextField("Aktiensymbol");
-        symbolField.setValue(initialSymbol);
+        symbolField = new TextField("Aktiensymbol");
+        symbolField.setReadOnly(true);
         symbolField.setWidthFull();
 
-        TextField einzelkursField = new TextField("Aktueller Kurs (€/Aktie)");
+        einzelkursField = new TextField("Aktueller Kurs (€/Aktie)");
         einzelkursField.setReadOnly(true);
         einzelkursField.setValue("0.00");
         einzelkursField.setWidthFull();
 
-        NumberField stueckzahlField = new NumberField("Stückzahl");
+        stueckzahlField = new NumberField("Stückzahl");
         stueckzahlField.setMin(1);
         stueckzahlField.setValue(1.0);
         stueckzahlField.setWidthFull();
@@ -94,12 +101,12 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
         handelsplatzAuswahl.setRequired(true);
         handelsplatzAuswahl.setWidthFull();
 
-        NumberField gebuehrenField = new NumberField("Gebühren (EUR)");
+        gebuehrenField = new NumberField("Gebühren (EUR)");
         gebuehrenField.setValue(2.50);
         gebuehrenField.setReadOnly(true);
         gebuehrenField.setWidthFull();
 
-        TextField kursField = new TextField("Gesamtpreis (€)");
+        kursField = new TextField("Gesamtpreis (€)");
         kursField.setReadOnly(true);
         kursField.setValue("0.00");
         kursField.setWidthFull();
@@ -120,10 +127,10 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
         kaufButton.setWidthFull();
 
         symbolField.addValueChangeListener(e -> {
-            aktualisiereEinzelkurs(symbolField, einzelkursField);
-            aktualisiereKurs(symbolField, stueckzahlField, kursField);
+            aktualisiereEinzelkurs();
+            aktualisiereKurs();
         });
-        stueckzahlField.addValueChangeListener(e -> aktualisiereKurs(symbolField, stueckzahlField, kursField));
+        stueckzahlField.addValueChangeListener(e -> aktualisiereKurs());
 
         kaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
@@ -166,7 +173,7 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
         container.add(topLeftLayout, centerLayout);
     }
 
-    private void aktualisiereEinzelkurs(TextField symbolField, TextField einzelkursField) {
+    private void aktualisiereEinzelkurs() {
         String symbol = symbolField.getValue();
         if (symbol != null && !symbol.isBlank()) {
             try {
@@ -180,7 +187,7 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
         }
     }
 
-    private void aktualisiereKurs(TextField symbolField, NumberField stueckzahlField, TextField kursField) {
+    private void aktualisiereKurs() {
         String symbol = symbolField.getValue();
         Double stueckzahl = stueckzahlField.getValue();
 
@@ -213,12 +220,15 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
      */
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        String symbol = event.getLocation()
-                .getQueryParameters()
-                .getParameters()
-                .getOrDefault("symbol", List.of(""))
-                .getFirst();
+        String symbol = event.getRouteParameters()
+                .get("symbol")
+                .orElse("");
 
-        initialSymbol = symbol != null ? symbol : "";
+        initialSymbol = symbol;
+
+        if (!symbol.isBlank()) {
+            symbolField.setValue(symbol);
+            aktualisiereEinzelkurs();
+        }
     }
 }

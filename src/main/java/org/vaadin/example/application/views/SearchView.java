@@ -141,7 +141,7 @@ public class SearchView extends AbstractSideNav {
                             case SearchResultTypeEnum.AKTIE -> "aktie/";
                             case SearchResultTypeEnum.ETF -> "etf/";
                             case SearchResultTypeEnum.ANLEIHE -> "anleihe/";
-                            default -> null;
+                            default -> "";
                         };
                         getUI().ifPresent(ui -> ui.navigate("kaufen/" + url + result.getSymbol()));
                     }

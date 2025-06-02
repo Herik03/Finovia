@@ -46,15 +46,12 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
      */
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        String symbol = event.getLocation()
-                .getQueryParameters()
-                .getParameters()
-                .getOrDefault("symbol", List.of(""))
-                .getFirst();
+        String symbol = event.getRouteParameters()
+                .get("symbol")
+                .orElse("");
 
-        initialSymbol = symbol != null ? symbol : "";
+        initialSymbol = symbol;
 
-        assert symbol != null;
         if (!symbol.isBlank()) {
             symbolField.setValue(symbol);
             aktualisiereEinzelkurs();
@@ -96,6 +93,7 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
         VerticalLayout contentLayout = new VerticalLayout();
         contentLayout.setPadding(true);
         contentLayout.setSpacing(true);
+        contentLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
         setupUI(contentLayout);
         addToMainContent(contentLayout);
@@ -125,6 +123,7 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
 
         // Formularfelder
         symbolField = new TextField("Symbol");
+        symbolField.setReadOnly(true);
         symbolField.setWidthFull();
 
         einzelkursField = new TextField("Kurs (€)");
@@ -156,6 +155,7 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
         // Formularlayout
         FormLayout formLayout = new FormLayout();
         formLayout.setWidth("400px");
+        formLayout.getStyle().set("margin", "0 auto");
         formLayout.add(symbolField, einzelkursField, stueckzahlField, handelsplatzAuswahl, kursField, depotComboBox);
 
         // Kauf-Button
@@ -193,6 +193,11 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
         // Layoutstruktur
         VerticalLayout centerLayout = new VerticalLayout(title, formLayout, kaufButton);
         centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+        centerLayout.setSpacing(true);
+        centerLayout.setPadding(true);
+        centerLayout.setWidthFull();
+        centerLayout.getStyle().set("max-width", "600px");
+        centerLayout.getStyle().set("margin", "0 auto");
         container.add(topLeftLayout, centerLayout);
 
         if (initialSymbol != null && !initialSymbol.isBlank()) {
@@ -205,7 +210,7 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
      * Holt den aktuellen Kurs für das eingegebene Symbol und aktualisiert das Kursfeld.
      */
     private void aktualisiereEinzelkurs() {
-        String symbol = symbolField.getValue();
+        String symbol = symbolField.getValue(); //Wichtig, da man rein theoretisch auch ein anderes Symbol eingeben könnte
         try {
             double kurs = anleiheKaufService.getKursFürSymbol(symbol);
             einzelkursField.setValue(String.format("%.2f", kurs));
@@ -222,7 +227,7 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
     private void aktualisiereKurs() {
         String value = einzelkursField.getValue();
         if (value != null && !value.equals("Fehler")) {
-            double einzelkurs = Double.parseDouble(value);
+            double einzelkurs = Double.parseDouble(value.replace(",", "."));
             int stueckzahl = stueckzahlField.getValue().intValue();
             double gesamt = einzelkurs * stueckzahl + 2.50;
             kursField.setValue(String.format("%.2f", gesamt));
