@@ -26,7 +26,8 @@ public class StartingPageView extends VerticalLayout {
         add(createFeatureSection());
         add(createTestimonialSection());
         add(createCTASection());
-        add(createFooter()); // Angepasster Footer wird hinzugefügt
+        add(createRiskDisclaimerSection()); // NEU: Risikohinweis-Sektion vor dem Footer
+        add(createFooter());
     }
 
     private HorizontalLayout createHeader() {
@@ -70,7 +71,7 @@ public class StartingPageView extends VerticalLayout {
                 .set("cursor", "pointer")
                 .set("transition", "background-color 0.3s ease, transform 0.2s ease");
         loginButton.addAttachListener(e -> {
-            loginButton.getElement().addEventListener("mouseover", event -> loginButton.getStyle().set("background-color", "var(--lumo-primary-color-shade)").set("transform", "translateY(-2px)")); // Angepasst an dein Theme
+            loginButton.getElement().addEventListener("mouseover", event -> loginButton.getStyle().set("background-color", "var(--lumo-primary-color-shade)").set("transform", "translateY(-2px)"));
             loginButton.getElement().addEventListener("mouseout", event -> loginButton.getStyle().set("background-color", "var(--lumo-primary-color)").set("transform", "translateY(0)"));
         });
 
@@ -102,7 +103,7 @@ public class StartingPageView extends VerticalLayout {
                 .set("justify-content", "center")
                 .set("align-items", "center")
                 .set("padding", "100px 20px")
-                .set("background", "linear-gradient(to right, var(--lumo-primary-color-tint), var(--lumo-base-color))"); // Angepasst an dein Theme
+                .set("background", "linear-gradient(to right, var(--lumo-primary-color-tint), var(--lumo-base-color))");
         hero.getStyle().set("gap", "50px");
 
         VerticalLayout textBlock = new VerticalLayout();
@@ -111,6 +112,12 @@ public class StartingPageView extends VerticalLayout {
         textBlock.setWidthFull();
         textBlock.setMaxWidth("700px");
         textBlock.setAlignItems(Alignment.START);
+
+        H1 finoviaHeading = new H1("Finovia");
+        finoviaHeading.getStyle()
+                .set("font-size", "var(--lumo-font-size-xxxl)")
+                .set("color", "var(--lumo-primary-color)")
+                .set("margin-bottom", "10px");
 
         H1 title = new H1("Investieren leicht gemacht – Starte dein Depot mit Vertrauen.");
         title.getStyle()
@@ -134,9 +141,9 @@ public class StartingPageView extends VerticalLayout {
                 .set("font-size", "var(--lumo-font-size-l)")
                 .set("font-weight", "bold")
                 .set("cursor", "pointer")
-                .set("box-shadow", "0 6px 12px rgba(0, 0, 0, 0.2)"); // Hier könnte man auch rgba(var(--lumo-primary-color-rgb), 0.2) nutzen, wenn es definiert wäre
+                .set("box-shadow", "0 6px 12px rgba(0, 0, 0, 0.2)");
         primaryButton.addAttachListener(e -> {
-            primaryButton.getElement().addEventListener("mouseover", event -> primaryButton.getStyle().set("background-color", "var(--lumo-primary-color-shade)").set("transform", "translateY(-3px)")); // Angepasst an dein Theme
+            primaryButton.getElement().addEventListener("mouseover", event -> primaryButton.getStyle().set("background-color", "var(--lumo-primary-color-shade)").set("transform", "translateY(-3px)"));
             primaryButton.getElement().addEventListener("mouseout", event -> primaryButton.getStyle().set("background-color", "var(--lumo-primary-color)").set("transform", "translateY(0)"));
         });
 
@@ -144,7 +151,7 @@ public class StartingPageView extends VerticalLayout {
         Button secondaryButton = new Button("Mehr erfahren", e -> UI.getCurrent().getPage().setLocation("mehr-erfahren.html"));
         secondaryButton.getStyle()
                 .set("background-color", "transparent")
-                .set("border", "2px solid var(--lumo-shade-30pct)") // Angepasst an dein Theme
+                .set("border", "2px solid var(--lumo-shade-30pct)")
                 .set("color", "var(--lumo-primary-text-color)")
                 .set("border-radius", "var(--lumo-border-radius-l)")
                 .set("padding", "20px 40px")
@@ -154,7 +161,7 @@ public class StartingPageView extends VerticalLayout {
                 .set("transition", "background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease");
         secondaryButton.addAttachListener(e -> {
             secondaryButton.getElement().addEventListener("mouseover", event -> secondaryButton.getStyle().set("background-color", "var(--lumo-shade-5pct)").set("border-color", "var(--lumo-primary-color)").set("transform", "translateY(-3px)"));
-            secondaryButton.getElement().addEventListener("mouseout", event -> secondaryButton.getStyle().set("background-color", "transparent").set("border-color", "var(--lumo-shade-30pct)").set("transform", "translateY(0)")); // Angepasst an dein Theme
+            secondaryButton.getElement().addEventListener("mouseout", event -> secondaryButton.getStyle().set("background-color", "transparent").set("border-color", "var(--lumo-shade-30pct)").set("transform", "translateY(0)"));
         });
 
 
@@ -162,7 +169,7 @@ public class StartingPageView extends VerticalLayout {
         buttons.setSpacing(true);
         buttons.getStyle().set("flex-wrap", "wrap");
 
-        textBlock.add(title, subtitle, buttons);
+        textBlock.add(finoviaHeading, title, subtitle, buttons);
 
         Image illustration = new Image("images/illustration.png", "Illustration");
         illustration.setWidth("550px");
@@ -343,13 +350,58 @@ public class StartingPageView extends VerticalLayout {
         return cta;
     }
 
+    /**
+     * Erstellt eine Risikohinweis-Sektion, die wichtige Informationen zum Handel mit Wertpapieren enthält.
+     * Diese Sektion wird am Ende der Startseite angezeigt.
+     *
+     * @return Eine VerticalLayout-Komponente mit dem Risikohinweis
+     */
+    private VerticalLayout createRiskDisclaimerSection() {
+        VerticalLayout section = new VerticalLayout();
+        section.setWidthFull();
+        section.setAlignItems(Alignment.CENTER);
+        section.setPadding(true);
+        section.getStyle()
+                .set("background-color", "var(--lumo-error-color-10pct)")
+                .set("padding", "30px 20px")
+                .set("text-align", "center");
+
+        H3 headline = new H3("Wichtiger Risikohinweis zum Handel mit Wertpapieren");
+        headline.getStyle().set("color", "var(--lumo-error-color)").set("margin-bottom", "10px");
+
+        Paragraph disclaimerText = new Paragraph(
+                "Der Handel mit Wertpapieren (Aktien, ETFs etc.) birgt erhebliche Risiken und kann zum vollständigen Verlust des eingesetzten Kapitals führen. Die Wertentwicklung in der Vergangenheit ist kein verlässlicher Indikator für zukünftige Ergebnisse."
+        );
+        disclaimerText.getStyle()
+                .set("font-size", "var(--lumo-font-size-m)")
+                .set("color", "var(--lumo-secondary-text-color)")
+                .set("max-width", "800px");
+
+        // Link zur detaillierten Risikohinweis-Seite
+        Anchor learnMoreLink = new Anchor("risikohinweise", "Mehr erfahren zu Risiken des Handels");
+        learnMoreLink.getStyle()
+                .set("color", "var(--lumo-error-color)")
+                .set("font-weight", "bold")
+                .set("text-decoration", "underline")
+                .set("margin-top", "15px");
+        learnMoreLink.addAttachListener(e -> {
+            learnMoreLink.getElement().addEventListener("mouseover", event -> learnMoreLink.getStyle().set("color", "var(--lumo-error-color-dark)"));
+            learnMoreLink.getElement().addEventListener("mouseout", event -> learnMoreLink.getStyle().set("color", "var(--lumo-error-color)"));
+        });
+
+
+        section.add(headline, disclaimerText, learnMoreLink);
+        return section;
+    }
+
+
     private Footer createFooter() {
         Footer footer = new Footer();
         footer.setWidthFull();
         footer.getStyle()
-                .set("background-color", "var(--lumo-body-text-color)") // Dunkler Hintergrund für hohe Sichtbarkeit
-                .set("color", "white") // Weiße Schrift auf dunklem Hintergrund
-                .set("padding", "30px 40px"); // Größeres Padding
+                .set("background-color", "var(--lumo-body-text-color)")
+                .set("color", "white")
+                .set("padding", "30px 40px");
 
         HorizontalLayout container = new HorizontalLayout();
         container.setWidthFull();
@@ -362,29 +414,29 @@ public class StartingPageView extends VerticalLayout {
 
         Paragraph copyright = new Paragraph("© " + java.time.Year.now().getValue() + " Finovia. Alle Rechte vorbehalten.");
         copyright.getStyle()
-                .set("font-size", "var(--lumo-font-size-m)") // Etwas größere Schrift
-                .set("color", "var(--lumo-secondary-color)"); // Hellere Farbe aus deinem Theme für Kontrast
+                .set("font-size", "var(--lumo-font-size-m)")
+                .set("color", "var(--lumo-secondary-color)");
 
 
         HorizontalLayout links = new HorizontalLayout();
         links.setSpacing(true);
-        links.getStyle().set("gap", "20px"); // Größerer Abstand zwischen den Links
+        links.getStyle().set("gap", "20px");
 
         Anchor impressumLink = new Anchor("impressum", "Impressum");
         impressumLink.getStyle()
-                .set("color", "var(--lumo-secondary-color)") // Passende Farbe aus deinem Theme
-                .set("font-size", "var(--lumo-font-size-m)") // Etwas größere Schrift
+                .set("color", "var(--lumo-secondary-color)")
+                .set("font-size", "var(--lumo-font-size-m)")
                 .set("text-decoration", "none")
-                .set("font-weight", "500"); // Leichterer Fettdruck
+                .set("font-weight", "500");
         impressumLink.addAttachListener(e -> {
-            impressumLink.getElement().addEventListener("mouseover", event -> impressumLink.getStyle().set("text-decoration", "underline").set("color", "white")); // Bei Hover weiß
+            impressumLink.getElement().addEventListener("mouseover", event -> impressumLink.getStyle().set("text-decoration", "underline").set("color", "white"));
             impressumLink.getElement().addEventListener("mouseout", event -> impressumLink.getStyle().set("text-decoration", "none").set("color", "var(--lumo-secondary-color)"));
         });
 
         Anchor datenschutzLink = new Anchor("datenschutz", "Datenschutz");
         datenschutzLink.getStyle()
-                .set("color", "var(--lumo-secondary-color)") // Passende Farbe aus deinem Theme
-                .set("font-size", "var(--lumo-font-size-m)") // Etwas größere Schrift
+                .set("color", "var(--lumo-secondary-color)")
+                .set("font-size", "var(--lumo-font-size-m)")
                 .set("text-decoration", "none")
                 .set("font-weight", "500");
         datenschutzLink.addAttachListener(e -> {
@@ -392,8 +444,20 @@ public class StartingPageView extends VerticalLayout {
             datenschutzLink.getElement().addEventListener("mouseout", event -> datenschutzLink.getStyle().set("text-decoration", "none").set("color", "var(--lumo-secondary-color)"));
         });
 
-        links.add(impressumLink, datenschutzLink);
 
+        Anchor riskDisclaimerLink = new Anchor("risikohinweise", "Risikohinweise");
+        riskDisclaimerLink.getStyle()
+                .set("color", "var(--lumo-secondary-color)")
+                .set("font-size", "var(--lumo-font-size-m)")
+                .set("text-decoration", "none")
+                .set("font-weight", "500");
+        riskDisclaimerLink.addAttachListener(e -> {
+            riskDisclaimerLink.getElement().addEventListener("mouseover", event -> riskDisclaimerLink.getStyle().set("text-decoration", "underline").set("color", "white"));
+            riskDisclaimerLink.getElement().addEventListener("mouseout", event -> riskDisclaimerLink.getStyle().set("text-decoration", "none").set("color", "var(--lumo-secondary-color)"));
+        });
+
+
+        links.add(impressumLink, datenschutzLink, riskDisclaimerLink); // Link hinzufügen
         container.add(copyright, links);
         footer.add(container);
 

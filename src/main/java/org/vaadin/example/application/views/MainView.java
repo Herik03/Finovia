@@ -141,6 +141,7 @@ public class MainView extends AbstractSideNav {
         }
 
 
+
         VerticalLayout depotList = new VerticalLayout();
         depotList.setSpacing(true);
         depotList.setPadding(false);
