@@ -18,7 +18,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.vaadin.example.application.classes.Support;
-import org.vaadin.example.application.models.SupportRequest;
+import org.vaadin.example.application.classes.SupportRequest;
 import org.vaadin.example.application.services.EmailService;
 
 import java.util.List;

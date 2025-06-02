@@ -1,4 +1,4 @@
-package org.vaadin.example.application.models;
+package org.vaadin.example.application.classes;
 
 import lombok.Getter;
 

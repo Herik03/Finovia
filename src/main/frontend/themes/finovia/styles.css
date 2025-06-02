@@ -1,4 +1,6 @@
 @import "theme-editor.css";
+/* frontend/themes/finovia/styles.css */
+
 :root {
     /* Primärfarben (für Akzente wie Buttons, Links) */
     --lumo-primary-color: #44CF6C;
@@ -434,6 +436,7 @@ vaadin-grid-header-cell {
     font-size: var(--lumo-font-size-s);
 }
 
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .login-container  {
@@ -448,3 +451,4 @@ vaadin-grid-header-cell {
         width: calc(100% - 2rem) !important;
     }
 }
+
