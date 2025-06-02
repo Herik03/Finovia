@@ -23,8 +23,10 @@ import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Support;
+import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.models.SupportRequest;
 import org.vaadin.example.application.services.EmailService;
+import org.vaadin.example.application.services.NutzerService;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
@@ -49,15 +51,17 @@ import java.util.Map;
  */
 @Route("admin")
 @PageTitle("Admin - Finovia")
-@RolesAllowed("ADMIN")
+@RolesAllowed("ROLE_ADMIN")
 public class AdminView extends AbstractSideNav {
 
     private final Support supportService;
     private final EmailService emailService;
+    private final NutzerService nutzerService;
     private final Map<Tab, Component> tabsToPages = new HashMap<>();
     private final VerticalLayout contentLayout = new VerticalLayout();
     private final Div mainContentDiv = new Div();
     private Grid<SupportRequest> supportGrid;
+    private Grid<Nutzer> nutzerGrid;
     private VerticalLayout detailLayout;
     private SupportRequest selectedRequest;
 
@@ -66,13 +70,15 @@ public class AdminView extends AbstractSideNav {
      *
      * @param supportService  Service für Support-Anfragen
      * @param emailService    Service für E-Mail-Kommunikation
+     * @param nutzerService   Service für Nutzerverwaltung
      * @param securityService Service für Sicherheitsfunktionen
      */
     @Autowired
-    public AdminView(Support supportService, EmailService emailService, SecurityService securityService) {
+    public AdminView(Support supportService, EmailService emailService, NutzerService nutzerService, SecurityService securityService) {
         super(securityService);
         this.supportService = supportService;
         this.emailService = emailService;
+        this.nutzerService = nutzerService;
 
         initializeView();
     }
@@ -88,16 +94,14 @@ public class AdminView extends AbstractSideNav {
         // Tabs für verschiedene Verwaltungsbereiche
         Tab supportTab = new Tab(createTabContent(VaadinIcon.QUESTION_CIRCLE, "Support-Anfragen"));
         Tab usersTab = new Tab(createTabContent(VaadinIcon.USERS, "Benutzerverwaltung"));
-        Tab systemTab = new Tab(createTabContent(VaadinIcon.COG, "System-Einstellungen"));
 
-        Tabs tabs = new Tabs(supportTab, usersTab, systemTab);
+        Tabs tabs = new Tabs(supportTab, usersTab);
         tabs.setWidthFull();
         tabs.setFlexGrowForEnclosedTabs(1);
 
         // Tab-Inhalte erstellen
         tabsToPages.put(supportTab, createSupportManagementContent());
-        tabsToPages.put(usersTab, createPlaceholderContent("Benutzerverwaltung wird in Kürze implementiert"));
-        tabsToPages.put(systemTab, createPlaceholderContent("System-Einstellungen werden in Kürze implementiert"));
+        tabsToPages.put(usersTab, createUserManagementContent());
 
         // Tab-Wechsel-Event
         tabs.addSelectedChangeListener(event -> {
@@ -727,6 +731,108 @@ public class AdminView extends AbstractSideNav {
 
         layout.add(icon, title, description);
         return layout;
+    }
+
+    /**
+     * Erstellt den Inhalt für die Benutzerverwaltung.
+     */
+    private Component createUserManagementContent() {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setPadding(false);
+        layout.setSpacing(true);
+        layout.setWidthFull();
+
+        // Überschrift
+        H2 title = new H2("Benutzerverwaltung");
+
+        // Grid für die Benutzer
+        nutzerGrid = new Grid<>();
+        nutzerGrid.setWidthFull();
+        nutzerGrid.setHeight("700px");
+
+        // Spalten definieren
+        nutzerGrid.addColumn(Nutzer::getId).setHeader("ID").setAutoWidth(true);
+        nutzerGrid.addColumn(Nutzer::getUsername).setHeader("Benutzername").setAutoWidth(true);
+        nutzerGrid.addColumn(Nutzer::getEmailOrEmpty).setHeader("E-Mail").setAutoWidth(true);
+        nutzerGrid.addColumn(Nutzer::getVornameOrEmpty).setHeader("Vorname").setAutoWidth(true);
+        nutzerGrid.addColumn(Nutzer::getNachnameOrEmpty).setHeader("Nachname").setAutoWidth(true);
+        nutzerGrid.addColumn(nutzer -> nutzer.getFormattedRegistrierungsDatum("dd.MM.yyyy HH:mm"))
+                .setHeader("Registriert am").setAutoWidth(true);
+
+        // Lösch-Button-Spalte hinzufügen
+        nutzerGrid.addComponentColumn(nutzer -> {
+            Button deleteButton = new Button("Löschen", VaadinIcon.TRASH.create());
+            deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+            deleteButton.addClickListener(e -> confirmAndDeleteUser(nutzer));
+            return deleteButton;
+        }).setHeader("Aktionen").setAutoWidth(true);
+
+        // Daten für die Grid laden
+        updateUserGrid();
+
+        // Aktualisieren-Button
+        Button refreshButton = new Button("Aktualisieren", VaadinIcon.REFRESH.create());
+        refreshButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        refreshButton.addClickListener(e -> updateUserGrid());
+
+        layout.add(title, refreshButton, nutzerGrid);
+        return layout;
+    }
+
+    /**
+     * Aktualisiert die Grid mit den Benutzern.
+     */
+    private void updateUserGrid() {
+        List<Nutzer> allUsers = nutzerService.getAllNutzer();
+        nutzerGrid.setItems(allUsers);
+        nutzerGrid.getDataProvider().refreshAll();
+    }
+
+    /**
+     * Zeigt einen Bestätigungsdialog an und löscht den Benutzer bei Bestätigung.
+     */
+    private void confirmAndDeleteUser(Nutzer nutzer) {
+        Dialog confirmDialog = new Dialog();
+        confirmDialog.setCloseOnEsc(true);
+        confirmDialog.setCloseOnOutsideClick(false);
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setPadding(true);
+        dialogLayout.setSpacing(true);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        H3 title = new H3("Benutzer löschen");
+        Paragraph message = new Paragraph("Möchten Sie den Benutzer '" + nutzer.getUsername() + 
+                "' wirklich dauerhaft löschen? Diese Aktion kann nicht rückgängig gemacht werden.");
+
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        buttonLayout.setWidthFull();
+
+        Button cancelButton = new Button("Abbrechen", e -> confirmDialog.close());
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
+        Button deleteButton = new Button("Löschen", e -> {
+            boolean success = nutzerService.nutzerVollstaendigLoeschen(nutzer.getId());
+            confirmDialog.close();
+
+            if (success) {
+                Notification.show("Benutzer '" + nutzer.getUsername() + "' wurde gelöscht",
+                        3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                updateUserGrid();
+            } else {
+                Notification.show("Fehler beim Löschen des Benutzers",
+                        3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+        });
+        deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+
+        buttonLayout.add(cancelButton, deleteButton);
+        dialogLayout.add(title, message, buttonLayout);
+        confirmDialog.add(dialogLayout);
+        confirmDialog.open();
     }
 
     /**

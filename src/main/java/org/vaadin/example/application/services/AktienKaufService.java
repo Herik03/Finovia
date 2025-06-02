@@ -1,5 +1,6 @@
 package org.vaadin.example.application.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.vaadin.example.application.classes.Aktie;
@@ -23,6 +24,7 @@ public class AktienKaufService {
     private final TransaktionRepository transaktionRepository;
     private final AktieRepository aktieRepository;
 
+    @Autowired
     public AktienKaufService(AlphaVantageService alphaVantageService,
                              DepotRepository depotRepository,
                              TransaktionRepository transaktionRepository,

@@ -6,8 +6,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.vaadin.example.application.classes.Depot;
+import org.vaadin.example.application.classes.DepotWertpapier;
 import org.vaadin.example.application.classes.Nutzer;
-
+import org.vaadin.example.application.classes.Watchlist;
 import org.vaadin.example.application.repositories.NutzerRepository;
 
 import java.util.*;
@@ -128,21 +130,57 @@ public class NutzerService {
      * Durch die Verwendung von CascadeType.ALL und orphanRemoval=true in der Nutzer-Klasse
      * werden alle abhängigen Objekte (Depots, Watchlist usw.) automatisch gelöscht.
      *
+     * Diese Methode wurde verbessert, um sicherzustellen, dass die Löschung konsistent funktioniert,
+     * indem sie explizit die Beziehungen zwischen Entitäten behandelt und Fehler abfängt.
+     *
      * @param nutzerId Die ID des zu löschenden Nutzers
      * @return true, wenn der Nutzer erfolgreich gelöscht wurde, sonst false
      */
     @Transactional
     public boolean nutzerVollstaendigLoeschen(Long nutzerId) {
-        Optional<Nutzer> nutzerOpt = nutzerRepository.findById(nutzerId);
-        if (nutzerOpt.isPresent()) {
-            Nutzer nutzer = nutzerOpt.get();
+        try {
+            Optional<Nutzer> nutzerOpt = nutzerRepository.findById(nutzerId);
+            if (nutzerOpt.isPresent()) {
+                Nutzer nutzer = nutzerOpt.get();
 
-            // Nutzer und alle verknüpften Objekte (Depots, Watchlist usw.) werden durch
-            // die JPA-Cascade-Konfiguration automatisch gelöscht
-            nutzerRepository.delete(nutzer);
-            return true;
+                // Explizite Behandlung der Watchlist
+                if (nutzer.getWatchlist() != null) {
+                    Watchlist watchlist = nutzer.getWatchlist();
+                    // Beziehung zwischen Nutzer und Watchlist auflösen
+                    watchlist.setNutzer(null);
+                    nutzer.setWatchlist(null);
+                }
+
+                // Explizite Behandlung der Depots
+                for (Depot depot : new ArrayList<>(nutzer.getDepots())) {
+                    // Beziehung zwischen Depot und DepotWertpapiere auflösen
+                    for (DepotWertpapier dw : new ArrayList<>(depot.getDepotWertpapiere())) {
+                        dw.setDepot(null);
+                    }
+                    // Beziehung zwischen Nutzer und Depot auflösen
+                    depot.setBesitzer(null);
+                }
+
+                // Nutzer und alle verknüpften Objekte (Depots, Watchlist usw.) werden durch
+                // die JPA-Cascade-Konfiguration automatisch gelöscht
+                nutzerRepository.delete(nutzer);
+
+                // Überprüfen, ob der Nutzer wirklich gelöscht wurde
+                if (!nutzerRepository.existsById(nutzerId)) {
+                    return true;
+                } else {
+                    // Wenn der Nutzer noch existiert, versuchen wir es mit einer direkten Löschung über die ID
+                    nutzerRepository.deleteById(nutzerId);
+                    return !nutzerRepository.existsById(nutzerId);
+                }
+            }
+            return false;
+        } catch (Exception e) {
+            // Fehler protokollieren
+            System.err.println("Fehler beim Löschen des Nutzers mit ID " + nutzerId + ": " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
 
@@ -216,6 +254,35 @@ public class NutzerService {
             throw new IllegalStateException("Kein Nutzer mit Benutzernamen '" + username + "' gefunden");
         }
         return nutzer;
+    }
 
+    /**
+     * Fügt ein Depot zu einem Nutzer hinzu und speichert beide Entitäten.
+     * Diese Methode ist transaktional, um LazyInitializationExceptions zu vermeiden.
+     *
+     * @param nutzerId Die ID des Nutzers
+     * @param depot Das hinzuzufügende Depot
+     * @return true, wenn das Depot erfolgreich hinzugefügt wurde, sonst false
+     */
+    @Transactional
+    public boolean depotZuNutzerHinzufuegen(Long nutzerId, Depot depot) {
+        try {
+            Optional<Nutzer> nutzerOpt = nutzerRepository.findById(nutzerId);
+            if (nutzerOpt.isPresent()) {
+                Nutzer nutzer = nutzerOpt.get();
+
+                // Beziehung von beiden Seiten setzen, ohne auf die depots-Collection zuzugreifen
+                depot.setBesitzer(nutzer);
+
+                // Nutzer speichern (Cascade speichert auch das Depot)
+                nutzerRepository.save(nutzer);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            System.err.println("Fehler beim Hinzufügen des Depots zum Nutzer: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 }

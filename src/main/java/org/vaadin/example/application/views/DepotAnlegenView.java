@@ -107,16 +107,22 @@ public class DepotAnlegenView extends Dialog { // Erbt von Dialog für Pop-up-Ve
                 String name = depotName.getValue();
                 Depot neuesDepot = new Depot(name, currentUser);
                 assert currentUser != null; // Sicherstellen, dass ein Nutzer gefunden wurde
-                currentUser.depotHinzufuegen(neuesDepot);
 
-                // Speichert das neue Depot in der Datenbank
-                depotService.saveDepot(neuesDepot);
+                // Nutzer und Depot in einer Transaktion speichern, um LazyInitializationException zu vermeiden
+                boolean success = nutzerService.depotZuNutzerHinzufuegen(currentUser.getId(), neuesDepot);
 
-                // Zeigt eine Erfolgsbenachrichtigung an
-                Notification.show("Depot erfolgreich erstellt!", 3000, Notification.Position.TOP_CENTER)
-                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                if (success) {
+                    // Zeigt eine Erfolgsbenachrichtigung an
+                    Notification.show("Depot erfolgreich erstellt!", 3000, Notification.Position.TOP_CENTER)
+                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
-                this.close(); // Schließt den Dialog nach erfolgreicher Erstellung
+                    this.close(); // Schließt den Dialog nach erfolgreicher Erstellung
+                } else {
+                    // Zeigt eine Fehlermeldung an, wenn das Depot nicht erstellt werden konnte
+                    Notification.show("Fehler beim Erstellen des Depots. Bitte versuchen Sie es erneut.", 
+                            3000, Notification.Position.TOP_CENTER)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }
 
             } else {
                 // Zeigt eine Fehlermeldung an, wenn Pflichtfelder fehlen

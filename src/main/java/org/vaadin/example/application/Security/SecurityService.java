@@ -49,7 +49,7 @@ public class SecurityService {
         if (userDetails != null) {
             return userDetails.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
-                    .anyMatch(authority -> authority.equals("ROLE_ADMIN") || authority.equals("ADMIN"));
+                    .anyMatch(authority -> authority.equals("ROLE_ADMIN"));
         }
         return false;
     }
