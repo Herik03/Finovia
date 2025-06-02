@@ -10,7 +10,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.example.application.models.StockQuote;
+import org.vaadin.example.application.classes.StockQuote;
 import org.vaadin.example.application.services.AlphaVantageService;
 
 /**

@@ -4,7 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.Support;
-import org.vaadin.example.application.models.SupportRequest;
+import org.vaadin.example.application.classes.SupportRequest;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
