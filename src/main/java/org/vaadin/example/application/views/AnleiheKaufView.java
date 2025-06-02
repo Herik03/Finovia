@@ -38,6 +38,18 @@ import java.util.List;
 @PageTitle("Anleihe kaufen")
 @PermitAll
 public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObserver {
+    private final AnleiheKaufService anleiheKaufService;
+    private final DepotService depotService;
+    private final SecurityService securityService;
+    private final NutzerService nutzerService;
+    private final List<String> handelsplaetze = Arrays.asList("NYSE");
+
+    private TextField symbolField;
+    private TextField einzelkursField;
+    private NumberField stueckzahlField;
+    private ComboBox<String> handelsplatzAuswahl;
+    private TextField kursField;
+    private String initialSymbol;
 
     /**
      * Wird vor dem Aufrufen der View ausgeführt, um das Symbol aus der URL zu übernehmen.
@@ -58,18 +70,6 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
         }
     }
 
-    private final AnleiheKaufService anleiheKaufService;
-    private final DepotService depotService;
-    private final SecurityService securityService;
-    private final NutzerService nutzerService;
-    private final List<String> handelsplaetze = Arrays.asList("NYSE");
-
-    private TextField symbolField;
-    private TextField einzelkursField;
-    private NumberField stueckzahlField;
-    private ComboBox<String> handelsplatzAuswahl;
-    private TextField kursField;
-    private String initialSymbol;
 
     /**
      * Konstruktor zur Initialisierung der View mit allen benötigten Services.
