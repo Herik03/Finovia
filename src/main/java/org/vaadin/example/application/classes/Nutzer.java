@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -66,6 +67,12 @@ public class Nutzer {
 
     // Liste der Benachrichtigungen für den Nutzer
     private final List<String> benachrichtigungen = new ArrayList<>();
+
+    @Setter @Getter
+    private String resetToken = "";
+
+    @Setter @Getter
+    private Date resetTokenExpiration;
 
     // Konstruktor für JPA
     public Nutzer() {
