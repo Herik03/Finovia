@@ -55,11 +55,14 @@ public class Support {
     
     /**
      * Aktualisiert den Status einer Anfrage
-     * @param request Die Anfrage
+     *
+     * @param request   Die Anfrage
      * @param newStatus Neuer Status
+     * @return true wenn die Aktualisierung erfolgreich war
      */
-    public void updateRequestStatus(SupportRequest request, String newStatus) {
+    public boolean updateRequestStatus(SupportRequest request, String newStatus) {
         request.setStatus(newStatus);
+        return true;  // Hier 'true' statt 'false' zurückgeben
     }
     
     /**
@@ -78,11 +81,14 @@ public class Support {
     
     /**
      * Fügt einen Kommentar zu einer Anfrage hinzu
+     *
      * @param request Die Anfrage
      * @param comment Der Kommentar
+     * @return true wenn der Kommentar erfolgreich hinzugefügt wurde
      */
-    public void addCommentToRequest(SupportRequest request, String comment) {
+    public boolean addCommentToRequest(SupportRequest request, String comment) {
         request.addComment(comment);
+        return true;  // Hier 'true' statt 'false' zurückgeben
     }
     
     /**

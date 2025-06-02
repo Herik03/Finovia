@@ -18,6 +18,7 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.classes.Watchlist;
 import org.vaadin.example.application.classes.Wertpapier;
@@ -54,7 +55,7 @@ public class WatchlistView extends AbstractSideNav {
     private final Map<Integer, HorizontalLayout> trendLayoutMap = new HashMap<>(); // Map für Trend-Layouts
     private final Map<Integer, Span> trendTextSpanMap = new HashMap<>();
     private final Map<Integer, Icon> trendIconMap = new HashMap<>();
-
+    private final SecurityService securityService;
     /**
      * Konstruktor für die WatchlistView.
      *
@@ -64,12 +65,13 @@ public class WatchlistView extends AbstractSideNav {
      * @param wertpapierView      Service für die Anzeige von Wertpapierdetails
      */
     @Autowired
-    public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierView wertpapierView) {
-        super(); // Ruft den Konstruktor von AbstractSideNav auf
+    public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierView wertpapierView, SecurityService securityService) {
+        super(securityService); // Ruft den Konstruktor von AbstractSideNav auf
         this.watchlistService = watchlistService;
         this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
         this.wertpapierView = wertpapierView;
+        this.securityService = securityService;
 
         // Erstelle ein VerticalLayout für den Hauptinhalt der Watchlist
         VerticalLayout watchlistContent = new VerticalLayout();

@@ -50,7 +50,7 @@ public class DepotView extends AbstractSideNav {
     @Autowired
     public DepotView(DepotService depotService, DepotAnlegenViewFactory depotAnlegenViewFactory, 
                     SecurityService securityService, NutzerService nutzerService) {
-        super();
+        super(securityService);
         this.depotService = depotService;
         this.depotAnlegenViewFactory = depotAnlegenViewFactory;
         this.securityService = securityService;

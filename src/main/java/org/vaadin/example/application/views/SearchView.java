@@ -1,6 +1,7 @@
 package org.vaadin.example.application.views;
 
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.models.SearchResult;
 import org.vaadin.example.application.services.AlphaVantageService;
 import com.vaadin.flow.component.Key;
@@ -45,7 +46,7 @@ public class SearchView extends AbstractSideNav {
     private final Button searchButton = new Button("Suchen", new Icon(VaadinIcon.SEARCH));
     private final ProgressBar progressBar = new ProgressBar();
     private final Grid<SearchResult> resultGrid = new Grid<>(SearchResult.class, false);
-
+    private final SecurityService securityService;
     /**
      * Konstruktor für die SearchView.
      * Spring injiziert hier die benötigten Services.
@@ -54,8 +55,9 @@ public class SearchView extends AbstractSideNav {
      * @param wertpapierView Die View zum Anzeigen von Wertpapierdetails.
      */
     @Autowired
-    public SearchView(AlphaVantageService alphaVantageService, WertpapierView wertpapierView) {
-        super();
+    public SearchView(AlphaVantageService alphaVantageService, WertpapierView wertpapierView, SecurityService securityService) {
+        super(securityService);
+        this.securityService = securityService;
         this.alphaVantageService = alphaVantageService;
         this.wertpapierView = wertpapierView;
 

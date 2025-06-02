@@ -69,7 +69,7 @@ public class UserView extends AbstractSideNav {
     
     @Autowired
     public UserView(NutzerService nutzerService, SecurityService securityService) {
-        super(); // Ruft den Konstruktor der Basisklasse auf
+        super(securityService); // Ruft den Konstruktor der Basisklasse auf
         this.nutzerService = nutzerService;
         this.securityService = securityService;
         

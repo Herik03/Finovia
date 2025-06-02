@@ -16,11 +16,23 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.StreamRegistration;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.vaadin.example.application.classes.Support;
 import org.vaadin.example.application.models.SupportRequest;
 import org.vaadin.example.application.services.EmailService;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,10 +88,39 @@ public class SupportView extends VerticalLayout {
         descriptionArea.setMinHeight("150px");
         descriptionArea.setWidthFull();
 
-        Upload fileUpload = new Upload();
+        // Datei-Upload-Komponente konfigurieren
+        MemoryBuffer buffer = new MemoryBuffer();
+        Upload fileUpload = new Upload(buffer);
         fileUpload.setMaxFiles(3);
         fileUpload.setDropLabel(new Span("Dateien hier ablegen (max. 3)"));
         fileUpload.setAcceptedFileTypes("image/*", ".pdf", ".docx");
+
+        // Liste zum Speichern der hochgeladenen Dateinamen
+        List<String> uploadedFiles = new ArrayList<>();
+
+        // Erfolgs-Handler für hochgeladene Dateien
+        fileUpload.addSucceededListener(event -> {
+            String fileName = event.getFileName();
+            uploadedFiles.add(fileName);
+
+            // Datei physisch speichern
+            try {
+                InputStream inputStream = buffer.getInputStream();
+                byte[] bytes = inputStream.readAllBytes();
+                String filePath = "src/main/resources/uploads/" + fileName;
+                Files.write(Paths.get(filePath), bytes);
+
+                // Erfolgsbenachrichtigung anzeigen
+                Notification.show("Datei '" + fileName + "' hochgeladen",
+                                2000, Notification.Position.BOTTOM_START)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            } catch (IOException e) {
+                // Fehlerbehandlung
+                Notification.show("Fehler beim Speichern der Datei: " + e.getMessage(),
+                                3000, Notification.Position.BOTTOM_START)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+        });
 
         Button submitButton = new Button("Anfrage senden");
         submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -137,6 +178,11 @@ public class SupportView extends VerticalLayout {
                     descriptionArea.getValue()
             );
 
+            // Hochgeladene Dateien zur Anfrage hinzufügen
+            for (String file : uploadedFiles) {
+                newRequest.addAttachment(file);
+            }
+
             // E-Mail senden
             boolean emailSent = emailService.sendSupportRequest(newRequest, "benutzer@example.com");
 
@@ -157,6 +203,8 @@ public class SupportView extends VerticalLayout {
             // Formular zurücksetzen
             descriptionArea.clear();
             categorySelect.setValue("Allgemeine Frage");
+            uploadedFiles.clear();
+            fileUpload.getElement().setProperty("files", null);
 
             // Scrolle zum Anfragenbereich, damit Benutzer die neue Anfrage sehen können
             requestsContainer.scrollIntoView();
@@ -379,6 +427,326 @@ public class SupportView extends VerticalLayout {
             requestItem.add(commentsDiv);
         }
 
+        // Anhänge anzeigen, falls vorhanden
+        request = supportService.getAllRequests().get(requestIndex);
+        if (request.getAttachments() != null && !request.getAttachments().isEmpty()) {
+            Div attachmentsDiv = new Div();
+            attachmentsDiv.addClassNames(
+                    LumoUtility.Background.CONTRAST_10,
+                    LumoUtility.BorderRadius.SMALL,
+                    LumoUtility.Padding.SMALL,
+                    LumoUtility.Margin.Top.SMALL
+            );
+
+            H5 attachmentsTitle = new H5("Anhänge");
+            attachmentsTitle.getStyle().set("margin-top", "0");
+            attachmentsDiv.add(attachmentsTitle);
+
+            // Liste für Anhänge
+            VerticalLayout attachmentsList = new VerticalLayout();
+            attachmentsList.setPadding(false);
+            attachmentsList.setSpacing(false);
+
+            for (String attachment : request.getAttachments()) {
+                // Container für jeden Anhang
+                HorizontalLayout attachmentLayout = new HorizontalLayout();
+                attachmentLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+                attachmentLayout.setSpacing(true);
+                attachmentLayout.setPadding(false);
+                attachmentLayout.setWidthFull();
+
+                // Icon basierend auf Dateityp
+                Icon fileIcon;
+                if (attachment.toLowerCase().endsWith(".pdf")) {
+                    fileIcon = VaadinIcon.FILE_TEXT_O.create();
+                    fileIcon.setColor("var(--lumo-error-color)");
+                } else if (attachment.toLowerCase().endsWith(".docx") || attachment.toLowerCase().endsWith(".doc")) {
+                    fileIcon = VaadinIcon.FILE_TEXT_O.create();
+                    fileIcon.setColor("var(--lumo-primary-color)");
+                } else if (attachment.toLowerCase().endsWith(".png") || attachment.toLowerCase().endsWith(".jpg") || 
+                           attachment.toLowerCase().endsWith(".jpeg") || attachment.toLowerCase().endsWith(".gif")) {
+                    fileIcon = VaadinIcon.FILE_PICTURE.create();
+                    fileIcon.setColor("var(--lumo-success-color)");
+                } else {
+                    fileIcon = VaadinIcon.FILE_O.create();
+                }
+
+                Span fileName = new Span(attachment);
+
+                // Schaltfläche zum Öffnen der Datei
+                Button viewButton = new Button("Anzeigen", VaadinIcon.EYE.create());
+                viewButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY);
+                viewButton.addClickListener(e -> showFilePreview(attachment));
+
+                attachmentLayout.add(fileIcon, fileName, viewButton);
+                attachmentsList.add(attachmentLayout);
+            }
+
+            attachmentsDiv.add(attachmentsList);
+            requestItem.add(attachmentsDiv);
+        }
+
         return requestItem;
+    }
+
+    /**
+     * Zeigt eine Vorschau der Datei an oder öffnet sie
+     */
+    private void showFilePreview(String fileName) {
+        // Dialog für die Dateivorschau
+        com.vaadin.flow.component.dialog.Dialog previewDialog = new com.vaadin.flow.component.dialog.Dialog();
+        previewDialog.setWidth("800px");
+        previewDialog.setHeight("600px");
+        previewDialog.setCloseOnEsc(true);
+        previewDialog.setCloseOnOutsideClick(true);
+
+        VerticalLayout dialogContent = new VerticalLayout();
+        dialogContent.setSizeFull();
+        dialogContent.setPadding(true);
+
+        H3 fileTitle = new H3("Vorschau: " + fileName);
+
+        Component previewComponent;
+
+        // Pfad zur Datei erstellen (in einer realen Anwendung würde dies aus einer Datenbank oder einem Dateisystem kommen)
+        String filePath = "src/main/resources/uploads/" + fileName;
+        File file = new File(filePath);
+
+        // Je nach Dateityp unterschiedliche Vorschau anzeigen
+        if (fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg") || 
+            fileName.toLowerCase().endsWith(".png") || fileName.toLowerCase().endsWith(".gif")) {
+
+            // Für Bilder verwenden wir einen echten Image-Container
+            Div imageContainer = new Div();
+            imageContainer.setWidth("100%");
+            imageContainer.setHeight("400px");
+            imageContainer.getStyle()
+                    .set("display", "flex")
+                    .set("align-items", "center")
+                    .set("justify-content", "center")
+                    .set("background-color", "var(--lumo-contrast-5pct)")
+                    .set("border-radius", "var(--lumo-border-radius-m)");
+
+            try {
+                // Versuche, das Bild zu laden
+                if (file.exists()) {
+                    // StreamResource für das Bild erstellen
+                    StreamResource imageResource = new StreamResource(fileName, () -> {
+                        try {
+                            return new FileInputStream(file);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            return new ByteArrayInputStream(new byte[0]);
+                        }
+                    });
+
+                    // Bild-Komponente erstellen und konfigurieren
+                    Image image = new Image(imageResource, "Bild: " + fileName);
+                    image.setMaxHeight("380px");
+                    image.setMaxWidth("100%");
+                    image.getStyle().set("object-fit", "contain");
+
+                    imageContainer.add(image);
+                } else {
+                    // Fallback, wenn die Datei nicht existiert
+                    Icon imageIcon = VaadinIcon.PICTURE.create();
+                    imageIcon.setSize("100px");
+                    imageIcon.setColor("var(--lumo-primary-color)");
+                    Paragraph errorText = new Paragraph("Bild konnte nicht geladen werden");
+
+                    VerticalLayout errorLayout = new VerticalLayout(imageIcon, errorText);
+                    errorLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+                    errorLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+                    imageContainer.add(errorLayout);
+                }
+            } catch (Exception e) {
+                // Bei Fehler Fallback anzeigen
+                Icon imageIcon = VaadinIcon.PICTURE.create();
+                imageIcon.setSize("100px");
+                imageIcon.setColor("var(--lumo-primary-color)");
+                Paragraph errorText = new Paragraph("Fehler beim Laden des Bildes: " + e.getMessage());
+
+                VerticalLayout errorLayout = new VerticalLayout(imageIcon, errorText);
+                errorLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+                errorLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+                imageContainer.add(errorLayout);
+            }
+
+            previewComponent = imageContainer;
+        } else if (fileName.toLowerCase().endsWith(".pdf")) {
+            // Container für PDF-Vorschau
+            Div pdfContainer = new Div();
+            pdfContainer.setWidth("100%");
+            pdfContainer.setHeight("400px");
+            pdfContainer.getStyle()
+                    .set("display", "flex")
+                    .set("align-items", "center")
+                    .set("justify-content", "center")
+                    .set("background-color", "var(--lumo-contrast-5pct)")
+                    .set("border-radius", "var(--lumo-border-radius-m)");
+
+            if (file.exists()) {
+                // PDF-Icon mit Hinweis, dass es heruntergeladen werden kann
+                Icon pdfIcon = VaadinIcon.FILE_TEXT_O.create();
+                pdfIcon.setSize("100px");
+                pdfIcon.setColor("var(--lumo-error-color)");
+
+                Paragraph pdfText = new Paragraph("PDF-Datei kann heruntergeladen werden");
+
+                VerticalLayout pdfLayout = new VerticalLayout(pdfIcon, pdfText);
+                pdfLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+                pdfLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+                pdfContainer.add(pdfLayout);
+            } else {
+                Icon pdfIcon = VaadinIcon.FILE_TEXT_O.create();
+                pdfIcon.setSize("100px");
+                pdfIcon.setColor("var(--lumo-error-color)");
+
+                Paragraph errorText = new Paragraph("PDF-Datei konnte nicht gefunden werden");
+
+                VerticalLayout pdfLayout = new VerticalLayout(pdfIcon, errorText);
+                pdfLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+                pdfLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+                pdfContainer.add(pdfLayout);
+            }
+
+            previewComponent = pdfContainer;
+        } else if (fileName.toLowerCase().endsWith(".docx") || fileName.toLowerCase().endsWith(".doc")) {
+            // Container für Word-Dokument-Vorschau
+            Div docContainer = new Div();
+            docContainer.setWidth("100%");
+            docContainer.setHeight("400px");
+            docContainer.getStyle()
+                    .set("display", "flex")
+                    .set("align-items", "center")
+                    .set("justify-content", "center")
+                    .set("background-color", "var(--lumo-contrast-5pct)")
+                    .set("border-radius", "var(--lumo-border-radius-m)");
+
+            if (file.exists()) {
+                // Word-Icon mit Hinweis, dass es heruntergeladen werden kann
+                Icon docIcon = VaadinIcon.FILE_TEXT_O.create();
+                docIcon.setSize("100px");
+                docIcon.setColor("var(--lumo-primary-color)");
+
+                Paragraph docText = new Paragraph("Word-Dokument kann heruntergeladen werden");
+
+                VerticalLayout docLayout = new VerticalLayout(docIcon, docText);
+                docLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+                docLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+                docContainer.add(docLayout);
+            } else {
+                Icon docIcon = VaadinIcon.FILE_TEXT_O.create();
+                docIcon.setSize("100px");
+                docIcon.setColor("var(--lumo-primary-color)");
+
+                Paragraph errorText = new Paragraph("Word-Dokument konnte nicht gefunden werden");
+
+                VerticalLayout docLayout = new VerticalLayout(docIcon, errorText);
+                docLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+                docLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+                docContainer.add(docLayout);
+            }
+
+            previewComponent = docContainer;
+        } else {
+            // Container für generische Dateivorschau
+            Div fileContainer = new Div();
+            fileContainer.setWidth("100%");
+            fileContainer.setHeight("400px");
+            fileContainer.getStyle()
+                    .set("display", "flex")
+                    .set("align-items", "center")
+                    .set("justify-content", "center")
+                    .set("background-color", "var(--lumo-contrast-5pct)")
+                    .set("border-radius", "var(--lumo-border-radius-m)");
+
+            if (file.exists()) {
+                Icon fileIcon = VaadinIcon.FILE_O.create();
+                fileIcon.setSize("100px");
+                fileIcon.setColor("var(--lumo-contrast)");
+
+                Paragraph fileText = new Paragraph("Datei kann heruntergeladen werden");
+
+                VerticalLayout fileLayout = new VerticalLayout(fileIcon, fileText);
+                fileLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+                fileLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+                fileContainer.add(fileLayout);
+            } else {
+                Icon fileIcon = VaadinIcon.FILE_O.create();
+                fileIcon.setSize("100px");
+                fileIcon.setColor("var(--lumo-contrast)");
+
+                Paragraph errorText = new Paragraph("Datei konnte nicht gefunden werden");
+
+                VerticalLayout fileLayout = new VerticalLayout(fileIcon, errorText);
+                fileLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+                fileLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+                fileContainer.add(fileLayout);
+            }
+
+            previewComponent = fileContainer;
+        }
+
+        Button downloadButton = new Button("Herunterladen", VaadinIcon.DOWNLOAD.create());
+        downloadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        downloadButton.addClickListener(e -> {
+            if (file.exists()) {
+                try {
+                    // StreamResource für den Download erstellen
+                    StreamResource resource = new StreamResource(fileName, () -> {
+                        try {
+                            return new FileInputStream(file);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            return new ByteArrayInputStream(new byte[0]);
+                        }
+                    });
+
+                    // Registriere die Resource für den Download
+                    StreamRegistration registration = VaadinSession.getCurrent().getResourceRegistry()
+                            .registerResource(resource);
+
+                    // Öffne den Download in einem neuen Tab
+                    UI.getCurrent().getPage().open(registration.getResourceUri().toString(), "_blank");
+
+                    Notification.show("Download von '" + fileName + "' gestartet...",
+                            3000, Notification.Position.BOTTOM_END)
+                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                } catch (Exception ex) {
+                    Notification.show("Fehler beim Herunterladen: " + ex.getMessage(),
+                            3000, Notification.Position.BOTTOM_END)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }
+            } else {
+                Notification.show("Datei '" + fileName + "' konnte nicht gefunden werden",
+                        3000, Notification.Position.BOTTOM_END)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+
+            previewDialog.close();
+        });
+
+        Button closeButton = new Button("Schließen", VaadinIcon.CLOSE.create());
+        closeButton.addClickListener(e -> previewDialog.close());
+
+        HorizontalLayout buttonsLayout = new HorizontalLayout(downloadButton, closeButton);
+        buttonsLayout.setSpacing(true);
+        buttonsLayout.setMargin(true);
+        buttonsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        buttonsLayout.setWidthFull();
+
+        dialogContent.add(fileTitle, previewComponent, buttonsLayout);
+        previewDialog.add(dialogContent);
+
+        previewDialog.open();
     }
 }

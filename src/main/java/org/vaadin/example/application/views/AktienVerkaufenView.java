@@ -54,6 +54,7 @@ public class AktienVerkaufenView extends AbstractSideNav implements BeforeEnterO
                                DepotService depotService,
                                SecurityService securityService,
                                NutzerService nutzerService) {
+        super(securityService);
         this.aktienVerkaufService = aktienVerkaufService;
         this.depotService = depotService;
         this.securityService = securityService;

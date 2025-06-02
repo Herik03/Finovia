@@ -10,6 +10,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.application.Security.SecurityService;
 
 /**
@@ -35,12 +36,20 @@ public abstract class AbstractSideNav extends VerticalLayout {
     /** Die Breite der Seitenleiste in Pixeln */
     private static final String SIDENAV_WIDTH = "250px";
 
+    /** Der Security-Service für Authentifizierung und Autorisierung */
+    @Autowired
+    private final SecurityService securityService;
+
+
     /**
      * Konstruktor für AbstractView.
      * <p>
      * Initialisiert das grundlegende Layout mit Seitenleiste und Hauptinhaltsbereich.
      */
-    public AbstractSideNav() {
+    public AbstractSideNav(SecurityService securityService) {
+
+        this.securityService = securityService;
+
         setSizeFull();
         setPadding(false);
         setSpacing(false);
@@ -122,30 +131,53 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button apiBtn = createNavButton("Wertpapiere", VaadinIcon.CODE);
         apiBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
 
-
-
         Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR);
         watchlistBtn.addClickListener(e -> UI.getCurrent().navigate(WatchlistView.class));
-
 
         Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
         aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
 
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
-        logoutBtn.addClickListener(e -> new SecurityService().logout());
+        logoutBtn.addClickListener(e -> {
+            if (securityService != null) {
+                securityService.logout();
+            } else {
+                UI.getCurrent().getPage().setLocation("/");
+            }
+        });
 
         Button meineKauefeBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
         meineKauefeBtn.addClickListener(e -> UI.getCurrent().navigate("meine-kauefe"));
 
+        // Admin-Button hinzufügen - überprüfen Sie die Rolle direkt
+        Button adminBtn = createNavButton("Admin", VaadinIcon.USER_STAR);
+        adminBtn.addClickListener(e -> UI.getCurrent().navigate("admin"));
+
+        // Sicherheitsüberprüfung - entweder den Button verstecken oder sichtbar machen
+        try {
+            if (securityService != null) {
+                boolean isAdmin = securityService.isAdmin();
+                System.out.println("User ist Admin: " + isAdmin);
+                adminBtn.setVisible(isAdmin);
+            } else {
+                System.out.println("SecurityService ist null");
+                adminBtn.setVisible(false);
+            }
+        } catch (Exception ex) {
+            adminBtn.setVisible(false);
+            System.err.println("Fehler bei der Überprüfung der Admin-Rolle: " + ex.getMessage());
+            ex.printStackTrace();
+        }
 
 
-        topLayout.add(logo, dashboardBtn, depotBtn, transaktionsBtn, watchlistBtn, settingsBtn, apiBtn);
+        topLayout.add(logo, dashboardBtn, depotBtn, watchlistBtn, settingsBtn, apiBtn);
+
+
         topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         topLayout.setPadding(false);
         topLayout.setSpacing(false);
 
-
-        bottomLayout.add(settingsBtn, logoutBtn);
+        bottomLayout.add(adminBtn, settingsBtn, logoutBtn);
         bottomLayout.getStyle().setFlexGrow("1");
         bottomLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.END, LumoUtility.Gap.MEDIUM);
 

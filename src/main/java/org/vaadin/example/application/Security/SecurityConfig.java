@@ -17,6 +17,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.vaadin.example.application.views.LoginView;
 
 @EnableWebSecurity
@@ -30,15 +31,19 @@ public class SecurityConfig extends VaadinWebSecurity {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
-
+ /*       http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/images/**", "/public/**", "/mehr-erfahren.html").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN") // Nur Admin-Zugriff für zukünftige Admin-Bereiche
+                .anyRequest().authenticated()
+       );*/
+        http.authorizeHttpRequests(auth ->
+                auth.requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
         );
+
 
         super.configure(http);
 
         setLoginView(http, LoginView.class);
         http.formLogin(form -> form.defaultSuccessUrl("/uebersicht", true));
-
     }
 }

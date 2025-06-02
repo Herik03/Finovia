@@ -5,6 +5,7 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Transaktion;
 import org.vaadin.example.application.services.AktienKaufService;
 
@@ -16,8 +17,11 @@ import java.util.List;
 @PermitAll
 public class TransaktionsListe extends AbstractSideNav {
 
-    public TransaktionsListe(@Autowired AktienKaufService aktienKaufService) {
-        super();
+    private final SecurityService securityService;
+
+    public TransaktionsListe(@Autowired AktienKaufService aktienKaufService, SecurityService securityService) {
+        super(securityService);
+        this.securityService = securityService;
 
         H2 headline = new H2("Transaktionshistorie");
         headline.getStyle()

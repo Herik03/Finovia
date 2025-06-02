@@ -63,9 +63,10 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
      * @param securityService Der Service für Security-Operationen
      */
     @Autowired
-    public DetailedDepotView(DepotService depotService, AlphaVantageService alphaVantageService, SecurityService securityService) {
-        super();
+    public DetailedDepotView(DepotService depotService, NutzerService nutzerService, AlphaVantageService alphaVantageService, SecurityService securityService) {
+        super(securityService);
         this.depotService = depotService;
+        this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
         this.securityService = securityService;
 
@@ -172,7 +173,7 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
 
 
         // Wertpapiere anzeigen
-        wertpapierGrid.setItems(currentDepot.getWertpapiere());
+        wertpapierGrid.setItems(currentDepot.getDepotWertpapiere());
 
         DividendenPanel dividendenPanel = new DividendenPanel(currentDepot);
 
@@ -292,4 +293,3 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
 }
 //TODO:Einbinden der Funktionalität zum Kaufen und Verkaufen von Wertpapieren
 //TODO:Wertpapiere in die Depot-Übersicht einfügen
-
