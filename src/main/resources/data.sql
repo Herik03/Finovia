@@ -1,4 +1,6 @@
 DELETE FROM ausschuettung;
+DELETE FROM kauf;
+DELETE FROM ausschuettung;
 DELETE FROM transaktion;
 DELETE FROM kurs;
 
@@ -7,6 +9,7 @@ DELETE FROM anleihe;
 DELETE FROM aktie;
 
 DELETE FROM wertpapier;
+
 
 INSERT INTO wertpapier (wertpapier_id, name, symbol) VALUES (1, 'Shanghai Composite ETF 1', 'ETF001');
 INSERT INTO etf (wertpapier_id, emittent, index) VALUES (1, 'Emittent1', 'Shanghai Composite');
