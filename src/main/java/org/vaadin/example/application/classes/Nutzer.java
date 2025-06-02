@@ -200,4 +200,8 @@ public class Nutzer {
                 ", anzahlDepots=" + depots.size() +
                 '}';
     }
+    public Long getNutzerId() {
+        return id;
+    }
+
 }
