@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
 public class Kurs {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    private Long id;
+    private Long kursId;
 
     private LocalDateTime datum;
     private double eröffnungskurs;
@@ -77,11 +77,6 @@ public class Kurs {
 
     public double getKurswert() {
         return schlusskurs;
-    }
-
-    public String getDatumAlsString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return datum.format(formatter);
     }
 
 }
