@@ -35,7 +35,7 @@ import org.vaadin.example.application.services.NutzerService;
 import com.vaadin.flow.component.html.Div;
 
 /**
- * Die ` DetailedDepotView`-Klasse stellt eine detaillierte Ansicht eines Depots dar.
+ * Die  DetailedDepotView-Klasse stellt eine detaillierte Ansicht eines Depots dar.
  * Sie zeigt Informationen über das Depot und eine Liste der enthaltenen Wertpapiere an.
  */
 @Route(value = "depot-details")
@@ -55,9 +55,9 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
     private final Span gesamtwertSpan = new Span();
 
     /**
-     * Konstruktor für die `DetailedDepotView`-Klasse.
+     * Konstruktor für die DetailedDepotView-Klasse.
      * Initialisiert die Ansicht mit einem DepotService.
-     * 
+     *
      * @param depotService Der Service für Depot-Operationen
      * @param nutzerService Der Service für Nutzer-Operationen
      * @param securityService Der Service für Security-Operationen
@@ -133,9 +133,18 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
                 verkaufenButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_ERROR);
 
                 verkaufenButton.addClickListener(e -> {
-                    Long depotId = currentDepot.getDepotId(); // Falls du es brauchst
-                    String symbol = dw.getWertpapier().getSymbol(); // Hole das Symbol der Aktie
-                    getUI().ifPresent(ui -> ui.navigate("verkaufen/" + symbol));
+                    String symbol = dw.getWertpapier().getSymbol();
+                    String typ;
+
+                    if (dw.getWertpapier() instanceof Aktie) {
+                        typ = "aktie";
+                    } else if (dw.getWertpapier() instanceof ETF) {
+                        typ = "etf";
+                    } else {
+                        typ = "wertpapier"; // Fallback
+                    }
+
+                    getUI().ifPresent(ui -> ui.navigate("verkaufen/" + typ + "/" + symbol));
                 });
 
                 return verkaufenButton;
@@ -161,8 +170,8 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         if (!isCurrentUserOwnerOfDepot()) {
             // Wenn nicht, zur Depot-Übersicht umleiten
             UI.getCurrent().navigate(DepotView.class);
-            Notification.show("Sie haben keine Berechtigung, dieses Depot anzusehen.", 
-                    3000, Notification.Position.MIDDLE)
+            Notification.show("Sie haben keine Berechtigung, dieses Depot anzusehen.",
+                            3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
             return;
         }
@@ -192,7 +201,7 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
 
     /**
      * Überprüft, ob der aktuelle angemeldete Benutzer der Besitzer des angezeigten Depots ist.
-     * 
+     *
      * @return true, wenn der aktuelle Benutzer der Besitzer ist, sonst false
      */
     private boolean isCurrentUserOwnerOfDepot() {
@@ -230,7 +239,7 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         // Trennlinie für den Löschen-Bereich
         Div divider = new Div();
         divider.addClassNames(
-                LumoUtility.Background.CONTRAST_10, 
+                LumoUtility.Background.CONTRAST_10,
                 LumoUtility.Margin.Vertical.MEDIUM
         );
         divider.setHeight("1px");
@@ -246,7 +255,7 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
 
         Paragraph warningText = new Paragraph(
                 "Achtung: Das Löschen des Depots entfernt alle damit verbundenen Daten unwiderruflich " +
-                "und kann nicht rückgängig gemacht werden.");
+                        "und kann nicht rückgängig gemacht werden.");
         warningText.addClassNames(LumoUtility.TextColor.ERROR);
 
         HorizontalLayout buttonLayout = new HorizontalLayout(deleteButton);
@@ -267,7 +276,7 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
     private void openDeleteDepotDialog() {
         ConfirmDialog dialog = new ConfirmDialog();
         dialog.setHeader("Depot löschen");
-        dialog.setText("Sind Sie sicher, dass Sie das Depot '" + currentDepot.getName() + 
+        dialog.setText("Sind Sie sicher, dass Sie das Depot '" + currentDepot.getName() +
                 "' und alle enthaltenen Wertpapiere löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.");
 
         dialog.setCancelable(true);
@@ -281,8 +290,8 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
             depotService.deleteDepot(currentDepot.getDepotId());
 
             // Erfolgsmeldung anzeigen
-            Notification.show("Das Depot wurde erfolgreich gelöscht.", 
-                    3000, Notification.Position.MIDDLE)
+            Notification.show("Das Depot wurde erfolgreich gelöscht.",
+                            3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
             // Zur Depot-Übersicht navigieren
@@ -294,4 +303,3 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
 }
 //TODO:Einbinden der Funktionalität zum Kaufen und Verkaufen von Wertpapieren
 //TODO:Wertpapiere in die Depot-Übersicht einfügen
-

@@ -59,15 +59,28 @@ public class Depot {
         this.besitzer = besitzer;
     }
 
-    public void wertpapierHinzufuegen(Wertpapier wertpapier, int anzahl) {
+    public void wertpapierHinzufuegen(Wertpapier wertpapier, int anzahl, double kaufpreisProStueck) {
         for (DepotWertpapier dw : depotWertpapiere) {
             if (dw.getWertpapier().equals(wertpapier)) {
-                dw.setAnzahl(dw.getAnzahl() + anzahl);
+                // Bisherige Werte:
+                int bisherigeAnzahl = dw.getAnzahl();
+                double bisherigerEinstandspreis = dw.getEinstandspreis() != null ? dw.getEinstandspreis() : 0.0;
+
+                // Gesamtwert vorher und neuer Kaufwert:
+                double gesamtwertAlt = bisherigerEinstandspreis * bisherigeAnzahl;
+                double gesamtwertNeu = kaufpreisProStueck * anzahl;
+
+                int neueAnzahl = bisherigeAnzahl + anzahl;
+                double neuerEinstandspreis = (gesamtwertAlt + gesamtwertNeu) / neueAnzahl;
+
+                dw.setAnzahl(neueAnzahl);
+                dw.setEinstandspreis(neuerEinstandspreis);
                 dw.setDepot(this);
                 return;
             }
         }
-        depotWertpapiere.add(new DepotWertpapier(this, wertpapier, anzahl));
+        // Neu anlegen, Einstandspreis direkt setzen
+        depotWertpapiere.add(new DepotWertpapier(this, wertpapier, anzahl, kaufpreisProStueck));
     }
 
     public boolean wertpapierEntfernen(Wertpapier wertpapier, int anzahl) {

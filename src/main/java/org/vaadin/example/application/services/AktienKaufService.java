@@ -58,11 +58,7 @@ public class AktienKaufService {
         double kurs = quote.getPrice();
         double gebuehren = 2.50;
 
-        Kauf kauf = new Kauf(handelsplatz, LocalDate.now(), gebuehren, kurs, stueckzahl, null, null);
-
-        List<Transaktion> transaktionen = new ArrayList<>();
-        transaktionen.add(kauf);
-
+        // 1. Aktie anlegen und speichern
         Aktie aktie = new Aktie(
                 quote.getSymbol(),
                 "Unternehmen: " + quote.getSymbol(),
@@ -85,26 +81,27 @@ public class AktienKaufService {
                 0.0,
                 null
         );
-
         aktie.setName(quote.getSymbol());
         aktie.setSymbol(quote.getSymbol());
         aktie.setUnternehmensname("Unternehmen: " + quote.getSymbol());
-        aktie.setTransaktionen(transaktionen);
+        aktie.setTransaktionen(new ArrayList<>());
         aktie.setKurse(new ArrayList<>());
 
-        // 1. Aktie speichern, bevor sie in der Transaktion verwendet wird
         aktie = aktieRepository.save(aktie);
 
-        // 2. Verknüpfung Kauf -> Aktie
-        kauf.setWertpapier(aktie);
+        // 2. Kauf mit Wertpapier anlegen
+        Kauf kauf = new Kauf(handelsplatz, LocalDate.now(), gebuehren, kurs, stueckzahl, aktie, null);
 
-        // 3. Kauf-Transaktion speichern
+        // 3. Kauf zur Liste der Transaktionen hinzufügen
+        aktie.getTransaktionen().add(kauf);
+
+        // 4. Kauf speichern
         transaktionRepository.save(kauf);
 
-        // 4. Aktie dem Depot hinzufügen
-        depot.wertpapierHinzufuegen(aktie, stueckzahl);
+        // 5. Aktie dem Depot hinzufügen
+        depot.wertpapierHinzufuegen(aktie, stueckzahl, kurs);
 
-        // 5. Depot speichern
+        // 6. Depot speichern
         depotRepository.save(depot);
 
         return aktie;
