@@ -83,8 +83,14 @@ public class NutzerService {
      * @param username Der Benutzername des gesuchten Nutzers
      * @return Der gefundene Nutzer oder null, falls kein Nutzer mit diesem Benutzernamen existiert
      */
+    @Transactional
     public Nutzer getNutzerByUsername(String username) {
-        return nutzerRepository.findByUsername(username);
+        Nutzer nutzer = nutzerRepository.findByUsername(username);
+        if (nutzer != null) {
+            // Initialize the lazy-loaded collections to prevent LazyInitializationException
+            nutzer.getDepots().size(); // Force initialization
+        }
+        return nutzer;
     }
 
     /**
@@ -202,8 +208,14 @@ public class NutzerService {
         return false;
     }
 
+    @Transactional
     public Nutzer findByUsername(String username) {
-        return nutzerRepository.findByUsername(username); // kann null sein
+        Nutzer nutzer = nutzerRepository.findByUsername(username); // kann null sein
+        if (nutzer != null) {
+            // Initialize the lazy-loaded collections to prevent LazyInitializationException
+            nutzer.getDepots().size(); // Force initialization
+        }
+        return nutzer;
     }
 
     public void sendPasswordResetEmail(String email) {
@@ -240,6 +252,7 @@ public class NutzerService {
         return false;
     }
 
+    @Transactional
     public Nutzer getAngemeldeterNutzer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -253,6 +266,10 @@ public class NutzerService {
         if (nutzer == null) {
             throw new IllegalStateException("Kein Nutzer mit Benutzernamen '" + username + "' gefunden");
         }
+
+        // Initialize the lazy-loaded collections to prevent LazyInitializationException
+        nutzer.getDepots().size(); // Force initialization
+
         return nutzer;
     }
 
@@ -271,8 +288,8 @@ public class NutzerService {
             if (nutzerOpt.isPresent()) {
                 Nutzer nutzer = nutzerOpt.get();
 
-                // Beziehung von beiden Seiten setzen, ohne auf die depots-Collection zuzugreifen
-                depot.setBesitzer(nutzer);
+                // Beziehung von beiden Seiten setzen
+                nutzer.depotHinzufuegen(depot);
 
                 // Nutzer speichern (Cascade speichert auch das Depot)
                 nutzerRepository.save(nutzer);

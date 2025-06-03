@@ -10,7 +10,6 @@ import org.vaadin.example.application.repositories.WertpapierRepository;
 import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class ETFKaufService {
@@ -50,7 +49,7 @@ public class ETFKaufService {
 
         DepotWertpapier dwp = depotWertpapierRepository
                 .findByDepotAndWertpapier(depot, etf)
-                .orElse(new DepotWertpapier(depot, etf, 0, 0.0));
+                .orElse(new DepotWertpapier(depot, etf, 0, Double.valueOf(0.0)));
 
         dwp.setAnzahl(dwp.getAnzahl() + stueckzahl);
         dwp.setEinstandspreis(letzterKurs);

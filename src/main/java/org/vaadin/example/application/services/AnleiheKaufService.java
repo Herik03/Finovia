@@ -71,7 +71,7 @@ public class AnleiheKaufService {
 
         DepotWertpapier dwp = depotWertpapierRepository
                 .findByDepotAndWertpapier(depot, anleihe)
-                .orElse(new DepotWertpapier(depot, anleihe, 0, 0.0));
+                .orElse(new DepotWertpapier(depot, anleihe, 0, Double.valueOf(0.0)));
 
         dwp.setAnzahl(dwp.getAnzahl() + stueckzahl);
         dwp.setEinstandspreis(letzterKurs);

@@ -6,7 +6,7 @@ import org.vaadin.example.application.classes.enums.SearchResultTypeEnum;
 import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Wertpapier;
-import org.vaadin.example.application.models.SearchResult;
+import org.vaadin.example.application.classes.SearchResult;
 import org.vaadin.example.application.repositories.WertpapierRepository;
 import org.vaadin.example.application.services.AlphaVantageService;
 import com.vaadin.flow.component.Key;

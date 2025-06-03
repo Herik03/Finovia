@@ -35,9 +35,14 @@ public class Depot {
     @JoinColumn(name = "nutzer_id")
     private Nutzer besitzer;
 
-    @OneToMany(mappedBy = "depot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "depot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private final List<DepotWertpapier> depotWertpapiere = new ArrayList<>();
 
+    /**
+     * -- SETTER --
+     *  Setter für Saldo (Cash Balance).
+     */
+    @Setter
     @Getter
     private double saldo = 0.0;
 
@@ -87,14 +92,18 @@ public class Depot {
     }
 
     public List<Dividende> getDividendenHistorie() {
+        List<Dividende> alleDividenden = new ArrayList<>();
+
         for (Wertpapier wp : getWertpapiere()) {
-            return wp.getAusschuettungen()
+            List<Dividende> dividendenDesWertpapiers = wp.getAusschuettungen()
                     .stream()
                     .filter(a -> a instanceof Dividende)
                     .map(a -> (Dividende) a)
                     .toList();
+            alleDividenden.addAll(dividendenDesWertpapiers);
         }
-        return new ArrayList<>();
+
+        return alleDividenden;
     }
 
     /**
@@ -144,13 +153,6 @@ public class Depot {
             }
         }
         return null;
-    }
-
-    /**
-     * Setter für Saldo (Cash Balance).
-     */
-    public void setSaldo(double saldo) {
-        this.saldo = saldo;
     }
 
     public int getAnzahlAktien(String symbol) {

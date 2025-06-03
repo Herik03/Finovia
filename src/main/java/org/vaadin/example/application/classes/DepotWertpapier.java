@@ -26,7 +26,8 @@ public class DepotWertpapier {
     private int anzahl; // Anzahl der gehaltenen Wertpapiere
 
     @Getter @Setter
-    private double einstandspreis;
+    @Column(nullable = true)
+    private Double einstandspreis;
 
 
     public DepotWertpapier(Depot depot, Wertpapier wertpapier, int anzahl) {
@@ -37,7 +38,7 @@ public class DepotWertpapier {
             depot.getDepotWertpapiere().add(this);
         }
     }
-    public DepotWertpapier(Depot depot, Wertpapier wertpapier, int anzahl, double einstandspreis) {
+    public DepotWertpapier(Depot depot, Wertpapier wertpapier, int anzahl, Double einstandspreis) {
         this.depot = depot;
         this.wertpapier = wertpapier;
         this.anzahl = anzahl;
