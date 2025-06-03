@@ -119,15 +119,11 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
         settingsBtn.addClickListener(e -> UI.getCurrent().navigate(SettingsView.class));
 
-        Button apiBtn = createNavButton("Wertpapiere", VaadinIcon.CODE);
+        Button apiBtn = createNavButton("Wertpapiere", VaadinIcon.SEARCH);
         apiBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
-
-        Button transaktionsBtn = createNavButton("Transaktionen", VaadinIcon.MONEY);
-        transaktionsBtn.addClickListener(e -> UI.getCurrent().navigate("transaktionen"));
 
         Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR);
         watchlistBtn.addClickListener(e -> UI.getCurrent().navigate(WatchlistView.class));
-
 
         Button aktieKaufenBtn = createNavButton("Kaufen", VaadinIcon.CART);
         aktieKaufenBtn.addClickListener(e -> UI.getCurrent().navigate("kaufen"));
@@ -135,12 +131,12 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
         logoutBtn.addClickListener(e ->  UI.getCurrent().getPage().setLocation("/logout"));
 
-        Button transaktionsBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
+        Button transaktionsBtn = createNavButton("Meine Käufe", VaadinIcon.COIN_PILES);
         transaktionsBtn.addClickListener(e -> UI.getCurrent().navigate("transaktionen"));
 
 
 
-        topLayout.add(logo, dashboardBtn, depotBtn, transaktionsBtn, watchlistBtn, settingsBtn, apiBtn);
+        topLayout.add(logo, dashboardBtn, depotBtn, watchlistBtn, settingsBtn, apiBtn, transaktionsBtn);
 
         topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         topLayout.setPadding(false);

@@ -104,8 +104,6 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
                 .setHeader("Anzahl")
                 .setAutoWidth(true);
 
-
-
         wertpapierGrid.addColumn(dw -> {
             if (dw.getWertpapier() instanceof Aktie aktie) {
                 return String.format("%.2f €", alphaVantageService.getAktuellerKurs(aktie.getName()));
@@ -293,5 +291,6 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         dialog.open();
     }
 }
-
+//TODO:Einbinden der Funktionalität zum Kaufen und Verkaufen von Wertpapieren
+//TODO:Wertpapiere in die Depot-Übersicht einfügen
 
