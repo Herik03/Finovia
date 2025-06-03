@@ -12,11 +12,29 @@ import org.vaadin.example.application.classes.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Das {@code DividendenPanel} stellt eine UI-Komponente dar, die die zuletzt erhaltenen
+ * Ausschüttungen (Dividenden, Zinszahlungen, ETF-Dividenden) eines Depots anzeigt.
+ *
+ * Es enthält eine Tabelle zur Übersicht und einen Button zur Prüfung neuer Ausschüttungen.
+ */
 public class DividendenPanel extends VerticalLayout {
 
+    /**
+     * Tabelle zur Anzeige der Ausschüttungen im Depot.
+     */
     private final Grid<Ausschuettung> grid = new Grid<>(Ausschuettung.class, false);
+
+    /**
+     * Referenz auf das anzuzeigende Depot.
+     */
     private final Depot depot;
 
+    /**
+     * Erstellt ein neues {@code DividendenPanel} für das übergebene Depot.
+     *
+     * @param depot Das Depot, dessen Ausschüttungen angezeigt und geprüft werden sollen.
+     */
     public DividendenPanel(Depot depot) {
         this.depot = depot;
         setPadding(true);
@@ -41,6 +59,10 @@ public class DividendenPanel extends VerticalLayout {
         updateGrid();
     }
 
+    /**
+     * Konfiguriert die Tabellenspalten für die Darstellung von Ausschüttungen.
+     * Es werden Datum, Anzahl der Anteile, Nettoauszahlung und Typ (Aktie, Anleihe, ETF) angezeigt.
+     */
     private void configureGrid() {
         grid.addColumn(a -> a.getDatum().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
                 .setHeader("Datum");
@@ -50,6 +72,8 @@ public class DividendenPanel extends VerticalLayout {
                 return d.getAktienAnzahl();
             } else if (a instanceof Zinszahlung z) {
                 return z.getAnleihenAnzahl();
+            } else if (a instanceof ETFDividende e) {
+                return e.getEtfAnteile();
             }
             return "-";
         }).setHeader("Anzahl");
@@ -59,16 +83,27 @@ public class DividendenPanel extends VerticalLayout {
                 return String.format("%.2f", d.getBetrag());
             } else if (a instanceof Zinszahlung z) {
                 return String.format("%.2f", z.getBetrag());
+            } else if (a instanceof ETFDividende e) {
+                return String.format("%.2f", e.getBetrag());
             }
             return "-";
         }).setHeader("Netto (€)");
+
+        grid.addColumn(a -> {
+            if (a instanceof Dividende) return "Aktie";
+            if (a instanceof Zinszahlung) return "Anleihe";
+            if (a instanceof ETFDividende) return "ETF";
+            return "-";
+        }).setHeader("Typ");
 
         grid.setHeight("250px");
         grid.setAllRowsVisible(true);
     }
 
+    /**
+     * Aktualisiert die Tabelle mit allen bisher gebuchten Ausschüttungen des Depots.
+     */
     private void updateGrid() {
         grid.setItems(depot.getAlleAusschuettungen());
     }
-
 }

@@ -1457,3 +1457,95 @@ INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) 
 -- Anleihe 60
 INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1060, 7.5, '2025-06-03', 1.88, 60);
 INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1060, 1.5, 'JAEHRLICH', 5);
+
+--ETFDividenden:
+-- ETF 1
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2001, 71.54, '2025-06-03', 17.89, 1);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2001, 69, 'VIERTELJAEHRLICH');
+-- ETF 2
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2002, 95.53, '2025-06-04', 23.88, 2);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2002, 54, 'HALBJAEHRLICH');
+-- ETF 3
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2003, 66.06, '2025-06-05', 16.52, 3);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2003, 56, 'HALBJAEHRLICH');
+-- ETF 4
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2004, 77.88, '2025-06-06', 19.47, 4);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2004, 85, 'VIERTELJAEHRLICH');
+-- ETF 5
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2005, 89.4, '2025-06-07', 22.35, 5);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2005, 86, 'VIERTELJAEHRLICH');
+-- ETF 6
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2006, 83.9, '2025-06-08', 20.98, 6);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2006, 37, 'JAEHRLICH');
+-- ETF 7
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2007, 27.5, '2025-06-09', 6.88, 7);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2007, 100, 'HALBJAEHRLICH');
+-- ETF 8
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2008, 39.18, '2025-06-10', 9.79, 8);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2008, 81, 'VIERTELJAEHRLICH');
+-- ETF 9
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2009, 83.47, '2025-06-11', 20.87, 9);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2009, 45, 'JAEHRLICH');
+-- ETF 10
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2010, 86.62, '2025-06-12', 21.66, 10);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2010, 85, 'VIERTELJAEHRLICH');
+-- ETF 11
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2011, 48.19, '2025-06-13', 12.05, 11);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2011, 69, 'JAEHRLICH');
+-- ETF 12
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2012, 34.03, '2025-06-14', 8.51, 12);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2012, 54, 'VIERTELJAEHRLICH');
+-- ETF 13
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2013, 51.18, '2025-06-15', 12.79, 13);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2013, 32, 'JAEHRLICH');
+-- ETF 14
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2014, 62.26, '2025-06-16', 15.56, 14);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2014, 38, 'HALBJAEHRLICH');
+-- ETF 15
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2015, 35.8, '2025-06-17', 8.95, 15);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2015, 19, 'HALBJAEHRLICH');
+-- ETF 16
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2016, 91.88, '2025-06-18', 22.97, 16);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2016, 92, 'VIERTELJAEHRLICH');
+-- ETF 17
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2017, 90.25, '2025-06-19', 22.56, 17);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2017, 74, 'VIERTELJAEHRLICH');
+-- ETF 18
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2018, 75.53, '2025-06-20', 18.88, 18);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2018, 49, 'JAEHRLICH');
+-- ETF 19
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2019, 75.38, '2025-06-21', 18.84, 19);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2019, 62, 'JAEHRLICH');
+-- ETF 20
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2020, 68.46, '2025-06-22', 17.11, 20);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2020, 80, 'HALBJAEHRLICH');
+-- ETF 21
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2021, 63.19, '2025-06-23', 15.8, 21);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2021, 93, 'HALBJAEHRLICH');
+-- ETF 22
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2022, 83.27, '2025-06-24', 20.82, 22);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2022, 19, 'JAEHRLICH');
+-- ETF 23
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2023, 54.6, '2025-06-25', 13.65, 23);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2023, 34, 'HALBJAEHRLICH');
+-- ETF 24
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2024, 99.52, '2025-06-26', 24.88, 24);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2024, 97, 'VIERTELJAEHRLICH');
+-- ETF 25
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2025, 22.9, '2025-06-27', 5.72, 25);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2025, 43, 'VIERTELJAEHRLICH');
+-- ETF 26
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2026, 55.23, '2025-06-28', 13.81, 26);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2026, 80, 'HALBJAEHRLICH');
+-- ETF 27
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2027, 36.53, '2025-06-29', 9.13, 27);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2027, 17, 'JAEHRLICH');
+-- ETF 28
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2028, 55.28, '2025-06-30', 13.82, 28);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2028, 37, 'VIERTELJAEHRLICH');
+-- ETF 29
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2029, 41.39, '2025-07-01', 10.35, 29);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2029, 11, 'HALBJAEHRLICH');
+-- ETF 30
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2030, 43.51, '2025-07-02', 10.88, 30);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2030, 52, 'JAEHRLICH');

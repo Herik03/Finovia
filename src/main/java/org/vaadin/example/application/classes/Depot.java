@@ -88,6 +88,14 @@ public class Depot {
         return depotWertpapiere.stream().map(DepotWertpapier::getWertpapier).toList();
     }
 
+    /**
+     * Gibt eine Liste aller historischen Dividenden (vom Typ {@link Dividende}) im Depot zurück.
+     *
+     * Diese Methode berücksichtigt nur Dividenden aus der internen Ausschüttungsliste der Wertpapiere
+     * und filtert nach dem konkreten Typ {@code Dividende}.
+     *
+     * @return Liste aller Dividenden im Depot
+     */
     public List<Dividende> getDividendenHistorie() {
         for (Wertpapier wp : getWertpapiere()) {
             return wp.getAusschuettungen()
@@ -99,6 +107,14 @@ public class Depot {
         return new ArrayList<>();
     }
 
+    /**
+     * Gibt eine Liste aller historischen Zinszahlungen (vom Typ {@link Zinszahlung}) im Depot zurück.
+     *
+     * Diese Methode durchsucht alle Wertpapiere des Depots und extrahiert die zugehörigen Ausschüttungen,
+     * sofern sie vom Typ {@code Zinszahlung} sind.
+     *
+     * @return Liste aller Zinszahlungen im Depot
+     */
     public List<Zinszahlung> getZinszahlungenHistorie() {
         return getWertpapiere().stream()
                 .flatMap(wp -> wp.getAusschuettungen().stream())
@@ -107,13 +123,57 @@ public class Depot {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gibt eine Liste aller historischen ETF-Dividenden (vom Typ {@link ETFDividende}) im Depot zurück.
+     *
+     * Diese Methode durchsucht alle Wertpapiere des Depots und filtert deren Ausschüttungen
+     * auf solche, die vom Typ {@code ETFDividende} sind.
+     *
+     * @return Liste aller ETF-Dividenden im Depot
+     */
+    public List<ETFDividende> getETFDividendeHistorie() {
+        return getWertpapiere().stream()
+                .flatMap(wp -> wp.getAusschuettungen().stream())
+                .filter(a -> a instanceof ETFDividende)
+                .map(a -> (ETFDividende) a)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Gibt eine kombinierte Liste aller Ausschüttungen des Depots zurück, bestehend aus:
+     * <ul>
+     *     <li>{@link Dividende}</li>
+     *     <li>{@link Zinszahlung}</li>
+     *     <li>{@link ETFDividende}</li>
+     * </ul>
+     *
+     * Diese Methode dient der einheitlichen Darstellung aller Ausschüttungstypen im UI.
+     *
+     * @return Liste aller Ausschüttungen im Depot
+     */
     public List<Ausschuettung> getAlleAusschuettungen() {
         List<Ausschuettung> result = new ArrayList<>();
-        result.addAll(getDividendenHistorie());     // ← bereits vorhandene API-Logik
-        result.addAll(getZinszahlungenHistorie());  // ← aus der DB
+        result.addAll(getDividendenHistorie());
+        result.addAll(getZinszahlungenHistorie());
+        result.addAll(getETFDividendeHistorie());
         return result;
     }
 
+    /**
+     * Prüft für den aktuellen Tag, ob neue Ausschüttungen (Dividenden, Zinsen, ETF-Dividenden) fällig sind
+     * und bucht diese bei Bedarf ins Depot ein.
+     *
+     * Dabei wird je nach Wertpapierklasse geprüft:
+     * <ul>
+     *     <li>Aktien: über {@code getDividendDate()} und {@code getDividendPerShare()}</li>
+     *     <li>Anleihen: gegen gespeicherte {@link Zinszahlung} mit passendem Datum</li>
+     *     <li>ETFs: gegen gespeicherte {@link ETFDividende} mit passendem Datum</li>
+     * </ul>
+     *
+     * Die gebuchten Netto-Beträge werden dem {@code saldo} des Depots gutgeschrieben.
+     *
+     * @param aktuellesDatum Das Datum, für das Ausschüttungen geprüft und gebucht werden sollen
+     */
     public void pruefeUndBucheAusschuettungen(LocalDate aktuellesDatum) {
         for (Wertpapier wp : getWertpapiere()) {
 
@@ -167,8 +227,35 @@ public class Depot {
                     }
                 }
             }
+
+            // === ETF-Dividende (aus DB-Daten) ===
+            else if (wp instanceof ETF etf) {
+                for (Ausschuettung a : etf.getAusschuettungen()) {
+                    if (a instanceof ETFDividende etfDiv && aktuellesDatum.equals(etfDiv.getDatum())) {
+                        int anzahl = getDepotWertpapierFor(etf) != null ? getDepotWertpapierFor(etf).getAnzahl() : 0;
+                        if (anzahl > 0) {
+                            double brutto = etfDiv.getBetrag() * anzahl;
+                            double steuer = brutto * 0.25;
+                            double netto = brutto - steuer;
+
+                            ETFDividende gezahlt = new ETFDividende(
+                                    anzahl,
+                                    etfDiv.getBetrag(),
+                                    netto,
+                                    aktuellesDatum,
+                                    steuer,
+                                    etf
+                            );
+
+                            etf.addAusschuettung(gezahlt);
+                            saldo += netto;
+                        }
+                    }
+                }
+            }
         }
     }
+
 
     /**
      * Liefert das DepotWertpapier zum übergebenen Wertpapier oder null wenn nicht vorhanden.
