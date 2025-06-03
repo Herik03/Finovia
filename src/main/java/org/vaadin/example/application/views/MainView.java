@@ -53,6 +53,16 @@ public class MainView extends AbstractSideNav {
     /** Der Service für Nutzer-Operationen */
     private final NutzerService nutzerService;
 
+
+   /**
+     * Konstruktor für die MainView.
+     * <p>
+     * Initialisiert alle Layout-Komponenten und richtet die Benutzeroberfläche ein.
+     * Die Ansicht besteht aus einer Seitenleiste, einem Hauptinhaltsbereich und
+     * einer Übersicht der Depots.
+     *
+     *
+     */
     @Autowired
     public MainView(DepotService depotService, SecurityService securityService, NutzerService nutzerService) {
         super(securityService);
@@ -82,41 +92,6 @@ public class MainView extends AbstractSideNav {
         // Depot-Übersicht konfigurieren
         setupDepotOverview();
     }
-
-    /**
-     * Konstruktor für die MainView.
-     * <p>
-     * Initialisiert alle Layout-Komponenten und richtet die Benutzeroberfläche ein.
-     * Die Ansicht besteht aus einer Seitenleiste, einem Hauptinhaltsbereich und
-     * einer Übersicht der Depots.
-     *
-     *
-     */
-    /*@Autowired
-    public MainView(DepotService depotService) {
-        super();
-        this.depotService = depotService;
-
-        dashboardContent = new VerticalLayout();
-        dashboardContent.setWidthFull();
-        dashboardContent.setAlignItems(FlexComponent.Alignment.CENTER);
-
-        HorizontalLayout header = new HorizontalLayout();
-        header.setWidthFull();
-        header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        header.setAlignItems(FlexComponent.Alignment.CENTER);
-
-        H2 title = new H2("Dashboard");
-        header.add(title);
-
-        dashboardContent.add(createWelcomeMessage());
-
-        addToMainContent(header, dashboardContent);
-
-        setupDepotOverview();
-    }
-
-    */
 
     private void setupDepotOverview() {
         H2 title = new H2("Meine Depots");

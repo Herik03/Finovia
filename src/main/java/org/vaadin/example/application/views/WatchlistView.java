@@ -73,13 +73,15 @@ public class WatchlistView extends AbstractSideNav {
      * @param wertpapierView      Service für die Anzeige von Wertpapierdetails
      */
     @Autowired
-    public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierDetailViewFactory wertpapierView, SecurityService securityService) {
+
+    public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService,WertpapierDetailViewFactory detailViewFactory, SecurityService securityService) {
         super(securityService);
         this.watchlistService = watchlistService;
         this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
         this.securityService = securityService;
-        this.wertpapierView = wertpapierView;
+        this.detailViewFactory = detailViewFactory;
+
 
         VerticalLayout watchlistContent = new VerticalLayout();
         watchlistContent.setSizeFull();
@@ -221,7 +223,11 @@ public class WatchlistView extends AbstractSideNav {
         try {
             closeSideNav();
 
-            Dialog detailsDialog = wertpapierView.getDetailsDialog(wertpapier);
+
+            String symbol = wertpapier.getName();
+            Dialog detailsDialog = detailViewFactory.getDetailsDialog(wertpapier);
+
+
             detailsDialog.addDetachListener(event -> openSideNav());
             detailsDialog.open();
         } catch (Exception e) {

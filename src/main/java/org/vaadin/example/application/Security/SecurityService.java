@@ -39,6 +39,7 @@ public class SecurityService {
         return null;
     }
 
+
     /**
      * Prüft, ob der aktuell angemeldete Benutzer Admin-Rechte hat.
      *

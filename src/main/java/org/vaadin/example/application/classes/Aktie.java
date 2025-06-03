@@ -28,6 +28,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Aktie extends Wertpapier {
     private String unternehmensname;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String exchange;
     private String currency;
