@@ -84,17 +84,28 @@ public class Depot {
     }
 
     public boolean wertpapierEntfernen(Wertpapier wertpapier, int anzahl) {
+        if (wertpapier == null || anzahl <= 0) {
+            return false;  // Ungültige Eingabe
+        }
+
         for (DepotWertpapier dw : depotWertpapiere) {
             if (dw.getWertpapier().equals(wertpapier)) {
                 if (dw.getAnzahl() > anzahl) {
+                    // Reduziere die Anzahl
                     dw.setAnzahl(dw.getAnzahl() - anzahl);
-                } else {
-                    dw.setDepot(null);
+                    return true;
+                } else if (dw.getAnzahl() == anzahl) {
+                    // Entferne das Wertpapier vollständig, wenn alle verkauft sind
                     depotWertpapiere.remove(dw);
+                    return true;
+                } else {
+                    // Nicht genug Wertpapiere im Depot
+                    return false;
                 }
-                return true;
             }
         }
+
+        // Wertpapier nicht gefunden
         return false;
     }
 

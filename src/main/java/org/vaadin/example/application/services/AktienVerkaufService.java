@@ -66,8 +66,13 @@ public class AktienVerkaufService {
         // Anzahl der Aktien im Depot prüfen
         int vorhandeneStueckzahl = 0;
         for (DepotWertpapier dw : depot.getDepotWertpapiere()) {
-            if (dw.getWertpapier().equals(aktie)) {
+            if (dw.getWertpapier().getSymbol().equalsIgnoreCase(symbol)) {
                 vorhandeneStueckzahl = dw.getAnzahl();
+                if (dw.getWertpapier() instanceof Aktie) {
+                    aktie = (Aktie) dw.getWertpapier(); // ✅ Cast auf Aktie
+                } else {
+                    return null; // oder Fehler werfen: kein Verkauf möglich
+                }
                 break;
             }
         }
