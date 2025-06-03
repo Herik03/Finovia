@@ -43,7 +43,7 @@ import java.util.stream.StreamSupport;
  * </ul>
  * <p>
  * Der API-Schlüssel wird aus den Umgebungsvariablen über Dotenv geladen.
- * 
+ *
  * @author Sören Heß
  * @version 1.3
  * @see StockQuote
@@ -315,8 +315,8 @@ public class AlphaVantageService {
                 overview.getEBITDA(),
                 overview.getPEGRatio(),
                 overview.getBookValue(),
-                overview.getDividendPerShare(),
-                overview.getDividendYield(),
+                (overview.getDividendPerShare() != null ? overview.getDividendPerShare() : 0.0),
+                (overview.getDividendYield()!= null ? overview.getDividendYield() : 0.0),
                 overview.getEPS(),
                 overview.getForwardPE(),
                 overview.getBeta(),
