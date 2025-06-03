@@ -73,6 +73,7 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
         routerLink.add(backButton);
 
         VerticalLayout topLeftLayout = new VerticalLayout(routerLink);
+
         topLeftLayout.setPadding(false);
         topLeftLayout.setSpacing(false);
         topLeftLayout.setWidthFull();
@@ -117,14 +118,16 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
         depotComboBox.setItemLabelGenerator(Depot::getName);
         depotComboBox.setWidthFull();
 
-        FormLayout formLayout = new FormLayout();
-        formLayout.setWidth("400px");
-        formLayout.add(symbolField, einzelkursField, stueckzahlField, handelsplatzAuswahl, gebuehrenField, kursField, depotComboBox);
-
         Button kaufButton = new Button("Jetzt Kaufen");
         kaufButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        kaufButton.getStyle().set("margin-top", "20px");
+        kaufButton.addClassName("filled-button");
         kaufButton.setWidthFull();
+
+        FormLayout formLayout = new FormLayout();
+        formLayout.setWidth("400px");
+        formLayout.getStyle().set("margin", "0 auto");
+        formLayout.add(symbolField, einzelkursField, stueckzahlField, handelsplatzAuswahl, gebuehrenField, kursField, depotComboBox, kaufButton);
+
 
         symbolField.addValueChangeListener(e -> {
             aktualisiereEinzelkurs();
@@ -168,7 +171,7 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
             }
         });
 
-        VerticalLayout centerLayout = new VerticalLayout(title, formLayout, kaufButton);
+        VerticalLayout centerLayout = new VerticalLayout(title, formLayout);
         centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         centerLayout.setSpacing(true);
         centerLayout.setPadding(true);
