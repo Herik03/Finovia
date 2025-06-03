@@ -1,9 +1,13 @@
 package org.vaadin.example.application.classes;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.vaadin.example.application.enums.Zinsfrequenz;
+
 
 import java.time.LocalDate;
 /**
@@ -22,12 +26,18 @@ import java.time.LocalDate;
 @Getter @Setter
 public class Zinszahlung extends Ausschuettung{
     private double zinssatz;
-/**
- * Konstruktor zur Initialisierung aller Attribute der Zinszahlung.
- */
-    public Zinszahlung(double zinssatz, double betrag, LocalDate datum, double steuern, Wertpapier wertpapier) {
+    @Enumerated(EnumType.STRING)
+    private Zinsfrequenz  frequenz;
+    private int anleihenAnzahl;
+
+    /**
+     * Konstruktor zur Initialisierung aller Attribute der Zinszahlung.
+     */
+    public Zinszahlung(int anleihenAnzahl, double zinssatz, double betrag, LocalDate datum, double steuern, Wertpapier wertpapier, Zinsfrequenz frequenz) {
         super(betrag, datum, steuern, wertpapier);
+        this.anleihenAnzahl = anleihenAnzahl;
         this.zinssatz = zinssatz;
+        this.frequenz = frequenz;
     }
 
 }

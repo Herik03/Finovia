@@ -8,6 +8,8 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 /**
  * Nutzer-Klasse, die die Eigenschaften und Methoden eines Nutzers repräsentiert.
@@ -97,20 +99,28 @@ public class Depot {
         return new ArrayList<>();
     }
 
-    /**
-     * Prüft, ob für gehaltene Aktien Dividenden fällig sind und bucht sie abzüglich Steuer gut.
-     *
-     * @param aktuellesDatum Das aktuelle Datum zur Prüfung
-     */
-    public void pruefeUndBucheDividenden(LocalDate aktuellesDatum) {
+    public List<Zinszahlung> getZinszahlungenHistorie() {
+        return getWertpapiere().stream()
+                .flatMap(wp -> wp.getAusschuettungen().stream())
+                .filter(a -> a instanceof Zinszahlung)
+                .map(a -> (Zinszahlung) a)
+                .collect(Collectors.toList());
+    }
+
+    public List<Ausschuettung> getAlleAusschuettungen() {
+        List<Ausschuettung> result = new ArrayList<>();
+        result.addAll(getDividendenHistorie());     // ← bereits vorhandene API-Logik
+        result.addAll(getZinszahlungenHistorie());  // ← aus der DB
+        return result;
+    }
+
+    public void pruefeUndBucheAusschuettungen(LocalDate aktuellesDatum) {
         for (Wertpapier wp : getWertpapiere()) {
+
+            // === Dividende (von API-Daten) ===
             if (wp instanceof Aktie aktie && aktie.getDividendDate() != null) {
                 if (aktuellesDatum.equals(aktie.getDividendDate())) {
-                    int anzahl = (int) getDepotWertpapiere()
-                            .stream()
-                            .filter(dw -> dw.getWertpapier().equals(aktie))
-                            .mapToInt(DepotWertpapier::getAnzahl)
-                            .sum();
+                    int anzahl = getDepotWertpapierFor(aktie) != null ? getDepotWertpapierFor(aktie).getAnzahl() : 0;
                     if (anzahl > 0 && aktie.getDividendPerShare() > 0.0) {
                         double brutto = aktie.getDividendPerShare() * anzahl;
                         double steuer = brutto * 0.25;
@@ -126,8 +136,34 @@ public class Depot {
                         );
 
                         aktie.addAusschuettung(dividende);
-
                         saldo += netto;
+                    }
+                }
+            }
+
+            // === Zinszahlung (aus DB-Daten) ===
+            else if (wp instanceof Anleihe anleihe) {
+                for (Ausschuettung a : anleihe.getAusschuettungen()) {
+                    if (a instanceof Zinszahlung zins && aktuellesDatum.equals(zins.getDatum())) {
+                        int anzahl = getDepotWertpapierFor(anleihe) != null ? getDepotWertpapierFor(anleihe).getAnzahl() : 0;
+                        if (anzahl > 0) {
+                            double brutto = zins.getZinssatz() * anzahl;
+                            double steuer = brutto * 0.25;
+                            double netto = brutto - steuer;
+
+                            Zinszahlung gezahlt = new Zinszahlung(
+                                    anzahl,
+                                    zins.getZinssatz(),
+                                    netto,
+                                    aktuellesDatum,
+                                    steuer,
+                                    anleihe,
+                                    zins.getFrequenz()
+                            );
+
+                            anleihe.addAusschuettung(gezahlt);
+                            saldo += netto;
+                        }
                     }
                 }
             }

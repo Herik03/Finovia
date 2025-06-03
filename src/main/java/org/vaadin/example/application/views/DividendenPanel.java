@@ -7,14 +7,14 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.button.ButtonVariant;
-import org.vaadin.example.application.classes.Depot;
-import org.vaadin.example.application.classes.Dividende;
+import org.vaadin.example.application.classes.*;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class DividendenPanel extends VerticalLayout {
 
-    private final Grid<Dividende> grid = new Grid<>(Dividende.class, false);
+    private final Grid<Ausschuettung> grid = new Grid<>(Ausschuettung.class, false);
     private final Depot depot;
 
     public DividendenPanel(Depot depot) {
@@ -29,12 +29,12 @@ public class DividendenPanel extends VerticalLayout {
 
         configureGrid();
 
-        Button refreshBtn = new Button("Dividenden prüfen", VaadinIcon.MONEY.create());
+        Button refreshBtn = new Button("Ausschüttungen prüfen", VaadinIcon.MONEY.create());
         refreshBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         refreshBtn.addClickListener(e -> {
-            depot.pruefeUndBucheDividenden(java.time.LocalDate.now());
+            depot.pruefeUndBucheAusschuettungen(LocalDate.now());
             updateGrid();
-            Notification.show("Dividenden geprüft");
+            Notification.show("Ausschüttungen geprüft");
         });
 
         add(title, grid, refreshBtn);
@@ -42,14 +42,33 @@ public class DividendenPanel extends VerticalLayout {
     }
 
     private void configureGrid() {
-        grid.addColumn(d -> d.getDatum().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))).setHeader("Datum");
-        grid.addColumn(Dividende::getAktienAnzahl).setHeader("Anzahl");
-        grid.addColumn(Dividende::getBetrag).setHeader("Netto (€)");
+        grid.addColumn(a -> a.getDatum().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+                .setHeader("Datum");
+
+        grid.addColumn(a -> {
+            if (a instanceof Dividende d) {
+                return d.getAktienAnzahl();
+            } else if (a instanceof Zinszahlung z) {
+                return z.getAnleihenAnzahl();
+            }
+            return "-";
+        }).setHeader("Anzahl");
+
+        grid.addColumn(a -> {
+            if (a instanceof Dividende d) {
+                return String.format("%.2f", d.getBetrag());
+            } else if (a instanceof Zinszahlung z) {
+                return String.format("%.2f", z.getBetrag());
+            }
+            return "-";
+        }).setHeader("Netto (€)");
+
         grid.setHeight("250px");
         grid.setAllRowsVisible(true);
     }
 
     private void updateGrid() {
-        grid.setItems(depot.getDividendenHistorie());
+        grid.setItems(depot.getAlleAusschuettungen());
     }
+
 }

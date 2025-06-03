@@ -1337,3 +1337,123 @@ INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, h
 INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (1198, 60, '2025-04-18 00:00:00', 100.92, 100.19, 101.3, 100.05);
 INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (1199, 60, '2025-04-19 00:00:00', 100.12, 98.98, 100.34, 98.68);
 INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (1200, 60, '2025-04-20 00:00:00', 99.59, 99.25, 99.73, 98.83);
+
+-- Anleihe 31
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1031, 18.0, '2025-06-03', 4.5, 31);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1031, 1.8, 'HALBJAEHRLICH', 10);
+
+-- Anleihe 32
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1032, 31.5, '2025-06-03', 7.88, 32);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1032, 2.1, 'VIERTELJAEHRLICH', 15);
+
+-- Anleihe 33
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1033, 48.0, '2025-06-03', 12.0, 33);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1033, 2.4, 'JAEHRLICH', 20);
+
+-- Anleihe 34
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1034, 67.5, '2025-06-03', 16.88, 34);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1034, 2.7, 'HALBJAEHRLICH', 25);
+
+-- Anleihe 35
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1035, 15.0, '2025-06-03', 3.75, 35);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1035, 3.0, 'VIERTELJAEHRLICH', 5);
+
+-- Anleihe 36
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1036, 33.0, '2025-06-03', 8.25, 36);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1036, 3.3, 'JAEHRLICH', 10);
+
+-- Anleihe 37
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1037, 54.0, '2025-06-03', 13.5, 37);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1037, 3.6, 'HALBJAEHRLICH', 15);
+
+-- Anleihe 38
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1038, 78.0, '2025-06-03', 19.5, 38);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1038, 3.9, 'VIERTELJAEHRLICH', 20);
+
+-- Anleihe 39
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1039, 105.0, '2025-06-03', 26.25, 39);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1039, 4.2, 'JAEHRLICH', 25);
+
+-- Anleihe 40
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1040, 7.5, '2025-06-03', 1.88, 40);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1040, 1.5, 'HALBJAEHRLICH', 5);
+
+-- Anleihe 41
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1041, 18.0, '2025-06-03', 4.5, 41);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1041, 1.8, 'VIERTELJAEHRLICH', 10);
+
+-- Anleihe 42
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1042, 31.5, '2025-06-03', 7.88, 42);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1042, 2.1, 'JAEHRLICH', 15);
+
+-- Anleihe 43
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1043, 48.0, '2025-06-03', 12.0, 43);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1043, 2.4, 'HALBJAEHRLICH', 20);
+
+-- Anleihe 44
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1044, 67.5, '2025-06-03', 16.88, 44);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1044, 2.7, 'VIERTELJAEHRLICH', 25);
+
+-- Anleihe 45
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1045, 15.0, '2025-06-03', 3.75, 45);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1045, 3.0, 'JAEHRLICH', 5);
+
+-- Anleihe 46
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1046, 33.0, '2025-06-03', 8.25, 46);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1046, 3.3, 'HALBJAEHRLICH', 10);
+
+-- Anleihe 47
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1047, 54.0, '2025-06-03', 13.5, 47);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1047, 3.6, 'VIERTELJAEHRLICH', 15);
+
+-- Anleihe 48
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1048, 78.0, '2025-06-03', 19.5, 48);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1048, 3.9, 'JAEHRLICH', 20);
+
+-- Anleihe 49
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1049, 105.0, '2025-06-03', 26.25, 49);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1049, 4.2, 'HALBJAEHRLICH', 25);
+
+-- Anleihe 50
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1050, 7.5, '2025-06-03', 1.88, 50);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1050, 1.5, 'VIERTELJAEHRLICH', 5);
+
+-- Anleihe 51
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1051, 18.0, '2025-06-03', 4.5, 51);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1051, 1.8, 'JAEHRLICH', 10);
+
+-- Anleihe 52
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1052, 31.5, '2025-06-03', 7.88, 52);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1052, 2.1, 'HALBJAEHRLICH', 15);
+
+-- Anleihe 53
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1053, 48.0, '2025-06-03', 12.0, 53);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1053, 2.4, 'VIERTELJAEHRLICH', 20);
+
+-- Anleihe 54
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1054, 67.5, '2025-06-03', 16.88, 54);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1054, 2.7, 'JAEHRLICH', 25);
+
+-- Anleihe 55
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1055, 15.0, '2025-06-03', 3.75, 55);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1055, 3.0, 'HALBJAEHRLICH', 5);
+
+-- Anleihe 56
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1056, 33.0, '2025-06-03', 8.25, 56);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1056, 3.3, 'VIERTELJAEHRLICH', 10);
+
+-- Anleihe 57
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1057, 54.0, '2025-06-03', 13.5, 57);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1057, 3.6, 'JAEHRLICH', 15);
+
+-- Anleihe 58
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1058, 78.0, '2025-06-03', 19.5, 58);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1058, 3.9, 'HALBJAEHRLICH', 20);
+
+-- Anleihe 59
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1059, 105.0, '2025-06-03', 26.25, 59);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1059, 4.2, 'VIERTELJAEHRLICH', 25);
+
+-- Anleihe 60
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1060, 7.5, '2025-06-03', 1.88, 60);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1060, 1.5, 'JAEHRLICH', 5);
