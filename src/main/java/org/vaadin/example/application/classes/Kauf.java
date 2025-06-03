@@ -1,7 +1,9 @@
 package org.vaadin.example.application.classes;
 
 import jakarta.persistence.Entity;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 /**
@@ -17,6 +19,8 @@ import java.time.LocalDate;
 @Entity
 @NoArgsConstructor
 public class Kauf extends Transaktion{
+
+    @Getter @Setter
     private String handelsplatz;
 /**
  * Konstruktor zur Initialisierung eines Kauf-Objekts mit allen Attributen.
@@ -26,11 +30,4 @@ public class Kauf extends Transaktion{
         this.handelsplatz = handelsplatz;
     }
 
-    public String getHandelsplatz() {
-        return handelsplatz;
-    }
-
-    public void setHandelsplatz(String handelsplatz) {
-        this.handelsplatz = handelsplatz;
-    }
 }

@@ -90,9 +90,9 @@ public class MainView extends AbstractSideNav {
      * Die Ansicht besteht aus einer Seitenleiste, einem Hauptinhaltsbereich und
      * einer Übersicht der Depots.
      *
-     * @param depotService Der Service für Depot-Operationen
+     *
      */
-    @Autowired
+    /*@Autowired
     public MainView(DepotService depotService) {
         super();
         this.depotService = depotService;
@@ -116,6 +116,8 @@ public class MainView extends AbstractSideNav {
         setupDepotOverview();
     }
 
+    */
+
     private void setupDepotOverview() {
         H2 title = new H2("Meine Depots");
 
@@ -137,6 +139,7 @@ public class MainView extends AbstractSideNav {
         } else {
             depots = List.of(); // Leere Liste, wenn nicht authentifiziert
         }
+
 
 
         VerticalLayout depotList = new VerticalLayout();

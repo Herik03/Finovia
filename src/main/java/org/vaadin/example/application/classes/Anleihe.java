@@ -58,4 +58,12 @@ public class Anleihe extends Wertpapier {
     public List<Zinszahlung> getZinszahlungen() {
         return new ArrayList<>(zinszahlungen);
     }
+
+    public double getLetzterKurs() {
+        if (getKurse() != null && !getKurse().isEmpty()) {
+            return getKurse().get(getKurse().size() - 1).getKurswert(); // letzter Kurswert (z.B. Schlusskurs)
+        }
+        return nennwert; // Fallback falls keine Kurse vorhanden
+    }
+
 }

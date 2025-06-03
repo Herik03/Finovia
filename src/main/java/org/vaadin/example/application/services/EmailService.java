@@ -1,10 +1,15 @@
 package org.vaadin.example.application.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.Support;
-import org.vaadin.example.application.models.SupportRequest;
+import org.vaadin.example.application.classes.SupportRequest;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,12 +21,31 @@ import java.util.TimerTask;
 @Service
 public class EmailService {
 
-    @Autowired
+    private final JavaMailSender mailSender;
+    
+     @Autowired
     private Support supportService;
     
     private final Timer timer = new Timer(true);
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
     private final List<String> emailLog = new ArrayList<>();
+
+    @Autowired
+    public EmailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
+
+    @Async
+    public void sendEmail(String to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setFrom("finovia.trading@gmail.com");
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+
+        mailSender.send(message);
+    }
 
     @PostConstruct
     public void init() {

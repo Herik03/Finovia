@@ -27,7 +27,8 @@ import java.util.List;
 @NoArgsConstructor
 public abstract class Wertpapier {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wertpapier_seq")
+    @SequenceGenerator(name = "wertpapier_seq", sequenceName = "wertpapier_seq", allocationSize = 1)
     private Long wertpapierId;
 
     private String name; // Dieser Parameter ist wichtig für die Suche
@@ -61,6 +62,17 @@ public abstract class Wertpapier {
 
     public void addAusschuettung(Ausschuettung ausschuettung) {
         ausschuettungen.add(ausschuettung);
+    }
+
+    /**
+     * Dynamisch abgeleiteter Typ basierend auf der konkreten Unterklasse.
+     */
+    @Transient
+    public String getTyp() {
+        if (this instanceof Aktie) return "Aktie";
+        if (this instanceof Anleihe) return "Anleihe";
+        if (this instanceof ETF) return "ETF";
+        return "Unbekannt";
     }
 
 

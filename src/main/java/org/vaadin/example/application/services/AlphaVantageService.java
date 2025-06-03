@@ -6,13 +6,16 @@ import com.crazzyghost.alphavantage.parameters.OutputSize;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cdimascio.dotenv.Dotenv;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.vaadin.example.application.classes.*;
-import org.vaadin.example.application.models.SearchResult;
-import org.vaadin.example.application.models.StockQuote;
+import org.vaadin.example.application.classes.SearchResult;
+import org.vaadin.example.application.classes.StockQuote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.example.application.classes.enums.SearchResultTypeEnum;
+import org.vaadin.example.application.repositories.KursRepository;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,7 +26,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -56,6 +58,18 @@ public class AlphaVantageService {
     private final ObjectMapper obejctMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private static final Logger logger = LoggerFactory.getLogger(AlphaVantageService.class);
+    @Autowired
+    private KursRepository kursRepository;
+
+    private boolean isValidAlphaVantageSymbol(String symbol) {
+        // Fiktive Symbole nicht zulassen
+        return !(symbol.startsWith("ETF") || symbol.startsWith("BND"));
+    }
+
+    public List<Kurs> getLocalKurse(String symbol) {
+        return kursRepository.findByWertpapierSymbolOrderByDatumAsc(symbol);
+    }
+
 
     private LocalDateTime parseDateSmart(String dateStr) {
         if (dateStr.length() == 10) {
@@ -91,6 +105,12 @@ public class AlphaVantageService {
      * @throws APIException Wenn ein Fehler bei der API-Kommunikation auftritt oder keine Daten verfügbar sind
      */
     public List<Kurs> getIntradaySeries(String symbol) {
+        if (!isValidAlphaVantageSymbol(symbol)) {
+            logger.info("Lade lokale Kursdaten (daily) für fiktives Symbol: {}", symbol);
+            return getLocalKurse(symbol);
+        }
+
+
         var response = AlphaVantage.api()
                 .timeSeries()
                 .intraday()
@@ -128,6 +148,12 @@ public class AlphaVantageService {
      * @throws APIException Wenn ein Fehler bei der API-Kommunikation auftritt oder keine Daten verfügbar sind
      */
     public List<Kurs> getDailySeries(String symbol) {
+        if (!isValidAlphaVantageSymbol(symbol)) {
+            logger.info("Lade lokale Kursdaten (daily) für fiktives Symbol: {}", symbol);
+            return getLocalKurse(symbol);
+        }
+
+
         var response = AlphaVantage.api()
                 .timeSeries()
                 .daily()
@@ -165,6 +191,11 @@ public class AlphaVantageService {
      * @throws APIException Wenn ein Fehler bei der API-Kommunikation auftritt oder keine Daten verfügbar sind
      */
     public List<Kurs> getWeeklySeries(String symbol) {
+        if (!isValidAlphaVantageSymbol(symbol)) {
+            logger.info("Lade lokale Kursdaten für fiktives Symbol: {}", symbol);
+            return getLocalKurse(symbol);  // <-- neue Methode unten
+        }
+
         var response = AlphaVantage.api()
                 .timeSeries()
                 .weekly()
@@ -201,6 +232,11 @@ public class AlphaVantageService {
      * @throws APIException If an error occurs while fetching the data from the AlphaVantage API.
      */
     public List<Kurs> getMonthlySeries(String symbol) {
+        if (!isValidAlphaVantageSymbol(symbol)) {
+            logger.info("Lade lokale Kursdaten (daily) für fiktives Symbol: {}", symbol);
+            return getLocalKurse(symbol);
+        }
+
         var response = AlphaVantage.api()
                 .timeSeries()
                 .monthly()
@@ -369,7 +405,8 @@ public class AlphaVantageService {
                     getTextSafely(node, "1. symbol"),
                     getTextSafely(node, "2. name"),
                     getTextSafely(node, "4. region"),
-                    getTextSafely(node, "8. currency")
+                    getTextSafely(node, "8. currency"),
+                    SearchResultTypeEnum.AKTIE // API liefert nur Aktien, daher immer AKTIE
             );
         } catch (Exception e) {
             logger.warn("Konnte Suchergebnis nicht parsen: {}", e.getMessage());

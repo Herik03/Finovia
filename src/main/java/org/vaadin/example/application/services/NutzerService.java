@@ -2,6 +2,8 @@ package org.vaadin.example.application.services;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.Nutzer;
@@ -18,13 +20,14 @@ import java.util.*;
  * Sie dient als Schnittstelle zwischen der Repository-Schicht und der Anwendungslogik.
  * 
  * @author Sören
- * @version 1.0
+ * @version 1.1
  */
 @Service
 public class NutzerService {
 
     private final NutzerRepository nutzerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     /**
      * Konstruktor für den NutzerService.
@@ -33,9 +36,10 @@ public class NutzerService {
      * @param passwordEncoder  Encoder für sichere Passwort-Verschlüsselung
      */
     @Autowired
-    public NutzerService(NutzerRepository nutzerRepository, PasswordEncoder passwordEncoder) {
+    public NutzerService(NutzerRepository nutzerRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.nutzerRepository = nutzerRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     /**
@@ -164,5 +168,55 @@ public class NutzerService {
         return nutzerRepository.findByUsername(username); // kann null sein
     }
 
-    //TODO: Passwort ändern
+    public void sendPasswordResetEmail(String email) {
+        Optional<Nutzer> nutzer = nutzerRepository.findByEmail(email);
+
+        if(nutzer.isPresent()) {
+            Nutzer foundNutzer = nutzer.get();
+            String token = UUID.randomUUID().toString();
+            foundNutzer.setResetToken(token);
+            foundNutzer.setResetTokenExpiration(new Date(System.currentTimeMillis() + 3600000)); // 1 Stunde gültig
+            nutzerRepository.save(foundNutzer);
+
+            String resetLink = "localhost:8080/reset-password?token=" + token;
+            emailService.sendEmail(
+                email,
+                "Passwort zurücksetzen",
+                "Klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen: " + resetLink
+            );
+        }
+    }
+
+    public boolean resetPassword(String token, String password) {
+        Optional<Nutzer> nutzerOptional = nutzerRepository.findByResetToken(token);
+        if (nutzerOptional.isPresent()) {
+            Nutzer nutzer = nutzerOptional.get();
+            if (nutzer.getResetTokenExpiration().after(new Date())) {
+                nutzer.setPasswort(passwordEncoder.encode(password));
+                nutzer.setResetToken(null);
+                nutzer.setResetTokenExpiration(null);
+                nutzerRepository.save(nutzer);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Nutzer getAngemeldeterNutzer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("Kein authentifizierter Nutzer gefunden");
+        }
+
+        String username = authentication.getName();
+        Nutzer nutzer = nutzerRepository.findByUsername(username);
+
+        if (nutzer == null) {
+            throw new IllegalStateException("Kein Nutzer mit Benutzernamen '" + username + "' gefunden");
+        }
+
+        return nutzer;
+
+    }
 }

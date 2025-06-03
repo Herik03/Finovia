@@ -5,13 +5,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.classes.DepotWertpapier;
-import org.vaadin.example.application.classes.Transaktion;
 import org.vaadin.example.application.classes.Verkauf;
-import org.vaadin.example.application.models.StockQuote;
+import org.vaadin.example.application.classes.StockQuote;
 import org.vaadin.example.application.repositories.AktieRepository;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;
-import org.vaadin.example.application.services.AlphaVantageService;
 
 import java.time.LocalDate;
 import java.util.Optional;

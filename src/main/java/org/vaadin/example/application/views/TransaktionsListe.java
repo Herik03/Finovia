@@ -2,6 +2,7 @@ package org.vaadin.example.application.views;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Route("transaktionen")
+@PageTitle("Transaktionen")
 @PermitAll
 public class TransaktionsListe extends AbstractSideNav {
 
@@ -36,7 +38,12 @@ public class TransaktionsListe extends AbstractSideNav {
         grid.addColumn(t -> kursFormat.format(t.getStückzahl() * t.getKurs() + t.getGebühren()))
                 .setHeader("Gesamtpreis (€)");
         grid.addColumn(t -> t.getDatum().format(datumFormat)).setHeader("Kaufdatum");
-        grid.addColumn(Transaktion::getHandelsplatz).setHeader("Handelsplatz");
+        grid.addColumn(t -> {
+            if (t instanceof org.vaadin.example.application.classes.Kauf kauf) {
+                return kauf.getHandelsplatz();
+            }
+            return "Unbekannt";
+        }).setHeader("Handelsplatz");
 
         List<Transaktion> transaktionen = aktienKaufService.getAllTransaktionen();
         grid.setItems(transaktionen);

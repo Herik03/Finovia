@@ -1,7 +1,9 @@
 package org.vaadin.example.application.views;
 
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import org.vaadin.example.application.models.SearchResult;
+import org.vaadin.example.application.classes.*;
+import org.vaadin.example.application.classes.enums.SearchResultTypeEnum;
+import org.vaadin.example.application.repositories.WertpapierRepository;
 import org.vaadin.example.application.services.AlphaVantageService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -22,9 +24,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.component.dialog.Dialog; // Import for Dialog
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment; // Import for Alignment
-
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -39,7 +40,6 @@ import java.util.concurrent.CompletableFuture;
 @AnonymousAllowed
 public class SearchView extends AbstractSideNav {
     private final AlphaVantageService alphaVantageService;
-    private final WertpapierView wertpapierView;
 
     private final TextField searchField = new TextField("Wertpapier suchen");
     private final Button searchButton = new Button("Suchen", new Icon(VaadinIcon.SEARCH));
@@ -51,13 +51,12 @@ public class SearchView extends AbstractSideNav {
      * Spring injiziert hier die benötigten Services.
      *
      * @param alphaVantageService Der Service zum Abrufen von Wertpapierdaten.
-     * @param wertpapierView Die View zum Anzeigen von Wertpapierdetails.
+     *
      */
     @Autowired
-    public SearchView(AlphaVantageService alphaVantageService, WertpapierView wertpapierView) {
+    public SearchView(AlphaVantageService alphaVantageService) {
         super();
         this.alphaVantageService = alphaVantageService;
-        this.wertpapierView = wertpapierView;
 
         VerticalLayout searchContent = new VerticalLayout();
         searchContent.setHeightFull();
@@ -137,7 +136,15 @@ public class SearchView extends AbstractSideNav {
             Button kaufenButton = new Button("Kaufen", new Icon(VaadinIcon.CART));
             kaufenButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_PRIMARY);
             kaufenButton.addClickListener(e ->
-                    getUI().ifPresent(ui -> ui.navigate("kaufen/" + result.getSymbol()))
+                    {
+                        var url = switch(result.getType()) {
+                            case SearchResultTypeEnum.AKTIE -> "aktie/";
+                            case SearchResultTypeEnum.ETF -> "etf/";
+                            case SearchResultTypeEnum.ANLEIHE -> "anleihe/";
+                            default -> "";
+                        };
+                        getUI().ifPresent(ui -> ui.navigate("kaufen/" + url + result.getSymbol()));
+                    }
             );
 
             actions.add(detailsButton, kaufenButton);
@@ -173,13 +180,37 @@ public class SearchView extends AbstractSideNav {
         searchButton.setEnabled(false);
 
         CompletableFuture
-                .supplyAsync(() -> alphaVantageService.search(keyword))
-                .thenAccept(results -> {
-                    getUI().ifPresent(ui -> ui.access(() -> {
-                        handleSearchResults(results);
-                    }));
-                });
+                .supplyAsync(() -> {
+                    List<SearchResult> apiResults = alphaVantageService.search(keyword);
+                    List<Wertpapier> lokaleTreffer = wertpapierRepository.searchByNameOrSymbol(keyword);
+
+                    //List<Wertpapier> lokaleTreffer = wertpapierRepository.findByNameContainingIgnoreCase(keyword);
+                    List<SearchResult> lokaleResults = lokaleTreffer.stream()
+                            .map(w -> {
+                                SearchResultTypeEnum typ;
+                                if (w instanceof ETF) {
+                                    typ = SearchResultTypeEnum.ETF;
+                                } else if (w instanceof Anleihe) {
+                                    typ = SearchResultTypeEnum.ANLEIHE;
+                                } else {
+                                    typ = SearchResultTypeEnum.UNBEKANNT;
+                                }
+
+                                return new SearchResult(
+                                        w.getSymbol(),
+                                        w.getName(),
+                                        "Lokale DB",
+                                        "EUR",
+                                        typ
+                                );
+                            })
+                            .toList();
+                    apiResults.addAll(lokaleResults);
+                    return apiResults;
+                })
+                .thenAccept(results -> getUI().ifPresent(ui -> ui.access(() -> handleSearchResults(results))));
     }
+
 
     /**
      * Verarbeitet die Suchergebnisse und aktualisiert das Grid.
@@ -210,16 +241,67 @@ public class SearchView extends AbstractSideNav {
      *
      * @param result Das ausgewählte Suchergebnis.
      */
-    private void showDetails(SearchResult result) {
-        // Schließe die Seitenleiste, bevor der Dialog geöffnet wird
+    @Autowired private WertpapierRepository wertpapierRepository;
+    @Autowired private WertpapierDetailViewFactory detailViewFactory;
+
+    /*private void showDetails(SearchResult result) {
         closeSideNav();
 
-        // Rufe den Dialog von WertpapierView ab
-        Dialog detailsDialog = wertpapierView.displayWertpapierDetails(result.getSymbol());
+        Wertpapier wertpapier = wertpapierRepository.findBySymbol(result.getSymbol());
+        if (wertpapier == null) {
+            showNotification("Wertpapier nicht gefunden.", NotificationVariant.LUMO_ERROR);
+            return;
+        }
 
-        // Füge einen Listener hinzu, der openSideNav() aufruft, wenn der Dialog geschlossen wird
+        Dialog detailsDialog = detailViewFactory.getDetailsDialog(wertpapier);
         detailsDialog.addDetachListener(event -> openSideNav());
     }
+
+
+    private void showDetails(SearchResult result) {
+        closeSideNav();
+
+        wertpapierRepository.findBySymbol(result.getSymbol()).ifPresentOrElse(wertpapier -> {
+            Dialog detailsDialog = detailViewFactory.getDetailsDialog(wertpapier);
+            detailsDialog.addDetachListener(event -> openSideNav());
+        }, () -> {
+            showNotification("Wertpapier nicht gefunden.", NotificationVariant.LUMO_ERROR);
+        });
+    }
+
+     */
+    /**
+     * Öffnet ein Detail-Dialogfenster für das übergebene Suchergebnis.
+     * <p>
+     * Wenn das Wertpapier bereits in der Datenbank existiert, wird dessen gespeicherte Version verwendet.
+     * Falls nicht, wird es über die AlphaVantage-API geladen (nur für Aktien).
+     *
+     * Beim Schließen des Dialogs wird automatisch das SideNav erneut eingeblendet.
+     *
+     * @param result Das {@link SearchResult}, das die Symbolinformationen enthält
+     */
+    private void showDetails(SearchResult result) {
+        closeSideNav();
+
+        Optional<Wertpapier> dbWertpapierOpt = wertpapierRepository.findBySymbol(result.getSymbol());
+        Dialog detailsDialog;
+
+        if (dbWertpapierOpt.isPresent()) {
+            detailsDialog = detailViewFactory.getDetailsDialog(dbWertpapierOpt.get());
+        } else {
+            Aktie aktie = alphaVantageService.getFundamentalData(result.getSymbol());
+            if (aktie == null) {
+                showNotification("Wertpapier nicht gefunden.", NotificationVariant.LUMO_ERROR);
+                return;
+            }
+            detailsDialog = detailViewFactory.getDetailsDialog(aktie);
+        }
+
+        detailsDialog.addDetachListener(event -> openSideNav());
+    }
+
+
+
 
     /**
      * Zeigt eine Benachrichtigung mit der angegebenen Nachricht und Variante an.
