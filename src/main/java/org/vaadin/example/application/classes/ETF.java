@@ -1,53 +1,63 @@
 package org.vaadin.example.application.classes;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
- * Repräsentiert ein Exchange Traded Fund (ETF), das eine Sonderform des Wertpapiers darstellt.
+ * Die Klasse {@code ETF} repräsentiert ein Exchange Traded Fund, das eine spezialisierte Form von {@link Wertpapier} ist.
  *
- * Ein ETF ist ein börsengehandelter Fonds, der in der Regel einen Index abbildet
- * und sowohl thesaurierend als auch ausschüttend sein kann.
- *
- * Diese Klasse erweitert {@link Wertpapier} und ergänzt spezifische Eigenschaften
- * wie Emittent, Fondsname, Index und Ausschüttungsform.
- *
- * @author Jan, Sören
+ * ETFs sind börsengehandelte Fonds, die typischerweise einen Index abbilden (z. B. DAX, MSCI World)
+ * und regelmäßig Dividenden ausschütten können. Diese Ausschüttungen werden als {@link ETFDividende} verwaltet.
  */
 @Entity
 @NoArgsConstructor
-@Getter @Setter
-public class ETF extends Wertpapier{
+@Getter
+@Setter
+public class ETF extends Wertpapier {
+
+    /**
+     * Emittent des ETFs (z. B. iShares, Lyxor).
+     */
     private String emittent;
+
+    /**
+     * Der abgebildete Index (z. B. MSCI World, DAX).
+     */
     private String index;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Dividende> dividende = new ArrayList<>();
-/**
- * Konstruktor zur Initialisierung eines ETF-Objekts mit allen Attributen.
- */
-    public ETF(String emittent, String index, String name, String symbol, List<Transaktion> transaktionen, List<Kurs> kurse) {
+    /**
+     * Liste aller erfassten ETF-Dividenden, die diesem ETF zugeordnet sind.
+     */
+    @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ETFDividende> etfDividenden = new ArrayList<>();
+
+    /**
+     * Konstruktor zur vollständigen Initialisierung eines ETFs inklusive Dividendenhistorie.
+     *
+     * @param emittent Der Emittent des ETFs
+     * @param index Der abgebildete Index
+     * @param name Der Name des ETFs
+     * @param symbol Das Handelssymbol des ETFs
+     * @param transaktionen Liste der zugehörigen Transaktionen
+     * @param kurse Liste historischer Kursdaten
+     * @param etfDividenden Historische Ausschüttungen dieses ETFs
+     */
+    public ETF(String emittent, String index, String name, String symbol,
+               List<Transaktion> transaktionen, List<Kurs> kurse, List<ETFDividende> etfDividenden) {
 
         super(name, symbol, transaktionen, kurse);
         this.emittent = emittent;
         this.index = index;
-}
+        this.etfDividenden = new ArrayList<>();
 
-    public void addDividende(Dividende dividende) {
-        this.dividende.add(dividende);
-    }
-
-    public void removeDividende(Dividende dividende) {
-        this.dividende.remove(dividende);
-    }
-
-    public List<Dividende> getDividenden() {
-        return new ArrayList<>(dividende);
+        for (ETFDividende dividende : etfDividenden) {
+            dividende.setWertpapier(this);
+            this.etfDividenden.add(dividende);
+        }
     }
 }

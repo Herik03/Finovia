@@ -128,11 +128,13 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button settingsBtn = createNavButton("Einstellungen", VaadinIcon.COG);
         settingsBtn.addClickListener(e -> UI.getCurrent().navigate(SettingsView.class));
 
-        Button apiBtn = createNavButton("Wertpapiere", VaadinIcon.CODE);
+        Button apiBtn = createNavButton("Wertpapiere", VaadinIcon.SEARCH);
         apiBtn.addClickListener(e -> UI.getCurrent().navigate("search"));
+
 
         Button transaktionsBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
         transaktionsBtn.addClickListener(e -> UI.getCurrent().navigate("transaktionen"));
+
 
         Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR);
         watchlistBtn.addClickListener(e -> UI.getCurrent().navigate(WatchlistView.class));
@@ -149,6 +151,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
             }
         });
         logoutBtn.addClickListener(e ->  UI.getCurrent().getPage().setLocation("/logout"));
+
 
 
         // Admin-Button hinzufügen - überprüfen Sie die Rolle direkt
@@ -173,6 +176,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
 
 
         topLayout.add(logo, dashboardBtn, depotBtn, transaktionsBtn, watchlistBtn, apiBtn);
+
 
 
 
