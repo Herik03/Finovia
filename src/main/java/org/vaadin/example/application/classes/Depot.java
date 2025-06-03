@@ -244,7 +244,8 @@ public class Depot {
                                     netto,
                                     aktuellesDatum,
                                     steuer,
-                                    etf
+                                    etf,
+                                    etfDiv.getFrequenz()
                             );
 
                             etf.addAusschuettung(gezahlt);

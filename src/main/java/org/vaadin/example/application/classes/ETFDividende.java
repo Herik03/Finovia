@@ -1,9 +1,12 @@
 package org.vaadin.example.application.classes;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.vaadin.example.application.enums.Zinsfrequenz;
 
 import java.time.LocalDate;
 
@@ -31,6 +34,12 @@ public class ETFDividende extends Ausschuettung {
     private int etfAnteile;
 
     /**
+     * Die Frequenz der Dividendenausschüttung (z. B. JAEHRLICH, HALBJAEHRLICH).
+     */
+    @Enumerated(EnumType.STRING)
+    private Zinsfrequenz frequenz;
+
+    /**
      * Vollständiger Konstruktor zum Erzeugen einer ETF-Dividende mit allen notwendigen Daten.
      *
      * @param etfAnteile Anzahl der ETF-Anteile im Depot
@@ -39,9 +48,12 @@ public class ETFDividende extends Ausschuettung {
      * @param datum Ausschüttungsdatum
      * @param steuern Höhe der einbehaltenen Kapitalertragsteuer
      * @param etf Referenz auf das zugehörige ETF-Wertpapier
+     * @param frequenz Häufigkeit der Ausschüttung (z. B. JAEHRLICH, HALBJAEHRLICH)
      */
-    public ETFDividende(int etfAnteile, double betrag, double nettoAuszahlung, LocalDate datum, double steuern, Wertpapier etf) {
+    public ETFDividende(int etfAnteile, double betrag, double nettoAuszahlung,
+                        LocalDate datum, double steuern, Wertpapier etf, Zinsfrequenz frequenz) {
         super(betrag, datum, steuern, etf);
         this.etfAnteile = etfAnteile;
+        this.frequenz = frequenz;
     }
 }
