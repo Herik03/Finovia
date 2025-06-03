@@ -6,10 +6,7 @@ import org.springframework.stereotype.Component;
 import org.vaadin.example.application.views.DepotAnlegenView;
 
 /**
- * Die `DepotAnlegenViewFactory`-Klasse ist eine Spring-Komponente, die für die Erstellung
- * von neuen Instanzen der `DepotAnlegenView` zuständig ist.
- * Da `DepotAnlegenView` als PROTOTYPE-Scope definiert ist, stellt diese Factory sicher,
- * dass bei jedem Aufruf eine frische, korrekt initialisierte Instanz des Dialogs zurückgegeben wird.
+ * Die `DepotAnlegenViewFactory`-Klasse ist dafür da ein Pop-Up für die Erstellung eines Depots zu erstellen.
  */
 @Component
 public class DepotAnlegenViewFactory {
