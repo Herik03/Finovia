@@ -2,15 +2,20 @@ package org.vaadin.example.application.views;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Transaktion;
-import org.vaadin.example.application.services.AktienKaufService;
+import org.vaadin.example.application.repositories.TransaktionRepository;
 
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Route("transaktionen")
@@ -18,8 +23,14 @@ import java.util.List;
 @PermitAll
 public class TransaktionsListe extends AbstractSideNav {
 
-    public TransaktionsListe(@Autowired AktienKaufService aktienKaufService) {
-        super();
+    private final SecurityService securityService;
+    private final TransaktionRepository transaktionRepository;
+
+    @Autowired
+    public TransaktionsListe(TransaktionRepository transaktionRepository, SecurityService securityService) {
+        super(securityService);
+        this.securityService = securityService;
+        this.transaktionRepository = transaktionRepository;
 
         H2 headline = new H2("Transaktionshistorie");
         headline.getStyle()
@@ -45,8 +56,29 @@ public class TransaktionsListe extends AbstractSideNav {
             return "Unbekannt";
         }).setHeader("Handelsplatz");
 
-        List<Transaktion> transaktionen = aktienKaufService.getAllTransaktionen();
-        grid.setItems(transaktionen);
+        // Aktuellen Benutzer identifizieren
+        UserDetails userDetails = securityService.getAuthenticatedUser();
+
+        if (userDetails != null) {
+            try {
+                // Nur Transaktionen des aktuellen Nutzers laden
+                String username = userDetails.getUsername();
+                List<Transaktion> nutzerTransaktionen = transaktionRepository.findTransaktionenByNutzerUsername(username);
+                grid.setItems(nutzerTransaktionen);
+
+                // Hinweis zur erfolgreichen Filterung
+                Notification.show("Ihre Transaktionen werden angezeigt",
+                                  3000, Notification.Position.BOTTOM_START)
+                           .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+            } catch (Exception e) {
+                Notification.show("Fehler beim Abrufen der Transaktionen: " + e.getMessage(),
+                                  5000, Notification.Position.MIDDLE)
+                           .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+        } else {
+            grid.setItems(new ArrayList<>());
+        }
 
         addToMainContent(headline, grid);
     }

@@ -35,7 +35,7 @@ public class Watchlist {
     private Nutzer nutzer;
 
     @Getter
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "watchlist_wertpapier",
             joinColumns = @JoinColumn(name = "watchlist_id"),

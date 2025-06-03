@@ -52,7 +52,7 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
                           DepotService depotService,
                           SecurityService securityService,
                           NutzerService nutzerService) {
-        super();
+        super(securityService);
         this.aktienKaufService = aktienKaufService;
         this.depotService = depotService;
         this.securityService = securityService;

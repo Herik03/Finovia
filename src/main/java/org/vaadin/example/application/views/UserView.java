@@ -62,40 +62,40 @@ public class UserView extends AbstractSideNav {
     private final NutzerService nutzerService;
     private final SecurityService securityService;
     private Nutzer aktuellerNutzer;
-    
+
     private final VerticalLayout profilContainer = new VerticalLayout();
     private final VerticalLayout benachrichtigungenContainer = new VerticalLayout();
     private final Binder<Nutzer> binder = new BeanValidationBinder<>(Nutzer.class);
-    
+
     @Autowired
     public UserView(NutzerService nutzerService, SecurityService securityService) {
-        super(); // Ruft den Konstruktor der Basisklasse auf
+        super(securityService); // Ruft den Konstruktor der Basisklasse auf
         this.nutzerService = nutzerService;
         this.securityService = securityService;
-        
+
         // Hauptüberschrift
         H1 title = new H1("Mein Profil");
         title.addClassNames(LumoUtility.Margin.Bottom.MEDIUM);
-        
+
         // Aktuelle Nutzerdaten laden
         ladeAktuellenNutzer();
-        
+
         // Profilsection erstellen
         erstelleProfilSection();
 
-        
+
         // Container für den Hauptinhalt erstellen
         VerticalLayout userContentLayout = new VerticalLayout();
         userContentLayout.setPadding(true);
         userContentLayout.setSpacing(true);
-        
+
         // Inhalte zum Container hinzufügen
         userContentLayout.add(title, profilContainer, benachrichtigungenContainer);
-        
+
         // Container zum Hauptinhaltsbereich hinzufügen
         addToMainContent(userContentLayout);
     }
-    
+
     private void ladeAktuellenNutzer() {
         UserDetails userDetails = securityService.getAuthenticatedUser();
         if (userDetails != null) {
@@ -105,44 +105,43 @@ public class UserView extends AbstractSideNav {
             aktuellerNutzer = null;
         }
     }
-    
+
     private void erstelleProfilSection() {
         profilContainer.removeAll();
         profilContainer.setPadding(false);
         profilContainer.setSpacing(true);
-        
+
         H2 profilTitle = new H2("Persönliche Informationen");
         profilTitle.addClassNames(LumoUtility.Margin.Bottom.SMALL, LumoUtility.Margin.Top.MEDIUM);
-        
+
         Div profilCard = new Div();
         profilCard.addClassNames(LumoUtility.Background.BASE, LumoUtility.BoxShadow.SMALL, 
                 LumoUtility.BorderRadius.MEDIUM, LumoUtility.Padding.MEDIUM);
         profilCard.setWidthFull();
-        
+
         VerticalLayout profilLayout = new VerticalLayout();
         profilLayout.setPadding(false);
         profilLayout.setSpacing(true);
-        
+
         if (aktuellerNutzer != null) {
             // Formularfelder zum Anzeigen der Nutzerdaten
 
-            vornameField.setValue(aktuellerNutzer.getVorname());
+            vornameField.setValue(aktuellerNutzer.getVornameOrEmpty());
             vornameField.setReadOnly(true);
 
-            nachnameField.setValue(aktuellerNutzer.getNachname());
+            nachnameField.setValue(aktuellerNutzer.getNachnameOrEmpty());
             nachnameField.setReadOnly(true);
 
-            emailField.setValue(aktuellerNutzer.getEmail());
+            emailField.setValue(aktuellerNutzer.getEmailOrEmpty());
             emailField.setReadOnly(true);
 
-            benutzernameField.setValue(aktuellerNutzer.getUsername());
+            benutzernameField.setValue(aktuellerNutzer.getUsernameOrEmpty());
             benutzernameField.setReadOnly(true);
 
-            steuerIdField.setValue(aktuellerNutzer.getSteuerId());
+            steuerIdField.setValue(aktuellerNutzer.getSteuerIdOrEmpty());
             steuerIdField.setReadOnly(true);
 
-            registriertField.setValue(aktuellerNutzer.getRegistrierungsDatum()
-                    .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+            registriertField.setValue(aktuellerNutzer.getFormattedRegistrierungsDatum("dd.MM.yyyy HH:mm"));
             registriertField.setReadOnly(true);
 
             binder.forField(vornameField).bind(Nutzer::getVorname, Nutzer::setVorname);
@@ -153,7 +152,7 @@ public class UserView extends AbstractSideNav {
 
             binder.readBean(aktuellerNutzer);
 
-            
+
             // Passwort-Anzeige mit Passwort-Ändern-Button
             HorizontalLayout passwortLayout = new HorizontalLayout();
             passwortLayout.setSpacing(true);
@@ -182,15 +181,15 @@ public class UserView extends AbstractSideNav {
             passwortVergessenButton.addClickListener(e -> UI.getCurrent().navigate("passwortvergessen"));
 
             passwortLayout.add(currentPassword, newPassword, confirmPassword, passwortVergessenButton);
-            
+
             TextField depotsField = new TextField("Anzahl Depots");
             depotsField.setValue(String.valueOf(aktuellerNutzer.getDepots().size()));
             depotsField.setReadOnly(true);
-            
+
             Button speichernButton = new Button("Änderungen speichern");
             Button abbrechenButton = new Button("Abbrechen");
             Button bearbeitenButton = new Button("Daten bearbeiten");
-            
+
             // Dann die Buttons konfigurieren
             bearbeitenButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             bearbeitenButton.addClickListener(e -> {
@@ -207,7 +206,7 @@ public class UserView extends AbstractSideNav {
                 speichernButton.setVisible(true);
                 abbrechenButton.setVisible(true);
             });
-            
+
             speichernButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
             speichernButton.setVisible(false);
             speichernButton.addClickListener(e -> {
@@ -246,10 +245,10 @@ public class UserView extends AbstractSideNav {
                     Notification.show("Fehler beim Speichern des Profils: " + ex.getMessage())
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
-                
+
                 // Nutzer im Service speichern
                 nutzerService.speichereNutzer(aktuellerNutzer);
-                
+
                 // Felder wieder auf readonly setzen
                 vornameField.setReadOnly(true);
                 nachnameField.setReadOnly(true);
@@ -257,40 +256,40 @@ public class UserView extends AbstractSideNav {
                 currentPassword.setReadOnly(true);
                 newPassword.setReadOnly(true);
                 confirmPassword.setReadOnly(true);
-                
+
                 // Buttons umschalten
                 e.getSource().setVisible(false);
                 abbrechenButton.setVisible(false);
                 bearbeitenButton.setVisible(true);
-                
+
                 Notification.show("Profildaten wurden gespeichert", 
                         3000, Notification.Position.BOTTOM_START)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
             });
-            
+
             abbrechenButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
             abbrechenButton.setVisible(false);
             abbrechenButton.addClickListener(e -> {
                 // Ursprüngliche Werte wiederherstellen
-                vornameField.setValue(aktuellerNutzer.getVorname());
-                nachnameField.setValue(aktuellerNutzer.getNachname());
-                emailField.setValue(aktuellerNutzer.getEmail());
-                
+                vornameField.setValue(aktuellerNutzer.getVornameOrEmpty());
+                nachnameField.setValue(aktuellerNutzer.getNachnameOrEmpty());
+                emailField.setValue(aktuellerNutzer.getEmailOrEmpty());
+
                 // Felder wieder auf readonly setzen
                 vornameField.setReadOnly(true);
                 nachnameField.setReadOnly(true);
                 emailField.setReadOnly(true);
-                
+
                 // Buttons umschalten
                 e.getSource().setVisible(false);
                 speichernButton.setVisible(false);
                 bearbeitenButton.setVisible(true);
             });
-            
+
             // Layout für Buttons erstellen
             HorizontalLayout buttonLayout = new HorizontalLayout();
             buttonLayout.add(bearbeitenButton, speichernButton, abbrechenButton);
-            
+
             // Alle Komponenten zum Layout hinzufügen
             profilLayout.add(
                     vornameField, 
@@ -308,7 +307,7 @@ public class UserView extends AbstractSideNav {
             Paragraph errorMsg = new Paragraph("Nutzerdaten konnten nicht geladen werden.");
             profilLayout.add(errorMsg);
         }
-        
+
         profilCard.add(profilLayout);
         profilContainer.add(profilTitle, profilCard);
     }

@@ -26,29 +26,58 @@ public class DepotService {
         this.wertpapierRepository = wertpapierRepository;
     }
 
+    @jakarta.transaction.Transactional
     public List<Depot> getAllDepots() {
-        return depotRepository.findAll();
+        List<Depot> depots = depotRepository.findAll();
+        // Initialize the lazy-loaded collections to prevent LazyInitializationException
+        for (Depot depot : depots) {
+            depot.getDepotWertpapiere().size(); // Force initialization
+        }
+        return depots;
     }
 
+    @jakarta.transaction.Transactional
     public List<Depot> getDepotsByNutzerId(Long nutzerId) {
-        return depotRepository.findByBesitzerId(nutzerId);
+        List<Depot> depots = depotRepository.findByBesitzerId(nutzerId);
+        // Initialize the lazy-loaded collections to prevent LazyInitializationException
+        for (Depot depot : depots) {
+            depot.getDepotWertpapiere().size(); // Force initialization
+        }
+        return depots;
     }
 
+    @jakarta.transaction.Transactional
     public Depot getDepotById(Long depotId) {
-        return depotRepository.findById(depotId).orElse(null);
+        Depot depot = depotRepository.findById(depotId).orElse(null);
+        if (depot != null) {
+            // Initialize the lazy-loaded collections to prevent LazyInitializationException
+            depot.getDepotWertpapiere().size(); // Force initialization
+        }
+        return depot;
     }
 
+    @jakarta.transaction.Transactional
     public Wertpapier getWertpapierById(Long id) {
-        return wertpapierRepository.findById(id).orElse(null);
+        Wertpapier wertpapier = wertpapierRepository.findById(id).orElse(null);
+        if (wertpapier != null) {
+            // Force initialization of any lazy-loaded collections if needed
+            wertpapier.getTransaktionen().size();
+        }
+        return wertpapier;
     }
 
+    @jakarta.transaction.Transactional
     public void saveDepot(Depot depot) {
         depotRepository.save(depot);
     }
 
+    @jakarta.transaction.Transactional
     public void deleteDepot(Long depotId) {
         Depot depot = depotRepository.findById(depotId).orElse(null);
         if (depot != null && depot.getBesitzer() != null) {
+            // Force initialization of the lazy-loaded collections
+            depot.getDepotWertpapiere().size();
+
             Nutzer besitzer = depot.getBesitzer();
             besitzer.depotEntfernen(depot);
             nutzerRepository.save(besitzer);
@@ -66,10 +95,14 @@ public class DepotService {
         }
     }
 
+    @jakarta.transaction.Transactional
     public BestandUndKosten berechneBestandUndKosten(DepotWertpapier dw) {
         if (dw == null || dw.getWertpapier() == null || dw.getWertpapier().getTransaktionen() == null) {
             return new BestandUndKosten(0, 0.0);
         }
+
+        // Force initialization of the lazy-loaded collections
+        dw.getWertpapier().getTransaktionen().size();
 
         long gesamtStueck = 0;
         double gesamtKosten = 0.0;
@@ -104,10 +137,14 @@ public class DepotService {
      * @param steuern    Steuern auf den Verkauf.
      * @return true, wenn Verkauf erfolgreich war, sonst false.
      */
+    @jakarta.transaction.Transactional
     public boolean verkaufen(Depot depot, Wertpapier wertpapier, int stückzahl, double kurs, double gebühren, double steuern) {
         if (depot == null || wertpapier == null || stückzahl <= 0) {
             return false;
         }
+
+        // Force initialization of the lazy-loaded collections
+        depot.getDepotWertpapiere().size();
 
         DepotWertpapier dw = depot.getDepotWertpapierFor(wertpapier);
         if (dw == null) {

@@ -31,6 +31,7 @@ public class Nutzer {
     @Getter @Setter
     private String username;
 
+
     @Column(nullable = false)
     @Getter @Setter
     private String passwort;
@@ -47,23 +48,6 @@ public class Nutzer {
 
     @Getter @Setter
     private String email;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Getter @Setter
-    private Collection<String> roles;
-
-    @Getter
-    @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private final List<Depot> depots = new ArrayList<>();
-
-    @Getter @Setter
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "watchlist_id")
-    private Watchlist watchlist;
-
-    // Registrierungsdatum hinzugefügt
-    @Getter
-    private final LocalDateTime registrierungsDatum;
 
     // Liste der Benachrichtigungen für den Nutzer
     private final List<String> benachrichtigungen = new ArrayList<>();
@@ -140,11 +124,26 @@ public class Nutzer {
         }
         return false;
     }
-
-
-    public boolean pruefePasswort(String passwortEingabe) {
-        return this.passwort.equals(passwortEingabe);
+    /**
+     * Gibt die Steuer-ID zurück oder einen leeren String, wenn die Steuer-ID null ist.
+     *
+     * @return Steuer-ID oder leerer String
+     */
+    public String getSteuerIdOrEmpty() {
+        return steuerId != null ? steuerId : "";
     }
+
+
+    /**
+     * Gibt den Benutzernamen zurück oder einen leeren String, wenn der Benutzername null ist.
+     * Dies sollte nicht vorkommen, da das Feld als nicht-null markiert ist, aber zur Sicherheit.
+     *
+     * @return Benutzername oder leerer String
+     */
+    public String getUsernameOrEmpty() {
+        return username != null ? username : "";
+    }
+
 
     /**
      * Gibt den vollständigen Namen des Nutzers zurück
@@ -166,6 +165,65 @@ public class Nutzer {
                 .filter(nachricht -> nachricht.toLowerCase().contains(suchbegriff.toLowerCase()))
                 .collect(Collectors.toList());
     }
+    /**
+     * Gibt den Vornamen zurück oder einen leeren String, wenn der Vorname null ist.
+     *
+     * @return Vorname oder leerer String
+     */
+    public String getVornameOrEmpty() {
+        return vorname != null ? vorname : "";
+    }
+
+    /**
+     * Gibt den Nachnamen zurück oder einen leeren String, wenn der Nachname null ist.
+     *
+     * @return Nachname oder leerer String
+     */
+    public String getNachnameOrEmpty() {
+        return nachname != null ? nachname : "";
+    }
+
+    /**
+     * Gibt die E-Mail-Adresse zurück oder einen leeren String, wenn die E-Mail null ist.
+     *
+     * @return E-Mail oder leerer String
+     */
+    public String getEmailOrEmpty() {
+        return email != null ? email : "";
+    }
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Getter @Setter
+    private Collection<String> roles;
+
+    @Getter
+    @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private final List<Depot> depots = new ArrayList<>();
+
+    @Getter @Setter
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "watchlist_id")
+    private Watchlist watchlist;
+
+    // Registrierungsdatum hinzugefügt
+    @Getter
+    private final LocalDateTime registrierungsDatum;
+
+    /**
+     * Formatiert das Registrierungsdatum in ein lesbares Format.
+     * Gibt einen leeren String zurück, wenn das Datum null ist.
+     *
+     * @param pattern Das Formatmuster (z.B. "dd.MM.yyyy HH:mm")
+     * @return Formatiertes Datum oder leerer String
+     */
+    public String getFormattedRegistrierungsDatum(String pattern) {
+        if (registrierungsDatum == null) {
+            return "";
+        }
+        return registrierungsDatum.format(java.time.format.DateTimeFormatter.ofPattern(pattern));
+    }
+
+
     /**
      * Überprüft, ob die Steuer-ID das korrekte Format hat.
      *

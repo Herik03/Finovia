@@ -22,6 +22,7 @@ import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Anleihe;
 import org.vaadin.example.application.classes.ETF;
 import org.vaadin.example.application.classes.Kurs;
+import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.classes.Watchlist;
 import org.vaadin.example.application.classes.Wertpapier;
@@ -58,6 +59,10 @@ public class WatchlistView extends AbstractSideNav {
     private final Map<Integer, HorizontalLayout> trendLayoutMap = new HashMap<>();
     private final Map<Integer, Span> trendTextSpanMap = new HashMap<>();
     private final Map<Integer, Icon> trendIconMap = new HashMap<>();
+    private final SecurityService securityService;
+    @Autowired
+    private WertpapierDetailViewFactory detailViewFactory;
+
 
     /**
      * Konstruktor für die WatchlistView.
@@ -69,15 +74,15 @@ public class WatchlistView extends AbstractSideNav {
      */
     @Autowired
 
-
-    public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierDetailViewFactory detailViewFactory) {
-
-        super();
+    public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierDetailViewFactory detailViewFactory, SecurityService securityService) {
+        super(securityService);
         this.watchlistService = watchlistService;
         this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
+        this.securityService = securityService;
+        this.detailViewFactory = detailViewFactory;
 
-        this.wertpapierView = detailViewFactory;
+
 
         VerticalLayout watchlistContent = new VerticalLayout();
         watchlistContent.setSizeFull();

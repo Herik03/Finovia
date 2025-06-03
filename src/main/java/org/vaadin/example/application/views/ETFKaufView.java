@@ -48,7 +48,7 @@ public class ETFKaufView extends AbstractSideNav implements BeforeEnterObserver 
     @Autowired
     public ETFKaufView(ETFKaufService etfKaufService, DepotService depotService,
                        SecurityService securityService, NutzerService nutzerService) {
-        super();
+        super(securityService);
         this.etfKaufService = etfKaufService;
         this.depotService = depotService;
         this.securityService = securityService;

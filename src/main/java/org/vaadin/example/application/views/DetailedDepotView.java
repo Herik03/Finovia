@@ -63,12 +63,13 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
      * @param securityService Der Service für Security-Operationen
      */
     @Autowired
-    public DetailedDepotView(DepotService depotService, AlphaVantageService alphaVantageService, SecurityService securityService, NutzerService nutzerService) {
-        super();
+    public DetailedDepotView(DepotService depotService, NutzerService nutzerService, AlphaVantageService alphaVantageService, SecurityService securityService) {
+        super(securityService);
         this.depotService = depotService;
+        this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
         this.securityService = securityService;
-        this.nutzerService = nutzerService;
+
 
 
         contentLayout.setWidthFull();
