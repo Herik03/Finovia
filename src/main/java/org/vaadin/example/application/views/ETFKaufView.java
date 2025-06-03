@@ -129,13 +129,25 @@ public class ETFKaufView extends AbstractSideNav implements BeforeEnterObserver 
 
         // Event-Listener
         symbolField.addValueChangeListener(e -> aktualisiereEinzelkurs());
-        stueckzahlField.addValueChangeListener(e -> aktualisiereKurs());
+        stueckzahlField.addValueChangeListener(e -> {
+            if(stueckzahlField.getValue() > 0) {
+                aktualisiereKurs();
+            } else {
+                stueckzahlField.setErrorMessage("Stückzahl muss größer als 0 sein.");
+            }
+        });
 
         kaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
             int stueckzahl = stueckzahlField.getValue().intValue();
             String handelsplatz = handelsplatzAuswahl.getValue();
             Depot depot = depotComboBox.getValue();
+
+            if (stueckzahl <= 0) {
+                Notification.show("Stückzahl muss größer als 0 sein.", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return;
+            }
 
             if (symbol.isBlank() || depot == null || handelsplatz == null) {
                 Notification.show("Bitte alle Felder ausfüllen.", 3000, Notification.Position.MIDDLE)

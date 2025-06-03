@@ -130,7 +130,13 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
             aktualisiereEinzelkurs();
             aktualisiereKurs();
         });
-        stueckzahlField.addValueChangeListener(e -> aktualisiereKurs());
+        stueckzahlField.addValueChangeListener(e -> {
+            if(stueckzahlField.getValue().intValue() > 0) {
+                aktualisiereKurs();
+            } else {
+                stueckzahlField.setErrorMessage("Stückzahl muss größer als 0 sein.");
+            }
+        });
 
         kaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
