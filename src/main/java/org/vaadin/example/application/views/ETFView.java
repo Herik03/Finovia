@@ -130,6 +130,19 @@ public class ETFView extends AbstractWertpapierView {
             infoBox.setPadding(true);
             infoBox.addClassName("info-box");
 
+            // Aktuellen Kurs aus der Datenbank abrufen
+            Kurs latestKurs = kurse.isEmpty() ? null : kurse.get(kurse.size() - 1);
+
+            // Preisinformation erstellen
+            String preisInfo;
+            if (latestKurs != null) {
+                preisInfo = String.format("%.2f USD ", latestKurs.getSchlusskurs());
+            } else {
+                preisInfo = "Keine aktuellen Kursdaten";
+            }
+
+            // Preisinformation als erste Zeile hinzufügen
+            infoBox.add(createInfoRow("Aktueller Kurs", preisInfo, "Datum", latestKurs != null ? latestKurs.getDatum().format(formatter) : "N/A"));
             infoBox.add(createInfoRow("Emittent", etf.getEmittent(), "Index", etf.getIndex()));
             // Letzte ETF-Dividende anzeigen
             etf.getAusschuettungen().stream()

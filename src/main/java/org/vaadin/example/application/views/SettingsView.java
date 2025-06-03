@@ -306,7 +306,11 @@ public class SettingsView extends AbstractSideNav {
                                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                             
                             // Benutzer ausloggen und zur Startseite navigieren
-                           // securityService.logout();
+
+                      
+
+                            UI.getCurrent().navigate("/logout");
+
                         } else {
                             Notification.show("Fehler beim Löschen des Kontos. Bitte kontaktieren Sie den Support.", 
                                     5000, Notification.Position.MIDDLE)
