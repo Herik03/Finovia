@@ -18,6 +18,9 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.vaadin.example.application.classes.Aktie;
+import org.vaadin.example.application.classes.Anleihe;
+import org.vaadin.example.application.classes.ETF;
 import org.vaadin.example.application.classes.Kurs;
 import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Nutzer;
@@ -49,6 +52,7 @@ public class WatchlistView extends AbstractSideNav {
     private final WatchlistService watchlistService;
     private final NutzerService nutzerService;
     private final AlphaVantageService alphaVantageService;
+    private final WertpapierDetailViewFactory wertpapierView;
     private final Grid<Wertpapier> grid = new Grid<>(Wertpapier.class, false);
     private Nutzer currentUser;
     private final Map<Integer, Span> priceSpanMap = new HashMap<>();
@@ -66,14 +70,16 @@ public class WatchlistView extends AbstractSideNav {
      * @param watchlistService    Service für den Zugriff auf Watchlist-Funktionen
      * @param nutzerService       Service für den Zugriff auf Nutzer-Funktionen
      * @param alphaVantageService Service für den Zugriff auf Wertpapier-Daten
+     * @param wertpapierView      Service für die Anzeige von Wertpapierdetails
      */
     @Autowired
-    public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierDetailViewFactory detailViewFactory, SecurityService securityService) {
-        super(securityService); // Ruft den Konstruktor von AbstractSideNav auf
+    public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierDetailViewFactory wertpapierView, SecurityService securityService) {
+        super(securityService);
         this.watchlistService = watchlistService;
         this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
         this.securityService = securityService;
+        this.wertpapierView = wertpapierView;
 
         VerticalLayout watchlistContent = new VerticalLayout();
         watchlistContent.setSizeFull();
@@ -127,26 +133,29 @@ public class WatchlistView extends AbstractSideNav {
 
         grid.addColumn(Wertpapier::getName).setHeader("Name").setFlexGrow(2);
 
+        // Header für breitere Preisinformationen aktualisiert
         grid.addComponentColumn(wertpapier -> {
-            Span priceSpan = new Span("Loading...");
+            // Initialisiere mit tatsächlichen Werten statt "Loading..."
+            String priceText = getInitialPriceText(wertpapier);
+            Span priceSpan = new Span(priceText);
             priceSpan.setId("price-" + wertpapier.getWertpapierId());
             priceSpanMap.put(Math.toIntExact(wertpapier.getWertpapierId()), priceSpan);
             return priceSpan;
-        }).setHeader("Aktueller Preis").setFlexGrow(1);
+        }).setHeader("Preisinformation").setFlexGrow(1);
 
-        grid.addComponentColumn(wertpapier -> {
-            HorizontalLayout trendLayout = new HorizontalLayout();
-            trendLayout.setAlignItems(Alignment.CENTER);
-            Span trendText = new Span("Loading...");
-            trendText.setId("trend-text-" + wertpapier.getWertpapierId());
-            Icon trendIcon = new Icon();
-            trendIcon.setId("trend-icon-" + wertpapier.getWertpapierId());
-            trendLayout.add(trendText, trendIcon);
-            trendLayoutMap.put(Math.toIntExact(wertpapier.getWertpapierId()), trendLayout);
-            trendTextSpanMap.put(Math.toIntExact(wertpapier.getWertpapierId()), trendText);
-            trendIconMap.put(Math.toIntExact(wertpapier.getWertpapierId()), trendIcon);
-            return trendLayout;
-        }).setHeader("Trend (24h)").setFlexGrow(1);
+//        grid.addComponentColumn(wertpapier -> {
+//            HorizontalLayout trendLayout = new HorizontalLayout();
+//            trendLayout.setAlignItems(Alignment.CENTER);
+//            Span trendText = new Span("Loading...");
+//            trendText.setId("trend-text-" + wertpapier.getWertpapierId());
+//            Icon trendIcon = new Icon();
+//            trendIcon.setId("trend-icon-" + wertpapier.getWertpapierId());
+//            trendLayout.add(trendText, trendIcon);
+//            trendLayoutMap.put(Math.toIntExact(wertpapier.getWertpapierId()), trendLayout);
+//            trendTextSpanMap.put(Math.toIntExact(wertpapier.getWertpapierId()), trendText);
+//            trendIconMap.put(Math.toIntExact(wertpapier.getWertpapierId()), trendIcon);
+//            return trendLayout;
+//        }).setHeader("Trend (24h)").setFlexGrow(1);
 
         grid.addComponentColumn(wertpapier -> {
             HorizontalLayout actions = new HorizontalLayout();
@@ -177,53 +186,17 @@ public class WatchlistView extends AbstractSideNav {
                     List<Wertpapier> wertpapiere = watchlistOpt.get().getWertpapiere();
                     grid.setItems(wertpapiere);
 
-                    for (Wertpapier wertpapier : wertpapiere) {
+                    // Benachrichtigung anzeigen, dass Daten geladen werden
+                    showNotification("Aktualisiere Preisdaten für " + wertpapiere.size() + " Wertpapiere...", NotificationVariant.LUMO_PRIMARY);
 
-                        List<Kurs> aktuellerPreis = wertpapier.getKurse();
 
-                        UI.getCurrent().access(() -> {
-                            Span priceSpan = priceSpanMap.get(wertpapier.getWertpapierId());
-                            if (priceSpan != null) {
-                                priceSpan.setText(String.format("%.2f USD", aktuellerPreis));
-                            }
-                        });
-
-                        // Asynchrone Abfrage der prozentualen Änderung in den letzten 24 Stunden
-                        CompletableFuture.supplyAsync(() -> {
-                            try {
-                                return alphaVantageService.getProzentualeAenderung24h(wertpapier.getName());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                return null;
-                            }
-                        }).thenAccept(prozentualeAenderung24h -> {
-                            UI.getCurrent().access(() -> {
-                                Span trendTextSpan = trendTextSpanMap.get(wertpapier.getWertpapierId());
-                                Icon trendIcon = trendIconMap.get(wertpapier.getWertpapierId());
-                                if (trendTextSpan != null && trendIcon != null) {
-                                    if (prozentualeAenderung24h != null) {
-                                        String trendText = String.format("%.2f%% (24h)", prozentualeAenderung24h);
-                                        trendTextSpan.setText(trendText);
-
-                                        if (prozentualeAenderung24h > 0) {
-                                            trendIcon.setColor("green");
-                                        } else if (prozentualeAenderung24h < 0) {
-                                            trendIcon.setColor("red");
-                                        } else {
-                                            trendIcon.setColor("gray");
-                                        }
-                                    } else {
-                                        trendTextSpan.setText("Keine Daten");
-                                        trendIcon.setIcon(VaadinIcon.INFO_CIRCLE);
-                                        trendIcon.setColor("gray");
-                                    }
-                                }
-                            });
-                        });
-                    }
 
                     if (wertpapiere.isEmpty()) {
                         showNotification("Ihre Watchlist ist leer. Fügen Sie Wertpapiere hinzu, um sie zu beobachten.", NotificationVariant.LUMO_PRIMARY);
+                    } else {
+                        // Explizit den DataProvider aktualisieren, um sicherzustellen, dass alle Änderungen angezeigt werden
+                        grid.getDataProvider().refreshAll();
+                        showNotification("Preisdaten wurden erfolgreich aktualisiert.", NotificationVariant.LUMO_SUCCESS);
                     }
                 } else {
                     grid.setItems();
@@ -248,18 +221,13 @@ public class WatchlistView extends AbstractSideNav {
         try {
             closeSideNav();
 
-            // Verwende die bereits injizierte detailViewFactory anstelle von wertpapierView
-            Dialog detailsDialog = detailViewFactory.getDetailsDialog(wertpapier);
-
+            Dialog detailsDialog = wertpapierView.getDetailsDialog(wertpapier);
             detailsDialog.addDetachListener(event -> openSideNav());
-            detailsDialog.open(); // Stellen Sie sicher, dass der Dialog geöffnet wird
+            detailsDialog.open();
         } catch (Exception e) {
             showNotification("Fehler beim Anzeigen der Details: " + e.getMessage(), NotificationVariant.LUMO_ERROR);
         }
     }
-
-
-
 
     /**
      * Entfernt ein Wertpapier aus der Watchlist.
@@ -286,5 +254,58 @@ public class WatchlistView extends AbstractSideNav {
     private void showNotification(String message, NotificationVariant variant) {
         Notification notification = Notification.show(message, 3000, Notification.Position.MIDDLE);
         notification.addThemeVariants(variant);
+    }
+
+    /**
+     * Berechnet den initialen Preistext für ein Wertpapier basierend auf seinem Typ und verfügbaren Daten.
+     *
+     * @param wertpapier Das Wertpapier, für das der Preistext berechnet werden soll
+     * @return Ein formatierter Preistext oder eine Meldung, wenn keine Daten verfügbar sind
+     */
+    private String getInitialPriceText(Wertpapier wertpapier) {
+        String type = wertpapier.getTyp();
+        List<Kurs> kursDaten = wertpapier.getKurse();
+        Kurs latestKurs = (kursDaten != null && !kursDaten.isEmpty()) ? kursDaten.get(kursDaten.size() - 1) : null;
+
+        switch (type) {
+            case "Aktie":
+                if (wertpapier instanceof Aktie) {
+                    Aktie aktie = (Aktie) wertpapier;
+                    if (latestKurs != null) {
+                        return String.format("%.2f USD ", latestKurs.getSchlusskurs());
+                    } else if (aktie.getBookValue() != 0.0) {
+                        return String.format("%.2f USD ", aktie.getBookValue());
+                    } else {
+                        return "Keine Preisdaten";
+                    }
+                } else {
+                    return "Fehler: Typ Aktie";
+                }
+            case "ETF":
+                if (latestKurs != null) {
+                    return String.format("%.2f USD ", latestKurs.getSchlusskurs());
+                } else {
+                    return "Keine Kursdaten";
+                }
+            case "Anleihe":
+                if (wertpapier instanceof Anleihe) {
+                    Anleihe anleihe = (Anleihe) wertpapier;
+                    if (latestKurs != null) {
+                        return String.format("%.2f USD ", latestKurs.getSchlusskurs());
+                    } else if (anleihe.getNennwert() != 0.0) {
+                        return String.format("%.2f USD ", anleihe.getNennwert());
+                    } else {
+                        return "Keine Preisdaten";
+                    }
+                } else {
+                    return "Fehler: Typ Anleihe";
+                }
+            default:
+                if (latestKurs != null) {
+                    return String.format("%.2f USD ", latestKurs.getSchlusskurs());
+                } else {
+                    return "Keine Preisdaten";
+                }
+        }
     }
 }
