@@ -70,15 +70,15 @@ public class WatchlistView extends AbstractSideNav {
      * @param watchlistService    Service für den Zugriff auf Watchlist-Funktionen
      * @param nutzerService       Service für den Zugriff auf Nutzer-Funktionen
      * @param alphaVantageService Service für den Zugriff auf Wertpapier-Daten
-     * @param wertpapierView      Service für die Anzeige von Wertpapierdetails
+     * @param detailViewFactory      Service für die Anzeige von Wertpapierdetails
      */
     @Autowired
-
     public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierDetailViewFactory detailViewFactory, SecurityService securityService) {
         super(securityService);
         this.watchlistService = watchlistService;
         this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
+        this.wertpapierView = detailViewFactory;
         this.securityService = securityService;
         this.detailViewFactory = detailViewFactory;
 
