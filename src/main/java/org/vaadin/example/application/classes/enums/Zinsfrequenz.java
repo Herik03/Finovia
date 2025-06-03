@@ -1,4 +1,4 @@
-package org.vaadin.example.application.enums;
+package org.vaadin.example.application.classes.enums;
 
 public enum Zinsfrequenz {
     JAHRLICH,

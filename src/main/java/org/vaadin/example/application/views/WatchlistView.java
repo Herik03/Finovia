@@ -77,7 +77,7 @@ public class WatchlistView extends AbstractSideNav {
         this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
 
-        this.detailViewFactory = detailViewFactory;
+        this.wertpapierView = detailViewFactory;
 
         VerticalLayout watchlistContent = new VerticalLayout();
         watchlistContent.setSizeFull();
@@ -221,7 +221,7 @@ public class WatchlistView extends AbstractSideNav {
 
 
             String symbol = wertpapier.getName();
-            Dialog detailsDialog = detailViewFactory.getDetailsDialog(wertpapier);
+            Dialog detailsDialog = wertpapierView.getDetailsDialog(wertpapier);
 
 
             detailsDialog.addDetachListener(event -> openSideNav());

@@ -6,7 +6,7 @@ import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.vaadin.example.application.enums.Zinsfrequenz;
+import org.vaadin.example.application.classes.enums.Zinsfrequenz;
 
 import java.time.LocalDate;
 
