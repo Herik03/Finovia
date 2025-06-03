@@ -1337,3 +1337,215 @@ INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, h
 INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (1198, 60, '2025-04-18 00:00:00', 100.92, 100.19, 101.3, 100.05);
 INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (1199, 60, '2025-04-19 00:00:00', 100.12, 98.98, 100.34, 98.68);
 INSERT INTO kurs (kurs_id, wertpapier_id, datum, eröffnungskurs, schlusskurs, high, low) VALUES (1200, 60, '2025-04-20 00:00:00', 99.59, 99.25, 99.73, 98.83);
+
+-- Anleihe 31
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1031, 18.0, '2025-06-03', 4.5, 31);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1031, 1.8, 'HALBJAEHRLICH', 10);
+
+-- Anleihe 32
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1032, 31.5, '2025-06-03', 7.88, 32);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1032, 2.1, 'VIERTELJAEHRLICH', 15);
+
+-- Anleihe 33
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1033, 48.0, '2025-06-03', 12.0, 33);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1033, 2.4, 'JAEHRLICH', 20);
+
+-- Anleihe 34
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1034, 67.5, '2025-06-03', 16.88, 34);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1034, 2.7, 'HALBJAEHRLICH', 25);
+
+-- Anleihe 35
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1035, 15.0, '2025-06-03', 3.75, 35);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1035, 3.0, 'VIERTELJAEHRLICH', 5);
+
+-- Anleihe 36
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1036, 33.0, '2025-06-03', 8.25, 36);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1036, 3.3, 'JAEHRLICH', 10);
+
+-- Anleihe 37
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1037, 54.0, '2025-06-03', 13.5, 37);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1037, 3.6, 'HALBJAEHRLICH', 15);
+
+-- Anleihe 38
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1038, 78.0, '2025-06-03', 19.5, 38);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1038, 3.9, 'VIERTELJAEHRLICH', 20);
+
+-- Anleihe 39
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1039, 105.0, '2025-06-03', 26.25, 39);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1039, 4.2, 'JAEHRLICH', 25);
+
+-- Anleihe 40
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1040, 7.5, '2025-06-03', 1.88, 40);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1040, 1.5, 'HALBJAEHRLICH', 5);
+
+-- Anleihe 41
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1041, 18.0, '2025-06-03', 4.5, 41);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1041, 1.8, 'VIERTELJAEHRLICH', 10);
+
+-- Anleihe 42
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1042, 31.5, '2025-06-03', 7.88, 42);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1042, 2.1, 'JAEHRLICH', 15);
+
+-- Anleihe 43
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1043, 48.0, '2025-06-03', 12.0, 43);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1043, 2.4, 'HALBJAEHRLICH', 20);
+
+-- Anleihe 44
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1044, 67.5, '2025-06-03', 16.88, 44);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1044, 2.7, 'VIERTELJAEHRLICH', 25);
+
+-- Anleihe 45
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1045, 15.0, '2025-06-03', 3.75, 45);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1045, 3.0, 'JAEHRLICH', 5);
+
+-- Anleihe 46
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1046, 33.0, '2025-06-03', 8.25, 46);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1046, 3.3, 'HALBJAEHRLICH', 10);
+
+-- Anleihe 47
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1047, 54.0, '2025-06-03', 13.5, 47);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1047, 3.6, 'VIERTELJAEHRLICH', 15);
+
+-- Anleihe 48
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1048, 78.0, '2025-06-03', 19.5, 48);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1048, 3.9, 'JAEHRLICH', 20);
+
+-- Anleihe 49
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1049, 105.0, '2025-06-03', 26.25, 49);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1049, 4.2, 'HALBJAEHRLICH', 25);
+
+-- Anleihe 50
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1050, 7.5, '2025-06-03', 1.88, 50);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1050, 1.5, 'VIERTELJAEHRLICH', 5);
+
+-- Anleihe 51
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1051, 18.0, '2025-06-03', 4.5, 51);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1051, 1.8, 'JAEHRLICH', 10);
+
+-- Anleihe 52
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1052, 31.5, '2025-06-03', 7.88, 52);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1052, 2.1, 'HALBJAEHRLICH', 15);
+
+-- Anleihe 53
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1053, 48.0, '2025-06-03', 12.0, 53);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1053, 2.4, 'VIERTELJAEHRLICH', 20);
+
+-- Anleihe 54
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1054, 67.5, '2025-06-03', 16.88, 54);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1054, 2.7, 'JAEHRLICH', 25);
+
+-- Anleihe 55
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1055, 15.0, '2025-06-03', 3.75, 55);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1055, 3.0, 'HALBJAEHRLICH', 5);
+
+-- Anleihe 56
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1056, 33.0, '2025-06-03', 8.25, 56);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1056, 3.3, 'VIERTELJAEHRLICH', 10);
+
+-- Anleihe 57
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1057, 54.0, '2025-06-03', 13.5, 57);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1057, 3.6, 'JAEHRLICH', 15);
+
+-- Anleihe 58
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1058, 78.0, '2025-06-03', 19.5, 58);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1058, 3.9, 'HALBJAEHRLICH', 20);
+
+-- Anleihe 59
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1059, 105.0, '2025-06-03', 26.25, 59);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1059, 4.2, 'VIERTELJAEHRLICH', 25);
+
+-- Anleihe 60
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (1060, 7.5, '2025-06-03', 1.88, 60);
+INSERT INTO zinszahlung (ausschüttung_id, zinssatz, frequenz, anleihen_anzahl) VALUES (1060, 1.5, 'JAEHRLICH', 5);
+
+--ETFDividenden:
+-- ETF 1
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2001, 71.54, '2025-06-03', 17.89, 1);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2001, 69, 'VIERTELJAEHRLICH');
+-- ETF 2
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2002, 95.53, '2025-06-04', 23.88, 2);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2002, 54, 'HALBJAEHRLICH');
+-- ETF 3
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2003, 66.06, '2025-06-05', 16.52, 3);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2003, 56, 'HALBJAEHRLICH');
+-- ETF 4
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2004, 77.88, '2025-06-06', 19.47, 4);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2004, 85, 'VIERTELJAEHRLICH');
+-- ETF 5
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2005, 89.4, '2025-06-07', 22.35, 5);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2005, 86, 'VIERTELJAEHRLICH');
+-- ETF 6
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2006, 83.9, '2025-06-08', 20.98, 6);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2006, 37, 'JAEHRLICH');
+-- ETF 7
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2007, 27.5, '2025-06-09', 6.88, 7);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2007, 100, 'HALBJAEHRLICH');
+-- ETF 8
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2008, 39.18, '2025-06-10', 9.79, 8);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2008, 81, 'VIERTELJAEHRLICH');
+-- ETF 9
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2009, 83.47, '2025-06-11', 20.87, 9);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2009, 45, 'JAEHRLICH');
+-- ETF 10
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2010, 86.62, '2025-06-12', 21.66, 10);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2010, 85, 'VIERTELJAEHRLICH');
+-- ETF 11
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2011, 48.19, '2025-06-13', 12.05, 11);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2011, 69, 'JAEHRLICH');
+-- ETF 12
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2012, 34.03, '2025-06-14', 8.51, 12);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2012, 54, 'VIERTELJAEHRLICH');
+-- ETF 13
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2013, 51.18, '2025-06-15', 12.79, 13);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2013, 32, 'JAEHRLICH');
+-- ETF 14
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2014, 62.26, '2025-06-16', 15.56, 14);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2014, 38, 'HALBJAEHRLICH');
+-- ETF 15
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2015, 35.8, '2025-06-17', 8.95, 15);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2015, 19, 'HALBJAEHRLICH');
+-- ETF 16
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2016, 91.88, '2025-06-18', 22.97, 16);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2016, 92, 'VIERTELJAEHRLICH');
+-- ETF 17
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2017, 90.25, '2025-06-19', 22.56, 17);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2017, 74, 'VIERTELJAEHRLICH');
+-- ETF 18
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2018, 75.53, '2025-06-20', 18.88, 18);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2018, 49, 'JAEHRLICH');
+-- ETF 19
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2019, 75.38, '2025-06-21', 18.84, 19);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2019, 62, 'JAEHRLICH');
+-- ETF 20
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2020, 68.46, '2025-06-22', 17.11, 20);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2020, 80, 'HALBJAEHRLICH');
+-- ETF 21
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2021, 63.19, '2025-06-23', 15.8, 21);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2021, 93, 'HALBJAEHRLICH');
+-- ETF 22
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2022, 83.27, '2025-06-24', 20.82, 22);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2022, 19, 'JAEHRLICH');
+-- ETF 23
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2023, 54.6, '2025-06-25', 13.65, 23);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2023, 34, 'HALBJAEHRLICH');
+-- ETF 24
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2024, 99.52, '2025-06-26', 24.88, 24);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2024, 97, 'VIERTELJAEHRLICH');
+-- ETF 25
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2025, 22.9, '2025-06-27', 5.72, 25);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2025, 43, 'VIERTELJAEHRLICH');
+-- ETF 26
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2026, 55.23, '2025-06-28', 13.81, 26);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2026, 80, 'HALBJAEHRLICH');
+-- ETF 27
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2027, 36.53, '2025-06-29', 9.13, 27);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2027, 17, 'JAEHRLICH');
+-- ETF 28
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2028, 55.28, '2025-06-30', 13.82, 28);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2028, 37, 'VIERTELJAEHRLICH');
+-- ETF 29
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2029, 41.39, '2025-07-01', 10.35, 29);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2029, 11, 'HALBJAEHRLICH');
+-- ETF 30
+INSERT INTO ausschüttung (ausschüttung_id, betrag, datum, steuern, wertpapier_id) VALUES (2030, 43.51, '2025-07-02', 10.88, 30);
+INSERT INTO etfdividende (ausschüttung_id, etf_anteile, frequenz) VALUES (2030, 52, 'JAEHRLICH');

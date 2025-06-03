@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.vaadin.example.application.classes.Anleihe;
 import org.vaadin.example.application.classes.Kurs;
 import org.vaadin.example.application.classes.Wertpapier;
+import org.vaadin.example.application.classes.Zinszahlung;
 import org.vaadin.example.application.services.AnleiheKaufService;
 import org.vaadin.example.application.repositories.WertpapierRepository;
 import org.vaadin.example.application.services.AlphaVantageService;
@@ -134,6 +135,18 @@ public class AnleiheView extends AbstractWertpapierView {
                     "Laufzeit", anleihe.getLaufzeit() != null ? formatter.format(anleihe.getLaufzeit()) : "n.v."));
 
             infoBox.add(createInfoRow("Nennwert", anleihe.getNennwert() + " €", "", ""));
+            // Letzte Zinszahlung anzeigen
+            anleihe.getAusschuettungen().stream()
+                    .filter(a -> a instanceof Zinszahlung)
+                    .map(a -> (Zinszahlung) a)
+                    .max((z1, z2) -> z1.getDatum().compareTo(z2.getDatum()))
+                    .ifPresent(zins -> {
+                        infoBox.add(createInfoRow(
+                                "Letzte Zinszahlung", zins.getDatum().format(formatter),
+                                "Betrag", String.format("%.2f €", zins.getBetrag()),
+                                "Frequenz", zins.getFrequenz().name()
+                        ));
+                    });
             layout.add(infoBox);
 
             // Aktualisiere Chart beim Wechsel des Zeitrahmens

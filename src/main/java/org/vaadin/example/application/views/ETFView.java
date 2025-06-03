@@ -13,6 +13,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.vaadin.example.application.classes.ETF;
+import org.vaadin.example.application.classes.ETFDividende;
 import org.vaadin.example.application.classes.Kurs;
 import org.vaadin.example.application.classes.Wertpapier;
 import org.vaadin.example.application.repositories.KursRepository;
@@ -143,6 +144,18 @@ public class ETFView extends AbstractWertpapierView {
             // Preisinformation als erste Zeile hinzufügen
             infoBox.add(createInfoRow("Aktueller Kurs", preisInfo, "Datum", latestKurs != null ? latestKurs.getDatum().format(formatter) : "N/A"));
             infoBox.add(createInfoRow("Emittent", etf.getEmittent(), "Index", etf.getIndex()));
+            // Letzte ETF-Dividende anzeigen
+            etf.getAusschuettungen().stream()
+                    .filter(a -> a instanceof ETFDividende)
+                    .map(a -> (ETFDividende) a)
+                    .max((d1, d2) -> d1.getDatum().compareTo(d2.getDatum()))
+                    .ifPresent(div -> {
+                        infoBox.add(createInfoRow(
+                                "Letzte Dividende", div.getDatum().format(formatter),
+                                "Betrag", String.format("%.2f €", div.getBetrag()),
+                                "Frequenz", div.getFrequenz() != null ? div.getFrequenz().name() : "k.A."
+                        ));
+                    });
             layout.add(infoBox);
 
             // Zeitrahmenwechsel-Listener

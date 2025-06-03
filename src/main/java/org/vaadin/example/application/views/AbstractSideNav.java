@@ -130,11 +130,9 @@ public abstract class AbstractSideNav extends VerticalLayout {
 
         Button logoutBtn = createNavButton("Logout", VaadinIcon.SIGN_OUT);
         logoutBtn.addClickListener(e ->  UI.getCurrent().getPage().setLocation("/logout"));
-
+        
         Button transaktionsBtn = createNavButton("Meine Käufe", VaadinIcon.COIN_PILES);
         transaktionsBtn.addClickListener(e -> UI.getCurrent().navigate("transaktionen"));
-
-
 
         topLayout.add(logo, dashboardBtn, depotBtn, watchlistBtn, settingsBtn, apiBtn, transaktionsBtn);
 
