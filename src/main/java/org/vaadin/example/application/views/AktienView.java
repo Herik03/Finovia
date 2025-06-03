@@ -19,6 +19,7 @@ import org.vaadin.example.application.services.AlphaVantageService;
 import org.vaadin.example.application.services.NutzerService;
 import org.vaadin.example.application.services.WatchlistService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -44,6 +45,32 @@ public class AktienView extends AbstractWertpapierView {
     public Dialog createDetailsDialog(Wertpapier wertpapier) {
         String symbol = wertpapier.getSymbol();
         Aktie aktie = alphaVantageService.getFundamentalData(symbol);
+
+        // Null-Check hinzufügen, um NullPointerException zu vermeiden
+        if (aktie == null) {
+            // Fallback: Verwende den Namen aus dem übergebenen Wertpapier
+            this.anzeigeName = wertpapier.getName();
+
+            // Erstelle einen einfachen Dialog mit Fehlermeldung
+            Dialog errorDialog = new Dialog();
+            errorDialog.setWidth("400px");
+
+            VerticalLayout errorLayout = new VerticalLayout();
+            errorLayout.add(new H2("Fehler beim Laden der Aktiendetails"));
+            errorLayout.add(new com.vaadin.flow.component.html.Paragraph(
+                "Die Detaildaten für " + symbol + " konnten nicht geladen werden. " +
+                "Bitte versuchen Sie es später erneut oder kontaktieren Sie den Support."
+            ));
+
+            Button closeButton = new Button("Schließen", e -> errorDialog.close());
+            closeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            errorLayout.add(closeButton);
+
+            errorDialog.add(errorLayout);
+            errorDialog.open();
+            return errorDialog;
+        }
+
         this.anzeigeName = aktie.getName();
 
         Dialog dialog = new Dialog();
@@ -125,6 +152,21 @@ public class AktienView extends AbstractWertpapierView {
         gridLayout.setSpacing(true);
         gridLayout.setPadding(true);
         gridLayout.setWidthFull();
+
+        // Aktuellen Kurs aus der Datenbank abrufen
+        List<Kurs> kursDaten = aktie.getKurse();
+        Kurs latestKurs = (kursDaten != null && !kursDaten.isEmpty()) ? kursDaten.get(kursDaten.size() - 1) : null;
+
+        // Preisinformation erstellen
+        String preisInfo;
+        if (latestKurs != null) {
+            preisInfo = String.format("%.2f USD ", latestKurs.getSchlusskurs());
+        } else {
+            preisInfo = "Keine aktuellen Kursdaten";
+        }
+
+        // Preisinformation als erste Zeile hinzufügen
+        gridLayout.add(createInfoRow("Aktueller Kurs", preisInfo, "Währung", aktie.getCurrency(), "Börse", aktie.getExchange()));
 
         gridLayout.add(createInfoRow("Unternehmensname", aktie.getUnternehmensname(), "Industrie", aktie.getIndustry(), "Sektor", aktie.getSector()));
         gridLayout.add(createInfoRow("Marktkapitalisierung", aktie.getMarketCap(), "EBITDA", aktie.getEbitda(), "PEG Ratio", aktie.getPegRatio()));
