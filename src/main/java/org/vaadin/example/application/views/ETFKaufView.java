@@ -82,7 +82,7 @@ public class ETFKaufView extends AbstractSideNav implements BeforeEnterObserver 
         topLeftLayout.setAlignItems(FlexComponent.Alignment.START);
 
         // Titel
-        H3 title = new H3("Anleihe kaufen");
+        H3 title = new H3("ETF kaufen");
         title.addClassName("view-title");
 
         // Formularfelder
@@ -116,26 +116,40 @@ public class ETFKaufView extends AbstractSideNav implements BeforeEnterObserver 
         depotComboBox.setItemLabelGenerator(Depot::getName);
         depotComboBox.setWidthFull();
 
+        // Kauf-Button
+        Button kaufButton = new Button("Jetzt Kaufen");
+        kaufButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        kaufButton.addClassName("filled-button");
+        kaufButton.setWidthFull();
+
         // Formularlayout
         FormLayout formLayout = new FormLayout();
         formLayout.setWidth("400px");
         formLayout.getStyle().set("margin", "0 auto");
-        formLayout.add(symbolField, einzelkursField, stueckzahlField, handelsplatzAuswahl, kursField, depotComboBox);
+        formLayout.add(symbolField, einzelkursField, stueckzahlField, handelsplatzAuswahl, kursField, depotComboBox, kaufButton);
 
-        // Kauf-Button
-        Button kaufButton = new Button("Jetzt Kaufen");
-        kaufButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        kaufButton.setWidthFull();
 
         // Event-Listener
         symbolField.addValueChangeListener(e -> aktualisiereEinzelkurs());
-        stueckzahlField.addValueChangeListener(e -> aktualisiereKurs());
+        stueckzahlField.addValueChangeListener(e -> {
+            if(stueckzahlField.getValue() > 0) {
+                aktualisiereKurs();
+            } else {
+                stueckzahlField.setErrorMessage("Stückzahl muss größer als 0 sein.");
+            }
+        });
 
         kaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
             int stueckzahl = stueckzahlField.getValue().intValue();
             String handelsplatz = handelsplatzAuswahl.getValue();
             Depot depot = depotComboBox.getValue();
+
+            if (stueckzahl <= 0) {
+                Notification.show("Stückzahl muss größer als 0 sein.", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return;
+            }
 
             if (symbol.isBlank() || depot == null || handelsplatz == null) {
                 Notification.show("Bitte alle Felder ausfüllen.", 3000, Notification.Position.MIDDLE)
@@ -155,7 +169,7 @@ public class ETFKaufView extends AbstractSideNav implements BeforeEnterObserver 
         });
 
         // Layoutstruktur
-        VerticalLayout centerLayout = new VerticalLayout(title, formLayout, kaufButton);
+        VerticalLayout centerLayout = new VerticalLayout(title, formLayout);
         centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         centerLayout.setSpacing(true);
         centerLayout.setPadding(true);
