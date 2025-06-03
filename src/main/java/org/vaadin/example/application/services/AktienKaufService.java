@@ -69,40 +69,40 @@ public class AktienKaufService {
 
         // 3. Prüfen, ob die Aktie bereits in der Datenbank existiert
         Optional<Aktie> existingAktieOptional = Optional.ofNullable(aktieRepository.findBySymbol(symbol));
-        Aktie aktieToPersist;
+        Aktie aktie;
 
         if (existingAktieOptional.isPresent()) {
             // Aktie existiert bereits, aktualisiere ihre Details
-            aktieToPersist = existingAktieOptional.get();
+            aktie = existingAktieOptional.get();
             // Aktualisiere alle Felder mit den neuesten Daten von Alpha Vantage
-            aktieToPersist.setName(fetchedAktie.getName());
-            aktieToPersist.setSymbol(fetchedAktie.getSymbol());
-            aktieToPersist.setUnternehmensname(fetchedAktie.getUnternehmensname());
-            aktieToPersist.setDescription(fetchedAktie.getDescription());
-            aktieToPersist.setExchange(fetchedAktie.getExchange());
-            aktieToPersist.setCurrency(fetchedAktie.getCurrency());
-            aktieToPersist.setCountry(fetchedAktie.getCountry());
-            aktieToPersist.setSector(fetchedAktie.getSector());
-            aktieToPersist.setIndustry(fetchedAktie.getIndustry());
-            aktieToPersist.setMarketCap(fetchedAktie.getMarketCap());
-            aktieToPersist.setEbitda(fetchedAktie.getEbitda());
-            aktieToPersist.setPegRatio(fetchedAktie.getPegRatio());
-            aktieToPersist.setBookValue(fetchedAktie.getBookValue());
-            aktieToPersist.setDividendPerShare(fetchedAktie.getDividendPerShare());
-            aktieToPersist.setDividendYield(fetchedAktie.getDividendYield());
-            aktieToPersist.setEps(fetchedAktie.getEps());
-            aktieToPersist.setForwardPE(fetchedAktie.getForwardPE());
-            aktieToPersist.setBeta(fetchedAktie.getBeta());
-            aktieToPersist.setYearHigh(fetchedAktie.getYearHigh());
-            aktieToPersist.setYearLow(fetchedAktie.getYearLow());
-            aktieToPersist.setDividendDate(fetchedAktie.getDividendDate());
+            aktie.setName(fetchedAktie.getName());
+            aktie.setSymbol(fetchedAktie.getSymbol());
+            aktie.setUnternehmensname(fetchedAktie.getUnternehmensname());
+            aktie.setDescription(fetchedAktie.getDescription());
+            aktie.setExchange(fetchedAktie.getExchange());
+            aktie.setCurrency(fetchedAktie.getCurrency());
+            aktie.setCountry(fetchedAktie.getCountry());
+            aktie.setSector(fetchedAktie.getSector());
+            aktie.setIndustry(fetchedAktie.getIndustry());
+            aktie.setMarketCap(fetchedAktie.getMarketCap());
+            aktie.setEbitda(fetchedAktie.getEbitda());
+            aktie.setPegRatio(fetchedAktie.getPegRatio());
+            aktie.setBookValue(fetchedAktie.getBookValue());
+            aktie.setDividendPerShare(fetchedAktie.getDividendPerShare());
+            aktie.setDividendYield(fetchedAktie.getDividendYield());
+            aktie.setEps(fetchedAktie.getEps());
+            aktie.setForwardPE(fetchedAktie.getForwardPE());
+            aktie.setBeta(fetchedAktie.getBeta());
+            aktie.setYearHigh(fetchedAktie.getYearHigh());
+            aktie.setYearLow(fetchedAktie.getYearLow());
+            aktie.setDividendDate(fetchedAktie.getDividendDate());
 
             // Save the updated Aktie
-            aktieRepository.save(aktieToPersist);
+            aktieRepository.save(aktie);
         } else {
             // Aktie existiert nicht, speichere die neue Aktie
-            aktieToPersist = fetchedAktie;
-            aktieRepository.save(aktieToPersist);
+            aktie = fetchedAktie;
+            aktieRepository.save(aktie);
         }
 
         // 4. Kauf-Transaktion erstellen
@@ -113,7 +113,7 @@ public class AktienKaufService {
                 gebuehren,
                 kurs,
                 stueckzahl,
-                aktieToPersist,
+                aktie,
                 null // Assuming no Ausschuettung for a purchase
         );
 
@@ -121,13 +121,13 @@ public class AktienKaufService {
         transaktionRepository.save(kauf);
 
         // 6. Aktie dem Depot hinzufügen (dies verwaltet die Stückzahl im Depot)
-        depot.wertpapierHinzufuegen(aktieToPersist, stueckzahl);
+        depot.wertpapierHinzufuegen(aktie, stueckzahl);
 
         // 7. Depot speichern (um die Änderungen am Depot zu persistieren)
         depotRepository.save(depot);
 
         System.out.println("Aktie " + symbol + " erfolgreich gekauft und Details gespeichert.");
-        return aktieToPersist;
+        return aktie;
     }
 
     /**
