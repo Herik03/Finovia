@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface AktieRepository extends JpaRepository<Aktie, Long> {
     Optional<Aktie> findBySymbolIgnoreCase(String symbol);
+    boolean existsBySymbol(String symbol);
+    Aktie findBySymbol(String symbol);
 }

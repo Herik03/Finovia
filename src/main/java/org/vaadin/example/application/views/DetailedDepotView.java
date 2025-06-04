@@ -32,7 +32,6 @@ import org.vaadin.example.application.classes.*;
 import org.vaadin.example.application.services.AlphaVantageService;
 import org.vaadin.example.application.services.DepotService;
 import org.vaadin.example.application.services.NutzerService;
-import com.vaadin.flow.component.html.Div;
 
 /**
  * Die  DetailedDepotView-Klasse stellt eine detaillierte Ansicht eines Depots dar.
@@ -113,16 +112,19 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         }).setHeader("Aktueller Kurs").setAutoWidth(true);
 
         wertpapierGrid.addColumn(dw -> {
-            DepotService.BestandUndKosten bk = depotService.berechneBestandUndKosten(dw);
+            DepotService.BestandUndBuchwert bk = depotService.berechneBestandUndKosten(dw);
             if (bk.anzahl == 0) return "Keine Position";
 
-            double kurs = 0.0;
-            if (dw.getWertpapier() instanceof Aktie aktie) {
-                kurs = alphaVantageService.getAktuellerKurs(aktie.getName());
-            }
+            double kurs = 240.0; // Beispielwert, hier sollte der aktuelle Kurs des Wertpapiers stehen
+//            if (dw.getWertpapier() instanceof Aktie aktie) {
+//                kurs = alphaVantageService.getAktuellerKurs(aktie.getName());
+//            }
 
             double wertAktuell = kurs * bk.anzahl;
-            double gewinnVerlust = wertAktuell - bk.kosten;
+            double gewinnVerlust = wertAktuell - bk.buchwert;
+
+            //Depotwert = (Marktwert * Anzahl Anteile) - Buchwert
+            // Buchwert = Summe der Kurse der vorhandenen Käufe
 
             return String.format("%.2f € (%s)", gewinnVerlust, gewinnVerlust >= 0 ? "Gewinn" : "Verlust");
         }).setHeader("Gewinn / Verlust").setAutoWidth(true);

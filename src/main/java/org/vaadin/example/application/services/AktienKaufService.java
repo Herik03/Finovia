@@ -59,35 +59,41 @@ public class AktienKaufService {
         double gebuehren = 2.50;
 
         // 1. Aktie anlegen und speichern
-        Aktie aktie = new Aktie(
-                quote.getSymbol(),
-                "Unternehmen: " + quote.getSymbol(),
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                0L,
-                0L,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                null
-        );
-        aktie.setName(quote.getSymbol());
-        aktie.setSymbol(quote.getSymbol());
-        aktie.setUnternehmensname("Unternehmen: " + quote.getSymbol());
-        aktie.setTransaktionen(new ArrayList<>());
-        aktie.setKurse(new ArrayList<>());
+        Aktie aktie;
+        if (!aktieRepository.existsBySymbol(symbol)) {
+            aktie = new Aktie(
+                    quote.getSymbol(),
+                    "Unternehmen: " + quote.getSymbol(),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    0L,
+                    0L,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    null
+            );
+            aktie.setName(quote.getSymbol());
+            aktie.setSymbol(quote.getSymbol());
+            aktie.setUnternehmensname("Unternehmen: " + quote.getSymbol());
+            aktie.setTransaktionen(new ArrayList<>());
+            aktie.setKurse(new ArrayList<>());
 
-        aktie = aktieRepository.save(aktie);
+            aktie = aktieRepository.save(aktie);
+        } else {
+            aktie = aktieRepository.findBySymbol(symbol);
+        }
+
 
         // 2. Kauf mit Wertpapier anlegen
         Kauf kauf = new Kauf(handelsplatz, LocalDate.now(), gebuehren, kurs, stueckzahl, aktie, null);

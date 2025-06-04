@@ -69,7 +69,7 @@ public class AktienVerkaufService {
             if (dw.getWertpapier().getSymbol().equalsIgnoreCase(symbol)) {
                 vorhandeneStueckzahl = dw.getAnzahl();
                 if (dw.getWertpapier() instanceof Aktie) {
-                    aktie = (Aktie) dw.getWertpapier(); // ✅ Cast auf Aktie
+                    aktie = (Aktie) dw.getWertpapier(); // Cast auf Aktie
                 } else {
                     return null; // oder Fehler werfen: kein Verkauf möglich
                 }

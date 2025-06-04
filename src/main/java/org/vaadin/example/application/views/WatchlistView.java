@@ -52,7 +52,7 @@ public class WatchlistView extends AbstractSideNav {
     private final WatchlistService watchlistService;
     private final NutzerService nutzerService;
     private final AlphaVantageService alphaVantageService;
-    private final WertpapierDetailViewFactory wertpapierView;
+    private final WertpapierDetailViewFactory detailViewFactory;
     private final Grid<Wertpapier> grid = new Grid<>(Wertpapier.class, false);
     private Nutzer currentUser;
     private final Map<Integer, Span> priceSpanMap = new HashMap<>();
@@ -60,8 +60,6 @@ public class WatchlistView extends AbstractSideNav {
     private final Map<Integer, Span> trendTextSpanMap = new HashMap<>();
     private final Map<Integer, Icon> trendIconMap = new HashMap<>();
     private final SecurityService securityService;
-    @Autowired
-    private WertpapierDetailViewFactory detailViewFactory;
 
 
     /**
@@ -70,7 +68,7 @@ public class WatchlistView extends AbstractSideNav {
      * @param watchlistService    Service für den Zugriff auf Watchlist-Funktionen
      * @param nutzerService       Service für den Zugriff auf Nutzer-Funktionen
      * @param alphaVantageService Service für den Zugriff auf Wertpapier-Daten
-     * @param wertpapierView      Service für die Anzeige von Wertpapierdetails
+     * @param detailViewFactory      Service für die Anzeige von Wertpapierdetails
      */
     @Autowired
 
@@ -81,9 +79,6 @@ public class WatchlistView extends AbstractSideNav {
         this.alphaVantageService = alphaVantageService;
         this.securityService = securityService;
         this.detailViewFactory = detailViewFactory;
-        this.wertpapierView = detailViewFactory;
-
-
 
         VerticalLayout watchlistContent = new VerticalLayout();
         watchlistContent.setSizeFull();
@@ -227,7 +222,7 @@ public class WatchlistView extends AbstractSideNav {
 
 
             String symbol = wertpapier.getName();
-            Dialog detailsDialog = wertpapierView.getDetailsDialog(wertpapier);
+            Dialog detailsDialog = detailViewFactory.getDetailsDialog(wertpapier);
 
 
             detailsDialog.addDetachListener(event -> openSideNav());

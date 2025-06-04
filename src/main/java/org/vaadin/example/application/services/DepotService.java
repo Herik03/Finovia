@@ -1,5 +1,7 @@
 package org.vaadin.example.application.services;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.*;
@@ -8,7 +10,9 @@ import org.vaadin.example.application.repositories.NutzerRepository;
 import org.vaadin.example.application.repositories.WertpapierRepository;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 @Service
 public class DepotService {
@@ -85,43 +89,80 @@ public class DepotService {
         depotRepository.deleteById(depotId);
     }
 
-    public static class BestandUndKosten {
+    public static class BestandUndBuchwert {
         public long anzahl;
-        public double kosten;
+        public double buchwert;
 
-        public BestandUndKosten(long anzahl, double kosten) {
+        public BestandUndBuchwert(long anzahl, double buchwert) {
             this.anzahl = anzahl;
-            this.kosten = kosten;
+            this.buchwert = buchwert;
+        }
+    }
+
+    private static class Kauf {
+        @Getter @Setter
+        private int stückzahl;
+        @Getter @Setter
+        private double kurs;
+        @Getter @Setter
+        private double gebühren;
+
+        public Kauf(int stückzahl, double kurs, double gebühren) {
+            this.stückzahl = stückzahl;
+            this.kurs = kurs;
+            this.gebühren = gebühren;
         }
     }
 
     @jakarta.transaction.Transactional
-    public BestandUndKosten berechneBestandUndKosten(DepotWertpapier dw) {
+    public BestandUndBuchwert berechneBestandUndKosten(DepotWertpapier dw) {
         if (dw == null || dw.getWertpapier() == null || dw.getWertpapier().getTransaktionen() == null) {
-            return new BestandUndKosten(0, 0.0);
+            return new BestandUndBuchwert(0, 0.0);
         }
 
         // Force initialization of the lazy-loaded collections
         dw.getWertpapier().getTransaktionen().size();
 
+        Queue<Kauf> fifoKaeufe = new LinkedList<>();
+        double buchwert = 0.0;
         long gesamtStueck = 0;
-        double gesamtKosten = 0.0;
 
         for (Transaktion t : dw.getWertpapier().getTransaktionen()) {
-            if (t instanceof Kauf) {
-                gesamtStueck += t.getStückzahl();
-                gesamtKosten += t.getStückzahl() * t.getKurs() + t.getGebühren();
-            } else if (t instanceof Verkauf) {
-                gesamtStueck -= t.getStückzahl();
-                // Verkauf mindert den Bestand, aber die Kosten bleiben bei Kauf-Transaktionen
+            if (t instanceof org.vaadin.example.application.classes.Kauf kauf) {
+                fifoKaeufe.add(new Kauf(kauf.getStückzahl(), kauf.getKurs(), kauf.getGebühren()));
+                gesamtStueck += kauf.getStückzahl();
+                buchwert += kauf.getStückzahl() * kauf.getKurs() + kauf.getGebühren();
+            } else if (t instanceof Verkauf verkauf) {
+                int zuVerkaufen = verkauf.getStückzahl();
+                gesamtStueck -= zuVerkaufen;
+
+                while (zuVerkaufen > 0 && !fifoKaeufe.isEmpty()) {
+                    Kauf fifoKauf = fifoKaeufe.peek();
+                    int stk = fifoKauf.getStückzahl();
+
+                    int abzug = Math.min(zuVerkaufen, stk);
+                    double anteiligeGebuehr = (fifoKauf.getGebühren() / fifoKauf.getStückzahl()) * abzug;
+                    double abzugBuchwert = abzug * fifoKauf.getKurs() + anteiligeGebuehr;
+
+                    buchwert -= abzugBuchwert;
+                    fifoKauf.setStückzahl(stk - abzug);
+
+                    if (fifoKauf.getStückzahl() == 0) {
+                        fifoKaeufe.poll(); // Kauf vollständig verbraucht
+                    }
+
+                    zuVerkaufen -= abzug;
+                }
             }
         }
 
+
+
         if (gesamtStueck <= 0) {
-            return new BestandUndKosten(0, 0.0);
+            return new BestandUndBuchwert(0, 0.0);
         }
 
-        return new BestandUndKosten(gesamtStueck, gesamtKosten);
+        return new BestandUndBuchwert(gesamtStueck, buchwert);
     }
 
     /**
@@ -151,8 +192,8 @@ public class DepotService {
             return false; // Wertpapier nicht im Depot
         }
 
-        BestandUndKosten bestandUndKosten = berechneBestandUndKosten(dw);
-        if (bestandUndKosten.anzahl < stückzahl) {
+        BestandUndBuchwert bestandUndBuchwert = berechneBestandUndKosten(dw);
+        if (bestandUndBuchwert.anzahl < stückzahl) {
             return false; // Nicht genug Aktien zum Verkaufen
         }
 
