@@ -71,12 +71,12 @@ public class WatchlistView extends AbstractSideNav {
      * @param detailViewFactory      Service für die Anzeige von Wertpapierdetails
      */
     @Autowired
-
     public WatchlistView(WatchlistService watchlistService, NutzerService nutzerService, AlphaVantageService alphaVantageService, WertpapierDetailViewFactory detailViewFactory, SecurityService securityService) {
         super(securityService);
         this.watchlistService = watchlistService;
         this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
+        this.wertpapierView = detailViewFactory;
         this.securityService = securityService;
         this.detailViewFactory = detailViewFactory;
 
@@ -182,13 +182,12 @@ public class WatchlistView extends AbstractSideNav {
                 Optional<Watchlist> watchlistOpt = watchlistService.getWatchlistForUser(currentUser.getId());
 
                 if (watchlistOpt.isPresent()) {
-                    List<Wertpapier> wertpapiere = watchlistOpt.get().getWertpapiere();
+                    // Die optimierte Methode verwenden, die Join Fetch nutzt, um das LazyInitializationException-Problem zu beheben
+                    List<Wertpapier> wertpapiere = watchlistService.getWertpapiereInUserWatchlist(currentUser.getId());
                     grid.setItems(wertpapiere);
 
                     // Benachrichtigung anzeigen, dass Daten geladen werden
                     showNotification("Aktualisiere Preisdaten für " + wertpapiere.size() + " Wertpapiere...", NotificationVariant.LUMO_PRIMARY);
-
-
 
                     if (wertpapiere.isEmpty()) {
                         showNotification("Ihre Watchlist ist leer. Fügen Sie Wertpapiere hinzu, um sie zu beobachten.", NotificationVariant.LUMO_PRIMARY);

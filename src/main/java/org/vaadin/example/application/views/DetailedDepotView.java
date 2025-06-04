@@ -96,14 +96,6 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
                 .setHeader("Name")
                 .setAutoWidth(true);
 
-        wertpapierGrid.addColumn(dw -> dw.getWertpapier().getWertpapierId())
-                .setHeader("ID")
-                .setAutoWidth(true);
-
-        wertpapierGrid.addColumn(DepotWertpapier::getAnzahl)
-                .setHeader("Anzahl")
-                .setAutoWidth(true);
-
         wertpapierGrid.addColumn(dw -> {
             if (dw.getWertpapier() instanceof Aktie aktie) {
                 return String.format("%.2f €", alphaVantageService.getAktuellerKurs(aktie.getName()));
@@ -229,10 +221,6 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
                 new Span("Besitzer: " + currentDepot.getBesitzer().getVollerName())
         );
 
-        HorizontalLayout valueLayout = new HorizontalLayout(
-                new Span("Depot-ID: " + currentDepot.getDepotId())
-        );
-
         // Aktionen-Layout mit Löschen-Button
         Button deleteButton = new Button("Depot löschen", new Icon(VaadinIcon.TRASH));
         deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
@@ -266,7 +254,7 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         dangerZone.add(dangerZoneTitle, warningText, buttonLayout);
 
         // Komponenten zum Layout hinzufügen
-        depotInfoLayout.add(ownerLayout, valueLayout);
+        depotInfoLayout.add(ownerLayout);
 
         // Füge den Löschen-Bereich am Ende des contentLayout hinzu (ganz unten auf der Seite)
         contentLayout.add(divider, dangerZone);

@@ -88,8 +88,8 @@ public class AdminView extends AbstractSideNav {
      */
     private void initializeView() {
         // Haupttitel
-        H1 title = new H1("Admin-Bereich");
-        title.addClassNames(LumoUtility.Margin.Top.LARGE, LumoUtility.Margin.Bottom.MEDIUM);
+        H2 title = new H2("Admin-Bereich");
+        title.addClassNames(LumoUtility.Margin.Bottom.MEDIUM);
 
         // Tabs für verschiedene Verwaltungsbereiche
         Tab supportTab = new Tab(createTabContent(VaadinIcon.QUESTION_CIRCLE, "Support-Anfragen"));
@@ -226,7 +226,7 @@ public class AdminView extends AbstractSideNav {
         refreshButton.addClickListener(e -> updateSupportGrid());
 
         layout.add(
-                new H2("Support-Anfragen verwalten"),
+                new H3("Support-Anfragen verwalten"),
                 refreshButton,
                 splitLayout
         );

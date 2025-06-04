@@ -128,8 +128,15 @@ public class WatchlistService {
      * @return Liste der Wertpapiere in der Watchlist
      * @throws IllegalArgumentException wenn der Nutzer keine Watchlist hat
      */
-    public List<Wertpapier> getWertpapiereInUserWatchlist(Long nutzerId) {
+  /*  public List<Wertpapier> getWertpapiereInUserWatchlist(Long nutzerId) {
         Watchlist watchlist = watchlistRepository.findByNutzerId(nutzerId)
+                .orElseThrow(() -> new IllegalArgumentException("Keine Watchlist für Nutzer mit ID " + nutzerId + " gefunden"));
+
+        return watchlist.getWertpapiere();
+    } */
+
+    public List<Wertpapier> getWertpapiereInUserWatchlist(Long nutzerId) {
+        Watchlist watchlist = watchlistRepository.findByNutzerIdWithWertpapiere(nutzerId)
                 .orElseThrow(() -> new IllegalArgumentException("Keine Watchlist für Nutzer mit ID " + nutzerId + " gefunden"));
 
         return watchlist.getWertpapiere();

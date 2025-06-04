@@ -66,8 +66,31 @@ vaadin-button:hover {
 vaadin-button:active {
     background-color: var(--lumo-primary-color-shade);
     color: #FFFFFF;
-
     transform: translateY(0);
+}
+
+.filled-button {
+    font-family: var(--lumo-font-family) !important;
+    font-size: var(--lumo-font-size-m) !important;
+    background: linear-gradient(135deg, var(--lumo-primary-color), var(--lumo-primary-color-shade)) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 8px 12px !important;
+    margin-top: 1.5rem !important;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease;
+}
+
+.filled-button:hover {
+    transform: translateY(-2px) !important;
+    color: white !important;
+    box-shadow: 0 8px 25px rgba(68, 207, 108, 0.4) !important;
+}
+
+.filled-button:active {
+    transform: translateY(0) !important;
+    background: linear-gradient(135deg, var(--lumo-primary-color-shade), var(--lumo-primary-color)) !important;
+    box-shadow: 0 4px 15px rgba(68, 207, 108, 0.3) !important;
 }
 
 /* Textfelder */

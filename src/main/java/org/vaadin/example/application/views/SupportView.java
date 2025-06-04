@@ -68,13 +68,13 @@ public class SupportView extends VerticalLayout {
         layout.setSpacing(true);
         layout.setPadding(false);
 
-        H2 sectionTitle = new H2("Support");
+        H3 sectionTitle = new H3("Support");
 
         // Support-Informationen
-        Paragraph supportDescription = new Paragraph("Hier können Sie den Kundensupport kontaktieren und Ihre bisherigen Anfragen einsehen.");
+        Paragraph supportDescription = new Paragraph("Haben Sie Fragen oder Herausforderungen? Der Finovia Kundensupport steht Ihnen mit schnellen, kompetenten Lösungen zur Seite! Stellen Sie hier Ihre Anfrage, laden Sie Dokumente hoch und verfolgen Sie den Bearbeitungsstatus Ihrer bisherigen Anliegen in Echtzeit.");
 
         // Neue Supportanfrage erstellen
-        H2 newRequestTitle = new H2("Neue Supportanfrage");
+        H3 newRequestTitle = new H3("Neue Supportanfrage");
         newRequestTitle.getStyle().set("margin-top", "1rem");
 
         // Felder für die neue Anfrage
@@ -88,12 +88,27 @@ public class SupportView extends VerticalLayout {
         descriptionArea.setMinHeight("150px");
         descriptionArea.setWidthFull();
 
+
+        Button submitButton = new Button("Anfrage senden");
+        submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        VerticalLayout descriptionLayout = new VerticalLayout(descriptionArea);
+        descriptionLayout.setPadding(false);
+        descriptionLayout.setSpacing(false);
+
         // Datei-Upload-Komponente konfigurieren
         MemoryBuffer buffer = new MemoryBuffer();
         Upload fileUpload = new Upload(buffer);
         fileUpload.setMaxFiles(3);
         fileUpload.setDropLabel(new Span("Dateien hier ablegen (max. 3)"));
         fileUpload.setAcceptedFileTypes("image/*", ".pdf", ".docx");
+
+        // Horizontales Layout für Upload und Button
+        HorizontalLayout uploadButtonLayout = new HorizontalLayout(fileUpload, submitButton);
+        uploadButtonLayout.setWidthFull();
+        uploadButtonLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        // Button rechtsbündig ausrichten
+        uploadButtonLayout.expand(fileUpload);
 
         // Liste zum Speichern der hochgeladenen Dateinamen
         List<String> uploadedFiles = new ArrayList<>();
@@ -122,9 +137,6 @@ public class SupportView extends VerticalLayout {
             }
         });
 
-        Button submitButton = new Button("Anfrage senden");
-        submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
         // Container für die Anfragen
         Div requestsContainer = new Div();
         requestsContainer.addClassNames(
@@ -135,7 +147,7 @@ public class SupportView extends VerticalLayout {
         );
 
         // Bisherige Support-Anfragen
-        H2 requestHistoryTitle = new H2("Ihre bisherigen Anfragen");
+        H3 requestHistoryTitle = new H3("Ihre bisherigen Anfragen");
         requestHistoryTitle.getStyle().set("margin-top", "2rem");
 
         // Button zum manuellen Aktualisieren der Anfragenliste
@@ -210,12 +222,9 @@ public class SupportView extends VerticalLayout {
             requestsContainer.scrollIntoView();
         });
 
-        HorizontalLayout submitLayout = new HorizontalLayout(submitButton);
-        submitLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-        submitLayout.setWidthFull();
 
         // Direkte Kontaktmöglichkeiten
-        H2 directContactTitle = new H2("Direkter Kontakt");
+        H3 directContactTitle = new H3("Direkter Kontakt");
         directContactTitle.getStyle().set("margin-top", "2rem");
 
         VerticalLayout contactInfoLayout = new VerticalLayout();
@@ -231,7 +240,7 @@ public class SupportView extends VerticalLayout {
 
         HorizontalLayout phoneLayout = new HorizontalLayout(
                 new Icon(VaadinIcon.PHONE),
-                new Span("+49 (0) 123 456789")
+                new Span("+49 (0) 3421 7633243")
         );
         phoneLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         phoneLayout.setSpacing(true);
@@ -251,9 +260,8 @@ public class SupportView extends VerticalLayout {
                 supportDescription,
                 newRequestTitle,
                 categorySelect,
-                descriptionArea,
-                fileUpload,
-                submitLayout,
+                descriptionLayout,
+                uploadButtonLayout,
                 requestHistoryHeader,
                 requestsContainer,
                 directContactTitle,

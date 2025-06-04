@@ -1,5 +1,6 @@
 package org.vaadin.example.application.views;
 
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.vaadin.example.application.classes.*;
 import org.vaadin.example.application.classes.enums.SearchResultTypeEnum;
@@ -14,7 +15,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -86,7 +86,7 @@ public class SearchView extends AbstractSideNav {
      * @param container Das VerticalLayout, in das die UI-Komponenten eingefügt werden.
      */
     private void configureUI(VerticalLayout container) {
-        H3 title = new H3("Wertpapier-Suche");
+        H2 title = new H2("Wertpapier-Suche");
         title.addClassName("view-title");
 
         searchField.setPlaceholder("Symbol oder Name eingeben");
