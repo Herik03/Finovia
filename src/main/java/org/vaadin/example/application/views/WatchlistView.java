@@ -76,7 +76,6 @@ public class WatchlistView extends AbstractSideNav {
         this.watchlistService = watchlistService;
         this.nutzerService = nutzerService;
         this.alphaVantageService = alphaVantageService;
-        this.wertpapierView = detailViewFactory;
         this.securityService = securityService;
         this.detailViewFactory = detailViewFactory;
 
