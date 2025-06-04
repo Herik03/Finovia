@@ -61,67 +61,79 @@ public class AktienKaufService {
         List<Transaktion> transaktionen = new ArrayList<>();
         transaktionen.add(kauf);
 
-        Aktie aktie = new Aktie(
-                quote.getSymbol(),
-                "Unternehmen: " + quote.getSymbol(),
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                0L,
-                0L,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                null
-        );
+        // 2. Vollständige Aktiendetails abrufen
+        Aktie fetchedAktie = alphaVantageService.getFundamentalData(symbol);
+        if (fetchedAktie == null) {
+            System.err.println("Fehler: Konnte keine fundamentalen Daten für Symbol " + symbol + " abrufen.");
+            return null;
+        }
 
-        aktie.setName(quote.getSymbol());
-        aktie.setSymbol(quote.getSymbol());
-        aktie.setUnternehmensname("Unternehmen: " + quote.getSymbol());
-        aktie.setTransaktionen(transaktionen);
-        aktie.setKurse(new ArrayList<>());
-
-        // 1. Aktie speichern, bevor sie in der Transaktion verwendet wird
-        aktie = aktieRepository.save(aktie);
+        // 3. Prüfen, ob die Aktie bereits in der Datenbank existiert
+        Aktie aktieToPersist = aktieRepository.findBySymbol(symbol);
+        if (aktieToPersist != null) {
+            // Aktie existiert bereits, aktualisiere ihre Details
+            aktieToPersist.setName(fetchedAktie.getName());
+            aktieToPersist.setSymbol(fetchedAktie.getSymbol());
+            aktieToPersist.setUnternehmensname(fetchedAktie.getUnternehmensname());
+            aktieToPersist.setDescription(fetchedAktie.getDescription());
+            aktieToPersist.setExchange(fetchedAktie.getExchange());
+            aktieToPersist.setCurrency(fetchedAktie.getCurrency());
+            aktieToPersist.setCountry(fetchedAktie.getCountry());
+            aktieToPersist.setSector(fetchedAktie.getSector());
+            aktieToPersist.setIndustry(fetchedAktie.getIndustry());
+            aktieToPersist.setMarketCap(fetchedAktie.getMarketCap());
+            aktieToPersist.setEbitda(fetchedAktie.getEbitda());
+            aktieToPersist.setPegRatio(fetchedAktie.getPegRatio());
+            aktieToPersist.setBookValue(fetchedAktie.getBookValue());
+            aktieToPersist.setDividendPerShare(fetchedAktie.getDividendPerShare());
+            aktieToPersist.setDividendYield(fetchedAktie.getDividendYield());
+            aktieToPersist.setEps(fetchedAktie.getEps());
+            aktieToPersist.setForwardPE(fetchedAktie.getForwardPE());
+            aktieToPersist.setBeta(fetchedAktie.getBeta());
+            aktieToPersist.setYearHigh(fetchedAktie.getYearHigh());
+            aktieToPersist.setYearLow(fetchedAktie.getYearLow());
+            aktieToPersist.setDividendDate(fetchedAktie.getDividendDate());
+            aktieToPersist.setTransaktionen(new ArrayList<>());
+            aktieToPersist.setKurse(new ArrayList<>());
+            aktieRepository.save(aktieToPersist);
+        } else {
+            aktieToPersist = fetchedAktie;
+            aktieToPersist.setTransaktionen(new ArrayList<>());
+            aktieToPersist.setKurse(new ArrayList<>());
+            aktieRepository.save(aktieToPersist);
+        }
 
         // 2. Verknüpfung Kauf -> Aktie
-        kauf.setWertpapier(aktie);
+        kauf.setWertpapier(aktieToPersist);
 
         // 3. Kauf-Transaktion speichern
         transaktionRepository.save(kauf);
 
         // 4. Aktie dem Depot hinzufügen
-        depot.wertpapierHinzufuegen(aktie, stueckzahl);
+        depot.wertpapierHinzufuegen(aktieToPersist, stueckzahl);
 
         // 5. Depot speichern
         depotRepository.save(depot);
 
-        return aktie;
-    }
-
-    public double getKursFürSymbol(String symbol) {
-        if (symbol == null || symbol.isBlank()) {
-            throw new IllegalArgumentException("Symbol darf nicht leer sein.");
-        }
-
-        StockQuote quote = alphaVantageService.getCurrentStockQuote(symbol);
-        if (quote == null) {
-            throw new RuntimeException("Kein Kurs für Symbol gefunden: " + symbol);
-        }
-
-        return quote.getPrice();
+        return aktieToPersist;
     }
 
     public List<Transaktion> getAllTransaktionen() {
         return transaktionRepository.findAll();
     }
+
+    public double getKursFürSymbol(String symbol) {
+        if (symbol == null || symbol.isBlank()) {
+            return 0.0;
+        }
+
+        StockQuote quote = alphaVantageService.getCurrentStockQuote(symbol);
+        if (quote == null) {
+            return 0.0; // Kein Kurs verfügbar
+        }
+
+        return quote.getPrice();
+    }
 }
+
+
