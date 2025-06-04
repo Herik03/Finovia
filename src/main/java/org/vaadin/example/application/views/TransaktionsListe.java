@@ -6,6 +6,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,9 +34,7 @@ public class TransaktionsListe extends AbstractSideNav {
         this.transaktionRepository = transaktionRepository;
 
         H2 headline = new H2("Transaktionshistorie");
-        headline.getStyle()
-                .set("margin-top", "0")
-                .set("margin-bottom", "1rem");
+        headline.addClassNames(LumoUtility.Margin.Bottom.MEDIUM);
 
         Grid<Transaktion> grid = new Grid<>(Transaktion.class, false);
 
