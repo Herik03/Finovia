@@ -11,9 +11,9 @@ import org.vaadin.example.application.repositories.AktieRepository;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AktienKaufService {
@@ -35,7 +35,6 @@ public class AktienKaufService {
 
     /**
      * Führt den Kauf einer Aktie durch, speichert die Kauf-Transaktion und fügt die Aktie dem Depot hinzu.
-     * Stellt sicher, dass die Aktiendetails in der Datenbank persistent gespeichert werden.
      *
      * @param symbol       Das Tickersymbol der Aktie (z.B. AAPL)
      * @param stueckzahl   Anzahl der zu kaufenden Aktien
@@ -45,99 +44,70 @@ public class AktienKaufService {
      */
     @Transactional
     public Aktie kaufeAktie(String symbol, int stueckzahl, String handelsplatz, Depot depot) {
-        // Grundlegende Validierung der Eingabeparameter
         if (symbol == null || symbol.isBlank() || stueckzahl <= 0 || depot == null) {
-            System.err.println("Fehler: Ungültige Eingabeparameter für den Aktienkauf.");
             return null;
         }
 
-        // 1. Aktuellen Kurs abrufen (für die Kauf-Transaktion)
-        StockQuote currentQuote = alphaVantageService.getCurrentStockQuote(symbol);
-        if (currentQuote == null) {
-            System.err.println("Fehler: Konnte keinen aktuellen Kurs für Symbol " + symbol + " abrufen.");
-            return null;
-        }
-        double kurs = currentQuote.getPrice();
-        double gebuehren = 2.50; // Feste Gebühren
-
-        // 2. Vollständige Aktiendetails abrufen
-        Aktie fetchedAktie = alphaVantageService.getFundamentalData(symbol);
-        if (fetchedAktie == null) {
-            System.err.println("Fehler: Konnte keine fundamentalen Daten für Symbol " + symbol + " abrufen.");
+        StockQuote quote = alphaVantageService.getCurrentStockQuote(symbol);
+        if (quote == null) {
             return null;
         }
 
-        // 3. Prüfen, ob die Aktie bereits in der Datenbank existiert
-        Optional<Aktie> existingAktieOptional = Optional.ofNullable(aktieRepository.findBySymbol(symbol));
-        Aktie aktie;
+        double kurs = quote.getPrice();
+        double gebuehren = 2.50;
 
-        if (existingAktieOptional.isPresent()) {
-            // Aktie existiert bereits, aktualisiere ihre Details
-            aktie = existingAktieOptional.get();
-            // Aktualisiere alle Felder mit den neuesten Daten von Alpha Vantage
-            aktie.setName(fetchedAktie.getName());
-            aktie.setSymbol(fetchedAktie.getSymbol());
-            aktie.setUnternehmensname(fetchedAktie.getUnternehmensname());
-            aktie.setDescription(fetchedAktie.getDescription());
-            aktie.setExchange(fetchedAktie.getExchange());
-            aktie.setCurrency(fetchedAktie.getCurrency());
-            aktie.setCountry(fetchedAktie.getCountry());
-            aktie.setSector(fetchedAktie.getSector());
-            aktie.setIndustry(fetchedAktie.getIndustry());
-            aktie.setMarketCap(fetchedAktie.getMarketCap());
-            aktie.setEbitda(fetchedAktie.getEbitda());
-            aktie.setPegRatio(fetchedAktie.getPegRatio());
-            aktie.setBookValue(fetchedAktie.getBookValue());
-            aktie.setDividendPerShare(fetchedAktie.getDividendPerShare());
-            aktie.setDividendYield(fetchedAktie.getDividendYield());
-            aktie.setEps(fetchedAktie.getEps());
-            aktie.setForwardPE(fetchedAktie.getForwardPE());
-            aktie.setBeta(fetchedAktie.getBeta());
-            aktie.setYearHigh(fetchedAktie.getYearHigh());
-            aktie.setYearLow(fetchedAktie.getYearLow());
-            aktie.setDividendDate(fetchedAktie.getDividendDate());
+        Kauf kauf = new Kauf(handelsplatz, LocalDate.now(), gebuehren, kurs, stueckzahl, null, null);
 
-            // Save the updated Aktie
-            aktieRepository.save(aktie);
-        } else {
-            // Aktie existiert nicht, speichere die neue Aktie
-            aktie = fetchedAktie;
-            aktieRepository.save(aktie);
-        }
+        List<Transaktion> transaktionen = new ArrayList<>();
+        transaktionen.add(kauf);
 
-        // 4. Kauf-Transaktion erstellen
-        // Der Kauf wird mit der persistenten Aktie verknüpft
-        Kauf kauf = new Kauf(
-                handelsplatz,
-                LocalDateTime.now().toLocalDate(), // Use toLocalDate() to match Kauf constructor
-                gebuehren,
-                kurs,
-                stueckzahl,
-                aktie,
-                null // Assuming no Ausschuettung for a purchase
+        Aktie aktie = new Aktie(
+                quote.getSymbol(),
+                "Unternehmen: " + quote.getSymbol(),
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                0L,
+                0L,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                null
         );
 
-        // 5. Kauf-Transaktion speichern
+        aktie.setName(quote.getSymbol());
+        aktie.setSymbol(quote.getSymbol());
+        aktie.setUnternehmensname("Unternehmen: " + quote.getSymbol());
+        aktie.setTransaktionen(transaktionen);
+        aktie.setKurse(new ArrayList<>());
+
+        // 1. Aktie speichern, bevor sie in der Transaktion verwendet wird
+        aktie = aktieRepository.save(aktie);
+
+        // 2. Verknüpfung Kauf -> Aktie
+        kauf.setWertpapier(aktie);
+
+        // 3. Kauf-Transaktion speichern
         transaktionRepository.save(kauf);
 
-        // 6. Aktie dem Depot hinzufügen (dies verwaltet die Stückzahl im Depot)
+        // 4. Aktie dem Depot hinzufügen
         depot.wertpapierHinzufuegen(aktie, stueckzahl);
 
-        // 7. Depot speichern (um die Änderungen am Depot zu persistieren)
+        // 5. Depot speichern
         depotRepository.save(depot);
 
-        System.out.println("Aktie " + symbol + " erfolgreich gekauft und Details gespeichert.");
         return aktie;
     }
 
-    /**
-     * Ruft den aktuellen Kurs für ein gegebenes Tickersymbol ab.
-     *
-     * @param symbol Das Tickersymbol der Aktie.
-     * @return Der aktuelle Kurs der Aktie.
-     * @throws IllegalArgumentException wenn das Symbol leer ist.
-     * @throws RuntimeException wenn kein Kurs gefunden werden konnte.
-     */
     public double getKursFürSymbol(String symbol) {
         if (symbol == null || symbol.isBlank()) {
             throw new IllegalArgumentException("Symbol darf nicht leer sein.");
@@ -151,11 +121,6 @@ public class AktienKaufService {
         return quote.getPrice();
     }
 
-    /**
-     * Ruft alle Transaktionen aus der Datenbank ab.
-     *
-     * @return Eine Liste aller Transaktionen.
-     */
     public List<Transaktion> getAllTransaktionen() {
         return transaktionRepository.findAll();
     }
