@@ -4,7 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.vaadin.example.application.classes.Aktie;
 
+import java.util.Optional;
+
 @Repository
 public interface AktieRepository extends JpaRepository<Aktie, Long> {
+    Optional<Aktie> findBySymbolIgnoreCase(String symbol);
+    boolean existsBySymbol(String symbol);
     Aktie findBySymbol(String symbol);
 }

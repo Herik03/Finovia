@@ -2,12 +2,12 @@ package org.vaadin.example.application.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.vaadin.example.application.classes.Aktie;
+import org.vaadin.example.application.classes.Anleihe;
 import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.classes.DepotWertpapier;
 import org.vaadin.example.application.classes.Verkauf;
 import org.vaadin.example.application.classes.StockQuote;
-import org.vaadin.example.application.repositories.AktieRepository;
+import org.vaadin.example.application.repositories.AnleiheRepository;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;
 
@@ -15,33 +15,33 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
-public class AktienVerkaufService {
+public class AnleiheVerkaufService {
 
     private final AlphaVantageService alphaVantageService;
     private final DepotRepository depotRepository;
     private final TransaktionRepository transaktionRepository;
-    private final AktieRepository aktieRepository;
+    private final AnleiheRepository anleiheRepository;
 
-    public AktienVerkaufService(AlphaVantageService alphaVantageService,
-                                DepotRepository depotRepository,
-                                TransaktionRepository transaktionRepository,
-                                AktieRepository aktieRepository) {
+    public AnleiheVerkaufService(AlphaVantageService alphaVantageService,
+                                 DepotRepository depotRepository,
+                                 TransaktionRepository transaktionRepository,
+                                 AnleiheRepository anleiheRepository) {
         this.alphaVantageService = alphaVantageService;
         this.depotRepository = depotRepository;
         this.transaktionRepository = transaktionRepository;
-        this.aktieRepository = aktieRepository;
+        this.anleiheRepository = anleiheRepository;
     }
 
     /**
-     * Verkauft Aktien aus einem Depot.
+     * Verkauft Anleihen aus einem Depot.
      *
-     * @param symbol    Das Aktiensymbol
-     * @param stueckzahl Anzahl der zu verkaufenden Aktien
+     * @param symbol    Das Anleihesymbol
+     * @param stueckzahl Anzahl der zu verkaufenden Anleihen
      * @param depot     Das Depot, aus dem verkauft wird
-     * @return Die Aktie, wenn Verkauf erfolgreich, sonst null
+     * @return Die Anleihe, wenn Verkauf erfolgreich, sonst null
      */
     @Transactional
-    public Aktie verkaufeAktie(String symbol, int stueckzahl, Depot depot) {
+    public Anleihe verkaufeAnleihe(String symbol, int stueckzahl, Depot depot) {
         if (symbol == null || symbol.isBlank() || stueckzahl <= 0 || depot == null) {
             return null;
         }
@@ -51,64 +51,50 @@ public class AktienVerkaufService {
             return null;
         }
 
-        // Aktie aus DB holen über Symbol (hier Suche manuell, da Methode fehlt)
-        Optional<Aktie> optionalAktie = aktieRepository.findAll()
+        Optional<Anleihe> optionalAnleihe = anleiheRepository.findAll()
                 .stream()
                 .filter(a -> symbol.equalsIgnoreCase(a.getSymbol()))
                 .findFirst();
 
-        if (optionalAktie.isEmpty()) {
-            return null; // Aktie nicht gefunden
+        if (optionalAnleihe.isEmpty()) {
+            return null; // Anleihe nicht gefunden
         }
 
-        Aktie aktie = optionalAktie.get();
+        Anleihe anleihe = optionalAnleihe.get();
 
-        // Anzahl der Aktien im Depot prüfen
         int vorhandeneStueckzahl = 0;
         for (DepotWertpapier dw : depot.getDepotWertpapiere()) {
-            if (dw.getWertpapier().getSymbol().equalsIgnoreCase(symbol)) {
+            if (dw.getWertpapier().equals(anleihe)) {
                 vorhandeneStueckzahl = dw.getAnzahl();
-                if (dw.getWertpapier() instanceof Aktie) {
-                    aktie = (Aktie) dw.getWertpapier(); // Cast auf Aktie
-                } else {
-                    return null; // oder Fehler werfen: kein Verkauf möglich
-                }
                 break;
             }
         }
 
         if (vorhandeneStueckzahl < stueckzahl) {
-            return null; // nicht genug Aktien zum Verkaufen
+            return null; // Nicht genug Anleihen zum Verkaufen
         }
 
         double kurs = quote.getPrice();
         double gebuehren = 2.50;
-        double steuern = 0.0; // z.B. berechnete Steuern, hier als Beispiel 0
+        double steuern = 0.0; // Steuerberechnung kann später ergänzt werden
 
-        // Verkauf erstellen (korrekter Konstruktoraufruf)
         Verkauf verkauf = new Verkauf(
                 steuern,
                 LocalDate.now(),
                 gebuehren,
                 kurs,
                 stueckzahl,
-                aktie,
+                anleihe,
                 null
         );
 
-        // Verkauf zu den Transaktionen hinzufügen
-        aktie.getTransaktionen().add(verkauf);
-
-        // Verkauf speichern
+        anleihe.getTransaktionen().add(verkauf);
         transaktionRepository.save(verkauf);
 
-        // Aktien aus Depot entfernen
-        depot.wertpapierEntfernen(aktie, stueckzahl);
-
-        // Depot speichern
+        depot.wertpapierEntfernen(anleihe, stueckzahl);
         depotRepository.save(depot);
 
-        return aktie;
+        return anleihe;
     }
 
     public double getKursFürSymbol(String symbol) {

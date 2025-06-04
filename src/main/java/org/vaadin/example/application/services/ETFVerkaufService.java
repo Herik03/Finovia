@@ -2,46 +2,46 @@ package org.vaadin.example.application.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Depot;
+import org.vaadin.example.application.classes.ETF;
 import org.vaadin.example.application.classes.DepotWertpapier;
 import org.vaadin.example.application.classes.Verkauf;
 import org.vaadin.example.application.classes.StockQuote;
-import org.vaadin.example.application.repositories.AktieRepository;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;
+import org.vaadin.example.application.repositories.ETFRepository;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
-public class AktienVerkaufService {
+public class ETFVerkaufService {
 
     private final AlphaVantageService alphaVantageService;
     private final DepotRepository depotRepository;
     private final TransaktionRepository transaktionRepository;
-    private final AktieRepository aktieRepository;
+    private final ETFRepository etfRepository;
 
-    public AktienVerkaufService(AlphaVantageService alphaVantageService,
-                                DepotRepository depotRepository,
-                                TransaktionRepository transaktionRepository,
-                                AktieRepository aktieRepository) {
+    public ETFVerkaufService(AlphaVantageService alphaVantageService,
+                             DepotRepository depotRepository,
+                             TransaktionRepository transaktionRepository,
+                             ETFRepository etfRepository) {
         this.alphaVantageService = alphaVantageService;
         this.depotRepository = depotRepository;
         this.transaktionRepository = transaktionRepository;
-        this.aktieRepository = aktieRepository;
+        this.etfRepository = etfRepository;
     }
 
     /**
-     * Verkauft Aktien aus einem Depot.
+     * Verkauft ETF-Anteile aus einem Depot.
      *
-     * @param symbol    Das Aktiensymbol
-     * @param stueckzahl Anzahl der zu verkaufenden Aktien
+     * @param symbol    Das ETF-Symbol
+     * @param stueckzahl Anzahl der zu verkaufenden ETF-Anteile
      * @param depot     Das Depot, aus dem verkauft wird
-     * @return Die Aktie, wenn Verkauf erfolgreich, sonst null
+     * @return Das ETF, wenn Verkauf erfolgreich, sonst null
      */
     @Transactional
-    public Aktie verkaufeAktie(String symbol, int stueckzahl, Depot depot) {
+    public ETF verkaufeETF(String symbol, int stueckzahl, Depot depot) {
         if (symbol == null || symbol.isBlank() || stueckzahl <= 0 || depot == null) {
             return null;
         }
@@ -51,64 +51,50 @@ public class AktienVerkaufService {
             return null;
         }
 
-        // Aktie aus DB holen über Symbol (hier Suche manuell, da Methode fehlt)
-        Optional<Aktie> optionalAktie = aktieRepository.findAll()
+        Optional<ETF> optionalETF = etfRepository.findAll()
                 .stream()
-                .filter(a -> symbol.equalsIgnoreCase(a.getSymbol()))
+                .filter(e -> symbol.equalsIgnoreCase(e.getSymbol()))
                 .findFirst();
 
-        if (optionalAktie.isEmpty()) {
-            return null; // Aktie nicht gefunden
+        if (optionalETF.isEmpty()) {
+            return null; // ETF nicht gefunden
         }
 
-        Aktie aktie = optionalAktie.get();
+        ETF etf = optionalETF.get();
 
-        // Anzahl der Aktien im Depot prüfen
         int vorhandeneStueckzahl = 0;
         for (DepotWertpapier dw : depot.getDepotWertpapiere()) {
-            if (dw.getWertpapier().getSymbol().equalsIgnoreCase(symbol)) {
+            if (dw.getWertpapier().equals(etf)) {
                 vorhandeneStueckzahl = dw.getAnzahl();
-                if (dw.getWertpapier() instanceof Aktie) {
-                    aktie = (Aktie) dw.getWertpapier(); // Cast auf Aktie
-                } else {
-                    return null; // oder Fehler werfen: kein Verkauf möglich
-                }
                 break;
             }
         }
 
         if (vorhandeneStueckzahl < stueckzahl) {
-            return null; // nicht genug Aktien zum Verkaufen
+            return null; // Nicht genug ETF-Anteile zum Verkaufen
         }
 
         double kurs = quote.getPrice();
         double gebuehren = 2.50;
-        double steuern = 0.0; // z.B. berechnete Steuern, hier als Beispiel 0
+        double steuern = 0.0; // Beispiel: Steuerberechnung kann später ergänzt werden
 
-        // Verkauf erstellen (korrekter Konstruktoraufruf)
         Verkauf verkauf = new Verkauf(
                 steuern,
                 LocalDate.now(),
                 gebuehren,
                 kurs,
                 stueckzahl,
-                aktie,
+                etf,
                 null
         );
 
-        // Verkauf zu den Transaktionen hinzufügen
-        aktie.getTransaktionen().add(verkauf);
-
-        // Verkauf speichern
+        etf.getTransaktionen().add(verkauf);
         transaktionRepository.save(verkauf);
 
-        // Aktien aus Depot entfernen
-        depot.wertpapierEntfernen(aktie, stueckzahl);
-
-        // Depot speichern
+        depot.wertpapierEntfernen(etf, stueckzahl);
         depotRepository.save(depot);
 
-        return aktie;
+        return etf;
     }
 
     public double getKursFürSymbol(String symbol) {

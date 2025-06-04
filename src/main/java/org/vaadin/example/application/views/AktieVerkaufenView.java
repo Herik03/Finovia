@@ -31,10 +31,10 @@ import org.vaadin.example.application.services.NutzerService;
 
 import java.util.List;
 
-@Route("verkaufen/:symbol")
+@Route("verkaufen/aktie/:symbol")
 @PageTitle("Aktie verkaufen")
 @PermitAll
-public class AktienVerkaufenView extends AbstractSideNav implements BeforeEnterObserver {
+public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterObserver {
 
     private final AktienVerkaufService aktienVerkaufService;
     private final DepotService depotService;
@@ -50,10 +50,10 @@ public class AktienVerkaufenView extends AbstractSideNav implements BeforeEnterO
     private final double gebuehren = 2.50;
 
     @Autowired
-    public AktienVerkaufenView(AktienVerkaufService aktienVerkaufService,
-                               DepotService depotService,
-                               SecurityService securityService,
-                               NutzerService nutzerService) {
+    public AktieVerkaufenView(AktienVerkaufService aktienVerkaufService,
+                              DepotService depotService,
+                              SecurityService securityService,
+                              NutzerService nutzerService) {
         super(securityService);
         this.aktienVerkaufService = aktienVerkaufService;
         this.depotService = depotService;
@@ -69,12 +69,13 @@ public class AktienVerkaufenView extends AbstractSideNav implements BeforeEnterO
     }
 
     private void setupUI(VerticalLayout container) {
-        Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
+        // Back Button mit RouterLink auf MainView
+        RouterLink backLink = new RouterLink("Zurück zur Übersicht", MainView.class);
+        Button backButton = new Button(VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        RouterLink routerLink = new RouterLink("", MainView.class);
-        routerLink.add(backButton);
+        backLink.add(backButton);
 
-        VerticalLayout topLeftLayout = new VerticalLayout(routerLink);
+        VerticalLayout topLeftLayout = new VerticalLayout(backLink);
         topLeftLayout.setPadding(false);
         topLeftLayout.setSpacing(false);
         topLeftLayout.setWidthFull();
@@ -122,7 +123,7 @@ public class AktienVerkaufenView extends AbstractSideNav implements BeforeEnterO
         verkaufButton.getStyle().set("margin-top", "20px");
         verkaufButton.setWidthFull();
 
-        // Listener zum Aktualisieren des Kurses bei Änderungen
+        // Listener für Kurs-Aktualisierung bei Änderung der Felder
         symbolField.addValueChangeListener(e -> {
             aktualisiereEinzelkurs();
             aktualisiereKurs();
@@ -135,11 +136,13 @@ public class AktienVerkaufenView extends AbstractSideNav implements BeforeEnterO
             Depot depot = depotComboBox.getValue();
 
             if (symbol == null || symbol.isBlank() || depot == null) {
-                Notification.show("Bitte Symbol und Depot angeben.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                Notification.show("Bitte Symbol und Depot angeben.")
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return;
             }
             if (stueckzahlDouble == null || stueckzahlDouble < 1) {
-                Notification.show("Bitte eine gültige Stückzahl angeben.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                Notification.show("Bitte eine gültige Stückzahl angeben.")
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return;
             }
             int stueckzahl = stueckzahlDouble.intValue();
