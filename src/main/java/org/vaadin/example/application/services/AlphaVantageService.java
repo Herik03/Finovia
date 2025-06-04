@@ -292,40 +292,44 @@ public class AlphaVantageService {
             return null;
         }
 
-        LocalDate dividendDate = null;
-        try {
-            String rawDate = overview.getDividendDate();
-            if (rawDate != null && !rawDate.isBlank()) {
-                dividendDate = LocalDate.parse(rawDate);
-            }
-        } catch (Exception e) {
-            logger.warn("Konnte DividendDate nicht parsen für {}: {}", overview.getSymbol(), e.getMessage());
-        }
+        LocalDate dividendDate = safeDate(overview.getDividendDate());
 
         return new Aktie(
-                overview.getSymbol(),
-                overview.getName(),
-                overview.getDescription(),
-                overview.getExchange(),
-                overview.getCurrency(),
-                overview.getCountry(),
-                overview.getSector(),
-                overview.getIndustry(),
-                overview.getMarketCapitalization(),
-                overview.getEBITDA(),
-                overview.getPEGRatio(),
-                overview.getBookValue(),
-                (overview.getDividendPerShare() != null ? overview.getDividendPerShare() : 0.0),
-                (overview.getDividendYield()!= null ? overview.getDividendYield() : 0.0),
-                overview.getEPS(),
-                overview.getForwardPE(),
-                overview.getBeta(),
-                overview.getFiftyTwoWeekHigh(),
-                overview.getFiftyTwoWeekLow(),
+                safeString(overview.getSymbol()),
+                safeString(overview.getName()),
+                safeString(overview.getDescription()),
+                safeString(overview.getExchange()),
+                safeString(overview.getCurrency()),
+                safeString(overview.getCountry()),
+                safeString(overview.getSector()),
+                safeString(overview.getIndustry()),
+                safeLong(overview.getMarketCapitalization()),
+                safeLong(overview.getEBITDA()),
+                safeDouble(overview.getPEGRatio()),
+                safeDouble(overview.getBookValue()),
+                safeDouble(overview.getDividendPerShare()),
+                safeDouble(overview.getDividendYield()),
+                safeDouble(overview.getEPS()),
+                safeDouble(overview.getForwardPE()),
+                safeDouble(overview.getBeta()),
+                safeDouble(overview.getFiftyTwoWeekHigh()),
+                safeDouble(overview.getFiftyTwoWeekLow()),
                 dividendDate
         );
     }
 
+    private String safeString(String s) { return (s == null || s.equalsIgnoreCase("None")) ? "" : s; }
+    private Long safeLong(Long l) { return (l == null) ? 0L : l; }
+    private Double safeDouble(Double d) { return (d == null) ? 0.0 : d; }
+    private LocalDate safeDate(String date) {
+        if (date == null || date.isBlank() || date.equalsIgnoreCase("None")) return null;
+        try {
+            return LocalDate.parse(date);
+        } catch (Exception e) {
+            logger.warn("Konnte DividendDate nicht parsen: {}", date);
+            return null;
+        }
+    }
 
     /**
      * Durchsucht Aktien und Wertpapiere basierend auf dem übergebenen Keyword über die AlphaVantage API.
