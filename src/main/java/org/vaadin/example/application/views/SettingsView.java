@@ -4,8 +4,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
@@ -15,11 +13,9 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.PasswordField;
-import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
@@ -32,8 +28,6 @@ import org.vaadin.example.application.classes.Support;
 import org.vaadin.example.application.services.EmailService;
 import org.vaadin.example.application.services.NutzerService;
 
-import java.time.Duration;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,22 +95,19 @@ public class SettingsView extends AbstractSideNav {
         this.securityService = securityService;
 
         // Haupttitel
-        H1 title = new H1("Einstellungen");
+        H2 title = new H2("Einstellungen");
+        title.addClassNames(LumoUtility.Margin.Bottom.MEDIUM);
 
         // Tabs für verschiedene Einstellungsbereiche erstellen
-        Tab allgemeinTab = new Tab(createTabContent(VaadinIcon.COG, "Allgemein"));
         Tab anzeigeTab = new Tab(createTabContent(VaadinIcon.DESKTOP, "Benutzerverwaltung"));
-        Tab benachrichtigungenTab = new Tab(createTabContent(VaadinIcon.BELL, "Benachrichtigungen"));
         Tab supportTab = new Tab(createTabContent(VaadinIcon.QUESTION_CIRCLE, "Support"));
 
-        Tabs tabs = new Tabs(allgemeinTab, anzeigeTab, benachrichtigungenTab, supportTab);
+        Tabs tabs = new Tabs( anzeigeTab, supportTab);
         tabs.setWidthFull();
         tabs.setFlexGrowForEnclosedTabs(1);
 
         // Seiteninhalte für jeden Tab erstellen
-        tabsToPages.put(allgemeinTab, createAllgemeinSettingsContent());
         tabsToPages.put(anzeigeTab, createBenutzerSettingsContent());
-        tabsToPages.put(benachrichtigungenTab, createBenachrichtigungenSettingsContent());
         tabsToPages.put(supportTab, new SupportView(supportService, emailService));
 
         // Tab-Wechsel-Event-Handler
@@ -126,7 +117,7 @@ public class SettingsView extends AbstractSideNav {
         });
 
         // Standard-Tab anzeigen
-        settingsContent.add(tabsToPages.get(allgemeinTab));
+        settingsContent.add(tabsToPages.get(anzeigeTab));
 
         // Styling und Layout für den Inhaltsbereich
         settingsContent.addClassNames(
@@ -165,49 +156,6 @@ public class SettingsView extends AbstractSideNav {
         layout.add(tabIcon, new Span(text));
 
         return layout;
-    }
-
-    /**
-     * Erstellt den Inhalt für den Allgemein-Tab.
-     *
-     * @return Eine Komponente mit allgemeinen Einstellungen
-     */
-    private Component createAllgemeinSettingsContent() {
-        VerticalLayout content = new VerticalLayout();
-        content.setPadding(false);
-        content.setSpacing(true);
-
-        H2 sectionTitle = new H2("Allgemeine Einstellungen");
-        sectionTitle.addClassNames(LumoUtility.FontSize.XLARGE, LumoUtility.Margin.Bottom.SMALL);
-
-        // Sprachauswahl
-        Select<String> languageSelect = new Select<>();
-        languageSelect.setLabel("Sprache");
-        languageSelect.setItems("Deutsch", "Englisch", "Französisch", "Spanisch");
-        languageSelect.setValue("Deutsch");
-        languageSelect.setWidth("300px");
-
-        // Zeitzonenauswahl
-        ComboBox<String> timeZoneSelect = new ComboBox<>("Zeitzone");
-        timeZoneSelect.setItems("Europa/Berlin", "UTC", "Amerika/New_York");
-        timeZoneSelect.setValue("Europa/Berlin");
-        timeZoneSelect.setWidth("300px");
-
-        // Währungsauswahl
-        Select<String> currencySelect = new Select<>();
-        currencySelect.setLabel("Währung");
-        currencySelect.setItems("EUR", "USD", "GBP", "CHF");
-        currencySelect.setValue("EUR");
-        currencySelect.setWidth("300px");
-
-        Button saveButton = new Button("Änderungen speichern", event -> {
-            Notification notification = Notification.show("Allgemeine Einstellungen gespeichert");
-            notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        });
-        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-        content.add(sectionTitle, languageSelect, timeZoneSelect, currencySelect, saveButton);
-        return content;
     }
 
     /**
@@ -286,9 +234,20 @@ public class SettingsView extends AbstractSideNav {
         adminStatusLayout.add(adminStatusLabel, adminStatusValue, adminLogoutBtn);
 
         Button adminLoginButton = new Button("Anmelden", event -> {
-            openAdminLoginDialog();
+            // Überprüfen, ob der Benutzer bereits Admin-Rechte hat
+            if (securityService.isAdmin()) {
+                Notification.show("Sie haben bereits Admin-Rechte.",
+                                3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_CONTRAST);
+            } else {
+                openAdminLoginDialog();
+            }
         });
         adminLoginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+// Wenn Benutzer bereits Admin ist, Button komplett ausblenden
+        boolean isAdmin = securityService.isAdmin();
+        adminLoginButton.setVisible(!isAdmin);
 
         // Trennlinie für den Konto-Löschbereich
         Div deleteDivider = new Div();
@@ -482,43 +441,5 @@ public class SettingsView extends AbstractSideNav {
         });
 
         dialog.open();
-    }
-
-
-    /**
-     * Erstellt den Inhalt für den Benachrichtigungen-Tab.
-     *
-     * @return Eine Komponente mit Benachrichtigungseinstellungen
-     */
-    private Component createBenachrichtigungenSettingsContent() {
-        VerticalLayout content = new VerticalLayout();
-        content.setPadding(false);
-        content.setSpacing(true);
-
-        H2 sectionTitle = new H2("Benachrichtigungseinstellungen");
-        sectionTitle.addClassNames(LumoUtility.FontSize.XLARGE, LumoUtility.Margin.Bottom.SMALL);
-
-        // E-Mail-Benachrichtigungen aktivieren/deaktivieren
-        Checkbox emailNotificationsCheckbox = new Checkbox("E-Mail Benachrichtigungen aktivieren");
-        emailNotificationsCheckbox.setValue(true);
-
-        // Push-Benachrichtigungen aktivieren/deaktivieren
-        Checkbox pushNotificationsCheckbox = new Checkbox("Push Benachrichtigungen aktivieren");
-        pushNotificationsCheckbox.setValue(false);
-
-        // Benachrichtigungszeitpunkt auswählen
-        TimePicker notificationTime = new TimePicker("Benachrichtigungszeitpunkt");
-        notificationTime.setValue(LocalTime.of(10, 0));
-        notificationTime.setStep(Duration.ofMinutes(30));
-        notificationTime.setWidth("300px");
-
-        Button saveButton = new Button("Änderungen speichern", event -> {
-            Notification notification = Notification.show("Benachrichtigungseinstellungen gespeichert");
-            notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        });
-        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-        content.add(sectionTitle, emailNotificationsCheckbox, pushNotificationsCheckbox, notificationTime, saveButton);
-        return content;
     }
 }
