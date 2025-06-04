@@ -88,12 +88,27 @@ public class SupportView extends VerticalLayout {
         descriptionArea.setMinHeight("150px");
         descriptionArea.setWidthFull();
 
+
+        Button submitButton = new Button("Anfrage senden");
+        submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        VerticalLayout descriptionLayout = new VerticalLayout(descriptionArea);
+        descriptionLayout.setPadding(false);
+        descriptionLayout.setSpacing(false);
+
         // Datei-Upload-Komponente konfigurieren
         MemoryBuffer buffer = new MemoryBuffer();
         Upload fileUpload = new Upload(buffer);
         fileUpload.setMaxFiles(3);
         fileUpload.setDropLabel(new Span("Dateien hier ablegen (max. 3)"));
         fileUpload.setAcceptedFileTypes("image/*", ".pdf", ".docx");
+
+        // Horizontales Layout für Upload und Button
+        HorizontalLayout uploadButtonLayout = new HorizontalLayout(fileUpload, submitButton);
+        uploadButtonLayout.setWidthFull();
+        uploadButtonLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        // Button rechtsbündig ausrichten
+        uploadButtonLayout.expand(fileUpload);
 
         // Liste zum Speichern der hochgeladenen Dateinamen
         List<String> uploadedFiles = new ArrayList<>();
@@ -121,9 +136,6 @@ public class SupportView extends VerticalLayout {
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
-
-        Button submitButton = new Button("Anfrage senden");
-        submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         // Container für die Anfragen
         Div requestsContainer = new Div();
@@ -210,9 +222,6 @@ public class SupportView extends VerticalLayout {
             requestsContainer.scrollIntoView();
         });
 
-        HorizontalLayout submitLayout = new HorizontalLayout(submitButton);
-        submitLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-        submitLayout.setWidthFull();
 
         // Direkte Kontaktmöglichkeiten
         H3 directContactTitle = new H3("Direkter Kontakt");
@@ -251,9 +260,8 @@ public class SupportView extends VerticalLayout {
                 supportDescription,
                 newRequestTitle,
                 categorySelect,
-                descriptionArea,
-                fileUpload,
-                submitLayout,
+                descriptionLayout,
+                uploadButtonLayout,
                 requestHistoryHeader,
                 requestsContainer,
                 directContactTitle,
