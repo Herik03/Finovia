@@ -120,6 +120,7 @@ public class MainView extends AbstractSideNav {
         VerticalLayout depotList = new VerticalLayout();
         depotList.setSpacing(true);
         depotList.setPadding(false);
+        depotList.setWidthFull();
         depotList.setAlignItems(FlexComponent.Alignment.STRETCH); // damit volle Breite genutzt wird
 
         if (depots.isEmpty()) {
@@ -130,12 +131,14 @@ public class MainView extends AbstractSideNav {
                 HorizontalLayout depotRow = new HorizontalLayout();
                 depotRow.setWidthFull();
                 depotRow.setSpacing(true);
+                depotRow.setAlignItems(Alignment.START);
+                depotRow.setDefaultVerticalComponentAlignment(Alignment.START);
 
                 Div depotBox = createDepotBoxWithChart(depot);
                 Div pieChart = createDepotPieChart(depot);
 
                 depotBox.setWidth("60%");   // ca. 60% Breite
-                pieChart.setWidth("35%");   // ca. 35% Breite
+                pieChart.setWidth("34%");   // ca. 35% Breite
 
                 depotRow.add(depotBox, pieChart);
                 depotRow.expand(depotBox); // depotBox wächst mit
@@ -171,20 +174,22 @@ public class MainView extends AbstractSideNav {
 
         String valuesJS = values.toString(); // z.B. [1.1, 2.3, 3.7]
 
+        String chartVar = "depotChart_" + depot.getDepotId();
         String js = String.format(
                 """
                 (function(canvas) {
-                    if (window.depotChart) {
-                        window.depotChart.destroy();
-                    }
                     const ctx = canvas.getContext('2d');
-                    window.depotChart = new Chart(ctx, {
+                    if (window.%1$s) {
+                        window.%1$s.destroy();
+                    }
+                    
+                    window.%1$s = new Chart(ctx, {
                         type: 'bar',
                         data: {
-                            labels: %s,
+                            labels: %2$s,
                             datasets: [{
                                 label: 'Aktueller Kurs',
-                                data: %s,
+                                data: %3$s,
                                 backgroundColor: 'rgba(54, 162, 235, 0.7)',
                                 borderColor: 'rgba(54, 162, 235, 1)',
                                 borderWidth: 1
@@ -198,7 +203,7 @@ public class MainView extends AbstractSideNav {
                         }
                     });
                 })(this);
-                """, labelsJS, valuesJS);
+                """, chartVar,labelsJS, valuesJS);
 
         canvas.getElement().executeJs(js);
 
@@ -210,6 +215,9 @@ public class MainView extends AbstractSideNav {
         depotBox.getStyle().set("margin-bottom", "10px");
         depotBox.getStyle().set("background-color", "#f8f8f8");
         depotBox.setWidth("400px");
+        depotBox.getStyle().set("display", "flex");
+        depotBox.getStyle().set("flex-direction", "column");
+        depotBox.getStyle().set("justify-content", "flex-start");
 
         depotBox.addClickListener(event -> {
             getUI().ifPresent(ui -> ui.navigate(DetailedDepotView.class, depot.getDepotId()));
@@ -243,19 +251,20 @@ public class MainView extends AbstractSideNav {
 
         String valuesJS = values.toString();
 
+        String chartVar = "pieChart_" + depot.getDepotId();
         String js = String.format(
                 """
                 (function(canvas) {
                   const ctx = canvas.getContext('2d');
-                  if(window.pieChart) {
-                    window.pieChart.destroy();
+                  if(window.%1$s) {
+                    window.%1$s.destroy();
                   }
-                  window.pieChart = new Chart(ctx, {
+                  window.%1$s = new Chart(ctx, {
                     type: 'pie',
                     data: {
-                      labels: %s,
+                      labels: %2$s,
                       datasets: [{
-                        data: %s,
+                        data: %3$s,
                         backgroundColor: [
                           'rgba(255, 99, 132, 0.7)',
                           'rgba(54, 162, 235, 0.7)',
@@ -279,7 +288,7 @@ public class MainView extends AbstractSideNav {
                   });
                 })(this);
                 """,
-                labelsJS, valuesJS
+                chartVar,labelsJS, valuesJS
         );
 
         canvas.getElement().executeJs(js);
@@ -288,8 +297,10 @@ public class MainView extends AbstractSideNav {
         pieChartBox.getStyle().set("border", "1px solid #ccc");
         pieChartBox.getStyle().set("padding", "10px");
         pieChartBox.getStyle().set("border-radius", "5px");
-        pieChartBox.getStyle().set("margin-top", "15px");
         pieChartBox.setWidth("400px");
+        pieChartBox.getStyle().set("display", "flex");
+        pieChartBox.getStyle().set("flex-direction", "column");
+        pieChartBox.getStyle().set("justify-content", "flex-start");
 
         return pieChartBox;
     }
