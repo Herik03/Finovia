@@ -196,7 +196,6 @@ public class UserView extends AbstractSideNav {
                 vornameField.setReadOnly(false);
                 nachnameField.setReadOnly(false);
                 emailField.setReadOnly(false);
-                steuerIdField.setReadOnly(false);
                 currentPassword.setReadOnly(false);
                 newPassword.setReadOnly(false);
                 confirmPassword.setReadOnly(false);
