@@ -112,7 +112,7 @@ public class AktienKaufService {
         transaktionRepository.save(kauf);
 
         // 4. Aktie dem Depot hinzufügen
-        depot.wertpapierHinzufuegen(aktieToPersist, stueckzahl);
+        depot.wertpapierHinzufuegen(aktieToPersist, stueckzahl, kurs);
 
         // 6. Depot speichern
         depotRepository.save(depot);

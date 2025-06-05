@@ -51,7 +51,6 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
     private final VerticalLayout depotInfoLayout = new VerticalLayout();
     private final Grid<DepotWertpapier> wertpapierGrid = new Grid<>(DepotWertpapier.class);
     private final VerticalLayout contentLayout = new VerticalLayout();
-    private final Span gesamtwertSpan = new Span();
 
     /**
      * Konstruktor für die DetailedDepotView-Klasse.
@@ -69,8 +68,6 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         this.alphaVantageService = alphaVantageService;
         this.securityService = securityService;
 
-
-
         contentLayout.setWidthFull();
         contentLayout.setSpacing(true);
         contentLayout.setPadding(true);
@@ -82,9 +79,9 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         routerLink.add(backButton);
 
         configureWertpapierGrid();
+
         // Komponenten zum Layout hinzufügen
         contentLayout.add(routerLink, title, depotInfoLayout, new H3("Enthaltene Wertpapiere"), wertpapierGrid);
-
 
         addToMainContent(contentLayout);
     }
@@ -96,31 +93,25 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
                 .setHeader("Name")
                 .setAutoWidth(true);
 
+        // Aktueller Kurs aus DepotService holen (unabhängig vom Typ)
         wertpapierGrid.addColumn(dw -> {
-            if (dw.getWertpapier() instanceof Aktie aktie) {
-                return String.format("%.2f €", alphaVantageService.getAktuellerKurs(aktie.getName()));
-            }
-            return "N/A";
+            double kurs = depotService.getAktuellerKurs(dw.getWertpapier());
+            return kurs > 0.0 ? String.format("%.2f €", kurs) : "N/A";
         }).setHeader("Aktueller Kurs").setAutoWidth(true);
 
+        // Gewinn/Verlust berechnen mit aktuellem Kurs
         wertpapierGrid.addColumn(dw -> {
             DepotService.BestandUndBuchwert bk = depotService.berechneBestandUndKosten(dw);
             if (bk.anzahl == 0) return "Keine Position";
 
-            double kurs = 240.0; // Beispielwert, hier sollte der aktuelle Kurs des Wertpapiers stehen
-//            if (dw.getWertpapier() instanceof Aktie aktie) {
-//                kurs = alphaVantageService.getAktuellerKurs(aktie.getName());
-//            }
-
+            double kurs = depotService.getAktuellerKurs(dw.getWertpapier());
             double wertAktuell = kurs * bk.anzahl;
             double gewinnVerlust = wertAktuell - bk.buchwert;
-
-            //Depotwert = (Marktwert * Anzahl Anteile) - Buchwert
-            // Buchwert = Summe der Kurse der vorhandenen Käufe
 
             return String.format("%.2f € (%s)", gewinnVerlust, gewinnVerlust >= 0 ? "Gewinn" : "Verlust");
         }).setHeader("Gewinn / Verlust").setAutoWidth(true);
 
+        // Verkaufen-Button für Aktien und ETFs anzeigen
         wertpapierGrid.addColumn(new ComponentRenderer<>(dw -> {
             if (dw.getWertpapier() instanceof Aktie) {
                 Button verkaufenButton = new Button("Verkaufen", new Icon(VaadinIcon.MONEY_WITHDRAW));
@@ -128,22 +119,26 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
 
                 verkaufenButton.addClickListener(e -> {
                     String symbol = dw.getWertpapier().getSymbol();
-                    String typ;
+                    String typ = "aktie";
 
-                    if (dw.getWertpapier() instanceof Aktie) {
-                        typ = "aktie";
-                    } else if (dw.getWertpapier() instanceof ETF) {
-                        typ = "etf";
-                    } else {
-                        typ = "wertpapier"; // Fallback
-                    }
+                    getUI().ifPresent(ui -> ui.navigate("verkaufen/" + typ + "/" + symbol));
+                });
+
+                return verkaufenButton;
+            } else if (dw.getWertpapier() instanceof ETF) {
+                Button verkaufenButton = new Button("Verkaufen", new Icon(VaadinIcon.MONEY_WITHDRAW));
+                verkaufenButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_ERROR);
+
+                verkaufenButton.addClickListener(e -> {
+                    String symbol = dw.getWertpapier().getSymbol();
+                    String typ = "etf";
 
                     getUI().ifPresent(ui -> ui.navigate("verkaufen/" + typ + "/" + symbol));
                 });
 
                 return verkaufenButton;
             } else {
-                return new Span(""); // Leerer Platzhalter für Nicht-Aktien
+                return new Span(""); // Leerer Platzhalter für andere Wertpapiere
             }
         })).setHeader("Aktion").setAutoWidth(true);
 
@@ -171,10 +166,8 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         }
 
         // Titel aktualisieren
-
         title.setText(currentDepot.getName());
         updateDepotInfo();
-
 
         // Wertpapiere anzeigen
         wertpapierGrid.setItems(currentDepot.getDepotWertpapiere());
@@ -291,5 +284,3 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         dialog.open();
     }
 }
-//TODO:Einbinden der Funktionalität zum Kaufen und Verkaufen von Wertpapieren
-//TODO:Wertpapiere in die Depot-Übersicht einfügen
