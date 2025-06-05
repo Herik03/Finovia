@@ -245,6 +245,7 @@ public class RegisterView extends VerticalLayout {
             binder.forField(username).bind(Nutzer::getUsername, Nutzer::setUsername);
             binder.forField(vorname).bind(Nutzer::getVorname, Nutzer::setVorname);
             binder.forField(nachname).bind(Nutzer::getNachname, Nutzer::setNachname);
+            binder.forField(steuerID).bind(Nutzer::getSteuerId, Nutzer::setSteuerId);
             binder.forField(email).bind(Nutzer::getEmail, Nutzer::setEmail);
 
             // Alle gebundenen Felder in den Nutzer schreiben
