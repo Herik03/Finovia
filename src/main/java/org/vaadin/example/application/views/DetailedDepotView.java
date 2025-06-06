@@ -111,27 +111,23 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
             return String.format("%.2f € (%s)", gewinnVerlust, gewinnVerlust >= 0 ? "Gewinn" : "Verlust");
         }).setHeader("Gewinn / Verlust").setAutoWidth(true);
 
-        // Verkaufen-Button für Aktien und ETFs anzeigen
+        // Verkaufen-Button für Aktien, ETFs und Anleihen anzeigen
         wertpapierGrid.addColumn(new ComponentRenderer<>(dw -> {
-            if (dw.getWertpapier() instanceof Aktie) {
+            Wertpapier wp = dw.getWertpapier();
+            if (wp instanceof Aktie || wp instanceof ETF || wp instanceof Anleihe) {
                 Button verkaufenButton = new Button("Verkaufen", new Icon(VaadinIcon.MONEY_WITHDRAW));
                 verkaufenButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_ERROR);
 
                 verkaufenButton.addClickListener(e -> {
-                    String symbol = dw.getWertpapier().getSymbol();
-                    String typ = "aktie";
-
-                    getUI().ifPresent(ui -> ui.navigate("verkaufen/" + typ + "/" + symbol));
-                });
-
-                return verkaufenButton;
-            } else if (dw.getWertpapier() instanceof ETF) {
-                Button verkaufenButton = new Button("Verkaufen", new Icon(VaadinIcon.MONEY_WITHDRAW));
-                verkaufenButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_ERROR);
-
-                verkaufenButton.addClickListener(e -> {
-                    String symbol = dw.getWertpapier().getSymbol();
-                    String typ = "etf";
+                    String symbol = wp.getSymbol();
+                    String typ;
+                    if (wp instanceof Aktie) {
+                        typ = "aktie";
+                    } else if (wp instanceof ETF) {
+                        typ = "etf";
+                    } else {
+                        typ = "anleihe";
+                    }
 
                     getUI().ifPresent(ui -> ui.navigate("verkaufen/" + typ + "/" + symbol));
                 });

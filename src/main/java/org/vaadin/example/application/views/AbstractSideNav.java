@@ -135,6 +135,8 @@ public abstract class AbstractSideNav extends VerticalLayout {
         Button transaktionsBtn = createNavButton("Meine Käufe", VaadinIcon.CART);
         transaktionsBtn.addClickListener(e -> UI.getCurrent().navigate("transaktionen"));
 
+        Button VerkaufeBtn = createNavButton("Meine Verkäufe", VaadinIcon.CART);
+        VerkaufeBtn.addClickListener(e -> UI.getCurrent().navigate("meineverkaeufe"));
 
         Button watchlistBtn = createNavButton("Watchlist", VaadinIcon.STAR);
         watchlistBtn.addClickListener(e -> UI.getCurrent().navigate(WatchlistView.class));
@@ -175,7 +177,7 @@ public abstract class AbstractSideNav extends VerticalLayout {
         }
 
 
-        topLayout.add(logo, dashboardBtn, depotBtn, transaktionsBtn, watchlistBtn, apiBtn);
+        topLayout.add(logo, dashboardBtn, depotBtn, transaktionsBtn, VerkaufeBtn, watchlistBtn, apiBtn);
 
 
 

@@ -17,7 +17,6 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,7 +30,7 @@ import org.vaadin.example.application.services.NutzerService;
 
 import java.util.List;
 
-@Route("verkaufen/anleihe/:symbol") // AnleiheVerkaufenView
+@Route("verkaufen/anleihe/:symbol")
 @PageTitle("Anleihe verkaufen")
 @PermitAll
 public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnterObserver {
@@ -70,20 +69,13 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
     private void setupUI(VerticalLayout container) {
         Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        RouterLink routerLink = new RouterLink("", MainView.class);
-        routerLink.add(backButton);
-
-        VerticalLayout topLeftLayout = new VerticalLayout(routerLink);
-        topLeftLayout.setPadding(false);
-        topLeftLayout.setSpacing(false);
-        topLeftLayout.setWidthFull();
-        topLeftLayout.setAlignItems(FlexComponent.Alignment.START);
+        backButton.addClickListener(e -> UI.getCurrent().navigate("depot-details")); // z.B. Depot-Übersicht
 
         H3 title = new H3("Anleihe verkaufen");
         title.addClassName("view-title");
 
-        symbolField = new TextField("Anleihesymbol");
-        symbolField.setPlaceholder("z. B. DE0001234567");
+        symbolField = new TextField("Anleihe-Symbol");
+        symbolField.setPlaceholder("z. B. BND009");
         symbolField.setWidthFull();
 
         einzelkursField = new TextField("Aktueller Kurs (€/Anleihe)");
@@ -121,6 +113,7 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
         verkaufButton.getStyle().set("margin-top", "20px");
         verkaufButton.setWidthFull();
 
+        // Kurs aktualisieren wenn Symbol oder Stückzahl geändert werden
         symbolField.addValueChangeListener(e -> {
             aktualisiereEinzelkurs();
             aktualisiereKurs();
@@ -132,8 +125,12 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
             Double stueckzahlDouble = stueckzahlField.getValue();
             Depot depot = depotComboBox.getValue();
 
-            if (symbol == null || symbol.isBlank() || depot == null) {
-                Notification.show("Bitte Symbol und Depot angeben.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            if (symbol == null || symbol.isBlank()) {
+                Notification.show("Bitte Symbol angeben.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return;
+            }
+            if (depot == null) {
+                Notification.show("Bitte ein Depot auswählen.").addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return;
             }
             if (stueckzahlDouble == null || stueckzahlDouble < 1) {
@@ -146,7 +143,8 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
             if (verkaufteAnleihe != null) {
                 Notification.show("Anleihe erfolgreich verkauft! (" + stueckzahl + " Stück)")
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                UI.getCurrent().navigate("transaktionen");
+                // Navigation zu "Meine Verkäufe"
+                UI.getCurrent().navigate("meineverkaeufe");
             } else {
                 Notification.show("Verkauf fehlgeschlagen. Bitte Symbol und Stückzahl prüfen.")
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -161,7 +159,7 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
         centerLayout.getStyle().set("max-width", "600px");
         centerLayout.getStyle().set("margin", "0 auto");
 
-        container.add(topLeftLayout, centerLayout);
+        container.add(backButton, centerLayout);
     }
 
     private void aktualisiereEinzelkurs() {
@@ -209,8 +207,11 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
         String symbol = event.getRouteParameters().get("symbol").orElse("");
         if (!symbol.isBlank()) {
             symbolField.setValue(symbol);
+            symbolField.setReadOnly(true); // Symbol aus URL -> nicht editierbar
             aktualisiereEinzelkurs();
             aktualisiereKurs();
+        } else {
+            symbolField.setReadOnly(false);
         }
     }
 }

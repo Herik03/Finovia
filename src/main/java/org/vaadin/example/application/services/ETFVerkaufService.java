@@ -42,20 +42,24 @@ public class ETFVerkaufService {
         ETF etf = optionalETF.get();
 
         int vorhandeneStueckzahl = 0;
+        ETF depotETF = null;
+
         for (DepotWertpapier dw : depot.getDepotWertpapiere()) {
-            if (dw.getWertpapier().equals(etf)) {
+            if (dw.getWertpapier().getSymbol().equalsIgnoreCase(symbol)
+                    && dw.getWertpapier() instanceof ETF) {
                 vorhandeneStueckzahl = dw.getAnzahl();
+                depotETF = (ETF) dw.getWertpapier();
                 break;
             }
         }
 
-        if (vorhandeneStueckzahl < stueckzahl) {
-            return null; // Nicht genug ETF-Anteile zum Verkaufen
+        if (depotETF == null || vorhandeneStueckzahl < stueckzahl) {
+            return null; // Kein passender ETF oder nicht genug Anteile
         }
 
         double kurs;
         try {
-            kurs = etf.getAktuellerKurs();
+            kurs = depotETF.getAktuellerKurs();
         } catch (IllegalStateException e) {
             return null; // Kein Kurs verfügbar
         }
@@ -69,17 +73,17 @@ public class ETFVerkaufService {
                 gebuehren,
                 kurs,
                 stueckzahl,
-                etf,
+                depotETF,
                 null
         );
 
-        etf.getTransaktionen().add(verkauf);
+        depotETF.getTransaktionen().add(verkauf);
         transaktionRepository.save(verkauf);
 
-        depot.wertpapierEntfernen(etf, stueckzahl);
+        depot.wertpapierEntfernen(depotETF, stueckzahl);
         depotRepository.save(depot);
 
-        return etf;
+        return depotETF;
     }
 
     public double getKursFürSymbol(String symbol) {

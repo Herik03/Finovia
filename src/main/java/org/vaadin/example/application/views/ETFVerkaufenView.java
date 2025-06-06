@@ -25,8 +25,8 @@ import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.classes.ETF;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.DepotService;
-import org.vaadin.example.application.services.NutzerService;
 import org.vaadin.example.application.services.ETFVerkaufService;
+import org.vaadin.example.application.services.NutzerService;
 
 import java.util.List;
 
@@ -69,7 +69,7 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
     private void setupUI(VerticalLayout container) {
         Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        backButton.addClickListener(e -> UI.getCurrent().navigate("depot-details")); // z.B. Depot-Übersicht
+        backButton.addClickListener(e -> UI.getCurrent().navigate("depot-details"));
 
         H3 title = new H3("ETF verkaufen");
         title.addClassName("view-title");
@@ -113,7 +113,6 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
         verkaufButton.getStyle().set("margin-top", "20px");
         verkaufButton.setWidthFull();
 
-        // Nur bei manuellem Symbol-Ändern Kurs aktualisieren (Falls du das Feld editierbar lässt)
         symbolField.addValueChangeListener(e -> {
             aktualisiereEinzelkurs();
             aktualisiereKurs();
@@ -139,8 +138,8 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
             }
             int stueckzahl = stueckzahlDouble.intValue();
 
-            ETF verkaufteETF = etfVerkaufService.verkaufeETF(symbol, stueckzahl, depot);
-            if (verkaufteETF != null) {
+            ETF verkaufterETF = etfVerkaufService.verkaufeETF(symbol, stueckzahl, depot);
+            if (verkaufterETF != null) {
                 Notification.show("ETF erfolgreich verkauft! (" + stueckzahl + " Stück)")
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 UI.getCurrent().navigate("transaktionen");
@@ -201,15 +200,12 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
         return (nutzer != null) ? nutzer.getId() : null;
     }
 
-    /**
-     * URL Parameter "symbol" auslesen und UI initialisieren.
-     */
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         String symbol = event.getRouteParameters().get("symbol").orElse("");
         if (!symbol.isBlank()) {
             symbolField.setValue(symbol);
-            symbolField.setReadOnly(true); // Symbol aus URL -> nicht editierbar
+            symbolField.setReadOnly(true);
             aktualisiereEinzelkurs();
             aktualisiereKurs();
         } else {
