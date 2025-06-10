@@ -15,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 /**
  * Das {@code DividendenPanel} stellt eine UI-Komponente dar, die die zuletzt erhaltenen
  * Ausschüttungen (Dividenden, Zinszahlungen, ETF-Dividenden) eines Depots anzeigt.
- *
  * Es enthält eine Tabelle zur Übersicht und einen Button zur Prüfung neuer Ausschüttungen.
  */
 public class DividendenPanel extends VerticalLayout {
@@ -47,6 +46,7 @@ public class DividendenPanel extends VerticalLayout {
 
         configureGrid();
 
+        // Button zum Prüfen und Buchen neuer Ausschüttungen
         Button refreshBtn = new Button("Ausschüttungen prüfen", VaadinIcon.MONEY.create());
         refreshBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         refreshBtn.addClickListener(e -> {
@@ -67,6 +67,7 @@ public class DividendenPanel extends VerticalLayout {
         grid.addColumn(a -> a.getDatum().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
                 .setHeader("Datum");
 
+        // Spalte für die Anzahl der Anteile, die je nach Ausschüttungstyp variiert
         grid.addColumn(a -> {
             if (a instanceof Dividende d) {
                 return d.getAktienAnzahl();
@@ -78,6 +79,7 @@ public class DividendenPanel extends VerticalLayout {
             return "-";
         }).setHeader("Anzahl");
 
+        // Spalte für den Nettoauszahlungsbetrag, der je nach Ausschüttungstyp variiert
         grid.addColumn(a -> {
             if (a instanceof Dividende d) {
                 return String.format("%.2f", d.getBetrag());
@@ -89,6 +91,7 @@ public class DividendenPanel extends VerticalLayout {
             return "-";
         }).setHeader("Netto (€)");
 
+        // Spalte für den Typ der Ausschüttung (Aktie, Anleihe, ETF)
         grid.addColumn(a -> {
             if (a instanceof Dividende) return "Aktie";
             if (a instanceof Zinszahlung) return "Anleihe";

@@ -28,6 +28,10 @@ import org.vaadin.example.application.services.NutzerService;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * View zum Kauf von ETFs (Exchange Traded Funds).
+ * Ermöglicht dem Nutzer, ein ETF zu kaufen, indem er das Symbol, die Stückzahl und den Handelsplatz angibt.
+ */
 @Route("kaufen/etf/:symbol")
 @PageTitle("ETF kaufen")
 @PermitAll
@@ -45,6 +49,15 @@ public class ETFKaufView extends AbstractSideNav implements BeforeEnterObserver 
     private TextField kursField;
     private String initialSymbol;
 
+    /**
+     * Konstruktor der ETFKaufView.
+     * Initialisiert die benötigten Services und UI-Komponenten.
+     *
+     * @param etfKaufService Service zum Kauf von ETFs
+     * @param depotService   Service zur Verwaltung von Depots
+     * @param securityService Service zur Nutzer-Authentifizierung
+     * @param nutzerService  Service zur Nutzerverwaltung
+     */
     @Autowired
     public ETFKaufView(ETFKaufService etfKaufService, DepotService depotService,
                        SecurityService securityService, NutzerService nutzerService) {
@@ -110,6 +123,7 @@ public class ETFKaufView extends AbstractSideNav implements BeforeEnterObserver 
         kursField.setValue("0.00");
         kursField.setWidthFull();
 
+        // Depot-Auswahl
         ComboBox<Depot> depotComboBox = new ComboBox<>("Depot auswählen");
         List<Depot> depots = depotService.getDepotsByNutzerId(getAktuelleNutzerId());
         depotComboBox.setItems(depots);
@@ -139,6 +153,7 @@ public class ETFKaufView extends AbstractSideNav implements BeforeEnterObserver 
             }
         });
 
+        // Handelsplatz-Auswahl
         kaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
             int stueckzahl = stueckzahlField.getValue().intValue();
@@ -157,6 +172,7 @@ public class ETFKaufView extends AbstractSideNav implements BeforeEnterObserver 
                 return;
             }
 
+            // Kauf des ETFs durchführen
             ETF etf = etfKaufService.kaufeETF(symbol, stueckzahl, handelsplatz, depot);
             if (etf != null) {
                 Notification.show("Anleihe erfolgreich gekauft!", 3000, Notification.Position.TOP_CENTER)
@@ -224,6 +240,12 @@ public class ETFKaufView extends AbstractSideNav implements BeforeEnterObserver 
     }
 
 
+    /**
+     * Wird aufgerufen, bevor die View betreten wird.
+     * Hier wird das Symbol aus den Routenparametern gelesen und das Formular entsprechend aktualisiert.
+     *
+     * @param event Das Ereignis, das den Routenwechsel auslöst
+     */
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         String symbol = event.getRouteParameters()

@@ -175,11 +175,10 @@ public abstract class AbstractSideNav extends VerticalLayout {
         }
 
 
+        // Buttons zum Layout hinzufügen
         topLayout.add(logo, dashboardBtn, depotBtn, transaktionsBtn, watchlistBtn, apiBtn);
 
-
-
-
+        // Layouts konfigurieren
         topLayout.addClassNames(LumoUtility.AlignItems.CENTER, LumoUtility.JustifyContent.START);
         topLayout.setPadding(false);
         topLayout.setSpacing(false);
@@ -229,19 +228,6 @@ public abstract class AbstractSideNav extends VerticalLayout {
     }
 
     /**
-     * Leert den Hauptinhaltsbereich und fügt neue Komponenten hinzu.
-     * <p>
-     * Diese Methode ist nützlich, wenn der gesamte Inhalt ersetzt werden soll,
-     * beispielsweise beim Wechsel zwischen verschiedenen Ansichten innerhalb einer View.
-     *
-     * @param components Die neuen Komponenten, die hinzugefügt werden sollen
-     */
-    protected void setMainContent(Component... components) {
-        mainContent.removeAll();
-        mainContent.add(components);
-    }
-
-    /**
      * Erstellt einen Navigationsbutton für die Seitenleiste.
      * <p>
      * Der Button wird mit dem angegebenen Text und Icon erstellt und mit einem
@@ -260,11 +246,24 @@ public abstract class AbstractSideNav extends VerticalLayout {
                 .set("text-align", "left");
         return button;
     }
+
+    /**
+     * Schließt die Side Navigation.
+     * <p>
+     * Diese Methode kann verwendet werden, um die Side Navigation zu schließen,
+     * beispielsweise bei mobilen Geräten oder auf Wunsch des Benutzers.
+     */
     public void closeSideNav() {
         // Implementierung zum Schließen der Side Navigation
         getElement().executeJs("document.querySelector('.side-nav').classList.add('hidden');");
     }
 
+    /**
+     * Öffnet die Side Navigation.
+     * <p>
+     * Diese Methode kann verwendet werden, um die Side Navigation zu öffnen,
+     * beispielsweise bei mobilen Geräten oder auf Wunsch des Benutzers.
+     */
     public void openSideNav() {
         // Implementierung zum Öffnen der Side Navigation
         getElement().executeJs("document.querySelector('.side-nav').classList.remove('hidden');");

@@ -31,6 +31,11 @@ import org.vaadin.example.application.services.ETFVerkaufService;
 
 import java.util.List;
 
+/**
+ * View zum Verkauf von ETFs.
+ * Diese View ermöglicht es Nutzern, ETFs zu verkaufen, indem sie das Symbol, den aktuellen Kurs,
+ * die Stückzahl und das Depot auswählen. Die Gebühren werden automatisch berechnet und angezeigt.
+ */
 @Route("verkaufen/etf/:symbol")    // ETFVerkaufenView
 @PageTitle("ETF verkaufen")
 @PermitAll
@@ -48,6 +53,15 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
     private TextField kursField;
     private final double gebuehren = 2.50;
 
+    /**
+     * Konstruktor der ETFVerkaufenView.
+     * Initialisiert die View mit den erforderlichen Services und UI-Komponenten.
+     *
+     * @param etfVerkaufService Service zum Verkauf von ETFs
+     * @param depotService      Service zur Verwaltung von Depots
+     * @param securityService   Service für Sicherheitsfunktionen
+     * @param nutzerService     Service zur Nutzerverwaltung
+     */
     @Autowired
     public ETFVerkaufenView(ETFVerkaufService etfVerkaufService,
                             DepotService depotService,
@@ -67,6 +81,12 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
         addToMainContent(contentLayout);
     }
 
+    /**
+     * Erstellt die Benutzeroberfläche für den Verkauf von ETFs.
+     * Fügt alle erforderlichen Felder, Buttons und Layouts hinzu.
+     *
+     * @param container Das Container-Layout, in dem die UI-Komponenten platziert werden
+     */
     private void setupUI(VerticalLayout container) {
         Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -121,12 +141,14 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
         verkaufButton.getStyle().set("margin-top", "20px");
         verkaufButton.setWidthFull();
 
+        // Listener für die Aktualisierung des Einzelkurses und des Gesamtpreises
         symbolField.addValueChangeListener(e -> {
             aktualisiereEinzelkurs();
             aktualisiereKurs();
         });
         stueckzahlField.addValueChangeListener(e -> aktualisiereKurs());
 
+        // Button-Listener für den Verkauf von ETFs
         verkaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
             Double stueckzahlDouble = stueckzahlField.getValue();
@@ -153,6 +175,7 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
             }
         });
 
+        // Layout für die Anzeige der ETF-Verkaufsseite
         VerticalLayout centerLayout = new VerticalLayout(title, formLayout, verkaufButton);
         centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         centerLayout.setSpacing(true);
@@ -164,6 +187,10 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
         container.add(topLeftLayout, centerLayout);
     }
 
+    /**
+     * Aktualisiert den Einzelkurs des ETFs basierend auf dem eingegebenen Symbol.
+     * Wenn das Symbol leer ist, wird der Kurs auf "0.00" gesetzt.
+     */
     private void aktualisiereEinzelkurs() {
         String symbol = symbolField.getValue();
         if (symbol != null && !symbol.isBlank()) {
@@ -178,6 +205,10 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
         }
     }
 
+    /**
+     * Aktualisiert den Gesamtpreis basierend auf dem Einzelkurs und der Stückzahl.
+     * Wenn das Symbol oder die Stückzahl ungültig ist, wird der Kurs auf "0.00" gesetzt.
+     */
     private void aktualisiereKurs() {
         String symbol = symbolField.getValue();
         Double stueckzahl = stueckzahlField.getValue();
@@ -195,6 +226,12 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
         }
     }
 
+    /**
+     * Holt die ID des aktuell angemeldeten Nutzers.
+     * Wenn kein Nutzer angemeldet ist, wird null zurückgegeben.
+     *
+     * @return Die ID des aktuellen Nutzers oder null, wenn kein Nutzer angemeldet ist
+     */
     private Long getAktuelleNutzerId() {
         UserDetails userDetails = securityService.getAuthenticatedUser();
         if (userDetails == null) {
@@ -204,6 +241,12 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
         return (nutzer != null) ? nutzer.getId() : null;
     }
 
+    /**
+     * Wird aufgerufen, bevor die View angezeigt wird.
+     * Hier wird das Symbol aus den Routenparametern geladen und die UI entsprechend aktualisiert.
+     *
+     * @param event Das BeforeEnterEvent, das Informationen über die Navigation enthält
+     */
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         String symbol = event.getRouteParameters().get("symbol").orElse("");

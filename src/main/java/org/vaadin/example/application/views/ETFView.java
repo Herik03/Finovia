@@ -74,6 +74,7 @@ public class ETFView extends AbstractWertpapierView {
         dialog.setDraggable(true);
         dialog.setResizable(true);
 
+        // Sicherstellen, dass das Wertpapier ein ETF ist
         try {
             ETF etf = (ETF) wertpapier;
             String symbol = etf.getSymbol();

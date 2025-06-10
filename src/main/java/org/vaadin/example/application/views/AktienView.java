@@ -18,10 +18,14 @@ import org.vaadin.example.application.repositories.WertpapierRepository;
 import org.vaadin.example.application.services.AlphaVantageService;
 import org.vaadin.example.application.services.NutzerService;
 import org.vaadin.example.application.services.WatchlistService;
-
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Ansicht für die Anzeige von Aktieninformationen.
+ * Diese Klasse erweitert die abstrakte Basisklasse {@link AbstractWertpapierView}
+ * und implementiert spezifische Logik für die Anzeige und Interaktion mit Aktien.
+ */
 @Component
 public class AktienView extends AbstractWertpapierView {
 
@@ -29,6 +33,15 @@ public class AktienView extends AbstractWertpapierView {
     @Autowired private WatchlistService watchlistService;
     @Autowired private WertpapierRepository wertpapierRepository;
 
+    /**
+     * Konstruktor zur Initialisierung der AktienView.
+     * Erfordert die Bereitstellung aller benötigten Services und Repositories.
+     *
+     * @param alphaVantageService   Service zur Kursabfrage über die AlphaVantage API
+     * @param watchlistService      Service zur Verwaltung von Nutzer-Watchlists
+     * @param nutzerService         Service zur Identifikation und Verwaltung des eingeloggten Nutzers
+     * @param wertpapierRepository  Repository für Wertpapierdatenbankzugriffe
+     */
     @Autowired
     public AktienView(AlphaVantageService alphaVantageService,
                       WatchlistService watchlistService,
@@ -40,7 +53,13 @@ public class AktienView extends AbstractWertpapierView {
         this.wertpapierRepository = wertpapierRepository;
     }
 
-
+    /**
+     * Erstellt einen Dialog zur Anzeige der Details eines Wertpapiers.
+     * Dieser Dialog enthält Informationen über die Aktie, Charts und Interaktionsmöglichkeiten.
+     *
+     * @param wertpapier Das Wertpapier, dessen Details angezeigt werden sollen
+     * @return Ein Dialog mit den Details der Aktie
+     */
     @Override
     public Dialog createDetailsDialog(Wertpapier wertpapier) {
         String symbol = wertpapier.getSymbol();
@@ -71,23 +90,28 @@ public class AktienView extends AbstractWertpapierView {
             return errorDialog;
         }
 
+        // Setze den Anzeigenamen der Aktie
         this.anzeigeName = aktie.getName();
 
+        // Dialog erstellen
         Dialog dialog = new Dialog();
         dialog.setWidthFull();
         dialog.setHeightFull();
 
+        // Layout für den Dialog erstellen
         VerticalLayout layout = new VerticalLayout();
         layout.setSizeFull();
 
         H2 titel = new H2("Aktie: " + anzeigeName);
         layout.add(titel);
 
+        // Dropdown für den Zeitraum
         Select<String> timeFrameSelect = new Select<>();
         timeFrameSelect.setLabel("Zeitraum");
         timeFrameSelect.setItems("Intraday", "Täglich", "Wöchentlich", "Monatlich");
         timeFrameSelect.setValue("Monatlich");
 
+        // Button zum Hinzufügen zur Watchlist
         Button addToWatchlistButton = new Button("Zur Watchlist hinzufügen", new Icon(VaadinIcon.PLUS_CIRCLE));
         addToWatchlistButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SMALL);
 
@@ -95,6 +119,7 @@ public class AktienView extends AbstractWertpapierView {
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         Nutzer currentUser = nutzerService.getNutzerByUsername(currentUsername);
 
+        // Prüfen, ob der Nutzer angemeldet ist und ob die Aktie bereits in der Watchlist ist
         if (currentUser != null) {
             Optional<Watchlist> watchlistOpt = watchlistService.getWatchlistForUser(currentUser.getId());
             if (watchlistOpt.isPresent()) {
@@ -109,7 +134,7 @@ public class AktienView extends AbstractWertpapierView {
             }
         }
 
-
+        // Listener für den Button zum Hinzufügen zur Watchlist
         addToWatchlistButton.addClickListener(event -> {
             if (currentUser != null) {
                 Optional<Wertpapier> existing = wertpapierRepository.findByNameIgnoreCase(symbol);
@@ -119,15 +144,18 @@ public class AktienView extends AbstractWertpapierView {
             }
         });
 
+        // Layout für die obere Zeile mit Zeitraum-Select und Watchlist-Button
         HorizontalLayout topRow = new HorizontalLayout(timeFrameSelect, addToWatchlistButton);
         layout.add(topRow);
 
+        // Container für das Chart
         VerticalLayout chartContainer = new VerticalLayout();
         chartContainer.setSizeFull();
         layout.add(chartContainer);
 
         updateChart(chartContainer, symbol, "Monatlich", anzeigeName);
 
+        // Listener für den Zeitraum-Select
         timeFrameSelect.addValueChangeListener(event -> {
             updateChart(chartContainer, symbol, event.getValue(), anzeigeName);
         });
@@ -139,14 +167,19 @@ public class AktienView extends AbstractWertpapierView {
         closeButton.addClassName("dialog-close-button");
         layout.add(closeButton); // Füge ihn ins Layout ein – nicht direkt in den Dialog!
 
-// Danach das Layout in den Dialog setzen
+        // Danach das Layout in den Dialog setzen
         dialog.add(layout);
         dialog.open();
-
         return dialog;
-
     }
 
+    /**
+     * Erstellt ein vertikales Layout mit Informationen zu einer Aktie.
+     * Dieses Layout enthält verschiedene Informationen wie Kurs, Unternehmensname, Sektor usw.
+     *
+     * @param aktie Die Aktie, deren Informationen angezeigt werden sollen
+     * @return Ein vertikales Layout mit den Aktieninformationen
+     */
     private VerticalLayout createInfoGrid(Aktie aktie) {
         VerticalLayout gridLayout = new VerticalLayout();
         gridLayout.setSpacing(true);
@@ -165,9 +198,8 @@ public class AktienView extends AbstractWertpapierView {
             preisInfo = "Keine aktuellen Kursdaten";
         }
 
-        // Preisinformation als erste Zeile hinzufügen
+        // GridLayout mit den Informationen füllen
         gridLayout.add(createInfoRow("Aktueller Kurs", preisInfo, "Währung", aktie.getCurrency(), "Börse", aktie.getExchange()));
-
         gridLayout.add(createInfoRow("Unternehmensname", aktie.getUnternehmensname(), "Industrie", aktie.getIndustry(), "Sektor", aktie.getSector()));
         gridLayout.add(createInfoRow("Marktkapitalisierung", aktie.getMarketCap(), "EBITDA", aktie.getEbitda(), "PEG Ratio", aktie.getPegRatio()));
         gridLayout.add(createInfoRow("Buchwert", aktie.getBookValue(), "EPS", aktie.getEps(), "Beta", aktie.getBeta()));
