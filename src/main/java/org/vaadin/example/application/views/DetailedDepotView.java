@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -111,6 +112,11 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
             return String.format("%.2f € (%s)", gewinnVerlust, gewinnVerlust >= 0 ? "Gewinn" : "Verlust");
         }).setHeader("Gewinn / Verlust").setAutoWidth(true);
 
+        wertpapierGrid.addColumn(dw -> {
+            DepotService.BestandUndBuchwert bk = depotService.berechneBestandUndKosten(dw);
+            return bk.anzahl;
+        }).setHeader("Anzahl").setAutoWidth(true);
+
         // Verkaufen-Button für Aktien, ETFs und Anleihen anzeigen
         wertpapierGrid.addColumn(new ComponentRenderer<>(dw -> {
             Wertpapier wp = dw.getWertpapier();
@@ -168,18 +174,36 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         // Wertpapiere anzeigen
         wertpapierGrid.setItems(currentDepot.getDepotWertpapiere());
 
+        // Gesamtwert berechnen
+        double gesamtwert = currentDepot.getDepotWertpapiere().stream()
+            .mapToDouble(dw -> {
+                double kurs = depotService.getAktuellerKurs(dw.getWertpapier());
+                return kurs * dw.getAnzahl();
+            })
+            .sum();
+        Span gesamtwertSpan = new Span("Gesamtwert: " + String.format("%.2f €", gesamtwert));
+        gesamtwertSpan.getStyle().set("color", "black").set("font-weight", "bold").set("font-size", "1.5em");
+
+        // DividendenPanel ein-/ausklappbar machen
         DividendenPanel dividendenPanel = new DividendenPanel(currentDepot);
+        Details dividendenDetails = new Details("Dividenden anzeigen/ausblenden", dividendenPanel);
+        dividendenDetails.setOpened(false);
 
         // Layout zusammensetzen: Hauptinhalte links, Dividenden rechts
         HorizontalLayout mainArea = new HorizontalLayout();
         mainArea.setWidthFull();
-        mainArea.add(contentLayout, dividendenPanel);
+        mainArea.add(contentLayout, dividendenDetails);
         mainArea.setFlexGrow(2, contentLayout);
-        mainArea.setFlexGrow(1, dividendenPanel);
+        mainArea.setFlexGrow(1, dividendenDetails);
 
         mainArea.removeAll();
-        mainArea.add(contentLayout, dividendenPanel);
+        mainArea.add(contentLayout, dividendenDetails);
         addToMainContent(mainArea);
+
+        // Gesamtwert unter dem Namen anzeigen
+        if (!contentLayout.getChildren().anyMatch(c -> c.equals(gesamtwertSpan))) {
+            contentLayout.addComponentAtIndex(2, gesamtwertSpan);
+        }
     }
 
     /**
