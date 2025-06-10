@@ -64,7 +64,7 @@ public class ImpressumView extends VerticalLayout {
 
         add(new Paragraph("Telefon: +49 (0) 123 456789-0"));
         add(new Paragraph("Telefax: +49 (0) 123 456789-9"));
-        add(new Paragraph("E-Mail: info@finovia.de"));
+        add(new Paragraph("E-Mail: finovia.trading@gmail.com"));
         add(new Paragraph("Web: www.finovia.de"));
 
         add(new Paragraph(" ")); // Leerer Absatz für besseres Layout
