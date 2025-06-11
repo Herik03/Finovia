@@ -11,9 +11,11 @@ import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.vaadin.example.application.Security.SecurityService;
+import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.classes.Transaktion;
 import org.vaadin.example.application.classes.Verkauf;
 import org.vaadin.example.application.repositories.TransaktionRepository;
+import org.vaadin.example.application.services.NutzerService;
 
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
@@ -28,14 +30,16 @@ public class MeineVerkaeufe extends AbstractSideNav {
 
     private final SecurityService securityService;
     private final TransaktionRepository transaktionRepository;
+    private final NutzerService nutzerService;
 
     @Autowired
-    public MeineVerkaeufe(TransaktionRepository transaktionRepository, SecurityService securityService) {
+    public MeineVerkaeufe(TransaktionRepository transaktionRepository, SecurityService securityService, NutzerService nutzerService) {
         super(securityService);
         this.securityService = securityService;
         this.transaktionRepository = transaktionRepository;
+        this.nutzerService = nutzerService;
 
-        H2 headline = new H2("Verkaufsübersicht");
+        H2 headline = new H2("Meine Verkäufe");
         headline.addClassNames(LumoUtility.Margin.Bottom.MEDIUM);
 
         Grid<Verkauf> grid = new Grid<>(Verkauf.class, false);
@@ -59,9 +63,9 @@ public class MeineVerkaeufe extends AbstractSideNav {
 
         if (userDetails != null) {
             try {
-                String username = userDetails.getUsername();
+                Nutzer user = nutzerService.getAngemeldeterNutzer();
                 // Nur Verkaufs-Transaktionen des aktuellen Nutzers laden
-                List<Transaktion> alleTransaktionen = transaktionRepository.findTransaktionenByNutzerUsername(username);
+                List<Transaktion> alleTransaktionen = transaktionRepository.findTransaktionenByNutzer(user);
                 List<Verkauf> verkaufsTransaktionen = alleTransaktionen.stream()
                         .filter(t -> t instanceof Verkauf)
                         .map(t -> (Verkauf) t)

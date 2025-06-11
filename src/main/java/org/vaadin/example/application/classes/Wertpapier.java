@@ -35,8 +35,9 @@ public abstract class Wertpapier {
 
     private String symbol;
 
-    @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Transaktion> transaktionen;
+    @OneToMany(mappedBy = "wertpapier", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = false, fetch = FetchType.EAGER)
+    private List<Transaktion> transaktionen = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Ausschuettung> ausschuettungen = new ArrayList<>();

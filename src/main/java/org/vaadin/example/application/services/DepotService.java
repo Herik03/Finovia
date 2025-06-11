@@ -1,14 +1,12 @@
 package org.vaadin.example.application.services;
 
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.*;
-import org.vaadin.example.application.repositories.DepotRepository;
-import org.vaadin.example.application.repositories.KursRepository;
-import org.vaadin.example.application.repositories.NutzerRepository;
-import org.vaadin.example.application.repositories.WertpapierRepository;
+import org.vaadin.example.application.repositories.*;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -19,6 +17,7 @@ import java.util.Queue;
 public class DepotService {
 
     private final DepotRepository depotRepository;
+    private final DepotWertpapierRepository depotWertpapierRepository;
     private final NutzerRepository nutzerRepository;
     private final WertpapierRepository wertpapierRepository;
     private final KursRepository kursRepository;
@@ -28,12 +27,53 @@ public class DepotService {
     public DepotService(AlphaVantageService alphaVantageService, DepotRepository depotRepository,
                         NutzerRepository nutzerRepository,
                         WertpapierRepository wertpapierRepository,
-                        KursRepository kursRepository) {
+                        KursRepository kursRepository, DepotWertpapierRepository depotWertpapierRepository) {
         this.depotRepository = depotRepository;
         this.nutzerRepository = nutzerRepository;
         this.wertpapierRepository = wertpapierRepository;
         this.kursRepository = kursRepository;
         this.alphaVantageService = alphaVantageService;
+        this.depotWertpapierRepository = depotWertpapierRepository;
+    }
+
+    @Transactional
+    public void wertpapierAusDepotEntfernen(Depot depot, Wertpapier wertpapier, int anzahl) {
+        DepotWertpapier zuEntfernendesWertpapier = null;
+        boolean erfolgreich = false;
+
+        for (DepotWertpapier dw : depot.getDepotWertpapiere()) {
+            if (dw.getWertpapier().equals(wertpapier)) {
+                if (dw.getAnzahl() > anzahl) {
+                    // Nur die Anzahl reduzieren
+                    dw.setAnzahl(dw.getAnzahl() - anzahl);
+                    depotWertpapierRepository.save(dw);
+                    erfolgreich = true;
+                    break;
+                } else if (dw.getAnzahl() == anzahl) {
+                    // Komplett entfernen
+                    zuEntfernendesWertpapier = dw;
+                    erfolgreich = true;
+                    break;
+                }
+            }
+        }
+
+        if (erfolgreich && zuEntfernendesWertpapier != null) {
+            // Manuelle Entfernung aus der Collection, um Kaskadierung zu vermeiden
+            depot.getDepotWertpapiere().remove(zuEntfernendesWertpapier);
+
+            // Wichtig: Referenz auf das Depot nullen, um die bidirektionale Beziehung zu trennen
+            // Dies verhindert die automatische Kaskadierung beim Löschen
+            zuEntfernendesWertpapier.setDepot(null);
+            zuEntfernendesWertpapier.setWertpapier(null);
+
+            // Änderungen speichern
+            depotRepository.save(depot);
+
+            // Jetzt erst das DepotWertpapier löschen
+            depotWertpapierRepository.delete(zuEntfernendesWertpapier);
+        }
+
     }
 
     @jakarta.transaction.Transactional
@@ -157,36 +197,6 @@ public class DepotService {
         }
 
         return new BestandUndBuchwert(gesamtStueck, buchwert);
-    }
-
-    @jakarta.transaction.Transactional
-    public boolean verkaufen(Depot depot, Wertpapier wertpapier, int stückzahl, double kurs, double gebühren, double steuern) {
-        if (depot == null || wertpapier == null || stückzahl <= 0) {
-            return false;
-        }
-
-        depot.getDepotWertpapiere().size();
-
-        DepotWertpapier dw = depot.getDepotWertpapierFor(wertpapier);
-        if (dw == null) {
-            return false;
-        }
-
-        BestandUndBuchwert bestandUndBuchwert = berechneBestandUndKosten(dw);
-        if (bestandUndBuchwert.anzahl < stückzahl) {
-            return false;
-        }
-
-        Verkauf verkauf = new Verkauf(steuern, LocalDate.now(), gebühren, kurs, stückzahl, wertpapier, null);
-        wertpapier.getTransaktionen().add(verkauf);
-        dw.setAnzahl(dw.getAnzahl() - stückzahl);
-
-        double nettoErlös = stückzahl * kurs - gebühren - steuern;
-        depot.setSaldo(depot.getSaldo() + nettoErlös);
-
-        saveDepot(depot);
-
-        return true;
     }
 
     public double getAktuellerKurs(Wertpapier wertpapier) {

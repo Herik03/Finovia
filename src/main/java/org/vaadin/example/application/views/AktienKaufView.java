@@ -158,7 +158,7 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
                 return;
             }
 
-            Aktie gekaufteAktie = aktienKaufService.kaufeAktie(symbol, stueckzahl, handelsplatz, depot);
+            Aktie gekaufteAktie = aktienKaufService.kaufeAktie(symbol, stueckzahl, handelsplatz, depot, nutzerService.getAngemeldeterNutzer());
 
             if (gekaufteAktie != null) {
                 Notification.show("Erfolgreich gekauft: " + gekaufteAktie.getName() + " (" + stueckzahl + " Stück)")

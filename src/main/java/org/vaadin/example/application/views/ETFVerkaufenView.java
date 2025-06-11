@@ -138,7 +138,7 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
             }
             int stueckzahl = stueckzahlDouble.intValue();
 
-            ETF verkaufterETF = etfVerkaufService.verkaufeETF(symbol, stueckzahl, depot);
+            ETF verkaufterETF = etfVerkaufService.verkaufeETF(symbol, stueckzahl, depot, nutzerService.getAngemeldeterNutzer());
             if (verkaufterETF != null) {
                 Notification.show("ETF erfolgreich verkauft! (" + stueckzahl + " Stück)")
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);

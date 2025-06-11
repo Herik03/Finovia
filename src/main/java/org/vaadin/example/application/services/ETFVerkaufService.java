@@ -2,10 +2,7 @@ package org.vaadin.example.application.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.vaadin.example.application.classes.Depot;
-import org.vaadin.example.application.classes.ETF;
-import org.vaadin.example.application.classes.DepotWertpapier;
-import org.vaadin.example.application.classes.Verkauf;
+import org.vaadin.example.application.classes.*;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;
 import org.vaadin.example.application.repositories.ETFRepository;
@@ -16,20 +13,20 @@ import java.util.Optional;
 @Service
 public class ETFVerkaufService {
 
-    private final DepotRepository depotRepository;
+    private final DepotService depotService;
     private final TransaktionRepository transaktionRepository;
     private final ETFRepository etfRepository;
 
-    public ETFVerkaufService(DepotRepository depotRepository,
+    public ETFVerkaufService(DepotService depotService,
                              TransaktionRepository transaktionRepository,
                              ETFRepository etfRepository) {
-        this.depotRepository = depotRepository;
+        this.depotService = depotService;
         this.transaktionRepository = transaktionRepository;
         this.etfRepository = etfRepository;
     }
 
     @Transactional
-    public ETF verkaufeETF(String symbol, int stueckzahl, Depot depot) {
+    public ETF verkaufeETF(String symbol, int stueckzahl, Depot depot, Nutzer nutzer) {
         if (symbol == null || symbol.isBlank() || stueckzahl <= 0 || depot == null) {
             return null;
         }
@@ -76,12 +73,12 @@ public class ETFVerkaufService {
                 depotETF,
                 null
         );
+        verkauf.setNutzer(nutzer);
 
         depotETF.getTransaktionen().add(verkauf);
         transaktionRepository.save(verkauf);
 
-        depot.wertpapierEntfernen(depotETF, stueckzahl);
-        depotRepository.save(depot);
+        depotService.wertpapierAusDepotEntfernen(depot, depotETF, stueckzahl);
 
         return depotETF;
     }
