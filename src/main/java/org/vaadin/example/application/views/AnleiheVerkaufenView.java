@@ -139,7 +139,7 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
             }
             int stueckzahl = stueckzahlDouble.intValue();
 
-            Anleihe verkaufteAnleihe = anleiheVerkaufService.verkaufeAnleihe(symbol, stueckzahl, depot);
+            Anleihe verkaufteAnleihe = anleiheVerkaufService.verkaufeAnleihe(symbol, stueckzahl, depot, nutzerService.getAngemeldeterNutzer());
             if (verkaufteAnleihe != null) {
                 Notification.show("Anleihe erfolgreich verkauft! (" + stueckzahl + " Stück)")
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);

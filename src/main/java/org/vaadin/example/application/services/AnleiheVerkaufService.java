@@ -2,11 +2,7 @@ package org.vaadin.example.application.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.vaadin.example.application.classes.Anleihe;
-import org.vaadin.example.application.classes.Depot;
-import org.vaadin.example.application.classes.DepotWertpapier;
-import org.vaadin.example.application.classes.Verkauf;
-import org.vaadin.example.application.classes.Kurs;
+import org.vaadin.example.application.classes.*;
 import org.vaadin.example.application.repositories.AnleiheRepository;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;
@@ -19,6 +15,7 @@ import java.util.Optional;
 public class AnleiheVerkaufService {
 
     private final DepotRepository depotRepository;
+    private final DepotService depotService;
     private final TransaktionRepository transaktionRepository;
     private final AnleiheRepository anleiheRepository;
     private final KursRepository kursRepository;
@@ -26,15 +23,16 @@ public class AnleiheVerkaufService {
     public AnleiheVerkaufService(DepotRepository depotRepository,
                                  TransaktionRepository transaktionRepository,
                                  AnleiheRepository anleiheRepository,
-                                 KursRepository kursRepository) {
+                                 KursRepository kursRepository, DepotService depotService) {
         this.depotRepository = depotRepository;
         this.transaktionRepository = transaktionRepository;
         this.anleiheRepository = anleiheRepository;
         this.kursRepository = kursRepository;
+        this.depotService = depotService;
     }
 
     @Transactional
-    public Anleihe verkaufeAnleihe(String symbol, int stueckzahl, Depot depot) {
+    public Anleihe verkaufeAnleihe(String symbol, int stueckzahl, Depot depot, Nutzer nutzer) {
         if (symbol == null || symbol.isBlank() || stueckzahl <= 0 || depot == null) {
             return null;
         }
@@ -84,14 +82,12 @@ public class AnleiheVerkaufService {
                 anleihe,
                 null
         );
+        verkauf.setNutzer(nutzer);
 
         anleihe.getTransaktionen().add(verkauf);
         transaktionRepository.save(verkauf);
 
-        depot.wertpapierEntfernen(anleihe, stueckzahl);
-        depotRepository.save(depot);
-
-        // Verkauf bleibt in der Transaktionshistorie!
+        depotService.wertpapierAusDepotEntfernen(depot, anleihe, stueckzahl);
 
         return anleihe;
     }
