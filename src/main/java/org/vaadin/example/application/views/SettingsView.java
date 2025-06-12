@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Nutzer;
-import org.vaadin.example.application.classes.Support;
+import org.vaadin.example.application.services.Support;
 import org.vaadin.example.application.services.EmailService;
 import org.vaadin.example.application.services.NutzerService;
 

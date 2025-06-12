@@ -17,21 +17,36 @@ import java.util.List;
  * <p>
  * Diese Klasse bietet Methoden zur Abwicklung des Kaufs von Anleihen inklusive
  * Kursermittlung, Aktualisierung des Depotbestands und Verbuchung der Transaktion.
+ *
+ * @author Jan Schwarzer
  */
 @Service
 public class AnleiheKaufService {
 
-    @Autowired
-    private DepotWertpapierRepository depotWertpapierRepository;
+    private final DepotWertpapierRepository depotWertpapierRepository;
+    private final TransaktionRepository transaktionRepository;
+    private final KursRepository kursRepository;
+    private final WertpapierRepository wertpapierRepository;
 
+    /**
+     * Konstruktor für den {@link AnleiheKaufService}.
+     * Initialisiert die benötigten Repository-Instanzen für die Service-Logik.
+     *
+     * @param depotWertpapierRepository Repository für Depot-Wertpapiere
+     * @param transaktionRepository     Repository für Transaktionen
+     * @param kursRepository            Repository für Kurse
+     * @param wertpapierRepository      Repository für Wertpapiere
+     */
     @Autowired
-    private TransaktionRepository transaktionRepository;
-
-    @Autowired
-    private KursRepository kursRepository;
-
-    @Autowired
-    private WertpapierRepository wertpapierRepository;
+    public AnleiheKaufService(DepotWertpapierRepository depotWertpapierRepository,
+                              TransaktionRepository transaktionRepository,
+                              KursRepository kursRepository,
+                              WertpapierRepository wertpapierRepository) {
+        this.depotWertpapierRepository = depotWertpapierRepository;
+        this.transaktionRepository = transaktionRepository;
+        this.kursRepository = kursRepository;
+        this.wertpapierRepository = wertpapierRepository;
+    }
 
     /**
      * Gibt den zuletzt bekannten Kurs für das übergebene Symbol zurück.
@@ -45,7 +60,7 @@ public class AnleiheKaufService {
         if (kurse.isEmpty()) {
             throw new RuntimeException("Kein Kurs für Symbol " + symbol + " gefunden.");
         }
-        return kurse.get(0).getSchlusskurs();
+        return kurse.getFirst().getSchlusskurs();
     }
 
     /**
@@ -67,11 +82,11 @@ public class AnleiheKaufService {
         if (kurse.isEmpty()) {
             throw new RuntimeException("Kein Kurs für Symbol " + symbol + " gefunden.");
         }
-        double letzterKurs = kurse.get(0).getSchlusskurs();
+        double letzterKurs = kurse.getFirst().getSchlusskurs();
 
         DepotWertpapier dwp = depotWertpapierRepository
                 .findByDepotAndWertpapier(depot, anleihe)
-                .orElse(new DepotWertpapier(depot, anleihe, 0, Double.valueOf(0.0)));
+                .orElse(new DepotWertpapier(depot, anleihe, 0, 0.0));
 
         dwp.setAnzahl(dwp.getAnzahl() + stueckzahl);
         dwp.setEinstandspreis(letzterKurs);

@@ -44,33 +44,60 @@ import java.util.stream.StreamSupport;
  * <p>
  * Der API-Schlüssel wird aus den Umgebungsvariablen über Dotenv geladen.
  *
- * @author Sören Heß
+ * @author Sören Heß, Jan Schwarzer, Henrik Dollmann
  * @version 1.3
  * @see StockQuote
  * @see SearchResult
  */
-
 @Service
 public class AlphaVantageService {
 
     private final String API_KEY = Dotenv.load().get("API_KEY");
-    private final String BASE_URL = "https://www.alphavantage.co/query";
-    private final ObjectMapper obejctMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private static final Logger logger = LoggerFactory.getLogger(AlphaVantageService.class);
-    @Autowired
-    private KursRepository kursRepository;
 
+    private final KursRepository kursRepository;
+
+    /**
+     * Konstruktor für AlphaVantageService.
+     *
+     * @param kursRepository Repository für Kursdatenbankzugriffe
+     */
+    @Autowired
+    public AlphaVantageService(KursRepository kursRepository) {
+        this.kursRepository = kursRepository;
+    }
+
+    /**
+     * Prüft, ob das übergebene Symbol ein gültiges AlphaVantage-Symbol ist.
+     * Fiktive Symbole (z. B. "ETF", "BND") werden ausgeschlossen.
+     *
+     * @param symbol Das zu prüfende Symbol
+     * @return true, wenn das Symbol gültig ist, sonst false
+     */
     private boolean isValidAlphaVantageSymbol(String symbol) {
         // Fiktive Symbole nicht zulassen
         return !(symbol.startsWith("ETF") || symbol.startsWith("BND"));
     }
 
+    /**
+     * Gibt lokale Kursdaten für ein bestimmtes Symbol zurück.
+     *
+     * @param symbol Das Wertpapiersymbol
+     * @return Liste von Kurs-Objekten aus der lokalen Datenbank
+     */
     public List<Kurs> getLocalKurse(String symbol) {
         return kursRepository.findByWertpapierSymbolOrderByDatumAsc(symbol);
     }
 
-
+    /**
+     * Wandelt ein Datums-String in ein LocalDateTime-Objekt um.
+     * Unterstützt sowohl reine Datumsangaben als auch Datumsangaben mit Uhrzeit.
+     *
+     * @param dateStr Das Datums-String
+     * @return Das geparste LocalDateTime-Objekt
+     */
     private LocalDateTime parseDateSmart(String dateStr) {
         if (dateStr.length() == 10) {
             // Nur Datum → Uhrzeit 00:00:00 ergänzen
@@ -80,13 +107,12 @@ public class AlphaVantageService {
         }
     }
 
-
     /**
-     Ruft Kursinformationen im Vergleich zum Vortag auf.
-
-     @param symbol Das Börsensymbol des Wertpapiers (z.B. "AAPL" für Apple Inc.)
-     @return Ein StockQuote-Objekt mit den aktuellen Kursdaten, oder null, wenn die Anfrage fehlschlägt
-     oder keine Daten verfügbar sind
+     * Ruft Kursinformationen im Vergleich zum Vortag auf.
+     *
+     * @param symbol Das Börsensymbol des Wertpapiers (z.B. "AAPL" für Apple Inc.)
+     * @return Ein StockQuote-Objekt mit den aktuellen Kursdaten, oder null, wenn die Anfrage fehlschlägt
+     *         oder keine Daten verfügbar sind
      */
     public StockQuote getCurrentStockQuote(String symbol) {
         var response = AlphaVantage.api().timeSeries().quote().forSymbol(symbol).fetchSync();
@@ -106,10 +132,9 @@ public class AlphaVantageService {
      */
     public List<Kurs> getIntradaySeries(String symbol) {
         if (!isValidAlphaVantageSymbol(symbol)) {
-            logger.info("Lade lokale Kursdaten (daily) für fiktives Symbol: {}", symbol);
+            logger.info("Lade lokale Kursdaten (Intraday) für fiktives Symbol: {}", symbol);
             return getLocalKurse(symbol);
         }
-
 
         var response = AlphaVantage.api()
                 .timeSeries()
@@ -137,7 +162,6 @@ public class AlphaVantageService {
 
         Collections.reverse(result);
         return result;
-
     }
 
     /**
@@ -152,7 +176,6 @@ public class AlphaVantageService {
             logger.info("Lade lokale Kursdaten (daily) für fiktives Symbol: {}", symbol);
             return getLocalKurse(symbol);
         }
-
 
         var response = AlphaVantage.api()
                 .timeSeries()
@@ -193,7 +216,7 @@ public class AlphaVantageService {
     public List<Kurs> getWeeklySeries(String symbol) {
         if (!isValidAlphaVantageSymbol(symbol)) {
             logger.info("Lade lokale Kursdaten für fiktives Symbol: {}", symbol);
-            return getLocalKurse(symbol);  // <-- neue Methode unten
+            return getLocalKurse(symbol);
         }
 
         var response = AlphaVantage.api()
@@ -223,17 +246,16 @@ public class AlphaVantageService {
         return result;
     }
 
-
     /**
-     * Retrieves the monthly time series data for a given stock symbol.
+     * Ruft die monatlichen Kursdaten für ein bestimmtes Wertpapiersymbol von der AlphaVantage API ab.
      *
-     * @param symbol The stock symbol for which the monthly time series data is to be fetched.
-     * @return A list of Kurs objects containing the monthly stock data such as open, close, high, and low prices, along with the corresponding dates.
-     * @throws APIException If an error occurs while fetching the data from the AlphaVantage API.
+     * @param symbol Das Börsensymbol des Wertpapiers
+     * @return Liste von Kurs-Objekten mit monatlichen Kursdaten
+     * @throws APIException Wenn ein Fehler bei der API-Kommunikation auftritt
      */
     public List<Kurs> getMonthlySeries(String symbol) {
         if (!isValidAlphaVantageSymbol(symbol)) {
-            logger.info("Lade lokale Kursdaten (daily) für fiktives Symbol: {}", symbol);
+            logger.info("Lade lokale Kursdaten (monthly) für fiktives Symbol: {}", symbol);
             return getLocalKurse(symbol);
         }
 
@@ -318,9 +340,36 @@ public class AlphaVantageService {
         );
     }
 
+    /**
+     * Hilfsmethode: Gibt einen sicheren String zurück (leerer String bei null oder "None").
+     *
+     * @param s Der zu prüfende String
+     * @return Der sichere String
+     */
     private String safeString(String s) { return (s == null || s.equalsIgnoreCase("None")) ? "" : s; }
+
+    /**
+     * Hilfsmethode: Gibt einen sicheren Long-Wert zurück (0 bei null).
+     *
+     * @param l Der zu prüfende Long-Wert
+     * @return Der sichere Long-Wert
+     */
     private Long safeLong(Long l) { return (l == null) ? 0L : l; }
+
+    /**
+     * Hilfsmethode: Gibt einen sicheren Double-Wert zurück (0.0 bei null).
+     *
+     * @param d Der zu prüfende Double-Wert
+     * @return Der sichere Double-Wert
+     */
     private Double safeDouble(Double d) { return (d == null) ? 0.0 : d; }
+
+    /**
+     * Hilfsmethode: Parst ein Datum sicher, gibt null bei Fehler zurück.
+     *
+     * @param date Das zu parsende Datum als String
+     * @return Das geparste LocalDate oder null
+     */
     private LocalDate safeDate(String date) {
         if (date == null || date.isBlank() || date.equalsIgnoreCase("None")) return null;
         try {
@@ -344,7 +393,8 @@ public class AlphaVantageService {
         }
 
         try {
-            String url = UriComponentsBuilder.fromUriString(BASE_URL)
+            String baseUrl = "https://www.alphavantage.co/query";
+            String url = UriComponentsBuilder.fromUriString(baseUrl)
                     .queryParam("function", "SYMBOL_SEARCH")
                     .queryParam("keywords", keyword)
                     .queryParam("apikey", API_KEY)
@@ -366,7 +416,7 @@ public class AlphaVantageService {
                 throw new APIException("API antwortete mit code: " + response.statusCode());
             }
 
-            JsonNode root = obejctMapper.readTree(response.body());
+            JsonNode root = objectMapper.readTree(response.body());
 
             //Prüfen auf Fehler in der API-Antwort
             if (root.has("Error Message")) {
@@ -386,8 +436,8 @@ public class AlphaVantageService {
                     .map(this::mapToSearchResult)
                     .filter(Objects::nonNull)
                     .filter(result ->
-                            "United States".equals(result.getRegion()) &&
-                                    "USD".equals(result.getCurrency()))
+                            "United States".equals(result.region()) &&
+                                    "USD".equals(result.currency()))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             logger.error("Netzwerk- oder JSON-Parsing-fehler: {}", e.getMessage());
@@ -402,6 +452,9 @@ public class AlphaVantageService {
 
     /**
      * Hilfsmethode zur Umwandlung eines JSON-Knotens in ein SearchResult-Objekt.
+     *
+     * @param node Der JSON-Knoten mit Suchergebnisdaten
+     * @return Ein SearchResult-Objekt oder null bei Fehler
      */
     private SearchResult mapToSearchResult(JsonNode node) {
         try {
@@ -421,12 +474,22 @@ public class AlphaVantageService {
     /**
      * Extrahiert sicher einen Textwert aus einem JsonNode. Gibt einen leeren String zurück,
      * wenn der Knoten nicht existiert oder kein Text ist.
+     *
+     * @param node      Der JSON-Knoten
+     * @param fieldName Der Feldname
+     * @return Der extrahierte Text oder ein leerer String
      */
     private String getTextSafely(JsonNode node, String fieldName) {
         JsonNode field = node.get(fieldName);
         return (field != null && !field.isNull()) ? field.asText() : "";
     }
 
+    /**
+     * Ruft den aktuellen Kurs für das angegebene Wertpapier ab.
+     *
+     * @param name Das Symbol des Wertpapiers
+     * @return Der aktuelle Kurswert, oder 0 bei Fehler
+     */
     public double getAktuellerKurs(String name) {
         var response = AlphaVantage.api()
                 .timeSeries()
@@ -439,26 +502,25 @@ public class AlphaVantageService {
         return response.getPrice();
     }
 
-    public double getProzentualeAenderung24h(String name) {
-        var response = AlphaVantage.api()
-                .timeSeries()
-                .quote()
-                .forSymbol(name)
-                .fetchSync();
-
-        if (response == null || response.getErrorMessage() != null) return 0;
-
-        return response.getChangePercent();
-    }
-
     /**
      * Benutzerdefinierte Exception für API-bezogene Fehler.
      */
     public static class APIException extends RuntimeException {
+        /**
+         * Konstruktor mit Fehlermeldung.
+         *
+         * @param message Die Fehlermeldung
+         */
         public APIException(String message) {
             super(message);
         }
 
+        /**
+         * Konstruktor mit Fehlermeldung und Ursache.
+         *
+         * @param message Die Fehlermeldung
+         * @param cause   Die zugrundeliegende Exception
+         */
         public APIException(String message, Throwable cause) {
             super(message, cause);
         }

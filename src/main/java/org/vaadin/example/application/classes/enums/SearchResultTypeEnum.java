@@ -4,7 +4,9 @@ package org.vaadin.example.application.classes.enums;
  * Das {@code SearchResultTypeEnum} definiert die möglichen Typen von Wertpapieren,
  * die bei einer Suchanfrage in der Anwendung unterschieden werden können.
  *
- * Diese Enum wird verwendet, um die jeweilige Kategorie eines Suchergebnisses zu klassifizieren.
+ * Dieses Enum wird verwendet, um die jeweilige Kategorie eines Suchergebnisses zu klassifizieren.
+ *
+ * @author Sören Heß
  */
 public enum SearchResultTypeEnum {
 

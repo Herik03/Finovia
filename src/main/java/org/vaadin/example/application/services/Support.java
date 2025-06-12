@@ -1,12 +1,23 @@
-package org.vaadin.example.application.classes;
+package org.vaadin.example.application.services;
 
 import org.springframework.stereotype.Service;
+import org.vaadin.example.application.classes.SupportRequest;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service-Klasse zur Verwaltung von Support-Anfragen.
+ *
+ * Bietet Methoden zum Erstellen, Abrufen, Aktualisieren und Löschen von Support-Anfragen
+ * sowie zum Hinzufügen von Kommentaren zu bestehenden Anfragen.
+ *
+ * Die Anfragen werden in einer lokalen Liste gespeichert.
+ *
+ * @author Ben Hübert
+ */
 @Service
 public class Support {
 
@@ -62,20 +73,6 @@ public class Support {
     public boolean updateRequestStatus(SupportRequest request, String newStatus) {
         request.setStatus(newStatus);
         return true;  // Hier 'true' statt 'false' zurückgeben
-    }
-    
-    /**
-     * Findet eine Anfrage anhand ihrer Ticket-ID
-     * @param ticketId Ticket-ID der Anfrage
-     * @return Die gefundene Anfrage oder null
-     */
-    public SupportRequest findByTicketId(String ticketId) {
-        for (SupportRequest request : supportRequests) {
-            if (ticketId.equals(request.getTicketId())) {
-                return request;
-            }
-        }
-        return null;
     }
     
     /**

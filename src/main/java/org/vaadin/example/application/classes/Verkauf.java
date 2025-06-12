@@ -1,7 +1,9 @@
 package org.vaadin.example.application.classes;
 
 import jakarta.persistence.Entity;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 /**
@@ -12,26 +14,32 @@ import java.time.LocalDate;
  * Diese Klasse ist ein konkreter Typ einer Transaktion und wird
  * typischerweise im Rahmen von Veräußerungsprozessen verwendet.
  *
- * @author Jan
+ * @author Jan Schwarzer
  */
 @Entity
 @NoArgsConstructor
+@Getter
+@Setter
 public class Verkauf extends Transaktion{
+    /**
+     * Beim Verkauf angefallene Steuern.
+     */
     private double steuern;
 
-/**
- * Konstruktor zur Initialisierung aller Felder der Verkaufs-Transaktion.
- */
+    /**
+     * Konstruktor zur Initialisierung einer Verkaufs-Transaktion mit allen relevanten Feldern.
+     *
+     * @param steuern      Beim Verkauf angefallene Steuern
+     * @param datum        Datum der Transaktion
+     * @param gebühren     Angefallene Gebühren
+     * @param kurs         Kurs des Wertpapiers zum Verkaufszeitpunkt
+     * @param stückzahl    Anzahl der verkauften Wertpapiere
+     * @param wertpapier   Zugehöriges Wertpapier
+     * @param ausschüttung Zugehörige Ausschüttung (optional)
+     */
     public Verkauf(double steuern, LocalDate datum, double gebühren, double kurs, int stückzahl, Wertpapier wertpapier, Ausschuettung ausschüttung) {
         super(datum, gebühren, kurs, stückzahl, wertpapier, ausschüttung);
         this.steuern = steuern;
     }
 
-    public double getSteuern() {
-        return steuern;
-    }
-
-    public void setSteuern(double steuern) {
-        this.steuern = steuern;
-    }
 }

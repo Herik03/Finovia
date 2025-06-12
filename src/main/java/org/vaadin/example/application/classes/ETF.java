@@ -13,6 +13,8 @@ import java.util.List;
  *
  * ETFs sind börsengehandelte Fonds, die typischerweise einen Index abbilden (z. B. DAX, MSCI World)
  * und regelmäßig Dividenden ausschütten können. Diese Ausschüttungen werden als {@link ETFDividende} verwaltet.
+ *
+ * @author Jan Schwarzer
  */
 @Entity
 @NoArgsConstructor

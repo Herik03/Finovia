@@ -16,6 +16,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service-Klasse für den Kauf von Aktien.
+ *
+ * Stellt Methoden bereit, um Aktien zu kaufen, Transaktionen zu speichern,
+ * Aktieninformationen zu aktualisieren und Kurse abzufragen.
+ *
+ * @author Batuhan Güvercin, Henrik Dollmann
+ */
 @Service
 public class AktienKaufService {
 
@@ -24,6 +32,14 @@ public class AktienKaufService {
     private final TransaktionRepository transaktionRepository;
     private final AktieRepository aktieRepository;
 
+    /**
+     * Konstruktor für den AktienKaufService.
+     *
+     * @param alphaVantageService Service zur Abfrage von Aktienkursen und Fundamentaldaten
+     * @param depotRepository Repository für Depots
+     * @param transaktionRepository Repository für Transaktionen
+     * @param aktieRepository Repository für Aktien
+     */
     @Autowired
     public AktienKaufService(AlphaVantageService alphaVantageService,
                              DepotRepository depotRepository,
@@ -69,7 +85,6 @@ public class AktienKaufService {
             System.err.println("Fehler: Konnte keine fundamentalen Daten für Symbol " + symbol + " abrufen.");
             return null;
         }
-
         // 3. Prüfen, ob die Aktie bereits in der Datenbank existiert
         Aktie aktieToPersist = aktieRepository.findBySymbol(symbol);
         if (aktieToPersist != null) {
@@ -120,10 +135,12 @@ public class AktienKaufService {
         return aktieToPersist;
     }
 
-    public List<Transaktion> getAllTransaktionen() {
-        return transaktionRepository.findAll();
-    }
-
+    /**
+     * Gibt den aktuellen Kurs für das angegebene Symbol zurück.
+     *
+     * @param symbol Das Tickersymbol der Aktie
+     * @return Der aktuelle Kurs oder 0.0, falls nicht verfügbar
+     */
     public double getKursFürSymbol(String symbol) {
         if (symbol == null || symbol.isBlank()) {
             return 0.0;
