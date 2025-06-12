@@ -134,10 +134,10 @@ public class SearchView extends AbstractSideNav {
      */
     private void configureGrid() {
 
-        resultGrid.addColumn(SearchResult::getSymbol).setHeader("Symbol").setAutoWidth(true);
-        resultGrid.addColumn(SearchResult::getName).setHeader("Name").setAutoWidth(true).setFlexGrow(1);
-        resultGrid.addColumn(SearchResult::getRegion).setHeader("Region").setAutoWidth(true);
-        resultGrid.addColumn(SearchResult::getCurrency).setHeader("Währung").setAutoWidth(true);
+        resultGrid.addColumn(SearchResult::symbol).setHeader("Symbol").setAutoWidth(true);
+        resultGrid.addColumn(SearchResult::name).setHeader("Name").setAutoWidth(true).setFlexGrow(1);
+        resultGrid.addColumn(SearchResult::region).setHeader("Region").setAutoWidth(true);
+        resultGrid.addColumn(SearchResult::currency).setHeader("Währung").setAutoWidth(true);
 
         // Spalte für den Typ des Suchergebnisses
         resultGrid.addColumn(new ComponentRenderer<>(result -> {
@@ -151,13 +151,13 @@ public class SearchView extends AbstractSideNav {
             kaufenButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_PRIMARY);
             kaufenButton.addClickListener(e ->
                     {
-                        var url = switch(result.getType()) {
+                        var url = switch(result.type()) {
                             case SearchResultTypeEnum.AKTIE -> "aktie/";
                             case SearchResultTypeEnum.ETF -> "etf/";
                             case SearchResultTypeEnum.ANLEIHE -> "anleihe/";
                             default -> "";
                         };
-                        getUI().ifPresent(ui -> ui.navigate("kaufen/" + url + result.getSymbol()));
+                        getUI().ifPresent(ui -> ui.navigate("kaufen/" + url + result.symbol()));
                     }
             );
 
@@ -262,13 +262,13 @@ public class SearchView extends AbstractSideNav {
     private void showDetails(SearchResult result) {
         closeSideNav();
 
-        Optional<Wertpapier> dbWertpapierOpt = wertpapierRepository.findBySymbol(result.getSymbol());
+        Optional<Wertpapier> dbWertpapierOpt = wertpapierRepository.findBySymbol(result.symbol());
         Dialog detailsDialog;
 
         if (dbWertpapierOpt.isPresent()) {
             detailsDialog = detailViewFactory.getDetailsDialog(dbWertpapierOpt.get());
         } else {
-            Aktie aktie = alphaVantageService.getFundamentalData(result.getSymbol());
+            Aktie aktie = alphaVantageService.getFundamentalData(result.symbol());
             if (aktie == null) {
                 showNotification("Wertpapier nicht gefunden.", NotificationVariant.LUMO_ERROR);
                 return;
