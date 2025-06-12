@@ -49,20 +49,43 @@ public abstract class Wertpapier {
         this.name = name;
         this.symbol = symbol;
         this.transaktionen = transaktionen;
+        if (transaktionen != null) {
+            for (Transaktion t : transaktionen) {
+                this.addTransaktion(t);
+            }
+        }
+
         this.kurse = kurse;
+        if (kurse != null) {
+            for (Kurs k : kurse) {
+                this.addKurs(k);
+            }
+        }
     }
 
     public void addTransaktion(Transaktion transaktion) {
         transaktionen.add(transaktion);
+        if (transaktion.getWertpapier() != this) {
+            transaktion.setWertpapier(this);
+        }
+
     }
 
     public void addKurs(Kurs kurs) {
         kurse.add(kurs);
+        if (kurs.getWertpapier() != this) {
+            kurs.setWertpapier(this);
+        }
+
     }
 
 
     public void addAusschuettung(Ausschuettung ausschuettung) {
         ausschuettungen.add(ausschuettung);
+        if (ausschuettung.getWertpapier() != this) {
+            ausschuettung.setWertpapier(this);
+        }
+
     }
 
     /**
