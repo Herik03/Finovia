@@ -54,9 +54,6 @@ public class WatchlistView extends AbstractSideNav {
     private final Grid<Wertpapier> grid = new Grid<>(Wertpapier.class, false);
     private Nutzer currentUser;
     private final Map<Integer, Span> priceSpanMap = new HashMap<>();
-    private final Map<Integer, HorizontalLayout> trendLayoutMap = new HashMap<>();
-    private final Map<Integer, Span> trendTextSpanMap = new HashMap<>();
-    private final Map<Integer, Icon> trendIconMap = new HashMap<>();
     private final SecurityService securityService;
 
 
