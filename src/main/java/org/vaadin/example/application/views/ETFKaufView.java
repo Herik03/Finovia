@@ -173,7 +173,7 @@ public class ETFKaufView extends AbstractSideNav implements BeforeEnterObserver 
             }
 
             // Kauf des ETFs durchführen
-            ETF etf = etfKaufService.kaufeETF(symbol, stueckzahl, handelsplatz, depot);
+            ETF etf = etfKaufService.kaufeETF(symbol, stueckzahl, handelsplatz, depot, nutzerService.getAngemeldeterNutzer());
             if (etf != null) {
                 Notification.show("Anleihe erfolgreich gekauft!", 3000, Notification.Position.TOP_CENTER)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);

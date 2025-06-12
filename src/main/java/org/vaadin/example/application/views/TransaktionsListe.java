@@ -11,8 +11,11 @@ import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.vaadin.example.application.Security.SecurityService;
+import org.vaadin.example.application.classes.Kauf;
+import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.classes.Transaktion;
 import org.vaadin.example.application.repositories.TransaktionRepository;
+import org.vaadin.example.application.services.NutzerService;
 
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
@@ -32,6 +35,7 @@ public class TransaktionsListe extends AbstractSideNav {
 
     private final SecurityService securityService;
     private final TransaktionRepository transaktionRepository;
+    private final NutzerService nutzerService;
 
     /**
      * Konstruktor, der die Transaktionsliste initialisiert.
@@ -43,15 +47,16 @@ public class TransaktionsListe extends AbstractSideNav {
      * für Sicherheitsoperationen, um den aktuell angemeldeten Nutzer zu identifizieren.
      */
     @Autowired
-    public TransaktionsListe(TransaktionRepository transaktionRepository, SecurityService securityService) {
+    public TransaktionsListe(TransaktionRepository transaktionRepository, SecurityService securityService, NutzerService nutzerService) {
         super(securityService);
         this.securityService = securityService;
         this.transaktionRepository = transaktionRepository;
+        this.nutzerService = nutzerService;
 
-        H2 headline = new H2("Transaktionshistorie");
+        H2 headline = new H2("Meine Käufe");
         headline.addClassNames(LumoUtility.Margin.Bottom.MEDIUM);
 
-        Grid<Transaktion> grid = new Grid<>(Transaktion.class, false);
+        Grid<Kauf> grid = new Grid<>(Kauf.class, false);
 
         DecimalFormat kursFormat = new DecimalFormat("#,##0.00");
         DateTimeFormatter datumFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -64,12 +69,7 @@ public class TransaktionsListe extends AbstractSideNav {
         grid.addColumn(t -> kursFormat.format(t.getStückzahl() * t.getKurs() + t.getGebühren()))
                 .setHeader("Gesamtpreis (€)");
         grid.addColumn(t -> t.getDatum().format(datumFormat)).setHeader("Kaufdatum");
-        grid.addColumn(t -> {
-            if (t instanceof org.vaadin.example.application.classes.Kauf kauf) {
-                return kauf.getHandelsplatz();
-            }
-            return "Unbekannt";
-        }).setHeader("Handelsplatz");
+        grid.addColumn(Kauf::getHandelsplatz).setHeader("Handelsplatz");
 
         // Aktuellen Benutzer identifizieren
         UserDetails userDetails = securityService.getAuthenticatedUser();
@@ -79,7 +79,12 @@ public class TransaktionsListe extends AbstractSideNav {
             try {
                 // Nur Transaktionen des aktuellen Nutzers laden
                 String username = userDetails.getUsername();
-                List<Transaktion> nutzerTransaktionen = transaktionRepository.findTransaktionenByNutzerUsername(username);
+                Nutzer user = nutzerService.getAngemeldeterNutzer();
+                List<Kauf> nutzerTransaktionen = transaktionRepository.findTransaktionenByNutzer(user)
+                        .stream()
+                        .filter(transaktion -> transaktion instanceof Kauf) // Prüft den Typ
+                        .map(transaktion -> (Kauf) transaktion) // Castet zu Kauf
+                        .toList(); // Sammelt in neue Liste
                 grid.setItems(nutzerTransaktionen);
 
                 // Hinweis zur erfolgreichen Filterung

@@ -1,13 +1,12 @@
 package org.vaadin.example.application.services;
 
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.*;
-import org.vaadin.example.application.repositories.DepotRepository;
-import org.vaadin.example.application.repositories.NutzerRepository;
-import org.vaadin.example.application.repositories.WertpapierRepository;
+import org.vaadin.example.application.repositories.*;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -18,24 +17,70 @@ import java.util.Queue;
 public class DepotService {
 
     private final DepotRepository depotRepository;
+    private final DepotWertpapierRepository depotWertpapierRepository;
     private final NutzerRepository nutzerRepository;
     private final WertpapierRepository wertpapierRepository;
+    private final KursRepository kursRepository;
+    private final AlphaVantageService alphaVantageService;
 
     @Autowired
-    public DepotService(DepotRepository depotRepository,
+    public DepotService(AlphaVantageService alphaVantageService, DepotRepository depotRepository,
                         NutzerRepository nutzerRepository,
-                        WertpapierRepository wertpapierRepository) {
+                        WertpapierRepository wertpapierRepository,
+                        KursRepository kursRepository, DepotWertpapierRepository depotWertpapierRepository) {
         this.depotRepository = depotRepository;
         this.nutzerRepository = nutzerRepository;
         this.wertpapierRepository = wertpapierRepository;
+        this.kursRepository = kursRepository;
+        this.alphaVantageService = alphaVantageService;
+        this.depotWertpapierRepository = depotWertpapierRepository;
+    }
+
+    @Transactional
+    public void wertpapierAusDepotEntfernen(Depot depot, Wertpapier wertpapier, int anzahl) {
+        DepotWertpapier zuEntfernendesWertpapier = null;
+        boolean erfolgreich = false;
+
+        for (DepotWertpapier dw : depot.getDepotWertpapiere()) {
+            if (dw.getWertpapier().equals(wertpapier)) {
+                if (dw.getAnzahl() > anzahl) {
+                    // Nur die Anzahl reduzieren
+                    dw.setAnzahl(dw.getAnzahl() - anzahl);
+                    depotWertpapierRepository.save(dw);
+                    erfolgreich = true;
+                    break;
+                } else if (dw.getAnzahl() == anzahl) {
+                    // Komplett entfernen
+                    zuEntfernendesWertpapier = dw;
+                    erfolgreich = true;
+                    break;
+                }
+            }
+        }
+
+        if (erfolgreich && zuEntfernendesWertpapier != null) {
+            // Manuelle Entfernung aus der Collection, um Kaskadierung zu vermeiden
+            depot.getDepotWertpapiere().remove(zuEntfernendesWertpapier);
+
+            // Wichtig: Referenz auf das Depot nullen, um die bidirektionale Beziehung zu trennen
+            // Dies verhindert die automatische Kaskadierung beim Löschen
+            zuEntfernendesWertpapier.setDepot(null);
+            zuEntfernendesWertpapier.setWertpapier(null);
+
+            // Änderungen speichern
+            depotRepository.save(depot);
+
+            // Jetzt erst das DepotWertpapier löschen
+            depotWertpapierRepository.delete(zuEntfernendesWertpapier);
+        }
+
     }
 
     @jakarta.transaction.Transactional
     public List<Depot> getAllDepots() {
         List<Depot> depots = depotRepository.findAll();
-        // Initialize the lazy-loaded collections to prevent LazyInitializationException
         for (Depot depot : depots) {
-            depot.getDepotWertpapiere().size(); // Force initialization
+            depot.getDepotWertpapiere().size();
         }
         return depots;
     }
@@ -43,9 +88,8 @@ public class DepotService {
     @jakarta.transaction.Transactional
     public List<Depot> getDepotsByNutzerId(Long nutzerId) {
         List<Depot> depots = depotRepository.findByBesitzerId(nutzerId);
-        // Initialize the lazy-loaded collections to prevent LazyInitializationException
         for (Depot depot : depots) {
-            depot.getDepotWertpapiere().size(); // Force initialization
+            depot.getDepotWertpapiere().size();
         }
         return depots;
     }
@@ -54,8 +98,7 @@ public class DepotService {
     public Depot getDepotById(Long depotId) {
         Depot depot = depotRepository.findById(depotId).orElse(null);
         if (depot != null) {
-            // Initialize the lazy-loaded collections to prevent LazyInitializationException
-            depot.getDepotWertpapiere().size(); // Force initialization
+            depot.getDepotWertpapiere().size();
         }
         return depot;
     }
@@ -64,7 +107,6 @@ public class DepotService {
     public Wertpapier getWertpapierById(Long id) {
         Wertpapier wertpapier = wertpapierRepository.findById(id).orElse(null);
         if (wertpapier != null) {
-            // Force initialization of any lazy-loaded collections if needed
             wertpapier.getTransaktionen().size();
         }
         return wertpapier;
@@ -79,9 +121,7 @@ public class DepotService {
     public void deleteDepot(Long depotId) {
         Depot depot = depotRepository.findById(depotId).orElse(null);
         if (depot != null && depot.getBesitzer() != null) {
-            // Force initialization of the lazy-loaded collections
             depot.getDepotWertpapiere().size();
-
             Nutzer besitzer = depot.getBesitzer();
             besitzer.depotEntfernen(depot);
             nutzerRepository.save(besitzer);
@@ -100,12 +140,9 @@ public class DepotService {
     }
 
     private static class Kauf {
-        @Getter @Setter
-        private int stückzahl;
-        @Getter @Setter
-        private double kurs;
-        @Getter @Setter
-        private double gebühren;
+        @Getter @Setter private int stückzahl;
+        @Getter @Setter private double kurs;
+        @Getter @Setter private double gebühren;
 
         public Kauf(int stückzahl, double kurs, double gebühren) {
             this.stückzahl = stückzahl;
@@ -120,7 +157,6 @@ public class DepotService {
             return new BestandUndBuchwert(0, 0.0);
         }
 
-        // Force initialization of the lazy-loaded collections
         dw.getWertpapier().getTransaktionen().size();
 
         Queue<Kauf> fifoKaeufe = new LinkedList<>();
@@ -148,15 +184,13 @@ public class DepotService {
                     fifoKauf.setStückzahl(stk - abzug);
 
                     if (fifoKauf.getStückzahl() == 0) {
-                        fifoKaeufe.poll(); // Kauf vollständig verbraucht
+                        fifoKaeufe.poll();
                     }
 
                     zuVerkaufen -= abzug;
                 }
             }
         }
-
-
 
         if (gesamtStueck <= 0) {
             return new BestandUndBuchwert(0, 0.0);
@@ -165,54 +199,22 @@ public class DepotService {
         return new BestandUndBuchwert(gesamtStueck, buchwert);
     }
 
-    /**
-     * Führt den Verkauf von Aktien durch.
-     * Prüft ob genug Aktien vorhanden sind, erstellt eine Verkaufs-Transaktion,
-     * zieht die Aktien vom Bestand ab und erhöht die Cash-Balance im Depot.
-     *
-     * @param depot      Das Depot, aus dem verkauft wird.
-     * @param wertpapier Das Wertpapier, das verkauft wird.
-     * @param stückzahl  Anzahl der zu verkaufenden Aktien.
-     * @param kurs       Verkaufskurs pro Aktie.
-     * @param gebühren   Gebühren für den Verkauf.
-     * @param steuern    Steuern auf den Verkauf.
-     * @return true, wenn Verkauf erfolgreich war, sonst false.
-     */
-    @jakarta.transaction.Transactional
-    public boolean verkaufen(Depot depot, Wertpapier wertpapier, int stückzahl, double kurs, double gebühren, double steuern) {
-        if (depot == null || wertpapier == null || stückzahl <= 0) {
-            return false;
+    public double getAktuellerKurs(Wertpapier wertpapier) {
+        if (wertpapier == null) {
+            return 0.0;
         }
 
-        // Force initialization of the lazy-loaded collections
-        depot.getDepotWertpapiere().size();
-
-        DepotWertpapier dw = depot.getDepotWertpapierFor(wertpapier);
-        if (dw == null) {
-            return false; // Wertpapier nicht im Depot
+        if (wertpapier instanceof Aktie aktie) {
+            // alphaVantageService liefert direkt double zurück
+            return alphaVantageService.getAktuellerKurs(aktie.getSymbol());
+        } else if (wertpapier instanceof ETF etf) {
+            Kurs kurs = kursRepository.findTopByWertpapier_SymbolOrderByDatumDesc(etf.getSymbol());
+            return kurs != null ? kurs.getSchlusskurs() : 0.0;  // Kein doubleValue() nötig!
+        } else if (wertpapier instanceof Anleihe anleihe) {
+            Kurs kurs = kursRepository.findTopByWertpapier_SymbolOrderByDatumDesc(anleihe.getSymbol());
+            return kurs != null ? kurs.getSchlusskurs() : 0.0;  // Auch hier
         }
 
-        BestandUndBuchwert bestandUndBuchwert = berechneBestandUndKosten(dw);
-        if (bestandUndBuchwert.anzahl < stückzahl) {
-            return false; // Nicht genug Aktien zum Verkaufen
-        }
-
-        // Verkaufs-Transaktion erstellen
-        Verkauf verkauf = new Verkauf(steuern, LocalDate.now(), gebühren, kurs, stückzahl, wertpapier, null);
-
-        // Transaktion dem Wertpapier hinzufügen
-        wertpapier.getTransaktionen().add(verkauf);
-
-        // Bestand im DepotWertpapier reduzieren
-        dw.setAnzahl(dw.getAnzahl() - stückzahl);
-
-        // Cash-Balance im Depot aktualisieren (Verkaufserlös minus Gebühren und Steuern)
-        double nettoErlös = stückzahl * kurs - gebühren - steuern;
-        depot.setSaldo(depot.getSaldo() + nettoErlös);
-
-        // Depot speichern (Cascade speichert Wertpapiere und Transaktionen)
-        saveDepot(depot);
-
-        return true;
+        return 0.0;
     }
 }
