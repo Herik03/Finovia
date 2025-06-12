@@ -178,7 +178,7 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
             }
             int stueckzahl = stueckzahlDouble.intValue();
 
-            Aktie verkaufteAktie = aktienVerkaufService.verkaufeAktie(symbol, stueckzahl, depot);
+            Aktie verkaufteAktie = aktienVerkaufService.verkaufeAktie(symbol, stueckzahl, depot, nutzerService.getAngemeldeterNutzer());
 
             if (verkaufteAktie != null) {
                 Notification.show("Erfolgreich verkauft: " + verkaufteAktie.getName() + " (" + stueckzahl + " Stück)")

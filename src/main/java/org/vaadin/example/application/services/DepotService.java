@@ -1,13 +1,14 @@
 package org.vaadin.example.application.services;
 
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.example.application.classes.*;
-import org.vaadin.example.application.repositories.DepotRepository;
-import org.vaadin.example.application.repositories.NutzerRepository;
+import org.vaadin.example.application.repositories.*;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -25,7 +26,11 @@ import java.util.Queue;
 public class DepotService {
 
     private final DepotRepository depotRepository;
+    private final DepotWertpapierRepository depotWertpapierRepository;
     private final NutzerRepository nutzerRepository;
+    private final WertpapierRepository wertpapierRepository;
+    private final KursRepository kursRepository;
+    private final AlphaVantageService alphaVantageService;
 
     /**
      * Konstruktor für DepotService.
@@ -34,11 +39,65 @@ public class DepotService {
      * @param nutzerRepository       Repository für Nutzer
      */
     @Autowired
-    public DepotService(DepotRepository depotRepository,
-                        NutzerRepository nutzerRepository) {
+    public DepotService(AlphaVantageService alphaVantageService, DepotRepository depotRepository,
+                        NutzerRepository nutzerRepository,
+                        WertpapierRepository wertpapierRepository,
+                        KursRepository kursRepository, DepotWertpapierRepository depotWertpapierRepository) {
         this.depotRepository = depotRepository;
         this.nutzerRepository = nutzerRepository;
+        this.wertpapierRepository = wertpapierRepository;
+        this.kursRepository = kursRepository;
+        this.alphaVantageService = alphaVantageService;
+        this.depotWertpapierRepository = depotWertpapierRepository;
+    }
 
+    @Transactional
+    public void wertpapierAusDepotEntfernen(Depot depot, Wertpapier wertpapier, int anzahl) {
+        DepotWertpapier zuEntfernendesWertpapier = null;
+        boolean erfolgreich = false;
+
+        for (DepotWertpapier dw : depot.getDepotWertpapiere()) {
+            if (dw.getWertpapier().equals(wertpapier)) {
+                if (dw.getAnzahl() > anzahl) {
+                    // Nur die Anzahl reduzieren
+                    dw.setAnzahl(dw.getAnzahl() - anzahl);
+                    depotWertpapierRepository.save(dw);
+                    erfolgreich = true;
+                    break;
+                } else if (dw.getAnzahl() == anzahl) {
+                    // Komplett entfernen
+                    zuEntfernendesWertpapier = dw;
+                    erfolgreich = true;
+                    break;
+                }
+            }
+        }
+
+        if (erfolgreich && zuEntfernendesWertpapier != null) {
+            // Manuelle Entfernung aus der Collection, um Kaskadierung zu vermeiden
+            depot.getDepotWertpapiere().remove(zuEntfernendesWertpapier);
+
+            // Wichtig: Referenz auf das Depot nullen, um die bidirektionale Beziehung zu trennen
+            // Dies verhindert die automatische Kaskadierung beim Löschen
+            zuEntfernendesWertpapier.setDepot(null);
+            zuEntfernendesWertpapier.setWertpapier(null);
+
+            // Änderungen speichern
+            depotRepository.save(depot);
+
+            // Jetzt erst das DepotWertpapier löschen
+            depotWertpapierRepository.delete(zuEntfernendesWertpapier);
+        }
+
+    }
+
+    @jakarta.transaction.Transactional
+    public List<Depot> getAllDepots() {
+        List<Depot> depots = depotRepository.findAll();
+        for (Depot depot : depots) {
+            depot.getDepotWertpapiere().size();
+        }
+        return depots;
     }
 
     /**
@@ -53,7 +112,7 @@ public class DepotService {
         List<Depot> depots = depotRepository.findByBesitzerId(nutzerId);
         // Initialisiert die lazy-geladenen Collections, um LazyInitializationException zu vermeiden
         for (Depot depot : depots) {
-            depot.getDepotWertpapiere().size(); // Erzwingt Initialisierung
+            depot.getDepotWertpapiere().size();
         }
         return depots;
     }
@@ -75,6 +134,20 @@ public class DepotService {
         return depot;
     }
 
+    @jakarta.transaction.Transactional
+    public Wertpapier getWertpapierById(Long id) {
+        Wertpapier wertpapier = wertpapierRepository.findById(id).orElse(null);
+        if (wertpapier != null) {
+            wertpapier.getTransaktionen().size();
+        }
+        return wertpapier;
+    }
+
+    @jakarta.transaction.Transactional
+    public void saveDepot(Depot depot) {
+        depotRepository.save(depot);
+    }
+
     /**
      * Löscht ein Depot anhand der Depot-ID.
      * Entfernt das Depot auch aus der Liste des Besitzers.
@@ -87,7 +160,6 @@ public class DepotService {
         if (depot != null && depot.getBesitzer() != null) {
             // Initialisiert die lazy-geladenen Collections
             depot.getDepotWertpapiere().size();
-
             Nutzer besitzer = depot.getBesitzer();
             besitzer.depotEntfernen(depot);
             nutzerRepository.save(besitzer);
@@ -118,12 +190,9 @@ public class DepotService {
      * Interne Hilfsklasse zur Verwaltung von Käufen für FIFO-Berechnung.
      */
     private static class Kauf {
-        @Getter @Setter
-        private int stückzahl;
-        @Getter @Setter
-        private double kurs;
-        @Getter @Setter
-        private double gebühren;
+        @Getter @Setter private int stückzahl;
+        @Getter @Setter private double kurs;
+        @Getter @Setter private double gebühren;
 
         /**
          * Konstruktor für Kauf.
@@ -152,7 +221,6 @@ public class DepotService {
             return new BestandUndBuchwert(0, 0.0);
         }
 
-        // Initialisiert die lazy-geladenen Collections
         dw.getWertpapier().getTransaktionen().size();
 
         Queue<Kauf> fifoKaeufe = new LinkedList<>();
@@ -180,7 +248,7 @@ public class DepotService {
                     fifoKauf.setStückzahl(stk - abzug);
 
                     if (fifoKauf.getStückzahl() == 0) {
-                        fifoKaeufe.poll(); // Kauf vollständig verbraucht
+                        fifoKaeufe.poll();
                     }
 
                     zuVerkaufen -= abzug;
@@ -193,5 +261,24 @@ public class DepotService {
         }
 
         return new BestandUndBuchwert(gesamtStueck, buchwert);
+    }
+
+    public double getAktuellerKurs(Wertpapier wertpapier) {
+        if (wertpapier == null) {
+            return 0.0;
+        }
+
+        if (wertpapier instanceof Aktie aktie) {
+            // alphaVantageService liefert direkt double zurück
+            return alphaVantageService.getAktuellerKurs(aktie.getSymbol());
+        } else if (wertpapier instanceof ETF etf) {
+            Kurs kurs = kursRepository.findTopByWertpapier_SymbolOrderByDatumDesc(etf.getSymbol());
+            return kurs != null ? kurs.getSchlusskurs() : 0.0;  // Kein doubleValue() nötig!
+        } else if (wertpapier instanceof Anleihe anleihe) {
+            Kurs kurs = kursRepository.findTopByWertpapier_SymbolOrderByDatumDesc(anleihe.getSymbol());
+            return kurs != null ? kurs.getSchlusskurs() : 0.0;  // Auch hier
+        }
+
+        return 0.0;
     }
 }

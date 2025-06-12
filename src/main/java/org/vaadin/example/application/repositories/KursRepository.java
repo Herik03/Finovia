@@ -34,4 +34,6 @@ public interface KursRepository extends JpaRepository<Kurs, Long> {
      */
     List<Kurs> findByWertpapier_SymbolOrderByDatumAsc(String symbol);
 
+    // Diese Methode NEU hinzufügen:
+    Kurs findTopByWertpapier_SymbolOrderByDatumDesc(String symbol);
 }

@@ -3,11 +3,7 @@ package org.vaadin.example.application.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.vaadin.example.application.classes.Aktie;
-import org.vaadin.example.application.classes.Depot;
-import org.vaadin.example.application.classes.Kauf;
-import org.vaadin.example.application.classes.Transaktion;
-import org.vaadin.example.application.classes.StockQuote;
+import org.vaadin.example.application.classes.*;
 import org.vaadin.example.application.repositories.AktieRepository;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;
@@ -61,7 +57,7 @@ public class AktienKaufService {
      * @return Das gekaufte Aktie-Objekt oder null bei Fehler
      */
     @Transactional
-    public Aktie kaufeAktie(String symbol, int stueckzahl, String handelsplatz, Depot depot) {
+    public Aktie kaufeAktie(String symbol, int stueckzahl, String handelsplatz, Depot depot, Nutzer nutzer) {
         if (symbol == null || symbol.isBlank() || stueckzahl <= 0 || depot == null) {
             return null;
         }
@@ -75,6 +71,7 @@ public class AktienKaufService {
         double gebuehren = 2.50;
 
         Kauf kauf = new Kauf(handelsplatz, LocalDate.now(), gebuehren, kurs, stueckzahl, null, null);
+        kauf.setNutzer(nutzer);
 
         List<Transaktion> transaktionen = new ArrayList<>();
         transaktionen.add(kauf);

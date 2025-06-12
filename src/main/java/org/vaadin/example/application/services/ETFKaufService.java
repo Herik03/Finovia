@@ -73,7 +73,7 @@ public class ETFKaufService {
      * @throws RuntimeException wenn ETF oder Kurs nicht gefunden werden
      */
     @Transactional
-    public ETF kaufeETF(String symbol, int stueckzahl, String handelsplatz, Depot depot) {
+    public ETF kaufeETF(String symbol, int stueckzahl, String handelsplatz, Depot depot, Nutzer nutzer) {
         ETF etf = (ETF) wertpapierRepository.findBySymbol(symbol)
                 .orElseThrow(() -> new RuntimeException("ETF mit Symbol " + symbol + " nicht gefunden."));
 
@@ -92,6 +92,7 @@ public class ETFKaufService {
         depotWertpapierRepository.save(dwp);
 
         Kauf kauf = new Kauf(handelsplatz, LocalDate.now(), 2.5, letzterKurs, stueckzahl, etf, null);
+        kauf.setNutzer(nutzer);
         transaktionRepository.save(kauf);
 
         return etf;

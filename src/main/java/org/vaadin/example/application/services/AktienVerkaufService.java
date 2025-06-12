@@ -2,11 +2,7 @@ package org.vaadin.example.application.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.vaadin.example.application.classes.Aktie;
-import org.vaadin.example.application.classes.Depot;
-import org.vaadin.example.application.classes.DepotWertpapier;
-import org.vaadin.example.application.classes.Verkauf;
-import org.vaadin.example.application.classes.StockQuote;
+import org.vaadin.example.application.classes.*;
 import org.vaadin.example.application.repositories.AktieRepository;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;
@@ -30,6 +26,7 @@ public class AktienVerkaufService {
     private final DepotRepository depotRepository;
     private final TransaktionRepository transaktionRepository;
     private final AktieRepository aktieRepository;
+    private final DepotService depotService;
 
     /**
      * Konstruktor für AktienVerkaufService.
@@ -42,11 +39,12 @@ public class AktienVerkaufService {
     public AktienVerkaufService(AlphaVantageService alphaVantageService,
                                 DepotRepository depotRepository,
                                 TransaktionRepository transaktionRepository,
-                                AktieRepository aktieRepository) {
+                                AktieRepository aktieRepository, DepotService depotService) {
         this.alphaVantageService = alphaVantageService;
         this.depotRepository = depotRepository;
         this.transaktionRepository = transaktionRepository;
         this.aktieRepository = aktieRepository;
+        this.depotService = depotService;
     }
 
     /**
@@ -62,7 +60,7 @@ public class AktienVerkaufService {
      * @return Die Aktie, wenn Verkauf erfolgreich, sonst null
      */
     @Transactional
-    public Aktie verkaufeAktie(String symbol, int stueckzahl, Depot depot) {
+    public Aktie verkaufeAktie(String symbol, int stueckzahl, Depot depot, Nutzer nutzer) {
         if (symbol == null || symbol.isBlank() || stueckzahl <= 0 || depot == null) {
             return null;
         }
@@ -116,18 +114,12 @@ public class AktienVerkaufService {
                 aktie,
                 null
         );
+        verkauf.setNutzer(nutzer);
 
-        // Verkauf zu den Transaktionen hinzufügen
         aktie.getTransaktionen().add(verkauf);
-
-        // Verkauf speichern
         transaktionRepository.save(verkauf);
 
-        // Aktien aus Depot entfernen
-        depot.wertpapierEntfernen(aktie, stueckzahl);
-
-        // Depot speichern
-        depotRepository.save(depot);
+        depotService.wertpapierAusDepotEntfernen(depot, aktie, stueckzahl);
 
         return aktie;
     }

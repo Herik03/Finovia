@@ -2,11 +2,7 @@ package org.vaadin.example.application.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.vaadin.example.application.classes.Depot;
-import org.vaadin.example.application.classes.ETF;
-import org.vaadin.example.application.classes.DepotWertpapier;
-import org.vaadin.example.application.classes.Verkauf;
-import org.vaadin.example.application.classes.StockQuote;
+import org.vaadin.example.application.classes.*;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;
 import org.vaadin.example.application.repositories.ETFRepository;
@@ -26,25 +22,21 @@ import java.util.Optional;
 @Service
 public class ETFVerkaufService {
 
-    private final AlphaVantageService alphaVantageService;
-    private final DepotRepository depotRepository;
+    private final DepotService depotService;
     private final TransaktionRepository transaktionRepository;
     private final ETFRepository etfRepository;
 
     /**
      * Konstruktor für ETFVerkaufService.
      *
-     * @param alphaVantageService      Service zur Kursabfrage
-     * @param depotRepository          Repository für Depots
+     * @param depotService             Service für Depots
      * @param transaktionRepository    Repository für Transaktionen
      * @param etfRepository            Repository für ETFs
      */
-    public ETFVerkaufService(AlphaVantageService alphaVantageService,
-                             DepotRepository depotRepository,
+    public ETFVerkaufService(DepotService depotService,
                              TransaktionRepository transaktionRepository,
                              ETFRepository etfRepository) {
-        this.alphaVantageService = alphaVantageService;
-        this.depotRepository = depotRepository;
+        this.depotService = depotService;
         this.transaktionRepository = transaktionRepository;
         this.etfRepository = etfRepository;
     }
@@ -59,24 +51,16 @@ public class ETFVerkaufService {
      * @param symbol     Das ETF-Symbol
      * @param stueckzahl Anzahl der zu verkaufenden ETF-Anteile
      * @param depot      Das Depot, aus dem verkauft wird
+     * @param nutzer     Aktuell angemeldeter Nutzer
      * @return Das ETF, wenn Verkauf erfolgreich, sonst null
      */
     @Transactional
-    public ETF verkaufeETF(String symbol, int stueckzahl, Depot depot) {
+    public ETF verkaufeETF(String symbol, int stueckzahl, Depot depot, Nutzer nutzer) {
         if (symbol == null || symbol.isBlank() || stueckzahl <= 0 || depot == null) {
             return null;
         }
 
-        StockQuote quote = alphaVantageService.getCurrentStockQuote(symbol);
-        if (quote == null) {
-            return null;
-        }
-
-        Optional<ETF> optionalETF = etfRepository.findAll()
-                .stream()
-                .filter(e -> symbol.equalsIgnoreCase(e.getSymbol()))
-                .findFirst();
-
+        Optional<ETF> optionalETF = etfRepository.findBySymbolIgnoreCase(symbol);
         if (optionalETF.isEmpty()) {
             return null; // ETF nicht gefunden
         }
@@ -84,20 +68,30 @@ public class ETFVerkaufService {
         ETF etf = optionalETF.get();
 
         int vorhandeneStueckzahl = 0;
+        ETF depotETF = null;
+
         for (DepotWertpapier dw : depot.getDepotWertpapiere()) {
-            if (dw.getWertpapier().equals(etf)) {
+            if (dw.getWertpapier().getSymbol().equalsIgnoreCase(symbol)
+                    && dw.getWertpapier() instanceof ETF) {
                 vorhandeneStueckzahl = dw.getAnzahl();
+                depotETF = (ETF) dw.getWertpapier();
                 break;
             }
         }
 
-        if (vorhandeneStueckzahl < stueckzahl) {
-            return null; // Nicht genug ETF-Anteile zum Verkaufen
+        if (depotETF == null || vorhandeneStueckzahl < stueckzahl) {
+            return null; // Kein passender ETF oder nicht genug Anteile
         }
 
-        double kurs = quote.getPrice();
+        double kurs;
+        try {
+            kurs = depotETF.getAktuellerKurs();
+        } catch (IllegalStateException e) {
+            return null; // Kein Kurs verfügbar
+        }
+
         double gebuehren = 2.50;
-        double steuern = 0.0; // Beispiel: Steuerberechnung kann später ergänzt werden
+        double steuern = 0.0;
 
         Verkauf verkauf = new Verkauf(
                 steuern,
@@ -105,17 +99,17 @@ public class ETFVerkaufService {
                 gebuehren,
                 kurs,
                 stueckzahl,
-                etf,
+                depotETF,
                 null
         );
+        verkauf.setNutzer(nutzer);
 
-        etf.getTransaktionen().add(verkauf);
+        depotETF.getTransaktionen().add(verkauf);
         transaktionRepository.save(verkauf);
 
-        depot.wertpapierEntfernen(etf, stueckzahl);
-        depotRepository.save(depot);
+        depotService.wertpapierAusDepotEntfernen(depot, depotETF, stueckzahl);
 
-        return etf;
+        return depotETF;
     }
 
     /**
@@ -130,10 +124,12 @@ public class ETFVerkaufService {
         if (symbol == null || symbol.isBlank()) {
             throw new IllegalArgumentException("Symbol darf nicht leer sein.");
         }
-        StockQuote quote = alphaVantageService.getCurrentStockQuote(symbol);
-        if (quote == null) {
+
+        Optional<ETF> optionalETF = etfRepository.findBySymbolIgnoreCase(symbol);
+        if (optionalETF.isEmpty()) {
             throw new RuntimeException("Kein Kurs für Symbol gefunden: " + symbol);
         }
-        return quote.getPrice();
+
+        return optionalETF.get().getAktuellerKurs();
     }
 }

@@ -74,7 +74,7 @@ public class AnleiheKaufService {
      * @throws RuntimeException Wenn die Anleihe oder der Kurs nicht gefunden wird.
      */
     @Transactional
-    public Anleihe kaufeAnleihe(String symbol, int stueckzahl, String handelsplatz, Depot depot) {
+    public Anleihe kaufeAnleihe(String symbol, int stueckzahl, String handelsplatz, Depot depot, Nutzer nutzer) {
         Anleihe anleihe = (Anleihe) wertpapierRepository.findBySymbol(symbol)
                 .orElseThrow(() -> new RuntimeException("Anleihe mit Symbol " + symbol + " nicht gefunden."));
 
@@ -93,6 +93,7 @@ public class AnleiheKaufService {
         depotWertpapierRepository.save(dwp);
 
         Kauf kauf = new Kauf(handelsplatz, LocalDate.now(), 2.5, letzterKurs, stueckzahl, anleihe, null);
+        kauf.setNutzer(nutzer);
         transaktionRepository.save(kauf);
 
         return anleihe;

@@ -50,7 +50,7 @@ public class Depot {
     /**
      * Liste der DepotWertpapiere, die im Depot gehalten werden.
      */
-    @OneToMany(mappedBy = "depot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "depot", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private final List<DepotWertpapier> depotWertpapiere = new ArrayList<>();
 
     /**
@@ -342,4 +342,14 @@ public class Depot {
         }
         return null;
     }
+
+    public int getAnzahlAktien(String symbol) {
+        for (DepotWertpapier dw : depotWertpapiere) {
+            if (dw.getWertpapier() instanceof Aktie aktie && aktie.getSymbol().equals(symbol)) {
+                return dw.getAnzahl();
+            }
+        }
+        return 0;
+    }
+
 }

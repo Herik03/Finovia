@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.vaadin.example.application.classes.ETF;
 
+import java.util.Optional;
+
 /**
  * Repository-Interface für {@link ETF}-Entitäten.
  *
@@ -14,5 +16,5 @@ import org.vaadin.example.application.classes.ETF;
  */
 @Repository
 public interface ETFRepository extends JpaRepository<ETF, Long> {
-
+    Optional<ETF> findBySymbolIgnoreCase(String symbol);
 }

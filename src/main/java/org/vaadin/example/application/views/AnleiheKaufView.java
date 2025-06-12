@@ -193,7 +193,7 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
                 return;
             }
 
-            Anleihe anleihe = anleiheKaufService.kaufeAnleihe(symbol, stueckzahl, handelsplatz, depot);
+            Anleihe anleihe = anleiheKaufService.kaufeAnleihe(symbol, stueckzahl, handelsplatz, depot, nutzerService.getAngemeldeterNutzer());
             if (anleihe != null) {
                 Notification.show("Anleihe erfolgreich gekauft!", 3000, Notification.Position.TOP_CENTER)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);

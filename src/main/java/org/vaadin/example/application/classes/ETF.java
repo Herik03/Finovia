@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -61,5 +62,22 @@ public class ETF extends Wertpapier {
             dividende.setWertpapier(this);
             this.etfDividenden.add(dividende);
         }
+    }
+
+    /**
+     * Liefert den aktuellsten Kurs (basierend auf dem neuesten Datum) des ETFs aus der Kursliste.
+     * @return aktueller Kurs als double
+     * @throws IllegalStateException wenn keine Kursdaten vorhanden sind
+     */
+    public double getAktuellerKurs() {
+        if (getKurse() == null || getKurse().isEmpty()) {
+            throw new IllegalStateException("Keine Kursdaten vorhanden für ETF " + getSymbol());
+        }
+
+        return getKurse()
+                .stream()
+                .max(Comparator.comparing(Kurs::getDatum))
+                .map(Kurs::getSchlusskurs)
+                .orElseThrow(() -> new IllegalStateException("Keine Kursdaten vorhanden für ETF " + getSymbol()));
     }
 }

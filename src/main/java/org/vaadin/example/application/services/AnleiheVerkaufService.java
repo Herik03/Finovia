@@ -2,14 +2,11 @@ package org.vaadin.example.application.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.vaadin.example.application.classes.Anleihe;
-import org.vaadin.example.application.classes.Depot;
-import org.vaadin.example.application.classes.DepotWertpapier;
-import org.vaadin.example.application.classes.Verkauf;
-import org.vaadin.example.application.classes.StockQuote;
+import org.vaadin.example.application.classes.*;
 import org.vaadin.example.application.repositories.AnleiheRepository;
 import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;
+import org.vaadin.example.application.repositories.KursRepository;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -26,27 +23,29 @@ import java.util.Optional;
 @Service
 public class AnleiheVerkaufService {
 
-    private final AlphaVantageService alphaVantageService;
     private final DepotRepository depotRepository;
+    private final DepotService depotService;
     private final TransaktionRepository transaktionRepository;
     private final AnleiheRepository anleiheRepository;
+    private final KursRepository kursRepository;
 
     /**
      * Konstruktor für AnleiheVerkaufService.
      *
-     * @param alphaVantageService    Service zur Kursabfrage
+     * @param depotService           Service zur Depotverwaltung
      * @param depotRepository        Repository für Depots
      * @param transaktionRepository  Repository für Transaktionen
      * @param anleiheRepository      Repository für Anleihen
      */
-    public AnleiheVerkaufService(AlphaVantageService alphaVantageService,
-                                 DepotRepository depotRepository,
+    public AnleiheVerkaufService(DepotRepository depotRepository,
                                  TransaktionRepository transaktionRepository,
-                                 AnleiheRepository anleiheRepository) {
-        this.alphaVantageService = alphaVantageService;
+                                 AnleiheRepository anleiheRepository,
+                                 KursRepository kursRepository, DepotService depotService) {
         this.depotRepository = depotRepository;
         this.transaktionRepository = transaktionRepository;
         this.anleiheRepository = anleiheRepository;
+        this.kursRepository = kursRepository;
+        this.depotService = depotService;
     }
 
     /**
@@ -62,13 +61,8 @@ public class AnleiheVerkaufService {
      * @return Die Anleihe, wenn Verkauf erfolgreich, sonst null
      */
     @Transactional
-    public Anleihe verkaufeAnleihe(String symbol, int stueckzahl, Depot depot) {
+    public Anleihe verkaufeAnleihe(String symbol, int stueckzahl, Depot depot, Nutzer nutzer) {
         if (symbol == null || symbol.isBlank() || stueckzahl <= 0 || depot == null) {
-            return null;
-        }
-
-        StockQuote quote = alphaVantageService.getCurrentStockQuote(symbol);
-        if (quote == null) {
             return null;
         }
 
@@ -85,19 +79,28 @@ public class AnleiheVerkaufService {
 
         int vorhandeneStueckzahl = 0;
         for (DepotWertpapier dw : depot.getDepotWertpapiere()) {
-            if (dw.getWertpapier().equals(anleihe)) {
+            if (dw.getWertpapier().getSymbol().equalsIgnoreCase(symbol)) {
                 vorhandeneStueckzahl = dw.getAnzahl();
+                if (!(dw.getWertpapier() instanceof Anleihe)) {
+                    return null; // kein Verkauf möglich, da kein Anleihe-Wertpapier
+                }
+                anleihe = (Anleihe) dw.getWertpapier();
                 break;
             }
         }
 
         if (vorhandeneStueckzahl < stueckzahl) {
-            return null; // Nicht genug Anleihen zum Verkaufen
+            return null; // Nicht genug Anleihen im Depot
         }
 
-        double kurs = quote.getPrice();
+        Kurs letzterKurs = kursRepository.findTopByWertpapier_SymbolOrderByDatumDesc(symbol);
+        if (letzterKurs == null) {
+            return null; // Kein Kurs gefunden
+        }
+
+        double kurs = letzterKurs.getSchlusskurs();
         double gebuehren = 2.50;
-        double steuern = 0.0; // Steuerberechnung kann später ergänzt werden
+        double steuern = 0.0;
 
         Verkauf verkauf = new Verkauf(
                 steuern,
@@ -108,12 +111,12 @@ public class AnleiheVerkaufService {
                 anleihe,
                 null
         );
+        verkauf.setNutzer(nutzer);
 
         anleihe.getTransaktionen().add(verkauf);
         transaktionRepository.save(verkauf);
 
-        depot.wertpapierEntfernen(anleihe, stueckzahl);
-        depotRepository.save(depot);
+        depotService.wertpapierAusDepotEntfernen(depot, anleihe, stueckzahl);
 
         return anleihe;
     }
@@ -127,13 +130,11 @@ public class AnleiheVerkaufService {
      * @throws RuntimeException wenn kein Kurs gefunden wird
      */
     public double getKursFürSymbol(String symbol) {
-        if (symbol == null || symbol.isBlank()) {
-            throw new IllegalArgumentException("Symbol darf nicht leer sein.");
+        Kurs letzterKurs = kursRepository.findTopByWertpapier_SymbolOrderByDatumDesc(symbol);
+        if (letzterKurs != null) {
+            return letzterKurs.getSchlusskurs();
+        } else {
+            throw new IllegalArgumentException("Kein Kurs für Symbol " + symbol + " gefunden.");
         }
-        StockQuote quote = alphaVantageService.getCurrentStockQuote(symbol);
-        if (quote == null) {
-            throw new RuntimeException("Kein Kurs für Symbol gefunden: " + symbol);
-        }
-        return quote.getPrice();
     }
 }

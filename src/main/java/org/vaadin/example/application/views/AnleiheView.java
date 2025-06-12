@@ -1,11 +1,14 @@
 package org.vaadin.example.application.views;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -106,11 +109,12 @@ public class AnleiheView extends AbstractWertpapierView {
             timeFrameSelect.setValue("Monatlich");
 
             // Watchlist-Button
-            Button addToWatchlistButton = createWatchlistButton(symbol);
+            Button addToWatchlistButton = new Button("Zur Watchlist hinzufügen", new Icon(VaadinIcon.PLUS_CIRCLE));
 
             HorizontalLayout timeFrameAndButtonLayout = new HorizontalLayout(timeFrameSelect, addToWatchlistButton);
             timeFrameAndButtonLayout.setAlignItems(Alignment.BASELINE);
             timeFrameAndButtonLayout.setSpacing(true);
+            timeFrameAndButtonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
             layout.add(timeFrameAndButtonLayout);
 
             // Chartbereich

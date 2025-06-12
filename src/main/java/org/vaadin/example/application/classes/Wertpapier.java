@@ -47,8 +47,8 @@ public abstract class Wertpapier {
     /**
      * Liste der zugehörigen Transaktionen.
      */
-    @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Transaktion> transaktionen;
+    @OneToMany(mappedBy = "wertpapier", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = false, fetch = FetchType.EAGER)
+    private List<Transaktion> transaktionen = new ArrayList<>();
 
     /**
      * Liste der zugehörigen Ausschüttungen.

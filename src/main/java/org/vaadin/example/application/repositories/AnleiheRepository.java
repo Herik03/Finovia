@@ -4,6 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.vaadin.example.application.classes.Anleihe;
 
+import java.util.Optional;
+
+
 /**
  * Repository-Interface für {@link Anleihe}-Entitäten.
  *
@@ -14,5 +17,5 @@ import org.vaadin.example.application.classes.Anleihe;
  */
 @Repository
 public interface AnleiheRepository extends JpaRepository<Anleihe, Long> {
-
+    Optional<Anleihe> findBySymbolIgnoreCase(String symbol);
 }
