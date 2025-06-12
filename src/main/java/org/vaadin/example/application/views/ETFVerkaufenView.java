@@ -17,7 +17,6 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,12 +25,12 @@ import org.vaadin.example.application.classes.Depot;
 import org.vaadin.example.application.classes.ETF;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.DepotService;
-import org.vaadin.example.application.services.NutzerService;
 import org.vaadin.example.application.services.ETFVerkaufService;
+import org.vaadin.example.application.services.NutzerService;
 
 import java.util.List;
 
-@Route("verkaufen/etf/:symbol")    // ETFVerkaufenView
+@Route("verkaufen/etf/:symbol")
 @PageTitle("ETF verkaufen")
 @PermitAll
 public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObserver {
@@ -70,14 +69,7 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
     private void setupUI(VerticalLayout container) {
         Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        RouterLink routerLink = new RouterLink("", MainView.class);
-        routerLink.add(backButton);
-
-        VerticalLayout topLeftLayout = new VerticalLayout(routerLink);
-        topLeftLayout.setPadding(false);
-        topLeftLayout.setSpacing(false);
-        topLeftLayout.setWidthFull();
-        topLeftLayout.setAlignItems(FlexComponent.Alignment.START);
+        backButton.addClickListener(e -> UI.getCurrent().navigate("depot-details"));
 
         H3 title = new H3("ETF verkaufen");
         title.addClassName("view-title");
@@ -132,8 +124,12 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
             Double stueckzahlDouble = stueckzahlField.getValue();
             Depot depot = depotComboBox.getValue();
 
-            if (symbol == null || symbol.isBlank() || depot == null) {
-                Notification.show("Bitte Symbol und Depot angeben.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            if (symbol == null || symbol.isBlank()) {
+                Notification.show("Bitte Symbol angeben.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return;
+            }
+            if (depot == null) {
+                Notification.show("Bitte ein Depot auswählen.").addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return;
             }
             if (stueckzahlDouble == null || stueckzahlDouble < 1) {
@@ -142,8 +138,8 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
             }
             int stueckzahl = stueckzahlDouble.intValue();
 
-            ETF verkaufteETF = etfVerkaufService.verkaufeETF(symbol, stueckzahl, depot);
-            if (verkaufteETF != null) {
+            ETF verkaufterETF = etfVerkaufService.verkaufeETF(symbol, stueckzahl, depot, nutzerService.getAngemeldeterNutzer());
+            if (verkaufterETF != null) {
                 Notification.show("ETF erfolgreich verkauft! (" + stueckzahl + " Stück)")
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 UI.getCurrent().navigate("transaktionen");
@@ -161,7 +157,7 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
         centerLayout.getStyle().set("max-width", "600px");
         centerLayout.getStyle().set("margin", "0 auto");
 
-        container.add(topLeftLayout, centerLayout);
+        container.add(backButton, centerLayout);
     }
 
     private void aktualisiereEinzelkurs() {
@@ -209,8 +205,11 @@ public class ETFVerkaufenView extends AbstractSideNav implements BeforeEnterObse
         String symbol = event.getRouteParameters().get("symbol").orElse("");
         if (!symbol.isBlank()) {
             symbolField.setValue(symbol);
+            symbolField.setReadOnly(true);
             aktualisiereEinzelkurs();
             aktualisiereKurs();
+        } else {
+            symbolField.setReadOnly(false);
         }
     }
 }

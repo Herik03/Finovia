@@ -7,6 +7,7 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -58,8 +59,8 @@ public class AktienView extends AbstractWertpapierView {
             VerticalLayout errorLayout = new VerticalLayout();
             errorLayout.add(new H2("Fehler beim Laden der Aktiendetails"));
             errorLayout.add(new com.vaadin.flow.component.html.Paragraph(
-                "Die Detaildaten für " + symbol + " konnten nicht geladen werden. " +
-                "Bitte versuchen Sie es später erneut oder kontaktieren Sie den Support."
+                    "Die Detaildaten für " + symbol + " konnten nicht geladen werden. " +
+                            "Bitte versuchen Sie es später erneut oder kontaktieren Sie den Support."
             ));
 
             Button closeButton = new Button("Schließen", e -> errorDialog.close());
@@ -120,6 +121,7 @@ public class AktienView extends AbstractWertpapierView {
         });
 
         HorizontalLayout topRow = new HorizontalLayout(timeFrameSelect, addToWatchlistButton);
+        topRow.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         layout.add(topRow);
 
         VerticalLayout chartContainer = new VerticalLayout();

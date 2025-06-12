@@ -4,7 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.vaadin.example.application.classes.ETF;
 
+import java.util.Optional;
+
 @Repository
 public interface ETFRepository extends JpaRepository<ETF, Long> {
-    ETF findBySymbol(String symbol);
+    Optional<ETF> findBySymbolIgnoreCase(String symbol);
 }

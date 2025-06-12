@@ -37,7 +37,7 @@ public class Depot {
     @JoinColumn(name = "nutzer_id")
     private Nutzer besitzer;
 
-    @OneToMany(mappedBy = "depot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "depot", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private final List<DepotWertpapier> depotWertpapiere = new ArrayList<>();
 
     /**

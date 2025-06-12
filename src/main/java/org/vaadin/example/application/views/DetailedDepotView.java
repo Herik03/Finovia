@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -51,7 +52,6 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
     private final VerticalLayout depotInfoLayout = new VerticalLayout();
     private final Grid<DepotWertpapier> wertpapierGrid = new Grid<>(DepotWertpapier.class);
     private final VerticalLayout contentLayout = new VerticalLayout();
-    private final Span gesamtwertSpan = new Span();
 
     /**
      * Konstruktor für die DetailedDepotView-Klasse.
@@ -69,8 +69,6 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         this.alphaVantageService = alphaVantageService;
         this.securityService = securityService;
 
-
-
         contentLayout.setWidthFull();
         contentLayout.setSpacing(true);
         contentLayout.setPadding(true);
@@ -82,9 +80,9 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         routerLink.add(backButton);
 
         configureWertpapierGrid();
+
         // Komponenten zum Layout hinzufügen
         contentLayout.add(routerLink, title, depotInfoLayout, new H3("Enthaltene Wertpapiere"), wertpapierGrid);
-
 
         addToMainContent(contentLayout);
     }
@@ -96,46 +94,45 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
                 .setHeader("Name")
                 .setAutoWidth(true);
 
+        // Aktueller Kurs aus DepotService holen (unabhängig vom Typ)
         wertpapierGrid.addColumn(dw -> {
-            if (dw.getWertpapier() instanceof Aktie aktie) {
-                return String.format("%.2f €", alphaVantageService.getAktuellerKurs(aktie.getName()));
-            }
-            return "N/A";
+            double kurs = depotService.getAktuellerKurs(dw.getWertpapier());
+            return kurs > 0.0 ? String.format("%.2f €", kurs) : "N/A";
         }).setHeader("Aktueller Kurs").setAutoWidth(true);
 
+        // Gewinn/Verlust berechnen mit aktuellem Kurs
         wertpapierGrid.addColumn(dw -> {
             DepotService.BestandUndBuchwert bk = depotService.berechneBestandUndKosten(dw);
             if (bk.anzahl == 0) return "Keine Position";
 
-            double kurs = 240.0; // Beispielwert, hier sollte der aktuelle Kurs des Wertpapiers stehen
-//            if (dw.getWertpapier() instanceof Aktie aktie) {
-//                kurs = alphaVantageService.getAktuellerKurs(aktie.getName());
-//            }
-
+            double kurs = depotService.getAktuellerKurs(dw.getWertpapier());
             double wertAktuell = kurs * bk.anzahl;
             double gewinnVerlust = wertAktuell - bk.buchwert;
-
-            //Depotwert = (Marktwert * Anzahl Anteile) - Buchwert
-            // Buchwert = Summe der Kurse der vorhandenen Käufe
 
             return String.format("%.2f € (%s)", gewinnVerlust, gewinnVerlust >= 0 ? "Gewinn" : "Verlust");
         }).setHeader("Gewinn / Verlust").setAutoWidth(true);
 
+        wertpapierGrid.addColumn(dw -> {
+            DepotService.BestandUndBuchwert bk = depotService.berechneBestandUndKosten(dw);
+            return bk.anzahl;
+        }).setHeader("Anzahl").setAutoWidth(true);
+
+        // Verkaufen-Button für Aktien, ETFs und Anleihen anzeigen
         wertpapierGrid.addColumn(new ComponentRenderer<>(dw -> {
-            if (dw.getWertpapier() instanceof Aktie) {
+            Wertpapier wp = dw.getWertpapier();
+            if (wp instanceof Aktie || wp instanceof ETF || wp instanceof Anleihe) {
                 Button verkaufenButton = new Button("Verkaufen", new Icon(VaadinIcon.MONEY_WITHDRAW));
                 verkaufenButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_ERROR);
 
                 verkaufenButton.addClickListener(e -> {
-                    String symbol = dw.getWertpapier().getSymbol();
+                    String symbol = wp.getSymbol();
                     String typ;
-
-                    if (dw.getWertpapier() instanceof Aktie) {
+                    if (wp instanceof Aktie) {
                         typ = "aktie";
-                    } else if (dw.getWertpapier() instanceof ETF) {
+                    } else if (wp instanceof ETF) {
                         typ = "etf";
                     } else {
-                        typ = "wertpapier"; // Fallback
+                        typ = "anleihe";
                     }
 
                     getUI().ifPresent(ui -> ui.navigate("verkaufen/" + typ + "/" + symbol));
@@ -143,7 +140,7 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
 
                 return verkaufenButton;
             } else {
-                return new Span(""); // Leerer Platzhalter für Nicht-Aktien
+                return new Span(""); // Leerer Platzhalter für andere Wertpapiere
             }
         })).setHeader("Aktion").setAutoWidth(true);
 
@@ -171,26 +168,42 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         }
 
         // Titel aktualisieren
-
         title.setText(currentDepot.getName());
         updateDepotInfo();
-
 
         // Wertpapiere anzeigen
         wertpapierGrid.setItems(currentDepot.getDepotWertpapiere());
 
+        // Gesamtwert berechnen
+        double gesamtwert = currentDepot.getDepotWertpapiere().stream()
+            .mapToDouble(dw -> {
+                double kurs = depotService.getAktuellerKurs(dw.getWertpapier());
+                return kurs * dw.getAnzahl();
+            })
+            .sum();
+        Span gesamtwertSpan = new Span("Gesamtwert: " + String.format("%.2f €", gesamtwert));
+        gesamtwertSpan.getStyle().set("color", "black").set("font-weight", "bold").set("font-size", "1.5em");
+
+        // DividendenPanel ein-/ausklappbar machen
         DividendenPanel dividendenPanel = new DividendenPanel(currentDepot);
+        Details dividendenDetails = new Details("Dividenden anzeigen/ausblenden", dividendenPanel);
+        dividendenDetails.setOpened(false);
 
         // Layout zusammensetzen: Hauptinhalte links, Dividenden rechts
         HorizontalLayout mainArea = new HorizontalLayout();
         mainArea.setWidthFull();
-        mainArea.add(contentLayout, dividendenPanel);
+        mainArea.add(contentLayout, dividendenDetails);
         mainArea.setFlexGrow(2, contentLayout);
-        mainArea.setFlexGrow(1, dividendenPanel);
+        mainArea.setFlexGrow(1, dividendenDetails);
 
         mainArea.removeAll();
-        mainArea.add(contentLayout, dividendenPanel);
+        mainArea.add(contentLayout, dividendenDetails);
         addToMainContent(mainArea);
+
+        // Gesamtwert unter dem Namen anzeigen
+        if (!contentLayout.getChildren().anyMatch(c -> c.equals(gesamtwertSpan))) {
+            contentLayout.addComponentAtIndex(2, gesamtwertSpan);
+        }
     }
 
     /**
@@ -291,5 +304,3 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         dialog.open();
     }
 }
-//TODO:Einbinden der Funktionalität zum Kaufen und Verkaufen von Wertpapieren
-//TODO:Wertpapiere in die Depot-Übersicht einfügen

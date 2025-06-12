@@ -43,7 +43,12 @@ public abstract class Transaktion {
     @JoinColumn(name = "ausschuettung_id")
     private Ausschuettung ausschüttung;
 
-/**
+    @ManyToOne
+    @JoinColumn(name = "nutzer_id")
+    private Nutzer nutzer;
+
+
+    /**
  * Konstruktor zur Initialisierung aller Felder einer Transaktion.
  */
     public Transaktion(LocalDate datum, double gebühren, double kurs, int stückzahl, Wertpapier wertpapier, Ausschuettung ausschüttung) {
