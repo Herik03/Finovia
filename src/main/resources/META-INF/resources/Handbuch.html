@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finovia – Bedienungsanleitung</title>
+    <style>
+        body {
+            font-family: var(--lumo-font-family, 'Inter', sans-serif);
+            margin: 20px;
+            line-height: 1.6;
+            color: var(--lumo-body-text-color, #3A3238);
+            background: var(--lumo-base-color, #FAFAFA);
+        }
+        h1, h2, h3, h4 {
+            color: var(--lumo-header-text-color, #3A3238);
+        }
+        .section {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .subsection {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        ol {
+            list-style-type: decimal;
+            margin-left: 20px;
+        }
+        b {
+            color: #000;
+        }
+        .note {
+            background-color: var(--lumo-secondary-color, #C0EFD8);
+            border-left: 5px solid var(--lumo-primary-color, #44CF6C);
+            color: var(--lumo-body-text-color, #3A3238);
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 10px 15px;
+            margin: 15px 0;
+            color: #856404;
+        }
+        .image-placeholder {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px dashed #ccc;
+            background-color: #f9f9f9;
+            color: #888;
+        }
+        a {
+            color: var(--lumo-primary-color, #44CF6C);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Finovia – Bedienungsanleitung</h1>
+    <p> </p>
+
+    <div class="section">
+        <h2>10.1 Willkommen im Dashboard (Hauptansicht)</h2>
+        <p>Das Dashboard ist die zentrale Übersichtsseite Ihrer Finovia-Anwendung. Nach dem erfolgreichen Login werden Sie automatisch hierher weitergeleitet. </p>
+        <p>Es bietet Ihnen einen schnellen Überblick über Ihre Depots und wichtige Funktionen der Anwendung. </p>
+        
+        <h3>Aufbau des Dashboards: </h3>
+        <ul>
+            <li><b>Meine Depots:</b> Dieser Bereich zeigt eine Übersicht all Ihrer angelegten Depots. </li>
+            <li><b>Depotbox:</b> Für jedes Depot wird eine separate Box angezeigt, die folgende Informationen enthält: 
+                <ul>
+                    <li><b>Name des Depots:</b> Der von Ihnen vergebene Name des Depots (z.B., "Test"). </li>
+                    <li><b>Besitzer:</b> Der Name des Depotbesitzers. </li>
+                    <li><b>Anzahl Wertpapiere:</b> Die Gesamtzahl der Wertpapiere, die sich in diesem Depot befinden. </li>
+                    <li><b>Balken-Chart ("Aktueller Kurs"):</b> Eine grafische Darstellung der aktuellen Kurswerte Ihrer Wertpapiere im Depot. 
+                        <ul>
+                            <li>Die X-Achse zeigt die Namen der Wertpapiere, die Y-Achse den aktuellen Kurswert. </li>
+                        </ul>
+                    </li>
+                    <li><b>Klickbare Depotbox:</b> Durch Klicken auf eine Depotbox gelangen Sie zur detaillierten Ansicht des jeweiligen Depots (sofern implementiert). </li>
+                </ul>
+            </li>
+            <li><b>Depot Verteilung (Tortendiagramm):</b> Neben jedem Depot-Balken-Chart finden Sie ein Tortendiagramm. 
+                <ul>
+                    <li>Dieses Diagramm zeigt die Verteilung der Wertpapiere in Ihrem Depot nach ihrer Klasse an (z.B. "Aktie", "ETF"). </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>10.2. Die Seitennavigation</h2>
+        <p>Die Seitennavigation befindet sich auf der linken Seite des Bildschirms und bietet Ihnen schnellen Zugriff auf alle wichtigen Bereiche der Finovia-Anwendung. </p>
+        
+        <h3>Funktionen der Seitennavigation: </h3>
+        <ul>
+            <li><b>Dashboard:</b> Führt Sie zurück zur aktuellen Übersichtsseite. </li>
+            <li><b>Depot:</b> Leitet Sie zur Depotverwaltung weiter, wo Sie Ihre Depots im Detail einsehen und verwalten können. </li>
+            <li><b>Meine Käufe:</b> Zeigt eine Übersicht Ihrer getätigten Käufe (Transaktionen) an. </li>
+            <li><b>Meine Verkäufe:</b> Zeigt eine Übersicht Ihrer getätigten Verkäufe (Transaktionen) an. </li>
+            <li><b>Watchlist:</b> Hier können Sie eine Liste von Wertpapieren verwalten, die Sie beobachten möchten. </li>
+            <li><b>Wertpapiere (Suchen):</b> Ermöglicht Ihnen die Suche nach Wertpapieren. </li>
+            <li><b>Einstellungen:</b> Führt Sie zu den Anwendungseinstellungen. </li>
+            <li><b>Admin:</b> Dieser Button ist nur für Benutzer mit Administratorrechten sichtbar und führt zum Administrationsbereich. </li>
+            <li><b>Logout:</b> Meldet Sie sicher von Ihrer Finovia-Sitzung ab und leitet Sie zur Login-Seite zurück. </li>
+        </ul>
+
+        <h3>Bedienung der Seitennavigation: </h3>
+        <p>Klicken Sie einfach auf den gewünschten Menüpunkt, um zur entsprechenden Ansicht zu navigieren. </p>
+    </div>
+
+    <div class="section">
+        <h2>10.3. Depotverwaltung</h2>
+        <p>Die Depotverwaltung ist der Bereich, in dem Sie all Ihre angelegten Depots einsehen, neue Depots hinzufügen und zu den Detailansichten Ihrer bestehenden Depots navigieren können. </p>
+
+        <h3>Zugriff auf die Depotverwaltung: </h3>
+        <p>Klicken Sie in der linken Seitennavigation auf den Menüpunkt <b>"Depot"</b> (Symbol: ein Sparschwein). </p>
+
+        <h3>Aufbau der Depotverwaltung: </h3>
+        <ul>
+            <li><b>"Neues Depot anlegen" Button:</b> Unter der Überschrift befindet sich ein Button mit der Aufschrift "Neues Depot anlegen" und einem Plus-Symbol. 
+                <ul>
+                    <li>Dieser Button dient dazu, ein neues Depot in Ihrem Konto zu erstellen. </li>
+                </ul>
+            </li>
+            <li><b>Liste Ihrer Depots:</b> Darunter werden alle Depots aufgelistet, die Ihrem aktuell angemeldeten Benutzerkonto zugeordnet sind. </li>
+            <li><b>Depot-Box:</b> Jedes Depot wird in einer separaten Box dargestellt, die folgende Informationen enthält: 
+                <ul>
+                    <li><b>Depot-Name:</b> Der von Ihnen vergebene Name des Depots (z.B., "Mein Aktienportfolio", "Altersvorsorge ETF"). </li>
+                    <li><b>Besitzer:</b> Der Name des Nutzers, dem das Depot gehört. </li>
+                    <li><b>Anzahl Wertpapiere:</b> Die Anzahl der Wertpapiere, die aktuell in diesem Depot enthalten sind. </li>
+                    <li><b>Klickbare Depot-Box:</b> Die gesamte Depot-Box ist klickbar. Wenn Sie auf eine Depot-Box klicken, werden Sie zur <b>detaillierten Ansicht</b> dieses spezifischen Depots weitergeleitet. </li>
+                    <li>Dort können Sie die einzelnen Wertpapiere und deren Kursverläufe einsehen und verwalten. </li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Wie Sie ein neues Depot anlegen: </h3>
+        <ol>
+            <li>Klicken Sie auf den Button <b>"Neues Depot anlegen"</b>. </li>
+            <li>Ein Dialogfenster wird geöffnet. </li>
+            <li>Geben Sie im Dialogfenster alle erforderlichen Informationen für Ihr neues Depot ein (z.B. den Namen des Depots). </li>
+            <li>Bestätigen Sie Ihre Eingaben im Dialogfenster (z.B. mit einem "Speichern"-Button). </li>
+            <li>Nachdem Sie das Dialogfenster geschlossen haben (oder das Depot erfolgreich gespeichert wurde), wird die Liste Ihrer Depots auf der "Depot"-Seite automatisch aktualisiert, und Ihr neu angelegtes Depot sollte sichtbar sein. </li>
+        </ol>
+
+        <h3>Wie Sie die Details eines Depots einsehen: </h3>
+        <ol>
+            <li>Klicken Sie auf die <b>Depot-Box</b> des Depots, dessen Details Sie einsehen möchten. </li>
+            <li>Sie werden zur <b>detaillierten Depotansicht</b> weitergeleitet, wo Sie eine umfassendere Übersicht und Verwaltungsmöglichkeiten für die Wertpapiere innerhalb dieses spezifischen Depots finden. </li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>10.4. Transaktionshistorie</h2>
+        <p>Die Transaktionshistorie bietet Ihnen eine detaillierte Übersicht über alle Käufe und Verkäufe von Wertpapieren, die Sie in der Finovia-Anwendung getätigt haben. </p>
+
+        <h3>Zugriff auf die Transaktionshistorie: </h3>
+        <p>Klicken Sie in der linken Seitennavigation auf den Menüpunkt <b>"Meine Käufe"</b> oder <b>"Meine Verkäufe"</b> (Symbol: ein Einkaufswagen). </p>
+
+        <h3>Aufbau der Transaktionshistorie: </h3>
+        <ul>
+            <li><b>Transaktionstabelle:</b> Darunter befindet sich eine Tabelle, die alle Ihre Käufe auflistet. </li>
+            <li>Die Tabelle enthält folgende Spalten: 
+                <ul>
+                    <li><b>Name:</b> Der Name des Wertpapiers, das gekauft wurde. </li>
+                    <li><b>Anzahl:</b> Die Stückzahl des gekauften Wertpapiers. </li>
+                    <li><b>Kaufpreis (€):</b> Der Preis pro Stück zum Zeitpunkt des Kaufs in Euro. </li>
+                    <li><b>Gebühren (€):</b> Eventuell angefallene Gebühren für die Transaktion in Euro. </li>
+                    <li><b>Gesamtpreis (€):</b> Der Gesamtpreis der Transaktion, berechnet aus Anzahl * Kaufpreis + Gebühren. </li>
+                    <li><b>Kaufdatum:</b> Das genaue Datum, an dem die Transaktion stattgefunden hat (im Format TT.MM.JJJJ). </li>
+                    <li><b>Handelsplatz:</b> Der Handelsplatz, an dem das Wertpapier gekauft wurde. </li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Wichtige Hinweise: </h3>
+        <ul>
+            <li>Es werden nur die Transaktionen des aktuell angemeldeten Benutzers angezeigt. </li>
+            <li>Nach dem Laden Ihrer Transaktionen wird eine kurze Erfolgsmeldung unten links im Bildschirm angezeigt. </li>
+            <li>Sollte es zu Problemen beim Abrufen der Transaktionen kommen, wird eine Fehlermeldung in der Mitte des Bildschirms angezeigt. </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>10.5. Watchlist</h2>
+        <p>Die Watchlist ermöglicht es Ihnen, Wertpapiere zu beobachten, die Sie interessieren, ohne sie direkt in einem Depot zu besitzen. </p>
+        <p>Sie erhalten hier einen Überblick über die ausgewählten Wertpapiere und deren aktuelle Preisinformationen. </p>
+
+        <h3>Zugriff auf die Watchlist: </h3>
+        <p>Klicken Sie in der linken Seitennavigation auf den Menüpunkt <b>"Watchlist"</b> (Symbol: ein Stern). </p>
+
+        <h3>Aufbau der Watchlist: </h3>
+        <ul>
+            <li><b>"Aktualisieren" Button:</b> Oben rechts befindet sich ein Button mit der Aufschrift "Aktualisieren" und einem Aktualisieren-Symbol. 
+                <ul>
+                    <li>Klicken Sie diesen Button, um die angezeigten Preisdaten der Wertpapiere manuell zu aktualisieren. </li>
+                </ul>
+            </li>
+            <li><b>Watchlist-Tabelle:</b> Darunter befindet sich eine Tabelle, die alle Wertpapiere auflistet, die Sie Ihrer Watchlist hinzugefügt haben. </li>
+            <li>Die Tabelle enthält folgende Spalten: 
+                <ul>
+                    <li><b>Name:</b> Der Name des Wertpapiers (z.B. "AAPL", "IBM"). </li>
+                    <li><b>Preisinformation:</b> Zeigt den aktuellen Preis des Wertpapiers an, falls verfügbar. </li>
+                    <li>Je nach Wertpapierart (Aktie, ETF, Anleihe) und Verfügbarkeit der Daten werden hier verschiedene Preisinformationen angezeigt (z.B. Schlusskurs, Buchwert, Nennwert). </li>
+                    <li><b>Aktionen:</b> In dieser Spalte finden Sie Schaltflächen, um mit den Wertpapieren zu interagieren: 
+                        <ul>
+                            <li><b>Details anzeigen (Lupen-Symbol):</b> Durch Klicken auf dieses Symbol wird ein Dialog geöffnet, der detaillierte Informationen zu diesem Wertpapier anzeigt. </li>
+                            <li>Während der Dialog geöffnet ist, wird die Seitenleiste temporär ausgeblendet. </li>
+                            <li><b>Von Watchlist entfernen (Mülleimer-Symbol):</b> Klicken Sie hier, um das Wertpapier aus Ihrer Watchlist zu entfernen. </li>
+                            <li>Die Liste wird danach automatisch aktualisiert. </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Wie Sie die Watchlist nutzen: </h3>
+        <ul>
+            <li><b>Daten aktualisieren:</b> Um sicherzustellen, dass Sie die neuesten Preisinformationen sehen, klicken Sie auf den Button <b>"Aktualisieren"</b>. </li>
+            <li>Eine Benachrichtigung wird angezeigt, die den Status des Ladevorgangs angibt. </li>
+            <li><b>Wertpapier-Details ansehen:</b> Klicken Sie auf das <b>Lupen-Symbol</b> in der Zeile des Wertpapiers, dessen Details Sie einsehen möchten. </li>
+            <li>Ein neues Fenster öffnet sich mit zusätzlichen Informationen. </li>
+            <li><b>Wertpapier entfernen:</b> Wenn Sie ein Wertpapier nicht mehr beobachten möchten, klicken Sie auf das <b>Mülleimer-Symbol</b> in dessen Zeile. </li>
+            <li>Das Wertpapier wird dann von Ihrer Watchlist entfernt. </li>
+        </ul>
+
+        <h3>Wichtige Hinweise: </h3>
+        <ul>
+            <li>Ihre Watchlist ist leer, wenn Sie noch keine Wertpapiere hinzugefügt haben. </li>
+            <li>Eine Benachrichtigung weist Sie darauf hin. </li>
+            <li>Fehlermeldungen werden angezeigt, wenn Probleme beim Laden oder Aktualisieren der Watchlist-Daten auftreten. </li>
+            <li>Die Preisinformationen werden asynchron geladen, was bedeutet, dass sie möglicherweise kurz nach dem Laden der Seite erscheinen oder sich nach dem Aktualisieren ändern können. </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>10.6. Wertpapiere suchen und Details ansehen</h2>
+        <p>Der Bereich "Wertpapiere" ermöglicht es Ihnen, nach Wertpapieren zu suchen und detaillierte Informationen zu diesen abzurufen, inklusive Kursverläufen. </p>
+        <p>Sie können von hier aus auch Wertpapiere zu Ihrer Watchlist hinzufügen. </p>
+
+        <h3>Zugriff auf die Wertpapier-Suche: </h3>
+        <p>Klicken Sie in der linken Seitennavigation auf den Menüpunkt <b>"Wertpapiere"</b> (Symbol: eine Lupe). </p>
+
+        <h3>Aufbau und Nutzung: </h3>
+        <ul>
+            <li><b>Suchfunktion:</b> In diesem Bereich finden Sie vermutlich ein Suchfeld, in das Sie das Symbol oder den Namen eines Wertpapiers eingeben können. </li>
+            <li><b>Suchergebnisse:</b> Nach der Eingabe und Bestätigung Ihrer Suche werden Ihnen die passenden Wertpapiere in einer Liste oder Tabelle angezeigt. </li>
+            <li><b>Wertpapier-Details:</b> 
+                <ul>
+                    <li>Für jedes gefundene Wertpapier gibt es eine Option, um dessen Details anzuzeigen. </li>
+                    <li>Dies wird in einem Dialogfenster präsentiert, das Informationen wie: 
+                        <ul>
+                            <li>Den <b>Kursverlauf:</b> Ein Liniendiagramm zeigt die historischen Schlusskurse des Wertpapiers über verschiedene Zeiträume an (Intraday, Täglich, Wöchentlich, Monatlich). </li>
+                            <li>Sie können den gewünschten Zeitraum auswählen. </li>
+                            <li><b>Metadaten:</b> Zusätzliche Informationen zum Wertpapier, wie z.B. </li>
+                            <li>der Typ (Aktie, ETF, Anleihe), der letzte Kurs, das Datum des letzten Kurses und weitere spezifische Daten je nach Wertpapierart (z.B. Sektor, ISIN, Dividendenausschüttungen). </li>
+                            <li><b>Zur Watchlist hinzufügen:</b> Innerhalb des Detaildialogs finden Sie auch einen Button "Zur Watchlist hinzufügen". </li>
+                            <li>Wenn Sie diesen Button klicken, wird das angezeigte Wertpapier zu Ihrer persönlichen Watchlist hinzugefügt. </li>
+                            <li>Eine Erfolgs- oder Fehlermeldung wird Sie über den Status informieren. </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Wie Sie die Details eines Wertpapiers ansehen: </h3>
+        <ol>
+            <li>Navigieren Sie zum Bereich <b>"Wertpapiere"</b> über die Seitennavigation. </li>
+            <li>Nutzen Sie die Suchfunktion, um das gewünschte Wertpapier zu finden. </li>
+            <li>Klicken Sie auf die entsprechende Option oder den Button, um den <b>Detaildialog</b> für das Wertpapier zu öffnen. </li>
+            <li>Im Dialog können Sie den <b>Zeitrahmen</b> für den Kursverlauf anpassen und alle verfügbaren Metadaten einsehen. </li>
+            <li>Klicken Sie auf <b>"Zur Watchlist hinzufügen"</b>, wenn Sie das Wertpapier Ihrer Beobachtungsliste hinzufügen möchten. </li>
+            <li>Schließen Sie den Dialog, um zur Suchergebnisseite zurückzukehren. </li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>10.7. Wertpapiere kaufen</h2>
+        <p>Sie können Wertpapiere über die Finovia-Anwendung erwerben. </p>
+        <p>Dies geschieht in der Regel über die Detailansicht eines Wertpapiers, nachdem Sie es über die Suchfunktion gefunden haben. </p>
+
+        <h3>Zugriff auf die Kauf-Funktion: </h3>
+        <p>Navigieren Sie zum Bereich <b>"Wertpapiere"</b> über die Seitennavigation (Symbol: eine Lupe). </p>
+
+        <h3>Wie Sie Wertpapiere kaufen: </h3>
+        <ol>
+            <li><b>Wertpapier finden:</b> Nutzen Sie das Suchfeld, um das Wertpapier zu finden, das Sie kaufen möchten. </li>
+            <li>Geben Sie dazu das Symbol oder den Namen des Wertpapiers ein und starten Sie die Suche. </li>
+            <li><b>Details aufrufen:</b> Klicken Sie auf das entsprechende Wertpapier in den Suchergebnissen, um dessen Detaildialog zu öffnen. </li>
+            <li>Hier erhalten Sie umfassende Informationen zum Wertpapier und seinem Kursverlauf. </li>
+            <li><b>Kauf-Option:</b> Im Detaildialog des Wertpapiers finden Sie eine Option oder einen Button, der Ihnen den Kauf ermöglicht. </li>
+            <li><b>Kaufprozess:</b> Nachdem Sie die Kauf-Option ausgewählt haben, werden Sie durch einen Kaufprozess geführt. </li>
+            <li>Dieser beinhaltet typischerweise die folgenden Schritte: 
+                <ul>
+                    <li><b>Depot auswählen:</b> Wählen Sie das Depot aus, in das das Wertpapier gekauft werden soll. </li>
+                    <li><b>Anzahl eingeben:</b> Geben Sie die gewünschte Stückzahl des Wertpapiers ein, die Sie erwerben möchten. </li>
+                    <li><b>Bestätigung:</b> Überprüfen Sie alle Details der Transaktion (Gesamtpreis, Gebühren, etc.) und bestätigen Sie den Kauf. </li>
+                    <li><b>Transaktionsbestätigung:</b> Nach erfolgreichem Kauf erhalten Sie eine Bestätigung. Die Transaktion wird in Ihrer "Transaktionshistorie" (Abschnitt 4) vermerkt und das Wertpapier wird in dem von Ihnen ausgewählten Depot angezeigt. </li>
+                </ul>
+            </li>
+        </ol>
+
+        <h3>Wichtige Hinweise zum Kauf: </h3>
+        <ul>
+            <li>Stellen Sie sicher, dass Sie genügend verfügbares Kapital in Ihrem Konto haben, um den Kauf abzuschließen. </li>
+            <li>Achten Sie auf die angezeigten Gebühren, die bei einem Kauf anfallen können. </li>
+            <li>Überprüfen Sie immer die Details, bevor Sie eine Transaktion bestätigen. </li>
+            <li>Bei Fehlern während des Kaufprozesses wird eine entsprechende Benachrichtigung angezeigt. </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>10.8. Wertpapier verkaufen</h2>
+        <p>Sie können Wertpapiere über die Finovia-Anwendung veräußern, die Sie bereits besitzen. </p>
+        <p>Dies geschieht in der Regel über die Detailansicht eines Wertpapiers, nachdem Sie es in Ihrem Depot gefunden haben. </p>
+
+        <h3>Zugriff auf die Verkaufs-Funktion: </h3>
+        <p>Navigieren Sie zum Bereich <b>"Wertpapiere"</b> über die Seitennavigation (Symbol: eine Lupe) oder direkt zu Ihrem <b>Depot</b>. </p>
+
+        <h3>Wie Sie Wertpapiere verkaufen: </h3>
+        <ol>
+            <li><b>Wertpapier finden:</b> Nutzen Sie das Suchfeld, um das Wertpapier zu finden, das Sie verkaufen möchten, oder wählen Sie es direkt aus der Liste Ihrer im <b>Depot</b> befindlichen Wertpapiere aus. </li>
+            <li><b>Verkauf-Option:</b> Im Detaildialog des Wertpapiers finden Sie einen Button, der Ihnen den Verkauf ermöglicht. </li>
+            <li><b>Verkaufsprozess:</b> Nachdem Sie die Verkauf-Option ausgewählt haben, werden Sie durch einen Verkaufsprozess geführt. </li>
+            <li>Dieser beinhaltet typischerweise die folgenden Schritte: 
+                <ul>
+                    <li><b>Depot auswählen:</b> Wählen Sie das Depot aus, aus dem das Wertpapier verkauft werden soll. </li>
+                    <li><b>Anzahl eingeben:</b> Geben Sie die gewünschte Stückzahl des Wertpapiers ein, die Sie veräußern möchten. </li>
+                    <li><b>Bestätigung:</b> Überprüfen Sie alle Details der Transaktion (Gesamtpreis, Gebühren, etc.) und bestätigen Sie den Verkauf. </li>
+                    <li><b>Transaktionsbestätigung:</b> Nach erfolgreichem Verkauf erhalten Sie eine Bestätigung. Die Transaktion wird in Ihrer <b>"Transaktionshistorie"</b> (Abschnitt 4) vermerkt und die verkaufte Stückzahl wird aus dem von Ihnen ausgewählten Depot entfernt. </li>
+                    <li>Der Erlös wird Ihrem Verrechnungskonto gutgeschrieben. </li>
+                </ul>
+            </li>
+        </ol>
+
+        <h3>Wichtige Hinweise zum Verkauf: </h3>
+        <ul>
+            <li>Stellen Sie sicher, dass Sie genügend verfügbare Stückzahlen des Wertpapiers in Ihrem Depot haben, um den Verkauf abzuschließen. </li>
+            <li>Achten Sie auf die angezeigten Gebühren, die bei einem Verkauf anfallen können. </li>
+            <li>Überprüfen Sie immer die Details, bevor Sie eine Transaktion bestätigen. </li>
+            <li>Bei Fehlern während des Verkaufsprozesses wird eine entsprechende Benachrichtigung angezeigt. </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>10.9. Einstellungen</h2>
+        <p>Die Einstellungsseite ist der zentrale Ort, um verschiedene Aspekte Ihrer Finovia-Anwendung zu verwalten und anzupassen. </p>
+        <p>Sie ist in mehrere Bereiche unterteilt, die über Tabs zugänglich sind. </p>
+
+        <h3>Zugriff auf die Einstellungen: </h3>
+        <p>Klicken Sie in der linken Seitennavigation auf den Menüpunkt <b>"Einstellungen"</b> (Symbol: ein Zahnrad). </p>
+
+        <h3>Aufbau der Einstellungen: </h3>
+        <p>Die Einstellungsseite ist in Tabs organisiert:</p>
+        <ul>
+            <li><b>Benutzerverwaltung:</b> Hier können Sie Ihre persönlichen Benutzerdaten verwalten und sicherheitsrelevante Aktionen durchführen. </li>
+            <li><b>Support:</b> Dieser Bereich bietet Ihnen Möglichkeiten, Unterstützung zu erhalten oder Feedback zu geben. </li>
+        </ul>
+
+        <h3>Details der "Benutzerverwaltung": </h3>
+        <p>Dieser Tab bietet Ihnen folgende Funktionen:</p>
+        <ul>
+            <li><b>Benutzerprofil:</b>
+                <ul>
+                    <li><b>"Zum Benutzerprofil" Button:</b> Wenn Sie diesen Button klicken, werden Sie zu einer separaten Ansicht weitergeleitet, wo Sie Ihre persönlichen Benutzerdaten einsehen und bearbeiten können. </li>
+                </ul>
+            </li>
+            <li><b>Admin Login:</b>
+                <ul>
+                    <li>Dieser Bereich ist für Benutzer gedacht, die erweiterte Administratorfunktionen nutzen möchten. </li>
+                    <li><b>"Admin Login" Dialog:</b> Wenn Sie auf den "Anmelden"-Button klicken, öffnet sich ein Dialog, in dem Sie das Admin-Passwort eingeben müssen. </li>
+                    <li><b>Admin-Status:</b> Eine Anzeige informiert Sie, ob Sie bereits Admin-Rechte besitzen. </li>
+                    <li><b>"Admin abmelden" Button:</b> Wenn Sie Admin-Rechte haben, erscheint dieser Button. Klicken Sie darauf, um Ihre Admin-Rechte zu entfernen. </li>
+                    <li><div class="note"><b>Wichtiger Hinweis:</b> Nachdem Sie Admin-Rechte erhalten oder entfernt haben, müssen Sie sich <b>erneut anmelden (Logout und Login)</b>, damit die Änderungen wirksam werden und die Admin-Funktionen bzw. die angepasste Ansicht korrekt angezeigt werden. </div></li>
+                </ul>
+            </li>
+            <li><b>Konto löschen:</b>
+                <ul>
+                    <li><b>"Konto löschen" Button:</b> Wenn Sie diesen Button klicken, öffnet sich ein Bestätigungsdialog. </li>
+                    <li><b>Bestätigung:</b> Im Dialog müssen Sie zur Sicherheit Ihr <b>aktuelles Passwort</b> eingeben und den Löschvorgang bestätigen. </li>
+                    <li><b>Folgen:</b> Nach erfolgreicher Löschung wird Ihr Konto unwiderruflich entfernt, Sie werden ausgeloggt und zur Startseite navigiert. </li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Details des "Support"-Tabs: </h3>
+        <p>Dieser Tab bietet Ihnen die Möglichkeit, mit dem Support-Team von Finovia in Kontakt zu treten, falls Sie Fragen, Probleme oder Feedback haben. </p>
+        <p>Die genauen Funktionen hängen von der Implementierung der Support-View ab, umfassen aber typischerweise Formulare für Anfragen oder FAQs. </p>
+        
+        <p>Der <b>Admin-Bereich</b> ist eine speziell geschützte Ansicht, die nur Benutzern mit Administratorrechten zugänglich ist. </p>
+        <p>Hier können Administratoren Support-Anfragen verwalten, Benutzerkonten einsehen und möglicherweise weitere administrative Aufgaben durchführen. </p>
+
+        <h3>Zugriff auf den Admin-Bereich: </h3>
+        <p>Der Menüpunkt <b>"Admin"</b> in der linken Seitennavigation ist nur sichtbar, wenn Sie über Administratorrechte verfügen. </p>
+        <p>Klicken Sie darauf, um den Admin-Bereich zu betreten. </p>
+        <p>Sollten Sie noch keine Admin-Rechte haben, können Sie diese temporär über den Bereich "Einstellungen" -> "Benutzerverwaltung" -> "Admin Login" erlangen (siehe Abschnitt 8). </p>
+
+        <h3>Aufbau des Admin-Bereichs: </h3>
+        <p>Der Admin-Bereich ist in Tabs organisiert, um verschiedene Verwaltungsaufgaben zu trennen:</p>
+        <ul>
+            <li><b>Support-Anfragen:</b> Hier können Sie Support-Anfragen von Benutzern einsehen und bearbeiten. </li>
+            <li><b>Benutzerverwaltung:</b> Dieser Tab ermöglicht die Verwaltung von Benutzerkonten. </li>
+        </ul>
+
+        <h3>Details des "Support-Anfragen" Tabs: </h3>
+        <p>Dieser Tab ist das zentrale Werkzeug zur Bearbeitung von Benutzeranfragen: </p>
+        <ul>
+            <li><b>Überschrift:</b> "Support-Anfragen verwalten". </li>
+            <li><b>"Aktualisieren" Button:</b> Aktualisiert die Liste der Support-Anfragen in der Tabelle. </li>
+            <li><b>Split-Layout:</b> Der Bereich ist in zwei Hälften unterteilt: 
+                <ul>
+                    <li><b>Linke Seite (Anfragen-Tabelle):</b> Eine Tabelle zeigt eine Übersicht aller eingegangenen Support-Anfragen mit folgenden Spalten: 
+                        <ul>
+                            <li><b>Ticket-ID:</b> Eine eindeutige Kennung für jede Anfrage. </li>
+                            <li><b>Kategorie:</b> Die Art der Anfrage (z.B. "Technischer Support", "Kontoproblem"). </li>
+                            <li><b>Status:</b> Der aktuelle Bearbeitungsstatus der Anfrage ("Offen", "In Bearbeitung", "Beantwortet", "Geschlossen"). </li>
+                            <li>Der Status wird durch farbige Badges hervorgehoben (z.B. Rot für "Offen", Grün für "Beantwortet"). </li>
+                            <li><b>Erstellt am:</b> Das Datum und die Uhrzeit der Ticketerstellung. </li>
+                        </ul>
+                    </li>
+                    <li><b>Rechte Seite (Anfrage-Details):</b> Hier werden die detaillierten Informationen der in der linken Tabelle ausgewählten Anfrage angezeigt. 
+                        <ul>
+                            <li><b>Ticket-Header:</b> Zeigt die Ticket-ID und den aktuellen Status an. </li>
+                            <li><b>Metainformationen:</b> Enthält die Kategorie und das Erstellungsdatum der Anfrage. </li>
+                            <li><b>Beschreibung:</b> Die ausführliche Beschreibung des Problems oder der Anfrage, die der Benutzer eingereicht hat. </li>
+                            <li><b>Status-Änderungsbuttons:</b> Mehrere Buttons ("Offen", "In Bearbeitung", "Beantwortet", "Geschlossen") ermöglichen es Ihnen, den Status der ausgewählten Anfrage direkt zu ändern. </li>
+                            <li><b>Anhänge:</b> Falls der Benutzer Dateien (z.B. Screenshots, Dokumente) mit seiner Anfrage hochgeladen hat, werden diese hier aufgelistet. </li>
+                            <li>Sie sehen den Dateinamen und können über Buttons eine <b>Vorschau</b> anzeigen (für Bilder, PDFs, Word-Dokumente) oder die Datei <b>herunterladen</b>. </li>
+                            <li><b>Dateivorschau:</b> Öffnet einen Dialog, der eine Vorschau der Datei anzeigt (Bilder direkt, für PDFs/Word-Dokumente einen Hinweis zum Download). </li>
+                            <li><b>Kommentare:</b> Ein Bereich zum Verwalten der Kommunikation mit dem Benutzer: 
+                                <ul>
+                                    <li><b>Vorhandene Kommentare:</b> Zeigt alle bisherigen Kommentare und Antworten zur Anfrage an. </li>
+                                    <li><b>Antwort hinzufügen:</b> Ein großes Textfeld ermöglicht es Ihnen, eine neue Antwort oder einen internen Kommentar zu verfassen. </li>
+                                    <li><b>"Antwort senden" Button:</b> Sendet den eingegebenen Text als neuen Kommentar zur Anfrage. </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>Wichtige Hinweise für Administratoren: </h3>
+        <ul>
+            <li>Der Admin-Bereich ist <b>sehr sensibel</b> und sollte nur von autorisiertem Personal verwendet werden. </li>
+            <li>Jede Statusänderung oder jeder Kommentar wird in der Anfrage gespeichert und ist für den Benutzer sichtbar. </li>
+            <li>Dateianhänge können eine Sicherheitsrisiko darstellen; Vorsicht beim Öffnen oder Herunterladen unbekannter Dateien. </li>
+            <li>Nach dem Hinzufügen oder Entfernen von Admin-Rechten müssen Sie sich <b>neu anmelden</b>, um die Änderungen vollständig wirksam zu machen. </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>10.10 Nutzung der Startseite von Finovia</h2>
+        <p> </p>
+
+        <h3>Kontoerstellung </h3>
+        <p>Die Startseite ermöglicht Ihnen eine schnelle Registrierung: </p>
+        <ol>
+            <li>Klicken Sie auf <b>„Depot jetzt eröffnen“</b>, um ein neues Konto zu erstellen. </li>
+            <li>Sie werden zur Registrierungsseite weitergeleitet, wo Sie Ihre persönlichen Daten eingeben. </li>
+            <li>Folgen Sie den Anweisungen, um Ihre Registrierung erfolgreich abzuschließen. </li>
+        </ol>
+
+        <h3>Informationen abrufen </h3>
+        <p>Um detaillierte Informationen zur Plattform zu erhalten: </p>
+        <ol>
+            <li>Klicken Sie auf <b>„Mehr Erfahren“</b>. </li>
+            <li>Sie gelangen zu einer Informationsseite mit wichtigen Details zu den Regeln, den Kosten pro Trade und den Vorteilen der Finovia-Plattform. </li>
+        </ol>
+
+        <h3>Kundenrezensionen anzeigen </h3>
+        <p>Die Startseite bietet Ihnen die Möglichkeit, Erfahrungen anderer Nutzer einzusehen: </p>
+        <ul>
+            <li>Kundenbewertungen sind direkt auf der Startseite sichtbar. </li>
+            <li>Sie erhalten einen Einblick in die Meinungen und Erlebnisse unserer Nutzer mit Finovia. </li>
+        </ul>
+        <p>Die Startseite dient als zentraler Ausgangspunkt für Ihre Nutzung der Finovia-Plattform. </p>
+        <p>Klicken Sie auf die entsprechenden Schaltflächen, um alle Funktionen optimal zu nutzen. </p>
+    </div>
+
+    <div class="section">
+        <h2>10.11 Nutzung der Registrierungsseite von Finovia</h2>
+        <p> </p>
+
+        <h3>Persönliche Informationen eingeben </h3>
+        <p>Auf der Registrierungsseite erfassen Sie die erforderlichen Daten für die Kontoerstellung: </p>
+        <ul>
+            <li><b>Vorname & Nachname:</b> Geben Sie Ihre vollständigen Namen ein.</li>
+            <li><b>Steuer-ID:</b> Tragen Sie Ihre persönliche Steueridentifikationsnummer ein.</li>
+            <li><b>E-Mail:</b> Verwenden Sie eine gültige E-Mail-Adresse für die Registrierung.</li>
+            <li><b>Passwort:</b> Wählen Sie ein sicheres Passwort gemäß den angegebenen Anforderungen.</li>
+        </ul>
+
+        <h3>Registrierung abschließen</h3>
+        <p>Nachdem alle Pflichtfelder ausgefüllt wurden:</p>
+        <ol>
+            <li>Überprüfen Sie Ihre Eingaben auf Korrektheit.</li>
+            <li>Klicken Sie auf <b>„Registrieren“</b>, um die Anmeldung abzuschließen.</li>
+            <li>Sie erhalten eine Bestätigungs-E-Mail mit weiteren Anweisungen.</li>
+            <li>Folgen Sie diesen Schritten, um Ihr Finovia-Konto erfolgreich anzulegen.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>10.12 Anmeldung nach der Registrierung</h2>
+        <p></p>
+
+        <p>Nach der erfolgreichen Registrierung werden Sie automatisch zur Anmeldeseite weitergeleitet.</p>
+
+        <h3>Anmeldeinformationen eingeben</h3>
+        <ul>
+            <li><b>Benutzername:</b> Geben Sie den bei der Registrierung angegebenen Benutzernamen ein.</li>
+            <li><b>Passwort:</b> Tragen Sie Ihr zuvor festgelegtes Passwort ein.</li>
+        </ul>
+
+        <h3>Anmeldung abschließen</h3>
+        <ol>
+            <li>Überprüfen Sie Ihre Eingaben auf Korrektheit.</li>
+            <li>Klicken Sie auf <b>„Anmelden“</b>, um sich in Ihr Konto einzuloggen.</li>
+            <li>Nach erfolgreicher Anmeldung werden Sie automatisch zum Dashboard weitergeleitet.</li>
+            <li>Folgen Sie diesen Schritten, um sich problemlos bei Finovia anzumelden</li>
+        </ol>
+    </div>
+
+</body>
+</html>

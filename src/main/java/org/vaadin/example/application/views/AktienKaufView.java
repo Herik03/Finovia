@@ -42,7 +42,7 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
     private final DepotService depotService;
     private final SecurityService securityService;
     private final NutzerService nutzerService;
-    private final List<String> handelsplaetze = Arrays.asList("Xetra", "Frankfurt", "Tradegate");
+    private final List<String> handelsplaetze = Arrays.asList("NYSE", "NASDAQ");
 
     String initialSymbol;
     Button backButton;

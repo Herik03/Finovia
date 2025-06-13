@@ -78,7 +78,7 @@ public class StartingPageView extends VerticalLayout {
         styleNavLink(startseite);
         Anchor funktionen = new Anchor("#funktionen", "Funktionen");
         styleNavLink(funktionen);
-        Anchor hilfe = new Anchor("#hilfe", "Hilfe");
+        Anchor hilfe = new Anchor("/hilfe", "Hilfe");
         styleNavLink(hilfe);
 
         // Login-Button
@@ -544,3 +544,4 @@ public class StartingPageView extends VerticalLayout {
         return footer;
     }
 }
+
