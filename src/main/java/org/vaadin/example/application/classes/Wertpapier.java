@@ -104,6 +104,22 @@ public abstract class Wertpapier {
     }
 
     /**
+     * Fügt eine Transaktion zur Liste der Transaktionen hinzu.
+     * Die Transaktion wird auch mit diesem Wertpapier verknüpft.
+     **/
+    public void addKurs(Kurs kurs) {
+        kurse.add(kurs);
+    }
+
+    /**
+     * Fügt eine Transaktion zur Liste der Transaktionen hinzu.
+     * Die Transaktion wird auch mit diesem Wertpapier verknüpft.
+     * */
+    public void addTransaktion(Transaktion transaktion) {
+        transaktionen.add(transaktion);
+    }
+
+    /**
      * Gibt den Typ des Wertpapiers als String zurück, basierend auf der konkreten Unterklasse.
      *
      * @return "Aktie", "Anleihe", "ETF" oder "Unbekannt"

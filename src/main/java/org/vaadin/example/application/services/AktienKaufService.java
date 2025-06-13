@@ -90,7 +90,6 @@ public class AktienKaufService {
         Aktie aktieToPersist = aktieRepository.findBySymbol(symbol);
         if (aktieToPersist != null) {
             // Aktie existiert bereits, aktualisiere ihre Details
-            kursObj.setWertpapier(aktieToPersist);
             aktieToPersist.setName(fetchedAktie.getName());
             aktieToPersist.setSymbol(fetchedAktie.getSymbol());
             aktieToPersist.setUnternehmensname(fetchedAktie.getUnternehmensname());
@@ -112,13 +111,13 @@ public class AktienKaufService {
             aktieToPersist.setYearHigh(fetchedAktie.getYearHigh());
             aktieToPersist.setYearLow(fetchedAktie.getYearLow());
             aktieToPersist.setDividendDate(fetchedAktie.getDividendDate());
-            aktieToPersist.addTransaktion(kauf);
-            aktieToPersist.addKurs(kursObj);
+            aktieToPersist.setTransaktionen(new ArrayList<>());
+            aktieToPersist.setKurse(new ArrayList<>());
             aktieRepository.save(aktieToPersist);
         } else {
             aktieToPersist = fetchedAktie;
-            aktieToPersist.addTransaktion(kauf);
-            aktieToPersist.addKurs(kursObj);
+            aktieToPersist.setTransaktionen(new ArrayList<>());
+            aktieToPersist.setKurse(new ArrayList<>());
             aktieRepository.save(aktieToPersist);
         }
 
