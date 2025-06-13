@@ -62,22 +62,22 @@ public class DatenschutzView extends VerticalLayout {
 
         datenschutzContainer.add(createStyledParagraph("Verantwortlich im Sinne der DSGVO und anderer nationaler Datenschutzgesetze ist die fiktive:"));
 
-        datenschutzContainer.add(createBoldParagraph("Finovia GmbH (fiktiv)"));
+        datenschutzContainer.add(createBoldParagraph("Finovia GmbH "));
         datenschutzContainer.add(createStyledParagraph("Vertreten durch die Geschäftsführung: Max Mustermann (fiktiv)"));
         datenschutzContainer.add(createStyledParagraph("Handelsregisternummer: HRB 12345 (fiktiv)"));
-        datenschutzContainer.add(createStyledParagraph("Musterstraße 1"));
-        datenschutzContainer.add(createStyledParagraph("12345 Musterstadt"));
+        datenschutzContainer.add(createStyledParagraph("Interaktion 1"));
+        datenschutzContainer.add(createStyledParagraph("33619 Bielefeld"));
         datenschutzContainer.add(createStyledParagraph("Deutschland"));
-        datenschutzContainer.add(createStyledParagraph("E-Mail: datenschutz@finovia-trading.de (fiktiv)"));
+        datenschutzContainer.add(createStyledParagraph("E-Mail: finovia.trading@gmail.com"));
         datenschutzContainer.add(createStyledParagraph("Telefon: +49 123 4567890 (fiktiv)"));
 
         datenschutzContainer.add(createBoldParagraph("Datenschutzbeauftragter:"));
         datenschutzContainer.add(createStyledParagraph("Da wir in erheblichem Umfang personenbezogene Daten verarbeiten, haben wir einen Datenschutzbeauftragten bestellt. Sie erreichen diesen unter:"));
         datenschutzContainer.add(createStyledParagraph("Dr. Anna Mustermann (fiktiv)"));
         datenschutzContainer.add(createStyledParagraph("c/o Finovia GmbH"));
-        datenschutzContainer.add(createStyledParagraph("Musterstraße 1"));
-        datenschutzContainer.add(createStyledParagraph("12345 Musterstadt"));
-        datenschutzContainer.add(createStyledParagraph("E-Mail: datenschutzbeauftragter@finovia-trading.de (fiktiv)"));
+        datenschutzContainer.add(createStyledParagraph("Interaktion 1"));
+        datenschutzContainer.add(createStyledParagraph("33619 Bielefeldt"));
+        datenschutzContainer.add(createStyledParagraph("E-Mail: finovia.trading@gmail.com"));
 
         // --- Abschnitt: 2. Begriffsbestimmungen ---
         H2 section2Title = new H2("2. Begriffsbestimmungen");

@@ -33,8 +33,8 @@ public class ImpressumView extends VerticalLayout {
         add(section1Title);
 
         add(new Paragraph("Finovia GmbH"));
-        add(new Paragraph("Musterstraße 123"));
-        add(new Paragraph("12345 Musterstadt"));
+        add(new Paragraph("Interaktion 1"));
+        add(new Paragraph("33619 Bielefeld"));
         add(new Paragraph("Deutschland"));
 
         add(new Paragraph(" ")); // Leerer Absatz für besseres Layout
