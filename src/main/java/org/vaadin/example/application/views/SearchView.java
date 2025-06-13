@@ -1,6 +1,7 @@
 package org.vaadin.example.application.views;
 
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.vaadin.example.application.classes.*;
 import org.vaadin.example.application.classes.enums.SearchResultTypeEnum;
@@ -29,6 +30,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.component.dialog.Dialog; // Import for Dialog
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -100,6 +102,19 @@ public class SearchView extends AbstractSideNav {
         searchField.setPrefixComponent(VaadinIcon.SEARCH.create());
         searchField.setWidth("300px");
 
+        // Setzt den ValueChangeMode auf TIMEOUT, um die Suche bei Eingabe ab 2 Zeichen zu starten
+        searchField.setValueChangeMode(ValueChangeMode.TIMEOUT);
+        searchField.setValueChangeTimeout(500);
+        // Listener für das Suchfeld, der die Suche automatisch startet, wenn 2 oder mehr Zeichen eingegeben werden
+        searchField.addValueChangeListener(event -> {
+            String value = event.getValue();
+            if (value == null || value.trim().length() < 2) {
+                resultGrid.setItems(List.of());
+                return;
+            }
+            performSearch();
+        });
+
         searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         progressBar.setIndeterminate(true);
@@ -167,6 +182,7 @@ public class SearchView extends AbstractSideNav {
 
         resultGrid.setHeight("400px");
         resultGrid.addClassName("results-grid");
+        resultGrid.setItems(List.of());
     }
 
     /**
@@ -192,36 +208,44 @@ public class SearchView extends AbstractSideNav {
 
         progressBar.setVisible(true);
         searchButton.setEnabled(false);
+        resultGrid.setItems(List.of());
 
         // Asynchrone Suche, um UI-Blockierung zu vermeiden
         CompletableFuture
                 .supplyAsync(() -> {
-                    List<SearchResult> apiResults = alphaVantageService.search(keyword);
-                    List<Wertpapier> lokaleTreffer = wertpapierRepository.searchByNameOrSymbol(keyword);
+                    try {
 
-                    //List<Wertpapier> lokaleTreffer = wertpapierRepository.findByNameContainingIgnoreCase(keyword);
-                    List<SearchResult> lokaleResults = lokaleTreffer.stream()
-                            .map(w -> {
-                                SearchResultTypeEnum typ;
-                                if (w instanceof ETF) {
-                                    typ = SearchResultTypeEnum.ETF;
-                                } else if (w instanceof Anleihe) {
-                                    typ = SearchResultTypeEnum.ANLEIHE;
-                                } else {
-                                    typ = SearchResultTypeEnum.UNBEKANNT;
-                                }
+                        // Suche in der AlphaVantage API und in der lokalen Datenbank
+                        List<SearchResult> apiResults = alphaVantageService.search(keyword);
+                        List<Wertpapier> lokaleTreffer = wertpapierRepository.searchByNameOrSymbol(keyword);
 
-                                return new SearchResult(
-                                        w.getSymbol(),
-                                        w.getName(),
-                                        "Lokale DB",
-                                        "EUR",
-                                        typ
-                                );
-                            })
-                            .toList();
-                    apiResults.addAll(lokaleResults);
-                    return apiResults;
+                        //List<Wertpapier> lokaleTreffer = wertpapierRepository.findByNameContainingIgnoreCase(keyword);
+                        List<SearchResult> lokaleResults = lokaleTreffer.stream()
+                                .map(w -> {
+                                    SearchResultTypeEnum typ;
+                                    if (w instanceof ETF) {
+                                        typ = SearchResultTypeEnum.ETF;
+                                    } else if (w instanceof Anleihe) {
+                                        typ = SearchResultTypeEnum.ANLEIHE;
+                                    } else {
+                                        typ = SearchResultTypeEnum.UNBEKANNT;
+                                    }
+
+                                    return new SearchResult(
+                                            w.getSymbol(),
+                                            w.getName(),
+                                            "Lokale DB",
+                                            "EUR",
+                                            typ
+                                    );
+                                })
+                                .toList();
+                        apiResults.addAll(lokaleResults);
+                        return apiResults;
+                    } catch (Exception e) {
+                        e.printStackTrace(); // Logging
+                        return Collections.<SearchResult>emptyList(); // Fehler => leere Liste zurückgeben
+                    }
                 })
                 .thenAccept(results -> getUI().ifPresent(ui -> ui.access(() -> handleSearchResults(results))));
     }
@@ -237,11 +261,15 @@ public class SearchView extends AbstractSideNav {
         progressBar.setVisible(false);
         searchButton.setEnabled(true);
 
-        if (results.isEmpty()) {
-            resultGrid.setItems(List.of());
-            showNotification("Keine Ergebnisse gefunden.", NotificationVariant.LUMO_CONTRAST);
+        resultGrid.setItems(results);
+
+        if (results == null || results.isEmpty()) {
+            // Nur Benachrichtigung, wenn der Nutzer aktiv gesucht hat
+            String keyword = searchField.getValue();
+            if (keyword != null && keyword.length() > 2) {
+                showNotification("Keine Ergebnisse gefunden für „" + keyword + "“.", NotificationVariant.LUMO_CONTRAST);
+            }
         } else {
-            resultGrid.setItems(results);
             showNotification(results.size() + " Treffer gefunden.", NotificationVariant.LUMO_SUCCESS);
         }
 
