@@ -102,13 +102,13 @@ public class SearchView extends AbstractSideNav {
         searchField.setPrefixComponent(VaadinIcon.SEARCH.create());
         searchField.setWidth("300px");
 
-        // Setzt den ValueChangeMode auf TIMEOUT, um die Suche bei Eingabe ab 2 Zeichen zu starten
+        // Setzt den ValueChangeMode auf TIMEOUT, um die Suche bei Eingabe ab 3 Zeichen zu starten
         searchField.setValueChangeMode(ValueChangeMode.TIMEOUT);
         searchField.setValueChangeTimeout(500);
         // Listener für das Suchfeld, der die Suche automatisch startet, wenn 2 oder mehr Zeichen eingegeben werden
         searchField.addValueChangeListener(event -> {
             String value = event.getValue();
-            if (value == null || value.trim().length() < 2) {
+            if (value == null || value.trim().length() < 3) {
                 resultGrid.setItems(List.of());
                 return;
             }
