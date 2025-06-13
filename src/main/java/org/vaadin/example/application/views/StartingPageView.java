@@ -8,11 +8,23 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+/**
+ * Die `StartingPageView`-Klasse repräsentiert die Startseite der Anwendung.
+ * Sie enthält eine ansprechende Benutzeroberfläche mit Header, Hero-Sektion,
+ * Funktionsübersicht, Kundenstimmen, Call-to-Action und einem Footer.
+ * Diese Ansicht ist für alle Benutzer zugänglich, auch ohne Authentifizierung.
+ */
 @Route("")
 @PageTitle("Finovia - Depot eröffnen")
 @AnonymousAllowed
 public class StartingPageView extends VerticalLayout {
 
+    /**
+     * Konstruktor für die `StartingPageView`-Klasse.
+     * Initialisiert die Startseite mit allen erforderlichen Komponenten und Stilen.
+     * Die Seite enthält Header, Hero-Sektion, Funktionsübersicht, Kundenstimmen,
+     * Call-to-Action und Footer.
+     */
     public StartingPageView() {
         setSizeFull();
         setPadding(false);
@@ -30,6 +42,12 @@ public class StartingPageView extends VerticalLayout {
         add(createFooter());
     }
 
+    /**
+     * Erstellt den Header der Startseite mit Logo, Navigation und Login-Button.
+     * Der Header ist responsiv und passt sich an verschiedene Bildschirmgrößen an.
+     *
+     * @return Ein HorizontalLayout, das den Header der Startseite darstellt
+     */
     private HorizontalLayout createHeader() {
         HorizontalLayout header = new HorizontalLayout();
         header.setWidthFull();
@@ -45,14 +63,17 @@ public class StartingPageView extends VerticalLayout {
                 .set("flex-wrap", "wrap")
                 .set("min-height", "70px");
 
+        // Logo-Bild
         Image logo = new Image("icons/logo.png", "Finovia Logo");
         logo.setHeight("45px");
 
+        // Logo-Stil
         HorizontalLayout nav = new HorizontalLayout();
         nav.setSpacing(true);
         nav.getStyle().set("flex-wrap", "wrap")
                 .set("gap", "20px");
 
+        // Navigation-Links
         Anchor startseite = new Anchor("#", "Startseite");
         styleNavLink(startseite);
         Anchor funktionen = new Anchor("#funktionen", "Funktionen");
@@ -60,6 +81,7 @@ public class StartingPageView extends VerticalLayout {
         Anchor hilfe = new Anchor("/hilfe", "Hilfe");
         styleNavLink(hilfe);
 
+        // Login-Button
         Button loginButton = new Button("Login", e -> UI.getCurrent().navigate("login"));
         loginButton.getStyle()
                 .set("background-color", "var(--lumo-primary-color)")
@@ -75,12 +97,18 @@ public class StartingPageView extends VerticalLayout {
             loginButton.getElement().addEventListener("mouseout", event -> loginButton.getStyle().set("background-color", "var(--lumo-primary-color)").set("transform", "translateY(0)"));
         });
 
-
+        // Navigation-Links zum Navigationslayout hinzufügen
         nav.add(startseite, funktionen, hilfe, loginButton);
         header.add(logo, nav);
         return header;
     }
 
+    /**
+     * Stilt einen Navigationslink (Anchor) mit CSS.
+     * Fügt Hover-Effekte hinzu, um die Benutzererfahrung zu verbessern.
+     *
+     * @param anchor Der Anchor, der gestylt werden soll
+     */
     private void styleNavLink(Anchor anchor) {
         anchor.getStyle()
                 .set("color", "var(--lumo-primary-text-color)")
@@ -94,7 +122,13 @@ public class StartingPageView extends VerticalLayout {
         });
     }
 
-
+    /**
+     * Erstellt die Hero-Sektion der Startseite mit einem einladenden Titel,
+     * Untertitel, Call-to-Action-Buttons und einer Illustration.
+     * Diese Sektion soll den Benutzer ansprechen und zum Handeln motivieren.
+     *
+     * @return Ein FlexLayout, das die Hero-Sektion der Startseite darstellt
+     */
     private FlexLayout createHeroSection() {
         FlexLayout hero = new FlexLayout();
         hero.setWidthFull();
@@ -106,6 +140,7 @@ public class StartingPageView extends VerticalLayout {
                 .set("background", "linear-gradient(to right, var(--lumo-primary-color-tint), var(--lumo-base-color))");
         hero.getStyle().set("gap", "50px");
 
+        // Textblock für den Hero-Bereich
         VerticalLayout textBlock = new VerticalLayout();
         textBlock.setSpacing(true);
         textBlock.setPadding(false);
@@ -113,6 +148,7 @@ public class StartingPageView extends VerticalLayout {
         textBlock.setMaxWidth("700px");
         textBlock.setAlignItems(Alignment.START);
 
+        // Überschriften und Buttons für den Hero-Bereich
         H1 finoviaHeading = new H1("Finovia");
         finoviaHeading.getStyle()
                 .set("font-size", "var(--lumo-font-size-xxxl)")
@@ -132,6 +168,7 @@ public class StartingPageView extends VerticalLayout {
                 .set("color", "var(--lumo-secondary-text-color)")
                 .set("margin-bottom", "40px");
 
+        // Primärer Button für die Depot-Eröffnung
         Button primaryButton = new Button("Depot jetzt eröffnen", e -> UI.getCurrent().navigate("register"));
         primaryButton.getStyle()
                 .set("background-color", "var(--lumo-primary-color)")
@@ -147,7 +184,7 @@ public class StartingPageView extends VerticalLayout {
             primaryButton.getElement().addEventListener("mouseout", event -> primaryButton.getStyle().set("background-color", "var(--lumo-primary-color)").set("transform", "translateY(0)"));
         });
 
-
+        // Sekundärer Button für weitere Informationen
         Button secondaryButton = new Button("Mehr erfahren", e -> UI.getCurrent().getPage().setLocation("mehr-erfahren.html"));
         secondaryButton.getStyle()
                 .set("background-color", "transparent")
@@ -164,13 +201,14 @@ public class StartingPageView extends VerticalLayout {
             secondaryButton.getElement().addEventListener("mouseout", event -> secondaryButton.getStyle().set("background-color", "transparent").set("border-color", "var(--lumo-shade-30pct)").set("transform", "translateY(0)"));
         });
 
-
+        // Button-Layout
         HorizontalLayout buttons = new HorizontalLayout(primaryButton, secondaryButton);
         buttons.setSpacing(true);
         buttons.getStyle().set("flex-wrap", "wrap");
 
         textBlock.add(finoviaHeading, title, subtitle, buttons);
 
+        // Illustration für den Hero-Bereich
         Image illustration = new Image("images/illustration.png", "Illustration");
         illustration.setWidth("550px");
         illustration.getStyle().set("max-width", "100%");
@@ -181,6 +219,13 @@ public class StartingPageView extends VerticalLayout {
         return hero;
     }
 
+    /**
+     * Erstellt die Funktionsübersicht-Sektion der Startseite.
+     * Diese Sektion zeigt die wichtigsten Funktionen und Vorteile von Finovia
+     * in ansprechenden Karten an.
+     *
+     * @return Ein VerticalLayout, das die Funktionsübersicht darstellt
+     */
     private VerticalLayout createFeatureSection() {
         VerticalLayout section = new VerticalLayout();
         section.setId("funktionen");
@@ -211,6 +256,15 @@ public class StartingPageView extends VerticalLayout {
         return section;
     }
 
+    /**
+     * Erstellt eine Funktionskarte für die Funktionsübersicht-Sektion.
+     * Jede Karte enthält einen Titel, eine Beschreibung und ein Icon.
+     *
+     * @param title Der Titel der Funktion
+     * @param desc  Die Beschreibung der Funktion
+     * @param iconFile Der Dateiname des Icons
+     * @return Ein VerticalLayout, das die Funktionskarte darstellt
+     */
     private VerticalLayout createFeatureCard(String title, String desc, String iconFile) {
         VerticalLayout layout = new VerticalLayout();
         layout.setAlignItems(Alignment.CENTER);
@@ -242,6 +296,12 @@ public class StartingPageView extends VerticalLayout {
         return layout;
     }
 
+    /**
+     * Erstellt die Kundenstimmen-Sektion der Startseite.
+     * Diese Sektion zeigt Testimonials von zufriedenen Kunden in ansprechenden Karten an.
+     *
+     * @return Ein VerticalLayout, das die Kundenstimmen darstellt
+     */
     private VerticalLayout createTestimonialSection() {
         VerticalLayout section = new VerticalLayout();
         section.setWidthFull();
@@ -283,6 +343,15 @@ public class StartingPageView extends VerticalLayout {
         return section;
     }
 
+    /**
+     * Erstellt eine einzelne Kundenstimmen-Karte.
+     * Jede Karte enthält ein Zitat, den Namen des Autors und dessen Rolle.
+     *
+     * @param quote  Das Zitat des Kunden
+     * @param author Der Name des Autors
+     * @param role   Die Rolle des Autors (z.B. "Privatanleger", "Finanzberaterin")
+     * @return Ein VerticalLayout, das die Kundenstimmen-Karte darstellt
+     */
     private VerticalLayout createTestimonialCard(String quote, String author, String role) {
         VerticalLayout card = new VerticalLayout();
         card.setAlignItems(Alignment.CENTER);
@@ -317,7 +386,12 @@ public class StartingPageView extends VerticalLayout {
         return card;
     }
 
-
+    /**
+     * Erstellt die Call-to-Action-Sektion der Startseite.
+     * Diese Sektion enthält einen einladenden Text und einen Button zur Depot-Eröffnung.
+     *
+     * @return Ein VerticalLayout, das die Call-to-Action-Sektion darstellt
+     */
     private VerticalLayout createCTASection() {
         VerticalLayout cta = new VerticalLayout();
         cta.setAlignItems(Alignment.CENTER);
@@ -394,7 +468,12 @@ public class StartingPageView extends VerticalLayout {
         return section;
     }
 
-
+    /**
+     * Erstellt den Footer der Startseite mit Copyright-Informationen und Links zu Impressum, Datenschutz und Risikohinweisen.
+     * Der Footer ist responsiv und passt sich an verschiedene Bildschirmgrößen an.
+     *
+     * @return Ein Footer, der die Fußzeile der Startseite darstellt
+     */
     private Footer createFooter() {
         Footer footer = new Footer();
         footer.setWidthFull();
@@ -411,7 +490,6 @@ public class StartingPageView extends VerticalLayout {
         container.setMaxWidth("1200px");
         container.setMargin(Boolean.parseBoolean("0 auto"));
 
-
         Paragraph copyright = new Paragraph("© " + java.time.Year.now().getValue() + " Finovia. Alle Rechte vorbehalten.");
         copyright.getStyle()
                 .set("font-size", "var(--lumo-font-size-m)")
@@ -422,6 +500,7 @@ public class StartingPageView extends VerticalLayout {
         links.setSpacing(true);
         links.getStyle().set("gap", "20px");
 
+        // Link zum Impressum
         Anchor impressumLink = new Anchor("impressum", "Impressum");
         impressumLink.getStyle()
                 .set("color", "var(--lumo-secondary-color)")
@@ -433,6 +512,7 @@ public class StartingPageView extends VerticalLayout {
             impressumLink.getElement().addEventListener("mouseout", event -> impressumLink.getStyle().set("text-decoration", "none").set("color", "var(--lumo-secondary-color)"));
         });
 
+        // Link zum Datenschutz
         Anchor datenschutzLink = new Anchor("datenschutz", "Datenschutz");
         datenschutzLink.getStyle()
                 .set("color", "var(--lumo-secondary-color)")
@@ -444,7 +524,7 @@ public class StartingPageView extends VerticalLayout {
             datenschutzLink.getElement().addEventListener("mouseout", event -> datenschutzLink.getStyle().set("text-decoration", "none").set("color", "var(--lumo-secondary-color)"));
         });
 
-
+        // Link zu den Risikohinweisen
         Anchor riskDisclaimerLink = new Anchor("risikohinweise", "Risikohinweise");
         riskDisclaimerLink.getStyle()
                 .set("color", "var(--lumo-secondary-color)")
@@ -456,7 +536,7 @@ public class StartingPageView extends VerticalLayout {
             riskDisclaimerLink.getElement().addEventListener("mouseout", event -> riskDisclaimerLink.getStyle().set("text-decoration", "none").set("color", "var(--lumo-secondary-color)"));
         });
 
-
+        // Links zum Footer-Layout hinzufügen
         links.add(impressumLink, datenschutzLink, riskDisclaimerLink); // Link hinzufügen
         container.add(copyright, links);
         footer.add(container);

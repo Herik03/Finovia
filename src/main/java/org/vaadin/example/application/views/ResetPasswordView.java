@@ -21,6 +21,11 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 
 import java.util.List;
 
+/**
+ * Ansicht zum Zurücksetzen des Passworts.
+ * Diese Klasse ermöglicht es Benutzern, ihr Passwort zurückzusetzen,
+ * wenn sie es vergessen haben. Sie ist für anonyme Benutzer zugänglich.
+ */
 @Route("reset-password")
 @PageTitle("Passwort zurücksetzen")
 @AnonymousAllowed
@@ -33,6 +38,12 @@ public class ResetPasswordView extends VerticalLayout implements BeforeEnterObse
     private PasswordField confirmPasswordField;
     private Button resetButton;
 
+    /**
+     * Konstruktor zur Initialisierung der ResetPasswordView.
+     * Erfordert den NutzerService, um das Zurücksetzen des Passworts zu ermöglichen.
+     *
+     * @param nutzerService Service zur Verwaltung von Nutzeroperationen
+     */
     @Autowired
     public ResetPasswordView(NutzerService nutzerService) {
         this.nutzerService = nutzerService;
@@ -42,17 +53,25 @@ public class ResetPasswordView extends VerticalLayout implements BeforeEnterObse
         setJustifyContentMode(JustifyContentMode.CENTER);
     }
 
+    /**
+     * Initialisiert die Benutzeroberfläche der ResetPasswordView.
+     * Erstellt die erforderlichen UI-Komponenten und fügt sie zur Ansicht hinzu.
+     *
+     * @param event Das BeforeEnterEvent, das Informationen über die Navigation enthält
+     */
     private void initUI(BeforeEnterEvent event){
         addClassName("passwort-vergessen-view");
 
         Div container = new Div();
         container.addClassName("passwort-vergessen-container");
 
+        // Titel und Untertitel
         H1 title = new H1("Passwort zurücksetzen");
         title.addClassName("passwort-vergessen-title");
         Span subtitle = new Span("Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten.");
         subtitle.addClassName("passwort-vergessen-subtitle");
 
+        // Eingabefelder für neues Passwort und Bestätigung
         Span newPasswordLabel = new Span("Neues Passwort:");
         newPasswordField = new PasswordField();
         newPasswordLabel.addClassName("passwort-vergessen-label");
@@ -62,6 +81,7 @@ public class ResetPasswordView extends VerticalLayout implements BeforeEnterObse
         newPasswordField.setWidthFull();
         newPasswordField.addClassName("vergessen-input-field");
 
+        // Eingabefeld für die Bestätigung des neuen Passworts
         Span confirmPasswordLabel = new Span("Passwort bestätigen:");
         confirmPasswordField = new PasswordField();
         confirmPasswordLabel.addClassName("passwort-vergessen-label");
@@ -71,12 +91,14 @@ public class ResetPasswordView extends VerticalLayout implements BeforeEnterObse
         confirmPasswordField.setWidthFull();
         confirmPasswordField.addClassName("vergessen-input-field");
 
+        // Button zum Zurücksetzen des Passworts
         resetButton = new Button("Passwort zurücksetzen", e -> handlePasswordReset(event));
         resetButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         resetButton.setWidthFull();
         resetButton.addClassName("vergessen-send-button");
         resetButton.addClickShortcut(com.vaadin.flow.component.Key.ENTER);
 
+        // Layout für das Formular
         VerticalLayout formLayout = new VerticalLayout();
         formLayout.setSpacing(false);
         formLayout.setPadding(false);
@@ -86,6 +108,12 @@ public class ResetPasswordView extends VerticalLayout implements BeforeEnterObse
         add(container);
     }
 
+    /**
+     * Behandelt das Zurücksetzen des Passworts.
+     * Überprüft die Eingaben und führt das Zurücksetzen durch, wenn die Bedingungen erfüllt sind.
+     *
+     * @param event Das BeforeEnterEvent, das Informationen über die Navigation enthält
+     */
     private void handlePasswordReset(BeforeEnterEvent event) {
         if (!newPasswordField.isEmpty() && !confirmPasswordField.isEmpty() && newPasswordField.getValue().equals(confirmPasswordField.getValue()) && isValidPassword(newPasswordField.getValue()) ) {
             boolean success = nutzerService.resetPassword(token, newPasswordField.getValue());
@@ -107,6 +135,14 @@ public class ResetPasswordView extends VerticalLayout implements BeforeEnterObse
         }
     }
 
+    /**
+     * Überprüft, ob das eingegebene Passwort den Sicherheitsanforderungen entspricht.
+     * Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen Großbuchstaben,
+     * einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten.
+     *
+     * @param password Das zu überprüfende Passwort
+     * @return true, wenn das Passwort gültig ist, sonst false
+     */
     private boolean isValidPassword(String password) {
         /*
         * Passwort muss mindestens 8 Zeichen lang sein, mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten.
@@ -115,6 +151,12 @@ public class ResetPasswordView extends VerticalLayout implements BeforeEnterObse
         return password != null && password.matches(regex);
     }
 
+    /**
+     * Wird aufgerufen, bevor die Ansicht betreten wird.
+     * Extrahiert den Token aus den Query-Parametern und initialisiert die UI.
+     *
+     * @param event Das BeforeEnterEvent, das Informationen über die Navigation enthält
+     */
     @Override
     public void beforeEnter(BeforeEnterEvent event){
         token = event.getLocation().getQueryParameters().getParameters().getOrDefault("token", List.of("")).getFirst();

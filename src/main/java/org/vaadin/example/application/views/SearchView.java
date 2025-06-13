@@ -8,6 +8,7 @@ import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Wertpapier;
 import org.vaadin.example.application.classes.SearchResult;
+import org.vaadin.example.application.factory.WertpapierDetailViewFactory;
 import org.vaadin.example.application.repositories.WertpapierRepository;
 import org.vaadin.example.application.services.AlphaVantageService;
 import com.vaadin.flow.component.Key;
@@ -44,12 +45,17 @@ import java.util.concurrent.CompletableFuture;
 @AnonymousAllowed
 public class SearchView extends AbstractSideNav {
     private final AlphaVantageService alphaVantageService;
-
     private final TextField searchField = new TextField("Wertpapier suchen");
     private final Button searchButton = new Button("Suchen", new Icon(VaadinIcon.SEARCH));
     private final ProgressBar progressBar = new ProgressBar();
     private final Grid<SearchResult> resultGrid = new Grid<>(SearchResult.class, false);
     private final SecurityService securityService;
+
+    @Autowired
+    private WertpapierRepository wertpapierRepository;
+    @Autowired
+    private WertpapierDetailViewFactory detailViewFactory;
+
     /**
      * Konstruktor für die SearchView.
      * Spring injiziert hier die benötigten Services.
@@ -102,16 +108,18 @@ public class SearchView extends AbstractSideNav {
         HorizontalLayout searchLayout = new HorizontalLayout(searchField, searchButton);
         searchLayout.setAlignItems(Alignment.BASELINE);
 
-        // NEUER BUTTON: Direkt zur Watchlist
+        // Button zum Navigieren zur Watchlist
         Button goToWatchlistButton = new Button("Zur Watchlist", new Icon(VaadinIcon.STAR));
         goToWatchlistButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_SMALL);
         goToWatchlistButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate(WatchlistView.class)));
 
+        // Layout für die oberen Steuerelemente
         HorizontalLayout topControls = new HorizontalLayout(searchLayout, goToWatchlistButton);
         topControls.setWidthFull();
         topControls.setAlignItems(Alignment.BASELINE);
         topControls.setJustifyContentMode(JustifyContentMode.BETWEEN); // Suchfeld links, Watchlist-Button rechts
 
+        // Konfiguriert das Grid für die Suchergebnisse
         container.add(
                 title,
                 topControls, // Verwende das neue Layout für die oberen Steuerelemente
@@ -126,11 +134,12 @@ public class SearchView extends AbstractSideNav {
      */
     private void configureGrid() {
 
-        resultGrid.addColumn(SearchResult::getSymbol).setHeader("Symbol").setAutoWidth(true);
-        resultGrid.addColumn(SearchResult::getName).setHeader("Name").setAutoWidth(true).setFlexGrow(1);
-        resultGrid.addColumn(SearchResult::getRegion).setHeader("Region").setAutoWidth(true);
-        resultGrid.addColumn(SearchResult::getCurrency).setHeader("Währung").setAutoWidth(true);
+        resultGrid.addColumn(SearchResult::symbol).setHeader("Symbol").setAutoWidth(true);
+        resultGrid.addColumn(SearchResult::name).setHeader("Name").setAutoWidth(true).setFlexGrow(1);
+        resultGrid.addColumn(SearchResult::region).setHeader("Region").setAutoWidth(true);
+        resultGrid.addColumn(SearchResult::currency).setHeader("Währung").setAutoWidth(true);
 
+        // Spalte für den Typ des Suchergebnisses
         resultGrid.addColumn(new ComponentRenderer<>(result -> {
             HorizontalLayout actions = new HorizontalLayout();
 
@@ -142,13 +151,13 @@ public class SearchView extends AbstractSideNav {
             kaufenButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_PRIMARY);
             kaufenButton.addClickListener(e ->
                     {
-                        var url = switch(result.getType()) {
+                        var url = switch(result.type()) {
                             case SearchResultTypeEnum.AKTIE -> "aktie/";
                             case SearchResultTypeEnum.ETF -> "etf/";
                             case SearchResultTypeEnum.ANLEIHE -> "anleihe/";
                             default -> "";
                         };
-                        getUI().ifPresent(ui -> ui.navigate("kaufen/" + url + result.getSymbol()));
+                        getUI().ifPresent(ui -> ui.navigate("kaufen/" + url + result.symbol()));
                     }
             );
 
@@ -184,6 +193,7 @@ public class SearchView extends AbstractSideNav {
         progressBar.setVisible(true);
         searchButton.setEnabled(false);
 
+        // Asynchrone Suche, um UI-Blockierung zu vermeiden
         CompletableFuture
                 .supplyAsync(() -> {
                     List<SearchResult> apiResults = alphaVantageService.search(keyword);
@@ -240,42 +250,6 @@ public class SearchView extends AbstractSideNav {
     }
 
     /**
-     * Zeigt detaillierte Informationen zu einem ausgewählten Wertpapier an.
-     * Schließt die Seitenleiste vor dem Öffnen des Detaildialogs und öffnet sie wieder,
-     * sobald der Dialog geschlossen wird.
-     *
-     * @param result Das ausgewählte Suchergebnis.
-     */
-    @Autowired private WertpapierRepository wertpapierRepository;
-    @Autowired private WertpapierDetailViewFactory detailViewFactory;
-
-    /*private void showDetails(SearchResult result) {
-        closeSideNav();
-
-        Wertpapier wertpapier = wertpapierRepository.findBySymbol(result.getSymbol());
-        if (wertpapier == null) {
-            showNotification("Wertpapier nicht gefunden.", NotificationVariant.LUMO_ERROR);
-            return;
-        }
-
-        Dialog detailsDialog = detailViewFactory.getDetailsDialog(wertpapier);
-        detailsDialog.addDetachListener(event -> openSideNav());
-    }
-
-
-    private void showDetails(SearchResult result) {
-        closeSideNav();
-
-        wertpapierRepository.findBySymbol(result.getSymbol()).ifPresentOrElse(wertpapier -> {
-            Dialog detailsDialog = detailViewFactory.getDetailsDialog(wertpapier);
-            detailsDialog.addDetachListener(event -> openSideNav());
-        }, () -> {
-            showNotification("Wertpapier nicht gefunden.", NotificationVariant.LUMO_ERROR);
-        });
-    }
-
-     */
-    /**
      * Öffnet ein Detail-Dialogfenster für das übergebene Suchergebnis.
      * <p>
      * Wenn das Wertpapier bereits in der Datenbank existiert, wird dessen gespeicherte Version verwendet.
@@ -288,13 +262,13 @@ public class SearchView extends AbstractSideNav {
     private void showDetails(SearchResult result) {
         closeSideNav();
 
-        Optional<Wertpapier> dbWertpapierOpt = wertpapierRepository.findBySymbol(result.getSymbol());
+        Optional<Wertpapier> dbWertpapierOpt = wertpapierRepository.findBySymbol(result.symbol());
         Dialog detailsDialog;
 
         if (dbWertpapierOpt.isPresent()) {
             detailsDialog = detailViewFactory.getDetailsDialog(dbWertpapierOpt.get());
         } else {
-            Aktie aktie = alphaVantageService.getFundamentalData(result.getSymbol());
+            Aktie aktie = alphaVantageService.getFundamentalData(result.symbol());
             if (aktie == null) {
                 showNotification("Wertpapier nicht gefunden.", NotificationVariant.LUMO_ERROR);
                 return;
@@ -304,9 +278,6 @@ public class SearchView extends AbstractSideNav {
 
         detailsDialog.addDetachListener(event -> openSideNav());
     }
-
-
-
 
     /**
      * Zeigt eine Benachrichtigung mit der angegebenen Nachricht und Variante an.
@@ -318,14 +289,5 @@ public class SearchView extends AbstractSideNav {
         Notification notification = new Notification(message, 3000, Notification.Position.TOP_CENTER);
         notification.addThemeVariants(variant);
         notification.open();
-    }
-
-    /**
-     * Navigiert zur Kaufansicht für ein bestimmtes Wertpapier.
-     *
-     * @param symbol Das Börsensymbol des Wertpapiers.
-     */
-    private void navigateToKaufView(String symbol) {
-        getUI().ifPresent(ui -> ui.navigate("kaufen/" + symbol));
     }
 }

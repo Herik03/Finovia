@@ -5,19 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-/**
+/*
  * Repräsentiert einen historischen Kurs eines {@link Wertpapier} an einem bestimmten Datum.
  *
  * Die Klasse speichert neben dem Kurswert auch Eröffnungs- und Schlusskurse,
  * um Kursverläufe analysieren zu können.
  * Jeder Kurs ist eindeutig einem Wertpapier zugeordnet.
  *
- * @author Jan, Sören
- */
+ * @author Jan Schwarzer, Sören Heß
+*/
 
 @Getter
 @Setter
@@ -25,24 +23,61 @@ import java.time.format.DateTimeFormatter;
 @Table(name = "Kurs")
 @NoArgsConstructor
 public class Kurs {
+    /**
+     * Eindeutige ID des Kurses (Primärschlüssel).
+     */
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "kurs_seq")
+    @SequenceGenerator(name = "kurs_seq", sequenceName = "kurs_seq", allocationSize = 1)
     private Long kursId;
 
+    /**
+     * Datum und Uhrzeit des Kurses.
+     */
     private LocalDateTime datum;
+
+    /**
+     * Eröffnungskurs des Wertpapiers an diesem Tag.
+     */
     private double eröffnungskurs;
+
+    /**
+     * Schlusskurs des Wertpapiers an diesem Tag.
+     */
     private double schlusskurs;
+
+    /**
+     * Höchster Kurs des Wertpapiers an diesem Tag.
+     */
     private double high;
+
+    /**
+     * Niedrigster Kurs des Wertpapiers an diesem Tag.
+     */
     private double low;
 
+    /**
+     * Zugehöriges Wertpapier.
+     */
     @ManyToOne
     @JoinColumn(name = "wertpapier_id")
     private Wertpapier wertpapier;
+
+    /**
+     * Börsensymbol des Wertpapiers.
+     */
     private String symbol;
 
     /**
      * Konstruktor zum Erzeugen eines Kurs-Objekts mit allen Werten.
-    */
+     *
+     * @param datum           Datum und Uhrzeit des Kurses
+     * @param eröffnungskurs  Eröffnungskurs des Wertpapiers
+     * @param schlusskurs     Schlusskurs des Wertpapiers
+     * @param high            Tageshoch des Wertpapiers
+     * @param low             Tagestief des Wertpapiers
+     * @param wertpapier      Zugehöriges Wertpapier
+     */
     public Kurs(LocalDateTime datum, double eröffnungskurs, double schlusskurs, double high, double low, Wertpapier wertpapier) {
         this.datum = datum;
         this.eröffnungskurs = eröffnungskurs;
@@ -56,7 +91,7 @@ public class Kurs {
      * Konstruktor zum Erzeugen eines Kurs-Objekts ohne Wertpapier-Referenz.
      *
      * @param symbol         Das Börsensymbol des Wertpapiers
-     * @param datum           Das Datum des Kurses
+     * @param datum          Das Datum des Kurses
      * @param eröffnungskurs Der Eröffnungskurs des Wertpapiers an diesem Tag
      * @param schlusskurs    Der Schlusskurs des Wertpapiers an diesem Tag
      * @param high           Der höchste Kurs des Wertpapiers an diesem Tag
@@ -71,12 +106,12 @@ public class Kurs {
         this.low = low;
     }
 
-    //public String getKurswert() {
-    //    return "";
-    //}
-
+    /**
+     * Gibt den Schlusskurs als Kurswert zurück.
+     *
+     * @return Schlusskurs des Wertpapiers
+     */
     public double getKurswert() {
         return schlusskurs;
     }
-
 }

@@ -31,6 +31,11 @@ import org.vaadin.example.application.services.NutzerService;
 
 import java.util.List;
 
+/**
+ * View zum Verkaufen von Aktien.
+ * Ermöglicht dem Nutzer, eine Aktie zu verkaufen, indem er das Symbol, den aktuellen Kurs,
+ * die Stückzahl und das Depot auswählt.
+ */
 @Route("verkaufen/aktie/:symbol")
 @PageTitle("Aktie verkaufen")
 @PermitAll
@@ -49,6 +54,14 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
 
     private final double gebuehren = 2.50;
 
+    /**
+     * Konstruktor der View, der alle benötigten Services injiziert.
+     *
+     * @param aktienVerkaufService Service zum Verarbeiten von Aktienverkäufen
+     * @param depotService         Service zur Verwaltung von Depots
+     * @param securityService      Service für Sicherheits- und Authentifizierungsfunktionen
+     * @param nutzerService        Service zur Nutzerverwaltung
+     */
     @Autowired
     public AktieVerkaufenView(AktienVerkaufService aktienVerkaufService,
                               DepotService depotService,
@@ -68,6 +81,13 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
         addToMainContent(contentLayout);
     }
 
+    /**
+     * Erstellt die Benutzeroberfläche für die Verkauf-Ansicht.
+     * Enthält Eingabefelder für Aktiensymbol, aktuellen Kurs, Stückzahl und Depot.
+     * Fügt auch einen Button zum Auslösen des Verkaufs hinzu.
+     *
+     * @param container Das Layout, in dem die UI-Komponenten platziert werden
+     */
     private void setupUI(VerticalLayout container) {
         // Zurück-Button wie in AktienKaufView
         Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
@@ -75,44 +95,55 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
         RouterLink routerLink = new RouterLink("", MainView.class);
         routerLink.add(backButton);
 
+
         VerticalLayout topLeftLayout = new VerticalLayout(routerLink);
+
         topLeftLayout.setPadding(false);
         topLeftLayout.setSpacing(false);
         topLeftLayout.setWidthFull();
         topLeftLayout.setAlignItems(FlexComponent.Alignment.START);
 
+        // Titel und Eingabefelder für den Verkauf
         H3 title = new H3("Aktien Verkaufen");
         title.addClassName("view-title");
 
+        // Eingabefelder für den Verkauf
         symbolField = new TextField("Aktiensymbol");
         symbolField.setReadOnly(true);
         symbolField.setWidthFull();
 
+        // Aktueller Kurs der Aktie
         einzelkursField = new TextField("Aktueller Kurs (€/Aktie)");
         einzelkursField.setReadOnly(true);
         einzelkursField.setValue("0.00");
         einzelkursField.setWidthFull();
 
+        // Stückzahl-Feld für die Anzahl der zu verkaufenden Aktien
         stueckzahlField = new NumberField("Stückzahl");
         stueckzahlField.setMin(1);
         stueckzahlField.setValue(1.0);
         stueckzahlField.setWidthFull();
 
+        // Depot-Auswahl für den Verkauf
         depotComboBox = new ComboBox<>("Depot auswählen");
         List<Depot> depots = depotService.getDepotsByNutzerId(getAktuelleNutzerId());
         depotComboBox.setItems(depots);
         depotComboBox.setItemLabelGenerator(Depot::getName);
         depotComboBox.setWidthFull();
 
+        // Gebühren und Gesamtpreis-Felder
         TextField gebuehrenField = new TextField("Gebühren (EUR)");
         gebuehrenField.setValue(String.format("%.2f", gebuehren));
         gebuehrenField.setReadOnly(true);
         gebuehrenField.setWidthFull();
 
+        // Gesamtpreis-Feld, das den Gesamtpreis der Transaktion anzeigt
         kursField = new TextField("Gesamtpreis (€)");
         kursField.setReadOnly(true);
         kursField.setValue("0.00");
         kursField.setWidthFull();
+
+
 
         Button verkaufButton = new Button("Jetzt Verkaufen");
         verkaufButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -136,6 +167,7 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
             }
         });
 
+        // Listener für den Verkauf-Button
         verkaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
             Double stueckzahlDouble = stueckzahlField.getValue();
@@ -165,7 +197,9 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
             }
         });
 
+
         VerticalLayout centerLayout = new VerticalLayout(title, formLayout);
+
         centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         centerLayout.setSpacing(true);
         centerLayout.setPadding(true);
@@ -176,6 +210,10 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
         container.add(topLeftLayout, centerLayout);
     }
 
+    /**
+     * Aktualisiert den Einzelkurs der Aktie basierend auf dem eingegebenen Symbol.
+     * Wenn das Symbol leer ist, wird der Kurs auf "0.00" gesetzt.
+     */
     private void aktualisiereEinzelkurs() {
         String symbol = symbolField.getValue();
         if (symbol != null && !symbol.isBlank()) {
@@ -190,6 +228,10 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
         }
     }
 
+    /**
+     * Aktualisiert den Gesamtpreis basierend auf dem Einzelkurs und der Stückzahl.
+     * Wenn das Symbol oder die Stückzahl ungültig ist, wird der Kurs auf "0.00" gesetzt.
+     */
     private void aktualisiereKurs() {
         String symbol = symbolField.getValue();
         Double stueckzahl = stueckzahlField.getValue();
@@ -207,6 +249,12 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
         }
     }
 
+    /**
+     * Holt die ID des aktuell angemeldeten Nutzers.
+     * Wenn kein Nutzer angemeldet ist, wird null zurückgegeben.
+     *
+     * @return Die ID des aktuellen Nutzers oder null, wenn kein Nutzer angemeldet ist
+     */
     private Long getAktuelleNutzerId() {
         UserDetails userDetails = securityService.getAuthenticatedUser();
         if (userDetails == null) {
@@ -216,6 +264,12 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
         return (nutzer != null) ? nutzer.getId() : null;
     }
 
+    /**
+     * Wird aufgerufen, bevor die View angezeigt wird.
+     * Hier wird das Symbol aus den Routenparametern geladen und die Felder entsprechend aktualisiert.
+     *
+     * @param event Das Ereignis, das vor dem Anzeigen der View ausgelöst wird
+     */
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         String symbol = event.getRouteParameters().get("symbol").orElse("");

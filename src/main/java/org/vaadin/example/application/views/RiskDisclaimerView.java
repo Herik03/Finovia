@@ -1,6 +1,5 @@
 package org.vaadin.example.application.views;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -8,11 +7,20 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+/**
+ * Die `RiskDisclaimerView`-Klasse stellt die Ansicht für die Risikohinweise zum Wertpapierhandel dar.
+ * Diese Ansicht informiert die Nutzer über die Risiken des Handels mit Wertpapieren
+ * und gibt wichtige Empfehlungen zum verantwortungsvollen Umgang mit Investitionen.
+ */
 @Route("risikohinweise")
 @PageTitle("Finovia - Risikohinweise zum Wertpapierhandel")
 @AnonymousAllowed
 public class RiskDisclaimerView extends VerticalLayout {
 
+    /**
+     * Konstruktor der Risikohinweis-Ansicht.
+     * Initialisiert die Ansicht mit allen notwendigen Komponenten und Stilen.
+     */
     public RiskDisclaimerView() {
         setSizeFull();
         setPadding(false);
@@ -21,6 +29,7 @@ public class RiskDisclaimerView extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.START);
         getStyle().set("background-color", "var(--lumo-contrast-5pct)");
 
+        // Container für den Inhalt der Seite
         VerticalLayout contentContainer = new VerticalLayout();
         contentContainer.setPadding(true);
         contentContainer.setSpacing(true);
@@ -32,6 +41,7 @@ public class RiskDisclaimerView extends VerticalLayout {
                 .set("box-shadow", "0 6px 12px rgba(0,0,0,0.1)");
         contentContainer.setMargin(Boolean.parseBoolean("50px auto"));
 
+        // Link zurück zur Startseite
         Anchor backToHomeTop = new Anchor("", "← Zurück zur Startseite");
         backToHomeTop.getStyle()
                 .set("margin-bottom", "20px")
@@ -44,13 +54,14 @@ public class RiskDisclaimerView extends VerticalLayout {
         });
         contentContainer.add(backToHomeTop);
 
-
+        // Titel und Einleitung
         H1 title = new H1("Wichtige Risikohinweise zum Handel mit Wertpapieren");
         title.getStyle().set("color", "var(--lumo-error-color)");
         title.getStyle().set("text-align", "center");
         title.getStyle().set("margin-bottom", "20px");
         contentContainer.add(title);
 
+        // Einleitungstext
         Paragraph intro = new Paragraph(
                 "Bitte lesen Sie die folgenden Informationen sorgfältig durch, bevor Sie mit dem Handel von Wertpapieren über Finovia beginnen. Der Handel an Finanzmärkten ist mit erheblichen Risiken verbunden und nicht für jeden Anleger geeignet. **Sie können Ihr gesamtes eingesetztes Kapital verlieren.**"
         );
@@ -59,6 +70,7 @@ public class RiskDisclaimerView extends VerticalLayout {
         intro.getStyle().set("margin-bottom", "30px");
         contentContainer.add(intro);
 
+        // Trennlinie
         Div separator1 = new Div();
         separator1.getStyle()
                 .set("width", "100%")
@@ -129,6 +141,12 @@ public class RiskDisclaimerView extends VerticalLayout {
         add(contentContainer);
     }
 
+    /**
+     * Erstellt einen stilisierten Absatz mit dem angegebenen Text.
+     *
+     * @param text Der Text des Absatzes
+     * @return Ein {@link Paragraph}-Objekt mit dem angegebenen Text und Stil
+     */
     private Paragraph createStyledParagraph(String text) {
         Paragraph p = new Paragraph(text);
         p.getStyle().set("font-size", "var(--lumo-font-size-m)");
@@ -138,6 +156,14 @@ public class RiskDisclaimerView extends VerticalLayout {
         return p;
     }
 
+    /**
+     * Erstellt einen externen Link mit dem angegebenen href und Text.
+     * Der Link öffnet sich in einem neuen Tab und hat ein ansprechendes Design.
+     *
+     * @param href Der URL, auf den der Link verweist
+     * @param text Der anzuzeigende Text des Links
+     * @return Ein {@link Anchor}-Objekt, das den externen Link darstellt
+     */
     private Anchor createExternalLink(String href, String text) {
         Anchor link = new Anchor(href, text);
         link.setTarget("_blank");

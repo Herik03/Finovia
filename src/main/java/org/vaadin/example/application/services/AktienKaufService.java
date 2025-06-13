@@ -9,9 +9,18 @@ import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service-Klasse für den Kauf von Aktien.
+ *
+ * Stellt Methoden bereit, um Aktien zu kaufen, Transaktionen zu speichern,
+ * Aktieninformationen zu aktualisieren und Kurse abzufragen.
+ *
+ * @author Batuhan Güvercin, Henrik Dollmann
+ */
 @Service
 public class AktienKaufService {
 
@@ -20,6 +29,14 @@ public class AktienKaufService {
     private final TransaktionRepository transaktionRepository;
     private final AktieRepository aktieRepository;
 
+    /**
+     * Konstruktor für den AktienKaufService.
+     *
+     * @param alphaVantageService Service zur Abfrage von Aktienkursen und Fundamentaldaten
+     * @param depotRepository Repository für Depots
+     * @param transaktionRepository Repository für Transaktionen
+     * @param aktieRepository Repository für Aktien
+     */
     @Autowired
     public AktienKaufService(AlphaVantageService alphaVantageService,
                              DepotRepository depotRepository,
@@ -53,6 +70,8 @@ public class AktienKaufService {
 
         double kurs = quote.getPrice();
         double gebuehren = 2.50;
+
+
 
         Kauf kauf = new Kauf(handelsplatz, LocalDate.now(), gebuehren, kurs, stueckzahl, null, null);
         kauf.setNutzer(nutzer);
@@ -117,10 +136,12 @@ public class AktienKaufService {
         return aktieToPersist;
     }
 
-    public List<Transaktion> getAllTransaktionen() {
-        return transaktionRepository.findAll();
-    }
-
+    /**
+     * Gibt den aktuellen Kurs für das angegebene Symbol zurück.
+     *
+     * @param symbol Das Tickersymbol der Aktie
+     * @return Der aktuelle Kurs oder 0.0, falls nicht verfügbar
+     */
     public double getKursFürSymbol(String symbol) {
         if (symbol == null || symbol.isBlank()) {
             return 0.0;

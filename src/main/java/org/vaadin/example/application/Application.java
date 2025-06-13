@@ -7,11 +7,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * The entry point of the Spring Boot application.
  *
- * Use the @PWA annotation make the application installable on phones, tablets
- * and some desktop browsers.
- *
+ * Die Hauptanwendungsklasse für die Finovia Trading Plattform.
+ * Diese Klasse konfiguriert die Anwendung als Spring Boot Anwendung
+ * und richtet die Progressive Web-App (PWA) Einstellungen ein.
  */
 @SpringBootApplication
 @PWA(name = "Finovia - Ihre Trading Plattform", shortName = "Finovia", iconPath = "icons/logo.png")

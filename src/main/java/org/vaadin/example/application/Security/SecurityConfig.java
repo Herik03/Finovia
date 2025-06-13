@@ -16,15 +16,33 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.vaadin.example.application.views.LoginView;
 
+/**
+ * Konfiguration der Sicherheitseinstellungen für die Vaadin-Anwendung.
+ * Diese Klasse definiert, wie die Authentifizierung und Autorisierung
+ * innerhalb der Anwendung gehandhabt wird.
+ */
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends VaadinWebSecurity {
 
+    /**
+     * Konfiguriert den PasswordEncoder, der für die Verschlüsselung von Passwörtern verwendet wird.
+     * In diesem Fall wird BCrypt verwendet, um Passwörter sicher zu speichern.
+     *
+     * @return Ein BCryptPasswordEncoder-Objekt.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Konfiguriert den AuthenticationManager, der für die Authentifizierung von Nutzern verwendet wird.
+     * Er nutzt den DaoAuthenticationProvider, um Nutzerinformationen zu laden und Passwörter zu überprüfen.
+     *
+     * @param userDetailsService Der UserDetailsService, der die Nutzerinformationen bereitstellt.
+     * @return Ein konfigurierter AuthenticationManager.
+     */
     @Bean
     public AuthenticationManager authManager(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -33,22 +51,31 @@ public class SecurityConfig extends VaadinWebSecurity {
         return new ProviderManager(provider);
     }
 
+    /**
+     * Konfiguriert das SecurityContextRepository, das verwendet wird, um den Sicherheitskontext
+     * in der HTTP-Session zu speichern. Dies ermöglicht die Beibehaltung des Authentifizierungsstatus
+     * über verschiedene Anfragen hinweg.
+     *
+     * @return Ein HttpSessionSecurityContextRepository-Objekt.
+     */
     @Bean
     public SecurityContextRepository securityContextRepository() {
         return new HttpSessionSecurityContextRepository();
     }
 
+    /**
+     * Konfiguriert die HTTP-Sicherheitsregeln für die Anwendung.
+     * Hier wird festgelegt, welche Endpunkte öffentlich zugänglich sind
+     * und wie die Authentifizierung und Autorisierung gehandhabt werden.
+     *
+     * @param http Das HttpSecurity-Objekt, das konfiguriert wird.
+     * @throws Exception Wenn ein Fehler bei der Konfiguration auftritt.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
- /*       http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/images/**", "/public/**", "/mehr-erfahren.html").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN") // Nur Admin-Zugriff für zukünftige Admin-Bereiche
-                .anyRequest().authenticated()
-       );*/
         http.authorizeHttpRequests(auth ->
                 auth.requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
         );
-
 
         super.configure(http);
 

@@ -1,7 +1,6 @@
-package org.vaadin.example.application.views.register;
+package org.vaadin.example.application.views;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -26,14 +25,16 @@ import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.NutzerService;
 
 
-
+/**
+ * View für die Registrierung eines neuen Nutzers.
+ * Der Nutzer gibt seine Daten ein, um ein neues Konto zu erstellen.
+ */
 @Route("register")
 @PageTitle("Registrieren")
 @AnonymousAllowed // Diese Annotation erlaubt anonymen Zugriff
 public class RegisterView extends VerticalLayout {
 
     private final NutzerService nutzerService;
-
     private TextField username;
     private TextField vorname;
     private TextField nachname;
@@ -44,16 +45,17 @@ public class RegisterView extends VerticalLayout {
     private Button registerButton;
     private Button cancelButton;
 
-
     /**
-     * Binder for form validation.
+     * Binder für die Validierung der Nutzer-Daten.
+     * Nutzt BeanValidationBinder, um die Validierung basierend auf den Annotations in der Nutzer-Klasse durchzuführen.
      */
     private final Binder<Nutzer> binder = new BeanValidationBinder<>(Nutzer.class);
 
     /**
-     * Constructor for the RegisterView.
+     * Konstruktor der RegisterView.
+     * Initialisiert die View und bindet den NutzerService.
      *
-     * @param nutzerService The service for user management operations
+     * @param nutzerService Der Service zum Verwalten von Nutzern
      */
     @Autowired
     public RegisterView(NutzerService nutzerService) {
@@ -64,7 +66,7 @@ public class RegisterView extends VerticalLayout {
     }
 
     /**
-     * Configures the page layout and styling.
+     * Konfiguriert die Seite mit vollen Abmessungen und zentriertem Layout.
      */
     private void configurePage() {
         setSizeFull();
@@ -74,7 +76,8 @@ public class RegisterView extends VerticalLayout {
     }
 
     /**
-     * Initializes the UI components and layout.
+     * Initialisiert die Benutzeroberfläche der Registrierungsseite.
+     * Erstellt alle erforderlichen Eingabefelder, Labels und Buttons.
      */
     private void initUI() {
         Div container = new Div();
@@ -309,6 +312,17 @@ public class RegisterView extends VerticalLayout {
         }
     }
 
+    /**
+     * Validiert das Passwort anhand der festgelegten Kriterien:
+     * - Mindestens 8 Zeichen lang
+     * - Mindestens ein Großbuchstabe
+     * - Mindestens ein Kleinbuchstabe
+     * - Mindestens eine Zahl
+     * - Mindestens ein Sonderzeichen
+     *
+     * @param password Das zu prüfende Passwort
+     * @return true, wenn das Passwort gültig ist, sonst false
+     */
     private boolean isValidPassword(String password) {
         /*
          * Passwort muss mindestens 8 Zeichen lang sein, mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten.
@@ -317,6 +331,12 @@ public class RegisterView extends VerticalLayout {
         return password != null && password.matches(regex);
     }
 
+    /**
+     * Validiert die E-Mail-Adresse anhand eines regulären Ausdrucks.
+     *
+     * @param email Die zu prüfende E-Mail-Adresse
+     * @return true, wenn die E-Mail-Adresse gültig ist, sonst false
+     */
     private boolean isValidEmail(String email) {
         String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         return email != null && email.matches(regex);

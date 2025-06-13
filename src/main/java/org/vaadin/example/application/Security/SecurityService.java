@@ -9,10 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.NutzerService;
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service zur Verwaltung von Sicherheitsoperationen wie Authentifizierung und Autorisierung.
+ * Bietet Methoden zum Abrufen des aktuell angemeldeten Benutzers, Überprüfen von Rollen
+ * und Entfernen von Admin-Rechten.
+ */
 @Component
 public class SecurityService {
     private static final String LOGOUT_SUCCESS_URL = "/";
@@ -20,6 +24,11 @@ public class SecurityService {
     @Autowired
     private NutzerService nutzerService;
 
+    /**
+     * Gibt den aktuell angemeldeten Benutzer zurück.
+     *
+     * @return UserDetails des aktuell angemeldeten Benutzers oder null, wenn kein Benutzer angemeldet ist
+     */
     public UserDetails getAuthenticatedUser() {
         SecurityContext context = SecurityContextHolder.getContext();
         Object principal = context.getAuthentication().getPrincipal();
@@ -31,14 +40,6 @@ public class SecurityService {
         System.out.println("Kein Benutzer angemeldet oder Principal ist nicht vom Typ UserDetails");
         return null;
     }
-
-    public Long getUserIdFromUserDetails(UserDetails userDetails) {
-        if (userDetails instanceof Nutzer nutzer) {
-            return nutzer.getId();
-        }
-        return null;
-    }
-
 
     /**
      * Prüft, ob der aktuell angemeldete Benutzer Admin-Rechte hat.
@@ -72,12 +73,6 @@ public class SecurityService {
                 roles.remove("ADMIN");
                 nutzer.setRoles(roles);
                 nutzerService.speichereNutzer(nutzer);
-
-                // Die laufende Sitzung beenden und den Benutzer neu anmelden
-                // Entweder mit Logout oder durch Aktualisierung der Authentifizierung
-
-                // Variante 1: Vollständiger Logout und Weiterleitung zur Login-Seite
-                // Dies ist die sicherste Methode, erfordert aber eine erneute Anmeldung
                 logout();
                 return true;
 

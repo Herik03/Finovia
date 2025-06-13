@@ -54,14 +54,13 @@ public class MainView extends AbstractSideNav {
     private final NutzerService nutzerService;
 
 
-   /**
+    /**
      * Konstruktor für die MainView.
      * <p>
      * Initialisiert alle Layout-Komponenten und richtet die Benutzeroberfläche ein.
      * Die Ansicht besteht aus einer Seitenleiste, einem Hauptinhaltsbereich und
      * einer Übersicht der Depots.
-     *
-     *
+     * @param depotService Der Service für Depot-Operationen, um Depots zu laden.
      */
     @Autowired
     public MainView(DepotService depotService, SecurityService securityService, NutzerService nutzerService) {
@@ -93,6 +92,11 @@ public class MainView extends AbstractSideNav {
         setupDepotOverview();
     }
 
+    /**
+     * Konfiguriert die Depot-Übersicht, die alle Depots des Nutzers anzeigt.
+     * Jedes Depot wird mit einem Balken-Chart für aktuelle Kurswerte und einem
+     * Kreisdiagramm für die Verteilung der Wertpapiere dargestellt.
+     */
     private void setupDepotOverview() {
         H2 title = new H2("Meine Depots");
 
@@ -115,14 +119,14 @@ public class MainView extends AbstractSideNav {
             depots = List.of(); // Leere Liste, wenn nicht authentifiziert
         }
 
-
-
+        // Layout für die Liste der Depots
         VerticalLayout depotList = new VerticalLayout();
         depotList.setSpacing(true);
         depotList.setPadding(false);
         depotList.setWidthFull();
         depotList.setAlignItems(FlexComponent.Alignment.STRETCH); // damit volle Breite genutzt wird
 
+        // Prüfen, ob Depots vorhanden sind und diese anzeigen
         if (depots.isEmpty()) {
             depotList.add(new Span("Keine Depots vorhanden. Erstellen Sie ein neues Depot."));
         } else {
@@ -150,6 +154,12 @@ public class MainView extends AbstractSideNav {
         dashboardContent.add(depotHeader, depotList);
     }
 
+    /**
+     * Erstellt eine Box für ein Depot mit einem Balken-Chart für die aktuellen Kurswerte.
+     *
+     * @param depot Das Depot, das angezeigt werden soll
+     * @return Eine Div-Komponente, die das Depot und das Chart enthält
+     */
     private Div createDepotBoxWithChart(Depot depot) {
         Div depotBox = new Div();
         depotBox.addClassName("depot-box");
@@ -161,6 +171,7 @@ public class MainView extends AbstractSideNav {
         Canvas canvas = new Canvas("depotChart" + depot.getDepotId(), 400, 200);
         depotBox.add(canvas);
 
+        // Labels und Werte für das Balken-Chart vorbereiten
         List<String> labels = depot.getWertpapiere().stream()
                 .map(Wertpapier::getName)
                 .map(name -> "\"" + name + "\"") // Labels müssen als Strings in JS
@@ -168,12 +179,14 @@ public class MainView extends AbstractSideNav {
 
         String labelsJS = "[" + String.join(",", labels) + "]";
 
+        // Aktuelle Werte der Wertpapiere abrufen
         List<Double> values = depot.getWertpapiere().stream()
                 .map(this::getAktuellerWert)
-                .collect(Collectors.toList());
+                .toList();
 
         String valuesJS = values.toString(); // z.B. [1.1, 2.3, 3.7]
 
+        // JavaScript-Code für das Chart
         String chartVar = "depotChart_" + depot.getDepotId();
         String js = String.format(
                 """
@@ -226,6 +239,12 @@ public class MainView extends AbstractSideNav {
         return depotBox;
     }
 
+    /**
+     * Erstellt ein Kreisdiagramm (Pie Chart) für die Verteilung der Wertpapier-Klassen im Depot.
+     *
+     * @param depot Das Depot, dessen Verteilung angezeigt werden soll
+     * @return Eine Div-Komponente, die das Kreisdiagramm enthält
+     */
     private Div createDepotPieChart(Depot depot) {
         Div pieChartBox = new Div();
         pieChartBox.addClassName("piechart-box");
@@ -305,6 +324,13 @@ public class MainView extends AbstractSideNav {
         return pieChartBox;
     }
 
+    /**
+     * Holt den aktuellen Kurswert eines Wertpapiers.
+     * Der Kurswert wird aus dem letzten Kurs des Wertpapiers ermittelt.
+     *
+     * @param wertpapier Das Wertpapier, dessen aktuellen Kurswert ermittelt werden soll
+     * @return Der aktuelle Kurswert oder 0.0, wenn kein Kurs vorhanden ist
+     */
     private Double getAktuellerWert(Wertpapier wertpapier) {
         return wertpapier.getKurse().stream()
                 .max(Comparator.comparing(Kurs::getDatum))
@@ -312,43 +338,7 @@ public class MainView extends AbstractSideNav {
                 .orElse(0.0);
     }
 
-    private String createChartJSData(List<String> labels, List<Double> values) {
-        String labelsJS = labels.stream()
-                .map(label -> "\"" + label + "\"")
-                .collect(Collectors.joining(", ", "[", "]"));
 
-        String valuesJS = values.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(", ", "[", "]"));
-
-        return """
-        (function(canvas){
-          if(window.depotChart) {
-            window.depotChart.destroy();
-          }
-          const ctx = canvas.getContext('2d');
-          window.depotChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-              labels: %s,
-              datasets: [{
-                label: 'Aktueller Kurs',
-                data: %s,
-                backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-              }]
-            },
-            options: {
-              responsive: true,
-              scales: {
-                y: { beginAtZero: true }
-              }
-            }
-          });
-        })(arguments[0]);
-        """.formatted(labelsJS, valuesJS);
-    }
 
     private VerticalLayout createWelcomeMessage() {
         VerticalLayout welcome = new VerticalLayout();

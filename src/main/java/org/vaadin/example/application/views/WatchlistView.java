@@ -1,6 +1,5 @@
 package org.vaadin.example.application.views;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -20,12 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.example.application.classes.Aktie;
 import org.vaadin.example.application.classes.Anleihe;
-import org.vaadin.example.application.classes.ETF;
 import org.vaadin.example.application.classes.Kurs;
 import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.classes.Watchlist;
 import org.vaadin.example.application.classes.Wertpapier;
+import org.vaadin.example.application.factory.WertpapierDetailViewFactory;
 import org.vaadin.example.application.services.AlphaVantageService;
 import org.vaadin.example.application.services.NutzerService;
 import org.vaadin.example.application.services.WatchlistService;
@@ -33,7 +32,6 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,9 +54,6 @@ public class WatchlistView extends AbstractSideNav {
     private final Grid<Wertpapier> grid = new Grid<>(Wertpapier.class, false);
     private Nutzer currentUser;
     private final Map<Integer, Span> priceSpanMap = new HashMap<>();
-    private final Map<Integer, HorizontalLayout> trendLayoutMap = new HashMap<>();
-    private final Map<Integer, Span> trendTextSpanMap = new HashMap<>();
-    private final Map<Integer, Icon> trendIconMap = new HashMap<>();
     private final SecurityService securityService;
 
 

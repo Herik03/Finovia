@@ -6,9 +6,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.vaadin.example.application.classes.Support;
 import org.vaadin.example.application.classes.SupportRequest;
 
 import java.time.LocalDateTime;
@@ -16,22 +13,42 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service-Klasse für den Versand und die Protokollierung von E-Mails.
+ *
+ * Bietet Methoden zum asynchronen Versand von E-Mails sowie zur Simulation und Protokollierung
+ * von Support-Anfragen. Hält ein Log der letzten 100 E-Mails.
+ *
+ * @author Sören Heß, Ben Hübert
+ */
 @Service
 public class EmailService {
 
+    /** MailSender-Instanz für den E-Mail-Versand */
     private final JavaMailSender mailSender;
-    
-     @Autowired
-    private Support supportService;
 
+    /** Datumsformatierer für Zeitstempel in E-Mails */
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    /** Liste zur Protokollierung der versendeten E-Mails (max. 100 Einträge) */
     private final List<String> emailLog = new ArrayList<>();
 
+    /**
+     * Konstruktor für EmailService.
+     *
+     * @param mailSender JavaMailSender-Instanz für den E-Mail-Versand
+     */
     @Autowired
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
+    /**
+     * Versendet eine E-Mail asynchron.
+     *
+     * @param to      Empfängeradresse
+     * @param subject Betreff der E-Mail
+     * @param text    Inhalt der E-Mail
+     */
     @Async
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -44,13 +61,22 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    /**
+     * Initialisiert den EmailService nach Bean-Konstruktion.
+     * Gibt eine Initialisierungsnachricht auf der Konsole aus.
+     */
     @PostConstruct
     public void init() {
         System.out.println("EmailService initialisiert");
     }
 
     /**
-     * Simuliert den E-Mail-Versand einer Support-Anfrage
+     * Simuliert den E-Mail-Versand einer Support-Anfrage.
+     * Erstellt eine Ticket-ID, generiert den E-Mail-Inhalt und protokolliert die Anfrage.
+     *
+     * @param request   SupportRequest-Objekt mit den Anfragedaten
+     * @param userEmail E-Mail-Adresse des anfragenden Nutzers
+     * @return true, wenn die Anfrage erfolgreich simuliert wurde, sonst false
      */
     public boolean sendSupportRequest(SupportRequest request, String userEmail) {
         try {
@@ -68,32 +94,38 @@ public class EmailService {
             return true;
         } catch (Exception e) {
             System.err.println("Fehler beim Erstellen der Support-Anfrage: " + e.getMessage());
-            e.printStackTrace();
             return false;
         }
     }
 
     /**
-     * Erstellt den E-Mail-Inhalt
+     * Erstellt den E-Mail-Inhalt für eine Support-Anfrage.
+     *
+     * @param request   SupportRequest-Objekt mit den Anfragedaten
+     * @param userEmail E-Mail-Adresse des Nutzers
+     * @param ticketId  Generierte Ticket-ID
+     * @return String mit dem formatierten E-Mail-Inhalt
      */
     private String createEmailContent(SupportRequest request, String userEmail, String ticketId) {
-        StringBuilder content = new StringBuilder();
-        content.append("=== SIMULIERTE SUPPORT-ANFRAGE ===\n");
-        content.append("Von: ").append(userEmail).append("\n");
-        content.append("An: support@finovia.de\n");
-        content.append("Betreff: Support-Anfrage: ").append(request.getCategory()).append("\n");
-        content.append("Datum: ").append(LocalDateTime.now().format(formatter)).append("\n\n");
-        content.append("Ticket-ID: ").append(ticketId).append("\n");
-        content.append("Kategorie: ").append(request.getCategory()).append("\n");
-        content.append("Status: ").append(request.getStatus()).append("\n");
-        content.append("Erstellt am: ").append(request.getCreationDate()).append("\n\n");
-        content.append("Beschreibung:\n").append(request.getDescription()).append("\n");
-        content.append("==============================\n");
-        return content.toString();
+        String content = "=== SIMULIERTE SUPPORT-ANFRAGE ===\n" +
+                "Von: " + userEmail + "\n" +
+                "An: support@finovia.de\n" +
+                "Betreff: Support-Anfrage: " + request.getCategory() + "\n" +
+                "Datum: " + LocalDateTime.now().format(formatter) + "\n\n" +
+                "Ticket-ID: " + ticketId + "\n" +
+                "Kategorie: " + request.getCategory() + "\n" +
+                "Status: " + request.getStatus() + "\n" +
+                "Erstellt am: " + request.getCreationDate() + "\n\n" +
+                "Beschreibung:\n" + request.getDescription() + "\n" +
+                "==============================\n";
+        return content;
     }
 
     /**
-     * Fügt eine E-Mail zum Log hinzu
+     * Fügt eine E-Mail zum Log hinzu und gibt sie auf der Konsole aus.
+     * Das Log ist auf 100 Einträge begrenzt.
+     *
+     * @param emailContent Inhalt der zu protokollierenden E-Mail
      */
     private void logEmail(String emailContent) {
         emailLog.add(emailContent);
@@ -102,36 +134,5 @@ public class EmailService {
             emailLog.remove(0);
         }
         System.out.println(emailContent);
-    }
-
-    /**
-     * Gibt das E-Mail-Log zurück
-     */
-    public List<String> getEmailLog() {
-        return new ArrayList<>(emailLog);
-    }
-
-
-    /**
-     * Manuelles Hinzufügen einer Antwort zu einer Support-Anfrage
-     */
-    public void addResponse(SupportRequest request, String responseText) {
-        String currentTime = LocalDateTime.now().format(formatter);
-        String formattedResponse = "Antwort von support@finovia.de am " + currentTime + ":\n\n" + responseText;
-
-        supportService.addCommentToRequest(request, formattedResponse);
-        System.out.println("Manuelle Antwort auf Ticket " + request.getTicketId() + " hinzugefügt.");
-    }
-
-    /**
-     * Schließt eine Support-Anfrage
-     */
-    public void closeRequest(SupportRequest request, String reason) {
-        String currentTime = LocalDateTime.now().format(formatter);
-        String closingMessage = "Ticket geschlossen am " + currentTime + " mit Begründung: " + reason;
-
-        supportService.addCommentToRequest(request, closingMessage);
-        supportService.updateRequestStatus(request, "Geschlossen");
-        System.out.println("Ticket " + request.getTicketId() + " manuell geschlossen.");
     }
 }

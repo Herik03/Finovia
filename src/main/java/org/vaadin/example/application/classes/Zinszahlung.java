@@ -26,7 +26,7 @@ import java.time.LocalDate;
  *
  * Diese Klasse wird ausschließlich in Verbindung mit {@link Anleihe} verwendet.
  *
- * @author Jan
+ * @author Jan Schwarzer
  */
 @Entity
 @NoArgsConstructor

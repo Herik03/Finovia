@@ -28,6 +28,11 @@ import org.vaadin.example.application.services.NutzerService;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * View zum Kauf von Aktien.
+ * Ermöglicht dem Nutzer, eine Aktie zu kaufen, indem er das Symbol, die Stückzahl und den Handelsplatz angibt.
+ * Die Gebühren und der Gesamtpreis werden automatisch berechnet und angezeigt.
+ */
 @Route("kaufen/aktie/:symbol")
 @PageTitle("Aktie kaufen")
 @PermitAll
@@ -47,6 +52,15 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
     NumberField gebuehrenField;
     TextField kursField;
 
+    /**
+     * Konstruktor der AktienKaufView.
+     * Initialisiert die benötigten Services und erstellt die UI-Komponenten.
+     *
+     * @param aktienKaufService Service zum Kauf von Aktien
+     * @param depotService      Service zur Verwaltung von Depots
+     * @param securityService   Service für Sicherheitsfunktionen
+     * @param nutzerService     Service zur Nutzerverwaltung
+     */
     @Autowired
     public AktienKaufView(AktienKaufService aktienKaufService,
                           DepotService depotService,
@@ -66,6 +80,12 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
         addToMainContent(contentLayout);
     }
 
+    /**
+     * Erstellt die Benutzeroberfläche für die AktienKaufView.
+     * Fügt alle erforderlichen Felder, Buttons und Layouts hinzu.
+     *
+     * @param container Das Layout, in dem die UI-Komponenten platziert werden
+     */
     private void setupUI(VerticalLayout container) {
         backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -96,43 +116,51 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
         stueckzahlField.setValue(1.0);
         stueckzahlField.setWidthFull();
 
+        // ComboBox für die Auswahl des Handelsplatzes
         ComboBox<String> handelsplatzAuswahl = new ComboBox<>("Handelsplatz auswählen");
         handelsplatzAuswahl.setItems(handelsplaetze);
         handelsplatzAuswahl.setPlaceholder("Handelsplatz wählen");
         handelsplatzAuswahl.setRequired(true);
         handelsplatzAuswahl.setWidthFull();
 
+        // Feld für die Gebühren
         gebuehrenField = new NumberField("Gebühren (EUR)");
         gebuehrenField.setValue(2.50);
         gebuehrenField.setReadOnly(true);
         gebuehrenField.setWidthFull();
 
+        // Feld für den Gesamtpreis
         kursField = new TextField("Gesamtpreis (€)");
         kursField.setReadOnly(true);
         kursField.setValue("0.00");
         kursField.setWidthFull();
 
+        // ComboBox für die Auswahl des Depots
         ComboBox<Depot> depotComboBox = new ComboBox<>("Depot auswählen");
         List<Depot> depots = depotService.getDepotsByNutzerId(getAktuelleNutzerId());
         depotComboBox.setItems(depots);
         depotComboBox.setItemLabelGenerator(Depot::getName);
         depotComboBox.setWidthFull();
 
+        // Button zum Kauf der Aktie
         Button kaufButton = new Button("Jetzt Kaufen");
         kaufButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         kaufButton.addClassName("filled-button");
         kaufButton.setWidthFull();
 
+        // Layout für das Formular
         FormLayout formLayout = new FormLayout();
         formLayout.setWidth("400px");
         formLayout.getStyle().set("margin", "0 auto");
         formLayout.add(symbolField, einzelkursField, stueckzahlField, handelsplatzAuswahl, gebuehrenField, kursField, depotComboBox, kaufButton);
 
-
+        // Listener für Symboländerungen
         symbolField.addValueChangeListener(e -> {
             aktualisiereEinzelkurs();
             aktualisiereKurs();
         });
+
+        // Listener für Stückzahländerungen
         stueckzahlField.addValueChangeListener(e -> {
             if(stueckzahlField.getValue().intValue() > 0) {
                 aktualisiereKurs();
@@ -141,6 +169,7 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
             }
         });
 
+        // Button-Listener für den Kauf
         kaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
             Double stueckzahlDouble = stueckzahlField.getValue();
@@ -171,6 +200,7 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
             }
         });
 
+        // Layout für die Mitte der Seite
         VerticalLayout centerLayout = new VerticalLayout(title, formLayout);
         centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         centerLayout.setSpacing(true);
@@ -182,6 +212,10 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
         container.add(topLeftLayout, centerLayout);
     }
 
+    /**
+     * Aktualisiert den Einzelkurs der Aktie basierend auf dem eingegebenen Symbol.
+     * Wenn das Symbol leer ist, wird der Kurs auf "0.00" gesetzt.
+     */
     private void aktualisiereEinzelkurs() {
         String symbol = symbolField.getValue();
         if (symbol != null && !symbol.isBlank()) {
@@ -196,6 +230,10 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
         }
     }
 
+    /**
+     * Aktualisiert den Gesamtpreis basierend auf dem Einzelkurs und der Stückzahl.
+     * Wenn das Symbol oder die Stückzahl ungültig ist, wird der Kurs auf "0.00" gesetzt.
+     */
     private void aktualisiereKurs() {
         String symbol = symbolField.getValue();
         Double stueckzahl = stueckzahlField.getValue();
@@ -213,6 +251,12 @@ public class AktienKaufView extends AbstractSideNav implements BeforeEnterObserv
         }
     }
 
+    /**
+     * Liefert die ID des aktuell angemeldeten Nutzers.
+     * Wenn kein Nutzer angemeldet ist, wird null zurückgegeben.
+     *
+     * @return ID des aktuellen Nutzers oder null
+     */
     private Long getAktuelleNutzerId() {
         UserDetails userDetails = securityService.getAuthenticatedUser();
         if (userDetails == null) {

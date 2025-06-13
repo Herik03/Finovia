@@ -52,6 +52,12 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
     private Button registerButton;
     private Span forgotPasswordLink;
 
+    /**
+     * Konstruktor der LoginView-Klasse.
+     * Initialisiert die Ansicht und richtet das Layout sowie die Komponenten ein.
+     *
+     * @param authenticationManager Der AuthenticationManager für die Benutzerauthentifizierung
+     */
     @Autowired
     public LoginView(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -63,6 +69,11 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         setupBackgroundAndForm();
     }
 
+    /**
+     * Konfiguriert den Hintergrund und das Formular der Login-Ansicht.
+     * <p>
+     * Diese Methode fügt dem Layout einen Hintergrund hinzu und erstellt das Login-Formular.
+     */
     private void setupBackgroundAndForm() {
         // Background styling mit Bild
         addClassName("login-view");
@@ -76,6 +87,18 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         createLoginForm();
     }
 
+    /**
+     * Erstellt das Login-Formular mit allen erforderlichen Feldern und Buttons.
+     * <p>
+     * Das Formular enthält:
+     * <ul>
+     *   <li>Benutzername-Feld</li>
+     *   <li>Passwort-Feld</li>
+     *   <li>Anmelde-Button</li>
+     *   <li>Registrierungs-Button</li>
+     *   <li>Link zum Zurücksetzen des Passworts</li>
+     * </ul>
+     */
     private void createLoginForm() {
         // Main container mit Glassmorphism-Effekt
         Div loginContainer = new Div();
@@ -100,6 +123,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
                 .set("text-align", "center")
                 .set("font-family", "var(--lumo-heading-font-family)");
 
+        // Subtitle
         Span subtitle = new Span("Bitte melden Sie sich mit Ihren Zugangsdaten an");
         subtitle.getStyle()
                 .set("color", "var(--lumo-body-text-color)") // Ihre Sekundärfarbe
@@ -205,6 +229,12 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         add(loginContainer);
     }
 
+    /**
+     * Erstellt ein Label für die Eingabefelder mit dem angegebenen Text.
+     *
+     * @param text Der Text des Labels
+     * @return Ein Span-Element, das als Label dient
+     */
     private Span createFieldLabel(String text) {
         Span label = new Span(text);
         label.getStyle()
@@ -217,6 +247,11 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         return label;
     }
 
+    /**
+     * Passt das Styling des TextField an, um es an das Design anzupassen.
+     *
+     * @param field Das TextField, das angepasst werden soll
+     */
     private void customizeField(TextField field) {
         field.addClassName("input-field");
         field.getStyle()
@@ -314,6 +349,12 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         );
     }
 
+    /**
+     * Fügt Hover-Effekte für die Buttons und Links hinzu.
+     * <p>
+     * Diese Methode registriert JavaScript-Event-Listener für Hover-Effekte
+     * auf den Login-Button, den Registrierungs-Button und den "Passwort vergessen"-Link.
+     */
     private void addHoverEffects() {
         // Login Button Hover
         loginButton.getElement().addEventListener("mouseenter", e -> {
@@ -355,6 +396,12 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         });
     }
 
+    /**
+     * Behandelt die Anmeldung des Benutzers.
+     * <p>
+     * Diese Methode überprüft die Eingaben des Benutzers und führt die Authentifizierung durch.
+     * Bei erfolgreicher Anmeldung wird der Benutzer zur Hauptseite weitergeleitet.
+     */
     private void handleLogin() {
         String username = usernameField.getValue();
         String password = passwordField.getValue();
@@ -391,14 +438,29 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         }
     }
 
+    /**
+     * Behandelt die Registrierung eines neuen Benutzers.
+     * <p>
+     * Diese Methode navigiert den Benutzer zur Registrierungsseite.
+     */
     private void handleRegister() {
         UI.getCurrent().navigate("register");
     }
 
+    /**
+     * Behandelt das Zurücksetzen des Passworts.
+     * <p>
+     * Diese Methode navigiert den Benutzer zur Seite für das Zurücksetzen des Passworts.
+     */
     private void handleForgotPassword() {
         UI.getCurrent().navigate("passwortvergessen");
     }
 
+    /**
+     * Zeigt eine Fehlermeldung als Benachrichtigung an.
+     *
+     * @param message Die Fehlermeldung, die angezeigt werden soll
+     */
     private void showErrorNotification(String message) {
         Notification notification = Notification.show(message);
         notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -406,6 +468,11 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         notification.setDuration(4000);
     }
 
+    /**
+     * Zeigt eine Erfolgsbenachrichtigung an.
+     *
+     * @param message Die Erfolgsnachricht, die angezeigt werden soll
+     */
     private void showSuccessNotification(String message) {
         Notification notification = Notification.show(message);
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
@@ -413,6 +480,13 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
         notification.setDuration(3000);
     }
 
+    /**
+     * Diese Methode wird aufgerufen, bevor die Ansicht betreten wird.
+     * Sie prüft, ob der Benutzer bereits angemeldet ist und leitet ihn gegebenenfalls weiter.
+     * Außerdem zeigt sie eine Erfolgsmeldung an, wenn der Benutzer sich erfolgreich abgemeldet hat.
+     *
+     * @param beforeEnterEvent Das Ereignis, das vor dem Betreten der Ansicht ausgelöst wird
+     */
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         // Prüfe auf Logout-Parameter

@@ -30,6 +30,11 @@ import org.vaadin.example.application.services.NutzerService;
 
 import java.util.List;
 
+/**
+ * View zum Verkauf von Anleihen.
+ * Ermöglicht dem Nutzer, eine Anleihe zu verkaufen, indem er das Symbol, den aktuellen Kurs,
+ * die Stückzahl und das Depot auswählt.
+ */
 @Route("verkaufen/anleihe/:symbol")
 @PageTitle("Anleihe verkaufen")
 @PermitAll
@@ -47,6 +52,15 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
     private TextField kursField;
     private final double gebuehren = 2.50;
 
+    /**
+     * Konstruktor der AnleiheVerkaufenView.
+     * Initialisiert die benötigten Services und erstellt die UI-Komponenten.
+     *
+     * @param anleiheVerkaufService Service zum Verkauf von Anleihen
+     * @param depotService          Service zur Verwaltung von Depots
+     * @param securityService       Sicherheitsservice für Authentifizierung
+     * @param nutzerService         Service zur Nutzerverwaltung
+     */
     @Autowired
     public AnleiheVerkaufenView(AnleiheVerkaufService anleiheVerkaufService,
                                 DepotService depotService,
@@ -66,6 +80,12 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
         addToMainContent(contentLayout);
     }
 
+    /**
+     * Erstellt die Benutzeroberfläche für den Verkauf von Anleihen.
+     * Enthält Eingabefelder für Symbol, Kurs, Stückzahl und Depot sowie einen Button zum Verkauf.
+     *
+     * @param container Das Layout, in dem die UI-Komponenten platziert werden
+     */
     private void setupUI(VerticalLayout container) {
         // Zurück-Button wie bei AktienKaufView
         Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
@@ -133,6 +153,7 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
             }
         });
 
+        // Button-Listener für den Verkauf der Anleihe
         verkaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
             Double stueckzahlDouble = stueckzahlField.getValue();
@@ -159,7 +180,9 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
             }
         });
 
+
         VerticalLayout centerLayout = new VerticalLayout(title, formLayout);
+
         centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         centerLayout.setSpacing(true);
         centerLayout.setPadding(true);
@@ -170,6 +193,10 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
         container.add(topLeftLayout, centerLayout);
     }
 
+    /**
+     * Aktualisiert den Einzelkurs der Anleihe basierend auf dem eingegebenen Symbol.
+     * Wenn das Symbol leer ist, wird der Kurs auf "0.00" gesetzt.
+     */
     private void aktualisiereEinzelkurs() {
         String symbol = symbolField.getValue();
         if (symbol != null && !symbol.isBlank()) {
@@ -184,6 +211,10 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
         }
     }
 
+    /**
+     * Aktualisiert den Gesamtpreis basierend auf dem Einzelkurs und der Stückzahl.
+     * Wenn Symbol oder Stückzahl ungültig sind, wird der Kurs auf "0.00" gesetzt.
+     */
     private void aktualisiereKurs() {
         String symbol = symbolField.getValue();
         Double stueckzahl = stueckzahlField.getValue();
@@ -201,6 +232,12 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
         }
     }
 
+    /**
+     * Holt die ID des aktuell angemeldeten Nutzers.
+     * Wenn kein Nutzer angemeldet ist, wird null zurückgegeben.
+     *
+     * @return Die ID des aktuellen Nutzers oder null, wenn nicht angemeldet
+     */
     private Long getAktuelleNutzerId() {
         UserDetails userDetails = securityService.getAuthenticatedUser();
         if (userDetails == null) {
@@ -210,6 +247,12 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
         return (nutzer != null) ? nutzer.getId() : null;
     }
 
+    /**
+     * Wird aufgerufen, bevor die View angezeigt wird.
+     * Hier wird das Symbol aus den Route-Parametern gelesen und die Felder entsprechend aktualisiert.
+     *
+     * @param event Das BeforeEnterEvent, das Informationen über die Navigation enthält
+     */
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         String symbol = event.getRouteParameters().get("symbol").orElse("");

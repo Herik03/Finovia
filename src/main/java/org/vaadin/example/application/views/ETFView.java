@@ -39,6 +39,10 @@ public class ETFView extends AbstractWertpapierView {
     /** Formatierung für Zeitstempel auf Kursdaten. */
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    /** Formatierung für reine Datumswerte ohne Zeitkomponente. */
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+
     /** Repository zur Kursdatenabfrage für ETFs. */
     private final KursRepository kursRepository;
 
@@ -76,6 +80,7 @@ public class ETFView extends AbstractWertpapierView {
         dialog.setDraggable(true);
         dialog.setResizable(true);
 
+        // Sicherstellen, dass das Wertpapier ein ETF ist
         try {
             ETF etf = (ETF) wertpapier;
             String symbol = etf.getSymbol();
@@ -154,7 +159,7 @@ public class ETFView extends AbstractWertpapierView {
                     .max((d1, d2) -> d1.getDatum().compareTo(d2.getDatum()))
                     .ifPresent(div -> {
                         infoBox.add(createInfoRow(
-                                "Letzte Dividende", div.getDatum().format(formatter),
+                                "Letzte Dividende", div.getDatum().format(dateFormatter),
                                 "Betrag", String.format("%.2f €", div.getBetrag()),
                                 "Frequenz", div.getFrequenz() != null ? div.getFrequenz().name() : "k.A."
                         ));
@@ -179,6 +184,7 @@ public class ETFView extends AbstractWertpapierView {
             Notification.show("Fehler beim Laden des ETF-Dialogs: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
             dialog.add(new VerticalLayout(new Span("Fehler beim Laden der Details: " + e.getMessage())));
             dialog.open();
+            e.printStackTrace();
             return dialog;
         }
     }
