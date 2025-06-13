@@ -109,6 +109,10 @@ public abstract class Wertpapier {
      **/
     public void addKurs(Kurs kurs) {
         kurse.add(kurs);
+        if (kurs.getWertpapier() != this) {
+            kurs.setWertpapier(this);
+        }
+        
     }
 
     /**
@@ -117,7 +121,11 @@ public abstract class Wertpapier {
      * */
     public void addTransaktion(Transaktion transaktion) {
         transaktionen.add(transaktion);
+        if (transaktion.getWertpapier() != this) {
+            transaktion.setWertpapier(this);
+        }
     }
+    
 
     /**
      * Gibt den Typ des Wertpapiers als String zurück, basierend auf der konkreten Unterklasse.

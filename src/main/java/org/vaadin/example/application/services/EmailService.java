@@ -26,6 +26,8 @@ public class EmailService {
 
     /** MailSender-Instanz für den E-Mail-Versand */
     private final JavaMailSender mailSender;
+    
+    private final Support supportService;
 
     /** Datumsformatierer für Zeitstempel in E-Mails */
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
@@ -38,8 +40,9 @@ public class EmailService {
      * @param mailSender JavaMailSender-Instanz für den E-Mail-Versand
      */
     @Autowired
-    public EmailService(JavaMailSender mailSender) {
+    public EmailService(JavaMailSender mailSender, Support supportService) {
         this.mailSender = mailSender;
+        this.supportService = supportService;
     }
 
     /**
@@ -134,5 +137,36 @@ public class EmailService {
             emailLog.remove(0);
         }
         System.out.println(emailContent);
+    }
+    
+    /**Add commentMore actions
+     * Gibt das E-Mail-Log zurück
+     */
+    public List<String> getEmailLog() {
+        return new ArrayList<>(emailLog);
+    }
+
+
+    /**
+     * Manuelles Hinzufügen einer Antwort zu einer Support-Anfrage
+     */
+    public void addResponse(SupportRequest request, String responseText) {
+        String currentTime = LocalDateTime.now().format(formatter);
+        String formattedResponse = "Antwort von support@finovia.de am " + currentTime + ":\n\n" + responseText;
+
+        supportService.addCommentToRequest(request, formattedResponse);
+        System.out.println("Manuelle Antwort auf Ticket " + request.getTicketId() + " hinzugefügt.");
+    }
+
+    /**
+     * Schließt eine Support-Anfrage
+     */
+    public void closeRequest(SupportRequest request, String reason) {
+        String currentTime = LocalDateTime.now().format(formatter);
+        String closingMessage = "Ticket geschlossen am " + currentTime + " mit Begründung: " + reason;
+
+        supportService.addCommentToRequest(request, closingMessage);
+        supportService.updateRequestStatus(request, "Geschlossen");
+        System.out.println("Ticket " + request.getTicketId() + " manuell geschlossen.");
     }
 }

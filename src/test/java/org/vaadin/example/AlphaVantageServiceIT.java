@@ -3,6 +3,7 @@ package org.vaadin.example;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.application.services.AlphaVantageService;
 
 /**
@@ -13,8 +14,9 @@ public class AlphaVantageServiceIT {
     private AlphaVantageService service;
 
     @BeforeEach
-    public void setup() {
-        service = new AlphaVantageService();
+    @Autowired
+    public void setup(AlphaVantageService service) {
+        this.service = service;
     }
 
     /**

@@ -2,7 +2,7 @@ package org.vaadin.example;
 
 import org.junit.jupiter.api.*;
 import org.mockito.*;
-import org.vaadin.example.application.classes.Support;
+import org.vaadin.example.application.services.Support;
 import org.vaadin.example.application.classes.SupportRequest;
 import org.vaadin.example.application.services.EmailService;
 
@@ -34,7 +34,7 @@ public class EmailServiceIT {
     @BeforeEach
     public void setup() throws Exception {
         MockitoAnnotations.openMocks(this);
-        emailService = new EmailService(null);
+        emailService = new EmailService(null, null);
 
         // supportService per Reflection auf das private Feld setzen
         Field supportField = EmailService.class.getDeclaredField("supportService");

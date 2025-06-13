@@ -175,7 +175,7 @@ public class MainView extends AbstractSideNav {
         List<String> labels = depot.getWertpapiere().stream()
                 .map(Wertpapier::getName)
                 .map(name -> "\"" + name + "\"") // Labels müssen als Strings in JS
-                .collect(Collectors.toList());
+                .toList();
 
         String labelsJS = "[" + String.join(",", labels) + "]";
 

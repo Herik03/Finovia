@@ -68,6 +68,7 @@ public class AlphaVantageService {
     public AlphaVantageService(KursRepository kursRepository) {
         this.kursRepository = kursRepository;
     }
+    
 
     /**
      * Prüft, ob das übergebene Symbol ein gültiges AlphaVantage-Symbol ist.
@@ -284,6 +285,18 @@ public class AlphaVantageService {
 
         Collections.reverse(result);
         return result;
+    }
+    
+    public double getProzentualeAenderung24h(String name) {
+        var response = AlphaVantage.api()
+                .timeSeries()
+                .quote()
+                .forSymbol(name)
+                .fetchSync();
+
+        if (response == null || response.getErrorMessage() != null) return 0;
+
+        return response.getChangePercent();
     }
 
     /**

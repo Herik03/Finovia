@@ -85,11 +85,14 @@ public class AktienKaufService {
             System.err.println("Fehler: Konnte keine fundamentalen Daten für Symbol " + symbol + " abrufen.");
             return null;
         }
+        
+        Kurs kursObj = new Kurs(LocalDateTime.now(), quote.getPrice(), quote.getPrice(),quote.getPrice(),quote.getPrice(), fetchedAktie);
 
         // 3. Prüfen, ob die Aktie bereits in der Datenbank existiert
         Aktie aktieToPersist = aktieRepository.findBySymbol(symbol);
         if (aktieToPersist != null) {
             // Aktie existiert bereits, aktualisiere ihre Details
+        	kursObj.setWertpapier(aktieToPersist);
             aktieToPersist.setName(fetchedAktie.getName());
             aktieToPersist.setSymbol(fetchedAktie.getSymbol());
             aktieToPersist.setUnternehmensname(fetchedAktie.getUnternehmensname());
@@ -111,13 +114,13 @@ public class AktienKaufService {
             aktieToPersist.setYearHigh(fetchedAktie.getYearHigh());
             aktieToPersist.setYearLow(fetchedAktie.getYearLow());
             aktieToPersist.setDividendDate(fetchedAktie.getDividendDate());
-            aktieToPersist.setTransaktionen(new ArrayList<>());
-            aktieToPersist.setKurse(new ArrayList<>());
+            aktieToPersist.addTransaktion(kauf);
+            aktieToPersist.addKurs(kursObj);
             aktieRepository.save(aktieToPersist);
         } else {
             aktieToPersist = fetchedAktie;
-            aktieToPersist.setTransaktionen(new ArrayList<>());
-            aktieToPersist.setKurse(new ArrayList<>());
+            aktieToPersist.addTransaktion(kauf);
+            aktieToPersist.addKurs(kursObj);
             aktieRepository.save(aktieToPersist);
         }
 
@@ -153,6 +156,10 @@ public class AktienKaufService {
         }
 
         return quote.getPrice();
+    }
+    
+    public List<Transaktion> getAllTransaktionen() {
+        return transaktionRepository.findAll();
     }
 }
 
