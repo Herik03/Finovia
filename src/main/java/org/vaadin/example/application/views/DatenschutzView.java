@@ -13,11 +13,20 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+/**
+ * View für die Datenschutzerklärung der Finovia Trading App.
+ * Diese Seite informiert die Nutzer über die Verarbeitung ihrer personenbezogenen Daten
+ * und ihre Rechte gemäß der Datenschutz-Grundverordnung (DSGVO).
+ */
 @Route("datenschutz")
 @PageTitle("Datenschutzerklärung - Finovia")
 @AnonymousAllowed
 public class DatenschutzView extends VerticalLayout {
 
+    /**
+     * Konstruktor der Datenschutzerklärungs-View.
+     * Erstellt die Struktur und den Inhalt der Datenschutzerklärung.
+     */
     public DatenschutzView() {
         setSpacing(false);
         setPadding(false); // Padding wird im Container gesetzt

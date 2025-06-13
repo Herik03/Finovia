@@ -74,13 +74,12 @@ public abstract class AbstractWertpapierView {
      */
     protected void updateChart(VerticalLayout chartContainer, String symbol, String timeFrame, String anzeigeName) {
         try {
-            List<Kurs> kurse;
-            switch (timeFrame) {
-                case "Intraday": kurse = alphaVantageService.getIntradaySeries(symbol); break;
-                case "Täglich": kurse = alphaVantageService.getDailySeries(symbol); break;
-                case "Wöchentlich": kurse = alphaVantageService.getWeeklySeries(symbol); break;
-                default: kurse = alphaVantageService.getMonthlySeries(symbol); break;
-            }
+            List<Kurs> kurse = switch (timeFrame) {
+                case "Intraday" -> alphaVantageService.getIntradaySeries(symbol);
+                case "Täglich" -> alphaVantageService.getDailySeries(symbol);
+                case "Wöchentlich" -> alphaVantageService.getWeeklySeries(symbol);
+                default -> alphaVantageService.getMonthlySeries(symbol);
+            };
 
             Chart chart = buildChart(kurse, symbol, timeFrame, anzeigeName);
             chartContainer.removeAll();

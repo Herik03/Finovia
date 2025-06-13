@@ -70,7 +70,6 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
         }
     }
 
-
     /**
      * Konstruktor zur Initialisierung der View mit allen benötigten Services.
      *
@@ -175,6 +174,7 @@ public class AnleiheKaufView extends AbstractSideNav implements BeforeEnterObser
             }
         });
 
+        // Handelsplatz-Auswahl
         kaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
             int stueckzahl = stueckzahlField.getValue().intValue();

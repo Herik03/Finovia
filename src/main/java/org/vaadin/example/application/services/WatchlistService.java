@@ -16,6 +16,8 @@ import java.util.Optional;
 /**
  * Service-Klasse für die Verwaltung von Watchlists im System.
  * Bietet Funktionen zum Erstellen, Abrufen und Aktualisieren von Watchlists.
+ *
+ * @author Henrik Dollmann
  */
 @Service
 public class WatchlistService {

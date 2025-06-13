@@ -1,27 +1,25 @@
-package org.vaadin.example.application.views.register;
+package org.vaadin.example.application.views;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.textfield.PasswordField;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.services.NutzerService;
 
+/**
+ * View zum Zurücksetzen des Passworts.
+ * Der Nutzer gibt seine E-Mail Adresse ein, um eine E-Mail zum Zurücksetzen des Passworts zu erhalten.
+ */
 @Route("passwortvergessen")
 @PageTitle("Passwort zurücksetzen")
 @AnonymousAllowed
@@ -35,14 +33,15 @@ public class PasswortVergessen extends VerticalLayout {
     @Autowired
     public PasswortVergessen(NutzerService nutzerService) {
         this.nutzerService = nutzerService;
-
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
-
         createView();
     }
 
+    /**
+     * Erstellt die View-Komponenten für die Passwort-Zurücksetzen-Seite.
+     */
     private void createView() {
         addClassName("passwort-vergessen-view");
 
@@ -85,6 +84,10 @@ public class PasswortVergessen extends VerticalLayout {
         add(container);
     }
 
+    /**
+     * Behandelt das Senden der E-Mail zum Zurücksetzen des Passworts.
+     * Überprüft die E-Mail-Adresse und sendet eine Benachrichtigung.
+     */
     private void handleSend() {
         if (isValidEmail(emailField.getValue())){
             nutzerService.sendPasswordResetEmail(emailField.getValue());
@@ -96,17 +99,29 @@ public class PasswortVergessen extends VerticalLayout {
         }
     }
 
+    /**
+     * Validiert die E-Mail-Adresse anhand eines regulären Ausdrucks.
+     * @param email Die zu prüfende E-Mail-Adresse.
+     * @return true, wenn die E-Mail-Adresse gültig ist, sonst false.
+     */
     private boolean isValidEmail(String email) {
         String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         return email != null && email.matches(regex);
     }
-    
+
+    /**
+     * Zeigt eine Fehlermeldung an.
+     * @param message Die Fehlermeldung, die angezeigt werden soll.
+     */
     private void showErrorMessage(String message) {
         Notification notification = Notification.show(message);
         notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
         notification.setPosition(Notification.Position.TOP_CENTER);
     }
-    
+
+    /**
+     * Zeigt eine Erfolgsmeldung an, wenn die E-Mail zum Zurücksetzen des Passworts gesendet wurde.
+     */
     private void showSuccessMessage() {
         Notification notification = Notification.show("Bitte überprüfen Sie Ihre E-Mails für weitere Anweisungen.");
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);

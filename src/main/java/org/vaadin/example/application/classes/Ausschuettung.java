@@ -20,7 +20,7 @@ import java.time.LocalDate;
  * Sie wird per JPA mit Vererbung über die {@code JOINED}-Strategie gespeichert, sodass jede konkrete
  * Ausschüttungsklasse ihre eigenen Datenbankspalten erhält.
  *
- * @author Jan, Sören
+ * @author Jan Schwarzer, Sören Heß
  */
 @Entity
 @Table(name = "Ausschuettung")

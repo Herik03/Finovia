@@ -22,7 +22,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.application.Security.SecurityService;
-import org.vaadin.example.application.classes.Support;
+import org.vaadin.example.application.services.Support;
 import org.vaadin.example.application.classes.Nutzer;
 import org.vaadin.example.application.classes.SupportRequest;
 import org.vaadin.example.application.services.EmailService;
@@ -34,20 +34,19 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.StreamRegistration;
 import com.vaadin.flow.server.VaadinSession;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Admin-Bereich der Anwendung.
- * Hier können Administratoren Support-Anfragen verwalten und beantworten.
+ * Die Ansicht besteht aus mehreren Tabs, die verschiedene Verwaltungsfunktionen bieten.
+ * Die Hauptfunktionen sind die Verwaltung von Support-Anfragen und die Nutzerverwaltung.
  */
 @Route("admin")
 @PageTitle("Admin - Finovia")
@@ -79,6 +78,7 @@ public class AdminView extends AbstractSideNav {
         this.supportService = supportService;
         this.emailService = emailService;
         this.nutzerService = nutzerService;
+
 
         initializeView();
     }
@@ -578,6 +578,7 @@ public class AdminView extends AbstractSideNav {
             }
 
             previewComponent = pdfContainer;
+
         } else if (fileName.toLowerCase().endsWith(".docx") || fileName.toLowerCase().endsWith(".doc")) {
             // Container für Word-Dokument-Vorschau
             Div docContainer = new Div();
@@ -709,28 +710,6 @@ public class AdminView extends AbstractSideNav {
         previewDialog.add(dialogContent);
 
         previewDialog.open();
-    }
-
-
-
-    /**
-     * Erstellt einen Platzhalterinhalt für noch nicht implementierte Tabs.
-     */
-    private Component createPlaceholderContent(String message) {
-        VerticalLayout layout = new VerticalLayout();
-        layout.setAlignItems(FlexComponent.Alignment.CENTER);
-        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        layout.setHeightFull();
-
-        Icon icon = VaadinIcon.TOOLS.create();
-        icon.setSize("64px");
-        icon.getStyle().set("color", "var(--lumo-contrast-50pct)");
-
-        H2 title = new H2("In Entwicklung");
-        Paragraph description = new Paragraph(message);
-
-        layout.add(icon, title, description);
-        return layout;
     }
 
     /**
