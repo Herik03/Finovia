@@ -26,7 +26,8 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 public class Kurs {
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "kurs_seq")
+    @SequenceGenerator(name = "kurs_seq", sequenceName = "kurs_seq", allocationSize = 1)
     private Long kursId;
 
     private LocalDateTime datum;
