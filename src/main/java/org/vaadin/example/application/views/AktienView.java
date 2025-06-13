@@ -91,6 +91,7 @@ public class AktienView extends AbstractWertpapierView {
 
         Button addToWatchlistButton = new Button("Zur Watchlist hinzufügen", new Icon(VaadinIcon.PLUS_CIRCLE));
         addToWatchlistButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SMALL);
+        addToWatchlistButton.getStyle().set("margin-top", "8px");
 
         // Watchlist prüfen
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -102,27 +103,41 @@ public class AktienView extends AbstractWertpapierView {
                 boolean isInWatchlist = watchlistOpt.get().getWertpapiere().stream()
                         .anyMatch(wp -> wp.getName() != null && wp.getName().equalsIgnoreCase(symbol));
                 if (isInWatchlist) {
-                    addToWatchlistButton.setText("Auf Watchlist");
-                    addToWatchlistButton.setEnabled(false);
+                    Notification.show("Diese Aktie ist bereits in deiner Watchlist!", 3000, Notification.Position.MIDDLE);
+                    addToWatchlistButton.setEnabled(true);
                     addToWatchlistButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
                     addToWatchlistButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
                 }
             }
         }
 
-
         addToWatchlistButton.addClickListener(event -> {
             if (currentUser != null) {
-                Optional<Wertpapier> existing = wertpapierRepository.findByNameIgnoreCase(symbol);
-                Wertpapier toAdd = existing.orElseGet(() -> wertpapierRepository.save(aktie));
-                watchlistService.addWertpapierToUserWatchlist(currentUser.getId(), toAdd.getWertpapierId());
-                Notification.show("Zur Watchlist hinzugefügt", 3000, Notification.Position.MIDDLE);
+                Optional<Watchlist> watchlistOpt = watchlistService.getWatchlistForUser(currentUser.getId());
+                boolean isInWatchlist = watchlistOpt.isPresent() && watchlistOpt.get().getWertpapiere().stream()
+                        .anyMatch(wp -> wp.getName() != null && wp.getName().equalsIgnoreCase(symbol));
+                if (isInWatchlist) {
+                    Notification.show("Diese Aktie ist bereits in deiner Watchlist!", 3000, Notification.Position.MIDDLE);
+                    addToWatchlistButton.setEnabled(false);
+                    addToWatchlistButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                    addToWatchlistButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+                } else {
+                    Optional<Wertpapier> existing = wertpapierRepository.findByNameIgnoreCase(symbol);
+                    Wertpapier toAdd = existing.orElseGet(() -> wertpapierRepository.save(aktie));
+                    watchlistService.addWertpapierToUserWatchlist(currentUser.getId(), toAdd.getWertpapierId());
+                    Notification.show("Zur Watchlist hinzugefügt", 3000, Notification.Position.MIDDLE);
+                    addToWatchlistButton.setEnabled(false);
+                    addToWatchlistButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                    addToWatchlistButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+                }
             }
         });
 
-        HorizontalLayout topRow = new HorizontalLayout(timeFrameSelect, addToWatchlistButton);
-        topRow.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        layout.add(topRow);
+        HorizontalLayout timeFrameAndButtonLayout = new HorizontalLayout(timeFrameSelect, addToWatchlistButton);
+        timeFrameAndButtonLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
+        timeFrameAndButtonLayout.setSpacing(true);
+        timeFrameAndButtonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        layout.add(timeFrameAndButtonLayout);
 
         VerticalLayout chartContainer = new VerticalLayout();
         chartContainer.setSizeFull();
