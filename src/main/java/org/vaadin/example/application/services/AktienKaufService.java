@@ -9,6 +9,7 @@ import org.vaadin.example.application.repositories.DepotRepository;
 import org.vaadin.example.application.repositories.TransaktionRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +71,8 @@ public class AktienKaufService {
         double kurs = quote.getPrice();
         double gebuehren = 2.50;
 
+
+
         Kauf kauf = new Kauf(handelsplatz, LocalDate.now(), gebuehren, kurs, stueckzahl, null, null);
         kauf.setNutzer(nutzer);
 
@@ -82,10 +85,12 @@ public class AktienKaufService {
             System.err.println("Fehler: Konnte keine fundamentalen Daten für Symbol " + symbol + " abrufen.");
             return null;
         }
+
         // 3. Prüfen, ob die Aktie bereits in der Datenbank existiert
         Aktie aktieToPersist = aktieRepository.findBySymbol(symbol);
         if (aktieToPersist != null) {
             // Aktie existiert bereits, aktualisiere ihre Details
+            kursObj.setWertpapier(aktieToPersist);
             aktieToPersist.setName(fetchedAktie.getName());
             aktieToPersist.setSymbol(fetchedAktie.getSymbol());
             aktieToPersist.setUnternehmensname(fetchedAktie.getUnternehmensname());
@@ -107,13 +112,13 @@ public class AktienKaufService {
             aktieToPersist.setYearHigh(fetchedAktie.getYearHigh());
             aktieToPersist.setYearLow(fetchedAktie.getYearLow());
             aktieToPersist.setDividendDate(fetchedAktie.getDividendDate());
-            aktieToPersist.setTransaktionen(new ArrayList<>());
-            aktieToPersist.setKurse(new ArrayList<>());
+            aktieToPersist.addTransaktion(kauf);
+            aktieToPersist.addKurs(kursObj);
             aktieRepository.save(aktieToPersist);
         } else {
             aktieToPersist = fetchedAktie;
-            aktieToPersist.setTransaktionen(new ArrayList<>());
-            aktieToPersist.setKurse(new ArrayList<>());
+            aktieToPersist.addTransaktion(kauf);
+            aktieToPersist.addKurs(kursObj);
             aktieRepository.save(aktieToPersist);
         }
 

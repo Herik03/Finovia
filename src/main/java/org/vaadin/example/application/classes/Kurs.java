@@ -27,7 +27,8 @@ public class Kurs {
      * Eindeutige ID des Kurses (Primärschlüssel).
      */
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "kurs_seq")
+    @SequenceGenerator(name = "kurs_seq", sequenceName = "kurs_seq", allocationSize = 1)
     private Long kursId;
 
     /**

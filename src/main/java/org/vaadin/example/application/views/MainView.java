@@ -54,7 +54,7 @@ public class MainView extends AbstractSideNav {
     private final NutzerService nutzerService;
 
 
-   /**
+    /**
      * Konstruktor für die MainView.
      * <p>
      * Initialisiert alle Layout-Komponenten und richtet die Benutzeroberfläche ein.
@@ -182,7 +182,7 @@ public class MainView extends AbstractSideNav {
         // Aktuelle Werte der Wertpapiere abrufen
         List<Double> values = depot.getWertpapiere().stream()
                 .map(this::getAktuellerWert)
-                .collect(Collectors.toList());
+                .toList();
 
         String valuesJS = values.toString(); // z.B. [1.1, 2.3, 3.7]
 

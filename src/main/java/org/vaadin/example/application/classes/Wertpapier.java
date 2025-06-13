@@ -74,16 +74,33 @@ public abstract class Wertpapier {
         this.name = name;
         this.symbol = symbol;
         this.transaktionen = transaktionen;
+        if (transaktionen != null) {
+            for (Transaktion t : transaktionen) {
+                this.addTransaktion(t);
+            }
+        }
+
         this.kurse = kurse;
+        if (kurse != null) {
+            for (Kurs k : kurse) {
+                this.addKurs(k);
+            }
+        }
     }
+
 
     /**
      * Fügt eine Ausschüttung zur Liste der Ausschüttungen hinzu.
      *
      * @param ausschuettung Die hinzuzufügende Ausschüttung
      */
+
     public void addAusschuettung(Ausschuettung ausschuettung) {
         ausschuettungen.add(ausschuettung);
+        if (ausschuettung.getWertpapier() != this) {
+            ausschuettung.setWertpapier(this);
+        }
+
     }
 
     /**
