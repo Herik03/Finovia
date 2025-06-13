@@ -11,15 +11,13 @@ import java.util.List;
 
 /**
  * Repräsentiert ein festverzinsliches Wertpapier vom Typ Anleihe.
- *
  * Eine Anleihe wird typischerweise von einem Emittenten herausgegeben,
  * hat eine festgelegte Laufzeit, einen Nominalwert (Nennwert) und zahlt
  * regelmäßig Zinsen in Form von {@link Zinszahlung}.
- *
  * Diese Klasse erweitert die allgemeine {@link Wertpapier}-Klasse um
- * anleihenspezifische Eigenschaften.
+ * Anleihen spezifische Eigenschaften.
  *
- * @author Jan, Sören
+ * @author Jan Schwarzer, Sören Heß
  */
 
 @Setter
@@ -27,43 +25,51 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 public class Anleihe extends Wertpapier {
+    /**
+     * Name des Emittenten der Anleihe.
+     */
     private String emittent;
+
+    /**
+     * Kuponzinssatz der Anleihe (in Prozent).
+     */
     private double kupon;
+
+    /**
+     * Fälligkeit bzw. Laufzeitende der Anleihe.
+     */
     private LocalDate laufzeit;
+
+    /**
+     * Nennwert (Nominalwert) der Anleihe.
+     */
     private double nennwert;
 
+    /**
+     * Liste der zugehörigen Zinszahlungen.
+     */
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Zinszahlung> zinszahlungen = new ArrayList<>();
-/**
- * Konstruktor zum Erzeugen einer vollständigen Anleihe-Instanz.
- */
+
+    /**
+     * Konstruktor zum Erstellen einer Anleihe mit allen relevanten Attributen.
+     *
+     * @param emittent Name des Emittenten
+     * @param kupon Kuponzinssatz
+     * @param laufzeit Laufzeitende
+     * @param nennwert Nennwert der Anleihe
+     * @param name Name des Wertpapiers
+     * @param symbol Symbol des Wertpapiers
+     * @param transaktionen Liste der Transaktionen
+     * @param kurse Liste der Kurse
+     */
     public Anleihe(String emittent, double kupon, LocalDate laufzeit, double nennwert,
-               String name, String symbol, List<Transaktion> transaktionen, List<Kurs> kurse) {
+                   String name, String symbol, List<Transaktion> transaktionen, List<Kurs> kurse) {
 
         super(name, symbol, transaktionen, kurse);
         this.emittent = emittent;
         this.kupon = kupon;
         this.laufzeit = laufzeit;
         this.nennwert = nennwert;
-}
-
-    public void addZinszahlung(Zinszahlung zinszahlung) {
-        this.zinszahlungen.add(zinszahlung);
     }
-
-    public void removeZinszahlung(Zinszahlung zinszahlung) {
-        this.zinszahlungen.remove(zinszahlung);
-    }
-
-    public List<Zinszahlung> getZinszahlungen() {
-        return new ArrayList<>(zinszahlungen);
-    }
-
-    public double getLetzterKurs() {
-        if (getKurse() != null && !getKurse().isEmpty()) {
-            return getKurse().get(getKurse().size() - 1).getKurswert(); // letzter Kurswert (z.B. Schlusskurs)
-        }
-        return nennwert; // Fallback falls keine Kurse vorhanden
-    }
-
 }

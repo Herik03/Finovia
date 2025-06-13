@@ -21,7 +21,7 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.StreamRegistration;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import org.vaadin.example.application.classes.Support;
+import org.vaadin.example.application.services.Support;
 import org.vaadin.example.application.classes.SupportRequest;
 import org.vaadin.example.application.services.EmailService;
 
@@ -36,7 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Komponente zur Darstellung des Support-Bereichs
+ * Komponente zur Darstellung des Support-Bereichs.
+ * Stellt Funktionen zum Erstellen von Support-Anfragen, Hochladen von Dateien und Anzeigen
+ * bisheriger Anfragen bereit.
+ * Diese Komponente ist Teil der Vaadin-Anwendung und wird in der
+ * Support-Ansicht verwendet.
+ * @see Support
  */
 @org.springframework.stereotype.Component
 public class SupportView extends VerticalLayout {
@@ -83,11 +88,11 @@ public class SupportView extends VerticalLayout {
         categorySelect.setItems("Allgemeine Frage", "Technisches Problem", "Depotproblem", "Konto & Sicherheit", "Sonstiges");
         categorySelect.setValue("Allgemeine Frage");
 
+        // Textarea für die Beschreibung der Anfrage
         TextArea descriptionArea = new TextArea("Beschreibung");
         descriptionArea.setPlaceholder("Beschreiben Sie Ihr Anliegen...");
         descriptionArea.setMinHeight("150px");
         descriptionArea.setWidthFull();
-
 
         Button submitButton = new Button("Anfrage senden");
         submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -218,7 +223,7 @@ public class SupportView extends VerticalLayout {
             uploadedFiles.clear();
             fileUpload.getElement().setProperty("files", null);
 
-            // Scrolle zum Anfragenbereich, damit Benutzer die neue Anfrage sehen können
+            // Scrollen Sie zum Container der Anfragen, um die neueste Anfrage anzuzeigen
             requestsContainer.scrollIntoView();
         });
 
@@ -351,9 +356,6 @@ public class SupportView extends VerticalLayout {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setSpacing(true);
 
-        Button detailsButton = new Button("Details anzeigen");
-        detailsButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY);
-
         // Löschen-Button hinzufügen
         Button deleteButton = new Button("Löschen");
         deleteButton.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_TERTIARY);
@@ -389,7 +391,7 @@ public class SupportView extends VerticalLayout {
             dialog.open();
         });
 
-        buttonsLayout.add(detailsButton, deleteButton);
+        buttonsLayout.add(deleteButton);
 
         // Status-Änderung ermöglichen
         Select<String> statusSelect = new Select<>();
@@ -675,6 +677,7 @@ public class SupportView extends VerticalLayout {
                     .set("background-color", "var(--lumo-contrast-5pct)")
                     .set("border-radius", "var(--lumo-border-radius-m)");
 
+            // Generisches Dateisymbol mit Hinweis, dass es heruntergeladen werden kann
             if (file.exists()) {
                 Icon fileIcon = VaadinIcon.FILE_O.create();
                 fileIcon.setSize("100px");
@@ -704,6 +707,7 @@ public class SupportView extends VerticalLayout {
             previewComponent = fileContainer;
         }
 
+        // Button zum Herunterladen der Datei
         Button downloadButton = new Button("Herunterladen", VaadinIcon.DOWNLOAD.create());
         downloadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         downloadButton.addClickListener(e -> {
@@ -743,6 +747,7 @@ public class SupportView extends VerticalLayout {
             previewDialog.close();
         });
 
+        // Schließen-Button für den Dialog
         Button closeButton = new Button("Schließen", VaadinIcon.CLOSE.create());
         closeButton.addClickListener(e -> previewDialog.close());
 

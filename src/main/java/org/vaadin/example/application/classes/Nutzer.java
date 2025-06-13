@@ -4,10 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -49,14 +47,28 @@ public class Nutzer {
     @Getter @Setter
     private String email;
 
-    // Liste der Benachrichtigungen für den Nutzer
-    private final List<String> benachrichtigungen = new ArrayList<>();
-
     @Setter @Getter
     private String resetToken = "";
 
     @Setter @Getter
     private Date resetTokenExpiration;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Getter @Setter
+    private Collection<String> roles;
+
+    @Getter
+    @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private final List<Depot> depots = new ArrayList<>();
+
+    @Getter @Setter
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "watchlist_id")
+    private Watchlist watchlist;
+
+    // Registrierungsdatum hinzugefügt
+    @Getter
+    private final LocalDateTime registrierungsDatum;
 
     // Konstruktor für JPA
     public Nutzer() {
@@ -115,7 +127,7 @@ public class Nutzer {
      * Entfernt ein Depot aus der Liste der Depots des Nutzers
      *
      * @param depot Das zu entfernende Depot
-     * @return true wenn das Depot entfernt wurde, false wenn es nicht gefunden wurde
+     * @return true, wenn das Depot entfernt wurde, false wenn es nicht gefunden wurde
      */
     public boolean depotEntfernen(Depot depot) {
         if (depots.remove(depot)) {
@@ -124,6 +136,7 @@ public class Nutzer {
         }
         return false;
     }
+
     /**
      * Gibt die Steuer-ID zurück oder einen leeren String, wenn die Steuer-ID null ist.
      *
@@ -132,7 +145,6 @@ public class Nutzer {
     public String getSteuerIdOrEmpty() {
         return steuerId != null ? steuerId : "";
     }
-
 
     /**
      * Gibt den Benutzernamen zurück oder einen leeren String, wenn der Benutzername null ist.
@@ -144,7 +156,6 @@ public class Nutzer {
         return username != null ? username : "";
     }
 
-
     /**
      * Gibt den vollständigen Namen des Nutzers zurück
      *
@@ -154,17 +165,6 @@ public class Nutzer {
         return vorname + " " + nachname;
     }
 
-    /**
-     * Filtert Benachrichtigungen nach einem Suchbegriff
-     *
-     * @param suchbegriff Der Suchbegriff
-     * @return Liste der gefilterten Benachrichtigungen
-     */
-    public List<String> filtereNachrichtenNachSuchbegriff(String suchbegriff) {
-        return benachrichtigungen.stream()
-                .filter(nachricht -> nachricht.toLowerCase().contains(suchbegriff.toLowerCase()))
-                .collect(Collectors.toList());
-    }
     /**
      * Gibt den Vornamen zurück oder einen leeren String, wenn der Vorname null ist.
      *
@@ -192,28 +192,11 @@ public class Nutzer {
         return email != null ? email : "";
     }
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Getter @Setter
-    private Collection<String> roles;
-
-    @Getter
-    @OneToMany(mappedBy = "besitzer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private final List<Depot> depots = new ArrayList<>();
-
-    @Getter @Setter
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "watchlist_id")
-    private Watchlist watchlist;
-
-    // Registrierungsdatum hinzugefügt
-    @Getter
-    private final LocalDateTime registrierungsDatum;
-
     /**
      * Formatiert das Registrierungsdatum in ein lesbares Format.
      * Gibt einen leeren String zurück, wenn das Datum null ist.
      *
-     * @param pattern Das Formatmuster (z.B. "dd.MM.yyyy HH:mm")
+     * @param pattern Das Formatmuster (z. B. "dd.MM.yyyy HH:mm")
      * @return Formatiertes Datum oder leerer String
      */
     public String getFormattedRegistrierungsDatum(String pattern) {
@@ -223,23 +206,12 @@ public class Nutzer {
         return registrierungsDatum.format(java.time.format.DateTimeFormatter.ofPattern(pattern));
     }
 
-
-    /**
-     * Überprüft, ob die Steuer-ID das korrekte Format hat.
-     *
-     * @return true wenn das Format korrekt ist, false sonst
-     */
-    public boolean istSteuerIdGueltig() {
-        return steuerId != null && steuerId.matches("\\d{11}");
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Nutzer nutzer = (Nutzer) o;
-        return id == nutzer.id;
+        return id.equals(nutzer.id);
     }
 
     @Override

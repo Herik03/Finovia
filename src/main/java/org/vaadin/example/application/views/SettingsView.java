@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.vaadin.example.application.Security.SecurityService;
 import org.vaadin.example.application.classes.Nutzer;
-import org.vaadin.example.application.classes.Support;
+import org.vaadin.example.application.services.Support;
 import org.vaadin.example.application.services.EmailService;
 import org.vaadin.example.application.services.NutzerService;
 
@@ -34,6 +34,8 @@ import java.util.Map;
 /**
  * Die SettingsView-Klasse stellt die Einstellungsseite der Anwendung dar.
  * Sie enthält verschiedene Tabs für unterschiedliche Einstellungsbereiche.
+ * Diese Ansicht ermöglicht es Nutzern, ihre persönlichen Einstellungen zu verwalten,
+ * wie z.B. Benutzerdaten, Support-Anfragen und Admin-Login.
  */
 @Route("settings")
 @PageTitle("Einstellungen - Finovia")
@@ -245,7 +247,7 @@ public class SettingsView extends AbstractSideNav {
         });
         adminLoginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-// Wenn Benutzer bereits Admin ist, Button komplett ausblenden
+        // Wenn Benutzer bereits Admin ist, Button komplett ausblenden
         boolean isAdmin = securityService.isAdmin();
         adminLoginButton.setVisible(!isAdmin);
 
@@ -262,6 +264,7 @@ public class SettingsView extends AbstractSideNav {
         H3 deleteAccountTitle = new H3("Konto löschen");
         deleteAccountTitle.addClassNames(LumoUtility.TextColor.ERROR);
 
+        // Warnung vor dem Löschen des Kontos
         Paragraph deleteAccountWarning = new Paragraph(
                 "Achtung: Wenn Sie Ihr Konto löschen, werden alle Ihre Daten, " +
                         "einschließlich Depots, Watchlist und persönliche Einstellungen, " +
@@ -274,6 +277,7 @@ public class SettingsView extends AbstractSideNav {
         });
         deleteAccountButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
 
+        // Füge alle Komponenten zum Content-Layout hinzu
         content.add(
                 sectionTitle,
                 infoText,
@@ -334,9 +338,6 @@ public class SettingsView extends AbstractSideNav {
                                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
                             // Benutzer ausloggen und zur Startseite navigieren
-
-                      
-
                             UI.getCurrent().navigate("/logout");
 
                         } else {
@@ -439,7 +440,6 @@ public class SettingsView extends AbstractSideNav {
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
-
         dialog.open();
     }
 }

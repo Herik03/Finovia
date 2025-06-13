@@ -10,46 +10,58 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 /**
- * Nutzer-Klasse, die die Eigenschaften und Methoden eines Nutzers repräsentiert.
- * Diese Klasse implementiert das Beobachter-Interface, um Benachrichtigungen
- * über Änderungen an Supportanfragen zu erhalten.
+ * Repräsentiert ein Depot, das Wertpapiere, deren Bestände und Ausschüttungen verwaltet.
+ * Ein Depot gehört einem Nutzer und enthält eine Liste von DepotWertpapieren sowie einen Saldo.
+ *
+ * Bietet Methoden zum Hinzufügen und Entfernen von Wertpapieren, zur Ermittlung von Ausschüttungshistorien
+ * und zur automatischen Verbuchung von Dividenden, Zinszahlungen und ETF-Dividenden.
+ *
+ * @author Ben Hübert, Sören Heß, Jan Schwarzer, Batuhan Güvercin
  */
-//        von Ben, Sören
-
 @Entity
 @Table(name = "Depot")
 @NoArgsConstructor
 public class Depot {
+    /**
+     * Eindeutige ID des Depots (Primärschlüssel).
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     private Long depotId;
 
+    /**
+     * Name des Depots.
+     */
     @Setter
     @Getter
     private String name;
 
+    /**
+     * Besitzer des Depots (Nutzer).
+     */
     @Setter
     @Getter
     @ManyToOne
     @JoinColumn(name = "nutzer_id")
     private Nutzer besitzer;
 
+    /**
+     * Liste der DepotWertpapiere, die im Depot gehalten werden.
+     */
     @OneToMany(mappedBy = "depot", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private final List<DepotWertpapier> depotWertpapiere = new ArrayList<>();
 
     /**
-     * -- SETTER --
-     *  Setter für Saldo (Cash Balance).
+     * Aktueller Saldo des Depots (z.B. durch Ausschüttungen).
      */
     @Setter
     @Getter
     private double saldo = 0.0;
 
     /**
-     * Konstruktor für ein neues Depot
+     * Konstruktor für ein neues Depot.
      *
      * @param name Der Name des Depots
      * @param besitzer Der Besitzer des Depots
@@ -59,6 +71,14 @@ public class Depot {
         this.besitzer = besitzer;
     }
 
+    /**
+     * Fügt ein Wertpapier mit gegebener Stückzahl und Kaufpreis dem Depot hinzu.
+     * Falls das Wertpapier bereits existiert, wird die Stückzahl erhöht und der Einstandspreis neu berechnet.
+     *
+     * @param wertpapier Das hinzuzufügende Wertpapier
+     * @param anzahl Anzahl der Stücke
+     * @param kaufpreisProStueck Kaufpreis pro Stück
+     */
     public void wertpapierHinzufuegen(Wertpapier wertpapier, int anzahl, double kaufpreisProStueck) {
         for (DepotWertpapier dw : depotWertpapiere) {
             if (dw.getWertpapier().equals(wertpapier)) {
@@ -83,6 +103,14 @@ public class Depot {
         depotWertpapiere.add(new DepotWertpapier(this, wertpapier, anzahl, kaufpreisProStueck));
     }
 
+    /**
+     * Entfernt eine bestimmte Stückzahl eines Wertpapiers aus dem Depot.
+     * Entfernt das Wertpapier vollständig, wenn alle Stücke verkauft sind.
+     *
+     * @param wertpapier Das zu entfernende Wertpapier
+     * @param anzahl Anzahl der zu entfernenden Stücke
+     * @return true, wenn die Entfernung erfolgreich war, sonst false
+     */
     public boolean wertpapierEntfernen(Wertpapier wertpapier, int anzahl) {
         if (wertpapier == null || anzahl <= 0) {
             return false;  // Ungültige Eingabe
@@ -109,10 +137,20 @@ public class Depot {
         return false;
     }
 
+    /**
+     * Gibt eine Kopie der Liste aller DepotWertpapiere zurück.
+     *
+     * @return Liste der DepotWertpapiere
+     */
     public List<DepotWertpapier> getDepotWertpapiere() {
         return new ArrayList<>(depotWertpapiere);
     }
 
+    /**
+     * Gibt eine Liste aller Wertpapiere im Depot zurück.
+     *
+     * @return Liste der Wertpapiere
+     */
     public List<Wertpapier> getWertpapiere() {
         return depotWertpapiere.stream().map(DepotWertpapier::getWertpapier).toList();
     }
@@ -290,9 +328,11 @@ public class Depot {
         }
     }
 
-
     /**
      * Liefert das DepotWertpapier zum übergebenen Wertpapier oder null wenn nicht vorhanden.
+     *
+     * @param wertpapier Das Wertpapier, für das das DepotWertpapier gesucht wird
+     * @return Das zugehörige DepotWertpapier oder null
      */
     public DepotWertpapier getDepotWertpapierFor(Wertpapier wertpapier) {
         for (DepotWertpapier dw : depotWertpapiere) {

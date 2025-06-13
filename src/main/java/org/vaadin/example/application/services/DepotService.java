@@ -13,6 +13,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+/**
+ * Service-Klasse für die Verwaltung von Depots.
+ *
+ * Bietet Methoden zum Abrufen, Speichern, Löschen und zur Berechnung von Beständen und Buchwerten
+ * von Depots und Depotwertpapieren. Stellt sicher, dass lazy-geladene Collections initialisiert werden,
+ * um LazyInitializationExceptions zu vermeiden.
+ *
+ * @author Jan Schwarzer, Ben Hübert, Henrik Dollmann, Sören Heß
+ */
 @Service
 public class DepotService {
 
@@ -23,6 +32,12 @@ public class DepotService {
     private final KursRepository kursRepository;
     private final AlphaVantageService alphaVantageService;
 
+    /**
+     * Konstruktor für DepotService.
+     *
+     * @param depotRepository        Repository für Depots
+     * @param nutzerRepository       Repository für Nutzer
+     */
     @Autowired
     public DepotService(AlphaVantageService alphaVantageService, DepotRepository depotRepository,
                         NutzerRepository nutzerRepository,
@@ -85,20 +100,36 @@ public class DepotService {
         return depots;
     }
 
+    /**
+     * Gibt alle Depots eines Nutzers anhand der Nutzer-ID zurück.
+     * Initialisiert dabei die lazy-geladenen Collections.
+     *
+     * @param nutzerId ID des Nutzers
+     * @return Liste der Depots des Nutzers
+     */
     @jakarta.transaction.Transactional
     public List<Depot> getDepotsByNutzerId(Long nutzerId) {
         List<Depot> depots = depotRepository.findByBesitzerId(nutzerId);
+        // Initialisiert die lazy-geladenen Collections, um LazyInitializationException zu vermeiden
         for (Depot depot : depots) {
             depot.getDepotWertpapiere().size();
         }
         return depots;
     }
 
+    /**
+     * Gibt ein Depot anhand der Depot-ID zurück.
+     * Initialisiert dabei die lazy-geladenen Collections.
+     *
+     * @param depotId ID des Depots
+     * @return Gefundenes Depot oder null, falls nicht vorhanden
+     */
     @jakarta.transaction.Transactional
     public Depot getDepotById(Long depotId) {
         Depot depot = depotRepository.findById(depotId).orElse(null);
         if (depot != null) {
-            depot.getDepotWertpapiere().size();
+            // Initialisiert die lazy-geladenen Collections, um LazyInitializationException zu vermeiden
+            depot.getDepotWertpapiere().size(); // Erzwingt Initialisierung
         }
         return depot;
     }
@@ -117,10 +148,17 @@ public class DepotService {
         depotRepository.save(depot);
     }
 
+    /**
+     * Löscht ein Depot anhand der Depot-ID.
+     * Entfernt das Depot auch aus der Liste des Besitzers.
+     *
+     * @param depotId ID des zu löschenden Depots
+     */
     @jakarta.transaction.Transactional
     public void deleteDepot(Long depotId) {
         Depot depot = depotRepository.findById(depotId).orElse(null);
         if (depot != null && depot.getBesitzer() != null) {
+            // Initialisiert die lazy-geladenen Collections
             depot.getDepotWertpapiere().size();
             Nutzer besitzer = depot.getBesitzer();
             besitzer.depotEntfernen(depot);
@@ -129,21 +167,40 @@ public class DepotService {
         depotRepository.deleteById(depotId);
     }
 
+    /**
+     * Hilfsklasse zur Rückgabe von Bestand und Buchwert.
+     */
     public static class BestandUndBuchwert {
         public long anzahl;
         public double buchwert;
 
+        /**
+         * Konstruktor für BestandUndBuchwert.
+         *
+         * @param anzahl   Anzahl der Wertpapiere
+         * @param buchwert Buchwert der Wertpapiere
+         */
         public BestandUndBuchwert(long anzahl, double buchwert) {
             this.anzahl = anzahl;
             this.buchwert = buchwert;
         }
     }
 
+    /**
+     * Interne Hilfsklasse zur Verwaltung von Käufen für FIFO-Berechnung.
+     */
     private static class Kauf {
         @Getter @Setter private int stückzahl;
         @Getter @Setter private double kurs;
         @Getter @Setter private double gebühren;
 
+        /**
+         * Konstruktor für Kauf.
+         *
+         * @param stückzahl Anzahl der gekauften Stücke
+         * @param kurs      Kaufkurs
+         * @param gebühren  Kaufgebühren
+         */
         public Kauf(int stückzahl, double kurs, double gebühren) {
             this.stückzahl = stückzahl;
             this.kurs = kurs;
@@ -151,6 +208,13 @@ public class DepotService {
         }
     }
 
+    /**
+     * Berechnet den aktuellen Bestand und den Buchwert eines DepotWertpapiers
+     * unter Berücksichtigung von Käufen und Verkäufen (FIFO-Prinzip).
+     *
+     * @param dw Das DepotWertpapier
+     * @return BestandUndBuchwert-Objekt mit aktuellem Bestand und Buchwert
+     */
     @jakarta.transaction.Transactional
     public BestandUndBuchwert berechneBestandUndKosten(DepotWertpapier dw) {
         if (dw == null || dw.getWertpapier() == null || dw.getWertpapier().getTransaktionen() == null) {

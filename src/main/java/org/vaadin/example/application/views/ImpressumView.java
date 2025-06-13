@@ -17,6 +17,10 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @AnonymousAllowed
 public class ImpressumView extends VerticalLayout {
 
+    /**
+     * Konstruktor der ImpressumView-Klasse.
+     * Initialisiert das Layout und fügt die erforderlichen Komponenten hinzu.
+     */
     public ImpressumView() {
         // Setzt grundlegende Styling-Eigenschaften für das Layout
         setSpacing(false); // Kein zusätzlicher Abstand zwischen den Komponenten

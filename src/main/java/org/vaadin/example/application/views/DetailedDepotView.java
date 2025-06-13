@@ -87,6 +87,10 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         addToMainContent(contentLayout);
     }
 
+    /**
+     * Konfiguriert die Spalten und das Layout der Wertpapier-Gitteransicht.
+     * Zeigt Name, aktuellen Kurs, Gewinn/Verlust und eine Aktion zum Verkaufen an.
+     */
     private void configureWertpapierGrid() {
         wertpapierGrid.removeAllColumns();
 
@@ -112,6 +116,7 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
             return String.format("%.2f € (%s)", gewinnVerlust, gewinnVerlust >= 0 ? "Gewinn" : "Verlust");
         }).setHeader("Gewinn / Verlust").setAutoWidth(true);
 
+        // Aktion zum Verkaufen von Wertpapieren
         wertpapierGrid.addColumn(dw -> {
             DepotService.BestandUndBuchwert bk = depotService.berechneBestandUndKosten(dw);
             return bk.anzahl;
@@ -147,6 +152,13 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         wertpapierGrid.setWidthFull();
     }
 
+    /**
+     * Setzt den Parameter für die Ansicht, um ein bestimmtes Depot anzuzeigen.
+     * Führt Sicherheitsprüfungen durch und aktualisiert die Anzeige entsprechend.
+     *
+     * @param event   Das BeforeEvent, das ausgelöst wird, bevor die Ansicht gerendert wird
+     * @param depotId Die ID des anzuzeigenden Depots
+     */
     @Override
     public void setParameter(BeforeEvent event, Long depotId) {
         currentDepot = depotService.getDepotById(depotId);
@@ -227,6 +239,10 @@ public class DetailedDepotView extends AbstractSideNav implements HasUrlParamete
         return nutzer != null && nutzer.getId().equals(currentDepot.getBesitzer().getId());
     }
 
+    /**
+     * Aktualisiert die Depot-Informationen im Layout.
+     * Zeigt den Besitzer des Depots an und fügt einen Löschen-Button hinzu.
+     */
     private void updateDepotInfo() {
         depotInfoLayout.removeAll();
 

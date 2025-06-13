@@ -21,7 +21,7 @@ import java.util.*;
  * Prüfung der Existenz von Nutzernamen/E-Mails und weitere nutzerbezogene Operationen.
  * Sie dient als Schnittstelle zwischen der Repository-Schicht und der Anwendungslogik.
  * 
- * @author Sören
+ * @author Sören Heß, Jan Schwarzer, Ben Hübert
  * @version 1.1
  */
 @Service

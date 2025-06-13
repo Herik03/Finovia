@@ -16,7 +16,7 @@ import java.util.List;
  * Diese Klasse ist als abstrakt definiert und wird von konkreten Unterklassen wie {@link Aktie},
  * {@link Anleihe} oder {@link ETF} erweitert.
  *
- * @author Sören
+ * @author Sören Heß
  */
 
 @Entity
@@ -26,25 +26,50 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public abstract class Wertpapier {
+    /**
+     * Eindeutige ID des Wertpapiers (Primärschlüssel).
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wertpapier_seq")
     @SequenceGenerator(name = "wertpapier_seq", sequenceName = "wertpapier_seq", allocationSize = 1)
     private Long wertpapierId;
 
-    private String name; // Dieser Parameter ist wichtig für die Suche
+    /**
+     * Name des Wertpapiers (wichtig für die Suche).
+     */
+    private String name;
 
+    /**
+     * Symbol/Kürzel des Wertpapiers (z. B. ISIN, Ticker).
+     */
     private String symbol;
 
+    /**
+     * Liste der zugehörigen Transaktionen.
+     */
     @OneToMany(mappedBy = "wertpapier", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = false, fetch = FetchType.EAGER)
     private List<Transaktion> transaktionen = new ArrayList<>();
 
-
+    /**
+     * Liste der zugehörigen Ausschüttungen.
+     */
     @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Ausschuettung> ausschuettungen = new ArrayList<>();
 
+    /**
+     * Historische Kurse des Wertpapiers.
+     */
     @OneToMany(mappedBy = "wertpapier", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Kurs> kurse;
 
+    /**
+     * Konstruktor zur Initialisierung eines Wertpapiers mit Name, Symbol, Transaktionen und Kursen.
+     *
+     * @param name          Name des Wertpapiers
+     * @param symbol        Symbol/Kürzel des Wertpapiers
+     * @param transaktionen Liste der Transaktionen
+     * @param kurse         Liste der Kurse
+     */
     public Wertpapier(String name, String symbol, List<Transaktion> transaktionen, List<Kurs> kurse) {
         this.name = name;
         this.symbol = symbol;
@@ -63,22 +88,12 @@ public abstract class Wertpapier {
         }
     }
 
-    public void addTransaktion(Transaktion transaktion) {
-        transaktionen.add(transaktion);
-        if (transaktion.getWertpapier() != this) {
-            transaktion.setWertpapier(this);
-        }
 
-    }
-
-    public void addKurs(Kurs kurs) {
-        kurse.add(kurs);
-        if (kurs.getWertpapier() != this) {
-            kurs.setWertpapier(this);
-        }
-
-    }
-
+    /**
+     * Fügt eine Ausschüttung zur Liste der Ausschüttungen hinzu.
+     *
+     * @param ausschuettung Die hinzuzufügende Ausschüttung
+     */
 
     public void addAusschuettung(Ausschuettung ausschuettung) {
         ausschuettungen.add(ausschuettung);
@@ -89,15 +104,17 @@ public abstract class Wertpapier {
     }
 
     /**
-     * Dynamisch abgeleiteter Typ basierend auf der konkreten Unterklasse.
+     * Gibt den Typ des Wertpapiers als String zurück, basierend auf der konkreten Unterklasse.
+     *
+     * @return "Aktie", "Anleihe", "ETF" oder "Unbekannt"
      */
     @Transient
     public String getTyp() {
-        if (this instanceof Aktie) return "Aktie";
-        if (this instanceof Anleihe) return "Anleihe";
-        if (this instanceof ETF) return "ETF";
-        return "Unbekannt";
+        return switch (this) {
+            case Aktie ignored -> "Aktie";
+            case Anleihe ignored -> "Anleihe";
+            case ETF ignored -> "ETF";
+            default -> "Unbekannt";
+        };
     }
-
-
 }

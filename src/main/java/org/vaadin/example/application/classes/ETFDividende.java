@@ -21,6 +21,8 @@ import java.time.LocalDate;
  * werden von der Oberklasse {@link Ausschuettung} verwaltet.
  *
  * Diese Klasse wird ausschließlich für {@link ETF} verwendet.
+ *
+ * @author Jan Schwarzer
  */
 @Entity
 @NoArgsConstructor

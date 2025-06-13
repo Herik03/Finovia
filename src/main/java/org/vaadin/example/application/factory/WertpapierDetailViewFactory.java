@@ -1,9 +1,12 @@
-package org.vaadin.example.application.views;
+package org.vaadin.example.application.factory;
 
 import com.vaadin.flow.component.dialog.Dialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.vaadin.example.application.classes.*;
+import org.vaadin.example.application.views.AktienView;
+import org.vaadin.example.application.views.AnleiheView;
+import org.vaadin.example.application.views.ETFView;
 
 /**
  * Factory-Klasse zur Erstellung von Detail-Dialogen für verschiedene Wertpapier-Typen.

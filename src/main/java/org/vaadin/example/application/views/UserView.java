@@ -31,12 +31,12 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * View zur Darstellung und Bearbeitung des Benutzerprofils.
-*
+ * <p>
  * Diese View ermöglicht es angemeldeten Benutzern:
  * - ihre persönlichen Daten einzusehen und zu bearbeiten
  * - ihr Passwort zu ändern
  * - ihre Benachrichtigungen zu verwalten
-*
+ * <p>
  * Die Ansicht ist in zwei Hauptbereiche unterteilt:
  * 1. Persönliche Informationen mit editierbaren Profilfeldern
  * 2. Benachrichtigungsbereich für Systemmeldungen
@@ -58,15 +58,20 @@ public class UserView extends AbstractSideNav {
     private final TextField steuerIdField = new TextField("Steuer-ID");
     private final TextField benutzernameField = new TextField("Benutzername");
     private final TextField registriertField = new TextField("Registriert seit");
-
     private final NutzerService nutzerService;
     private final SecurityService securityService;
     private Nutzer aktuellerNutzer;
-
     private final VerticalLayout profilContainer = new VerticalLayout();
     private final VerticalLayout benachrichtigungenContainer = new VerticalLayout();
     private final Binder<Nutzer> binder = new BeanValidationBinder<>(Nutzer.class);
 
+    /**
+     * Konstruktor der UserView-Klasse.
+     * Initialisiert die View mit den benötigten Services und erstellt die Benutzeroberfläche.
+     *
+     * @param nutzerService Der Service zur Nutzerverwaltung
+     * @param securityService Der Service für Sicherheitsoperationen
+     */
     @Autowired
     public UserView(NutzerService nutzerService, SecurityService securityService) {
         super(securityService); // Ruft den Konstruktor der Basisklasse auf
@@ -96,6 +101,10 @@ public class UserView extends AbstractSideNav {
         addToMainContent(userContentLayout);
     }
 
+    /**
+     * Lädt die aktuellen Nutzerdaten basierend auf der Authentifizierung.
+     * Setzt den aktuell angemeldeten Nutzer in der Variable `aktuellerNutzer`.
+     */
     private void ladeAktuellenNutzer() {
         UserDetails userDetails = securityService.getAuthenticatedUser();
         if (userDetails != null) {
@@ -106,6 +115,11 @@ public class UserView extends AbstractSideNav {
         }
     }
 
+    /**
+     * Erstellt die Profil-Sektion mit persönlichen Informationen des Nutzers.
+     * Diese Sektion enthält editierbare Felder für Vorname, Nachname, E-Mail, Benutzername,
+     * Steuer-ID und Registrierungsdatum sowie Passwortänderungsoptionen.
+     */
     private void erstelleProfilSection() {
         profilContainer.removeAll();
         profilContainer.setPadding(false);
@@ -123,6 +137,7 @@ public class UserView extends AbstractSideNav {
         profilLayout.setPadding(false);
         profilLayout.setSpacing(true);
 
+        // Formularfelder für die Nutzerdaten
         if (aktuellerNutzer != null) {
             // Formularfelder zum Anzeigen der Nutzerdaten
 
@@ -176,6 +191,7 @@ public class UserView extends AbstractSideNav {
                 }
             });
 
+            // Passwort vergessen Button
             Button passwortVergessenButton = new Button("Passwort vergessen");
             passwortVergessenButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             passwortVergessenButton.addClickListener(e -> UI.getCurrent().navigate("passwortvergessen"));
@@ -206,6 +222,7 @@ public class UserView extends AbstractSideNav {
                 abbrechenButton.setVisible(true);
             });
 
+            // Speichern-Button konfigurieren
             speichernButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
             speichernButton.setVisible(false);
             speichernButton.addClickListener(e -> {
@@ -230,6 +247,7 @@ public class UserView extends AbstractSideNav {
                 aktuellerNutzer.setNachname(nachnameField.getValue());
                 aktuellerNutzer.setEmail(emailField.getValue());
 
+                // Speichern der Änderungen im Binder
                 try {
                     binder.writeBean(aktuellerNutzer);
                     nutzerService.speichereNutzer(aktuellerNutzer);
@@ -266,6 +284,7 @@ public class UserView extends AbstractSideNav {
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
             });
 
+            // Abbrechen-Button konfigurieren
             abbrechenButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
             abbrechenButton.setVisible(false);
             abbrechenButton.addClickListener(e -> {
@@ -307,6 +326,7 @@ public class UserView extends AbstractSideNav {
             profilLayout.add(errorMsg);
         }
 
+        // Füge das Profil-Layout zur Profil-Karte hinzu
         profilCard.add(profilLayout);
         profilContainer.add(profilTitle, profilCard);
     }
