@@ -3,6 +3,7 @@ package org.vaadin.example.application.classes;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +29,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "ETF_DIVIDENDE")
 public class ETFDividende extends Ausschuettung {
 
     /**

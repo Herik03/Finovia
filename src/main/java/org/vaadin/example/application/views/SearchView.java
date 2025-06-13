@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.component.dialog.Dialog; // Import for Dialog
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -216,9 +217,9 @@ public class SearchView extends AbstractSideNav {
                     try {
 
                         // Suche in der AlphaVantage API und in der lokalen Datenbank
-                        List<SearchResult> apiResults = alphaVantageService.search(keyword);
+                    	//List<SearchResult> apiResults = new ArrayList<>(alphaVantageService.search(keyword));
                         List<Wertpapier> lokaleTreffer = wertpapierRepository.searchByNameOrSymbol(keyword);
-
+                        
                         //List<Wertpapier> lokaleTreffer = wertpapierRepository.findByNameContainingIgnoreCase(keyword);
                         List<SearchResult> lokaleResults = lokaleTreffer.stream()
                                 .map(w -> {
@@ -240,8 +241,8 @@ public class SearchView extends AbstractSideNav {
                                     );
                                 })
                                 .toList();
-                        apiResults.addAll(lokaleResults);
-                        return apiResults;
+                        //apiResults.addAll(lokaleResults);
+                        return lokaleResults;
                     } catch (Exception e) {
                         e.printStackTrace(); // Logging
                         return Collections.<SearchResult>emptyList(); // Fehler => leere Liste zurückgeben
