@@ -13,11 +13,9 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.vaadin.example.application.classes.Anleihe;
-import org.vaadin.example.application.classes.Kurs;
-import org.vaadin.example.application.classes.Wertpapier;
-import org.vaadin.example.application.classes.Zinszahlung;
+import org.vaadin.example.application.classes.*;
 import org.vaadin.example.application.services.AnleiheKaufService;
 import org.vaadin.example.application.repositories.WertpapierRepository;
 import org.vaadin.example.application.services.AlphaVantageService;
@@ -27,6 +25,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Ansicht zur Darstellung von Detailinformationen über Anleihen.
@@ -110,6 +109,48 @@ public class AnleiheView extends AbstractWertpapierView {
 
             // Watchlist-Button
             Button addToWatchlistButton = new Button("Zur Watchlist hinzufügen", new Icon(VaadinIcon.PLUS_CIRCLE));
+
+            // Watchlist prüfen
+            String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+            Nutzer currentUser = nutzerService.getNutzerByUsername(currentUsername);
+
+            // Prüfen, ob der Nutzer angemeldet ist und ob die Aktie bereits in der Watchlist ist
+            if (currentUser != null) {
+                Optional<Watchlist> watchlistOpt = watchlistService.getWatchlistForUser(currentUser.getId());
+                if (watchlistOpt.isPresent()) {
+                    boolean isInWatchlist = watchlistOpt.get().getWertpapiere().stream()
+                            .anyMatch(wp -> wp.getName() != null && wp.getName().equalsIgnoreCase(symbol));
+                    if (isInWatchlist) {
+                        Notification.show("Diese Aktie ist bereits in deiner Watchlist!", 3000, Notification.Position.MIDDLE);
+                        addToWatchlistButton.setEnabled(true);
+                        addToWatchlistButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                        addToWatchlistButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+                    }
+                }
+            }
+
+
+            addToWatchlistButton.addClickListener(event -> {
+                if (currentUser != null) {
+                    Optional<Watchlist> watchlistOpt = watchlistService.getWatchlistForUser(currentUser.getId());
+                    boolean isInWatchlist = watchlistOpt.isPresent() && watchlistOpt.get().getWertpapiere().stream()
+                            .anyMatch(wp -> wp.getName() != null && wp.getName().equalsIgnoreCase(symbol));
+                    if (isInWatchlist) {
+                        Notification.show("Diese Aktie ist bereits in deiner Watchlist!", 3000, Notification.Position.MIDDLE);
+                        addToWatchlistButton.setEnabled(false);
+                        addToWatchlistButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                        addToWatchlistButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+                    } else {
+                        Optional<Wertpapier> existing = wertpapierRepository.findByNameIgnoreCase(symbol);
+                        Wertpapier toAdd = existing.orElseGet(() -> wertpapierRepository.save(anleihe));
+                        watchlistService.addWertpapierToUserWatchlist(currentUser.getId(), toAdd.getWertpapierId());
+                        Notification.show("Zur Watchlist hinzugefügt", 3000, Notification.Position.MIDDLE);
+                        addToWatchlistButton.setEnabled(false);
+                        addToWatchlistButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                        addToWatchlistButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+                    }
+                }
+            });
 
             HorizontalLayout timeFrameAndButtonLayout = new HorizontalLayout(timeFrameSelect, addToWatchlistButton);
             timeFrameAndButtonLayout.setAlignItems(Alignment.BASELINE);

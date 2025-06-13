@@ -211,44 +211,40 @@ public class SearchView extends AbstractSideNav {
         searchButton.setEnabled(false);
         resultGrid.setItems(List.of());
 
-        // Asynchrone Suche, um UI-Blockierung zu vermeiden
-        CompletableFuture
-                .supplyAsync(() -> {
-                    try {
+        try {
+            // Synchrone Suche
+            List<SearchResult> apiResults = new ArrayList<>(alphaVantageService.search(keyword));
+            List<Wertpapier> lokaleTreffer = wertpapierRepository.searchByNameOrSymbol(keyword);
 
-                        // Suche in der AlphaVantage API und in der lokalen Datenbank
-                    	//List<SearchResult> apiResults = new ArrayList<>(alphaVantageService.search(keyword));
-                        List<Wertpapier> lokaleTreffer = wertpapierRepository.searchByNameOrSymbol(keyword);
-                        
-                        //List<Wertpapier> lokaleTreffer = wertpapierRepository.findByNameContainingIgnoreCase(keyword);
-                        List<SearchResult> lokaleResults = lokaleTreffer.stream()
-                                .map(w -> {
-                                    SearchResultTypeEnum typ;
-                                    if (w instanceof ETF) {
-                                        typ = SearchResultTypeEnum.ETF;
-                                    } else if (w instanceof Anleihe) {
-                                        typ = SearchResultTypeEnum.ANLEIHE;
-                                    } else {
-                                        typ = SearchResultTypeEnum.UNBEKANNT;
-                                    }
+            List<SearchResult> lokaleResults = lokaleTreffer.stream()
+                    .map(w -> {
+                        SearchResultTypeEnum typ;
+                        if (w instanceof ETF) {
+                            typ = SearchResultTypeEnum.ETF;
+                        } else if (w instanceof Anleihe) {
+                            typ = SearchResultTypeEnum.ANLEIHE;
+                        } else {
+                            typ = SearchResultTypeEnum.UNBEKANNT;
+                        }
 
-                                    return new SearchResult(
-                                            w.getSymbol(),
-                                            w.getName(),
-                                            "Lokale DB",
-                                            "EUR",
-                                            typ
-                                    );
-                                })
-                                .toList();
-                        //apiResults.addAll(lokaleResults);
-                        return lokaleResults;
-                    } catch (Exception e) {
-                        e.printStackTrace(); // Logging
-                        return Collections.<SearchResult>emptyList(); // Fehler => leere Liste zurückgeben
-                    }
-                })
-                .thenAccept(results -> getUI().ifPresent(ui -> ui.access(() -> handleSearchResults(results))));
+                        return new SearchResult(
+                                w.getSymbol(),
+                                w.getName(),
+                                "Lokale DB",
+                                "EUR",
+                                typ
+                        );
+                    })
+                    .toList();
+
+            apiResults.addAll(lokaleResults);
+            handleSearchResults(apiResults);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showNotification("Fehler bei der Suche: " + e.getMessage(), NotificationVariant.LUMO_ERROR);
+            progressBar.setVisible(false);
+            searchButton.setEnabled(true);
+        }
     }
 
 
@@ -262,19 +258,26 @@ public class SearchView extends AbstractSideNav {
         progressBar.setVisible(false);
         searchButton.setEnabled(true);
 
-        resultGrid.setItems(results);
+        // Sicherstellen, dass wir keine null-Liste verwenden
+        List<SearchResult> safeResults = results != null ? results : Collections.emptyList();
 
-        if (results == null || results.isEmpty()) {
-            // Nur Benachrichtigung, wenn der Nutzer aktiv gesucht hat
+        // Dem Grid die Ergebnisse zuweisen
+        resultGrid.setItems(safeResults);
+
+        // Benachrichtigungen anzeigen
+        if (safeResults.isEmpty()) {
             String keyword = searchField.getValue();
             if (keyword != null && keyword.length() > 2) {
-                showNotification("Keine Ergebnisse gefunden für „" + keyword + "“.", NotificationVariant.LUMO_CONTRAST);
+                showNotification("Keine Ergebnisse gefunden für „" + keyword + ".", NotificationVariant.LUMO_CONTRAST);
             }
         } else {
-            showNotification(results.size() + " Treffer gefunden.", NotificationVariant.LUMO_SUCCESS);
+            showNotification(safeResults.size() + " Treffer gefunden.", NotificationVariant.LUMO_SUCCESS);
         }
 
+        // Explizite Aktualisierung des DataProviders
         resultGrid.getDataProvider().refreshAll();
+
+        // Spaltenbreiten neu berechnen
         resultGrid.recalculateColumnWidths();
     }
 
