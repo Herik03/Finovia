@@ -69,13 +69,13 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
     }
 
     private void setupUI(VerticalLayout container) {
-        // Back Button mit RouterLink auf MainView
-        RouterLink backLink = new RouterLink("Zurück zur Übersicht", MainView.class);
-        Button backButton = new Button(VaadinIcon.ARROW_LEFT.create());
+        // Zurück-Button wie in AktienKaufView
+        Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        backLink.add(backButton);
+        RouterLink routerLink = new RouterLink("", MainView.class);
+        routerLink.add(backButton);
 
-        VerticalLayout topLeftLayout = new VerticalLayout(backLink);
+        VerticalLayout topLeftLayout = new VerticalLayout(routerLink);
         topLeftLayout.setPadding(false);
         topLeftLayout.setSpacing(false);
         topLeftLayout.setWidthFull();
@@ -85,7 +85,7 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
         title.addClassName("view-title");
 
         symbolField = new TextField("Aktiensymbol");
-        symbolField.setPlaceholder("z. B. AAPL");
+        symbolField.setReadOnly(true);
         symbolField.setWidthFull();
 
         einzelkursField = new TextField("Aktueller Kurs (€/Aktie)");
@@ -114,21 +114,27 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
         kursField.setValue("0.00");
         kursField.setWidthFull();
 
-        FormLayout formLayout = new FormLayout();
-        formLayout.setWidth("400px");
-        formLayout.add(symbolField, einzelkursField, stueckzahlField, depotComboBox, gebuehrenField, kursField);
-
         Button verkaufButton = new Button("Jetzt Verkaufen");
         verkaufButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        verkaufButton.getStyle().set("margin-top", "20px");
+        verkaufButton.addClassName("filled-button");
         verkaufButton.setWidthFull();
 
-        // Listener für Kurs-Aktualisierung bei Änderung der Felder
+        FormLayout formLayout = new FormLayout();
+        formLayout.setWidth("400px");
+        formLayout.getStyle().set("margin", "0 auto");
+        formLayout.add(symbolField, einzelkursField, stueckzahlField, depotComboBox, gebuehrenField, kursField, verkaufButton);
+
         symbolField.addValueChangeListener(e -> {
             aktualisiereEinzelkurs();
             aktualisiereKurs();
         });
-        stueckzahlField.addValueChangeListener(e -> aktualisiereKurs());
+        stueckzahlField.addValueChangeListener(e -> {
+            if (stueckzahlField.getValue() != null && stueckzahlField.getValue().intValue() > 0) {
+                aktualisiereKurs();
+            } else {
+                stueckzahlField.setErrorMessage("Stückzahl muss größer als 0 sein.");
+            }
+        });
 
         verkaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
@@ -159,7 +165,7 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
             }
         });
 
-        VerticalLayout centerLayout = new VerticalLayout(title, formLayout, verkaufButton);
+        VerticalLayout centerLayout = new VerticalLayout(title, formLayout);
         centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         centerLayout.setSpacing(true);
         centerLayout.setPadding(true);
@@ -220,3 +226,4 @@ public class AktieVerkaufenView extends AbstractSideNav implements BeforeEnterOb
         }
     }
 }
+

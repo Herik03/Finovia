@@ -67,15 +67,22 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
     }
 
     private void setupUI(VerticalLayout container) {
+        // Zurück-Button wie bei AktienKaufView
         Button backButton = new Button("Zurück zur Übersicht", VaadinIcon.ARROW_LEFT.create());
         backButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        backButton.addClickListener(e -> UI.getCurrent().navigate("depot-details")); // z.B. Depot-Übersicht
+        com.vaadin.flow.router.RouterLink routerLink = new com.vaadin.flow.router.RouterLink("", MainView.class);
+        routerLink.add(backButton);
+        VerticalLayout topLeftLayout = new VerticalLayout(routerLink);
+        topLeftLayout.setPadding(false);
+        topLeftLayout.setSpacing(false);
+        topLeftLayout.setWidthFull();
+        topLeftLayout.setAlignItems(FlexComponent.Alignment.START);
 
         H3 title = new H3("Anleihe verkaufen");
         title.addClassName("view-title");
 
         symbolField = new TextField("Anleihe-Symbol");
-        symbolField.setPlaceholder("z. B. BND009");
+        symbolField.setReadOnly(true);
         symbolField.setWidthFull();
 
         einzelkursField = new TextField("Aktueller Kurs (€/Anleihe)");
@@ -104,33 +111,35 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
         kursField.setValue("0.00");
         kursField.setWidthFull();
 
-        FormLayout formLayout = new FormLayout();
-        formLayout.setWidth("400px");
-        formLayout.add(symbolField, einzelkursField, stueckzahlField, depotComboBox, gebuehrenField, kursField);
-
         Button verkaufButton = new Button("Jetzt Verkaufen");
         verkaufButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        verkaufButton.getStyle().set("margin-top", "20px");
+        verkaufButton.addClassName("filled-button");
         verkaufButton.setWidthFull();
 
-        // Kurs aktualisieren wenn Symbol oder Stückzahl geändert werden
+        FormLayout formLayout = new FormLayout();
+        formLayout.setWidth("400px");
+        formLayout.getStyle().set("margin", "0 auto");
+        formLayout.add(symbolField, einzelkursField, stueckzahlField, gebuehrenField, kursField, depotComboBox, verkaufButton);
+
         symbolField.addValueChangeListener(e -> {
             aktualisiereEinzelkurs();
             aktualisiereKurs();
         });
-        stueckzahlField.addValueChangeListener(e -> aktualisiereKurs());
+        stueckzahlField.addValueChangeListener(e -> {
+            if (stueckzahlField.getValue() != null && stueckzahlField.getValue().intValue() > 0) {
+                aktualisiereKurs();
+            } else {
+                stueckzahlField.setErrorMessage("Stückzahl muss größer als 0 sein.");
+            }
+        });
 
         verkaufButton.addClickListener(event -> {
             String symbol = symbolField.getValue();
             Double stueckzahlDouble = stueckzahlField.getValue();
             Depot depot = depotComboBox.getValue();
 
-            if (symbol == null || symbol.isBlank()) {
-                Notification.show("Bitte Symbol angeben.").addThemeVariants(NotificationVariant.LUMO_ERROR);
-                return;
-            }
-            if (depot == null) {
-                Notification.show("Bitte ein Depot auswählen.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            if (symbol == null || symbol.isBlank() || depot == null) {
+                Notification.show("Bitte Symbol und Depot angeben.").addThemeVariants(NotificationVariant.LUMO_ERROR);
                 return;
             }
             if (stueckzahlDouble == null || stueckzahlDouble < 1) {
@@ -143,7 +152,6 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
             if (verkaufteAnleihe != null) {
                 Notification.show("Anleihe erfolgreich verkauft! (" + stueckzahl + " Stück)")
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                // Navigation zu "Meine Verkäufe"
                 UI.getCurrent().navigate("meineverkaeufe");
             } else {
                 Notification.show("Verkauf fehlgeschlagen. Bitte Symbol und Stückzahl prüfen.")
@@ -151,7 +159,7 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
             }
         });
 
-        VerticalLayout centerLayout = new VerticalLayout(title, formLayout, verkaufButton);
+        VerticalLayout centerLayout = new VerticalLayout(title, formLayout);
         centerLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         centerLayout.setSpacing(true);
         centerLayout.setPadding(true);
@@ -159,7 +167,7 @@ public class AnleiheVerkaufenView extends AbstractSideNav implements BeforeEnter
         centerLayout.getStyle().set("max-width", "600px");
         centerLayout.getStyle().set("margin", "0 auto");
 
-        container.add(backButton, centerLayout);
+        container.add(topLeftLayout, centerLayout);
     }
 
     private void aktualisiereEinzelkurs() {
